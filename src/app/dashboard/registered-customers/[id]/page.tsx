@@ -18,7 +18,7 @@ const page = async ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <Card className="p-4 shadow-none rounded-xl m-3">
+    <Card className="m-4">
       <h2 className="text-2xl">Name : {customer?.name}</h2>
       <ul>
         <li>UID : {customer?.uid}</li>

@@ -18,7 +18,7 @@ import SetOrderHistoryData from "./components/SetOrderHistoryData";
 import BdAddress from "@/lib/bdAddress";
 
 const OrderDetails = async ({ params }: { params: { orderId: string } }) => {
-  const { permissions = [] } = getPermission();
+  const { permissions = [] } = await getPermission();
   const editPermission = isPermitted(permissions, permission.manageProcessing);
 
   const { data: order } = await fetchData({
@@ -84,7 +84,7 @@ const OrderDetails = async ({ params }: { params: { orderId: string } }) => {
   return (
     <div className="mb-5">
       <div className="flex justify-between gap-3 mb-4">
-        <Card className="w-3/4 p-4">
+        <Card className="w-3/4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-10">
               <div>
@@ -215,7 +215,7 @@ const OrderDetails = async ({ params }: { params: { orderId: string } }) => {
           </div>
         </Card>
         {/* sidebar section start */}
-        <Card className="w-4/12 space-y-3 flex flex-col p-4">
+        <Card className="w-4/12 space-y-3 flex flex-col">
           {!isStatusUpdateDisabled && (
             <>
               <SectionTitle>Update Order Status</SectionTitle>

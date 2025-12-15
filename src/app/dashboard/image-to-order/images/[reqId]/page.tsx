@@ -23,7 +23,7 @@ const ImageViewingPage = ({ params }: { params: { reqId: string } }) => {
   }));
 
   return (
-    <Card className="p-4 shadow-none rounded-xl m-3">
+    <Card>
       <h2 className="text-xl font-bold mb-2">Request ID: {reqData.reqId}</h2>
       <hr className="mb-8" />
       <div>

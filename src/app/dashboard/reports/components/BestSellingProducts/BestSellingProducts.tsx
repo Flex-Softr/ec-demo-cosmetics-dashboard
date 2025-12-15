@@ -13,7 +13,7 @@ const BestSellingProducts = () => {
   return (
     <>
       <div>
-        <Card className="p-4 shadow-none rounded-xl space-y-5">
+        <Card className="space-y-5">
           <h2 className="text-xl font-bold">Best selling products</h2>
           <hr className="!mt-2" />
           <div className="h-[6px]"></div>

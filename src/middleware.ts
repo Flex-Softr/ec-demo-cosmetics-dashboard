@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
     return Response.redirect(new URL("/error", request.url));
   }
 
-  const { permissions } = getPermission();
+  const { permissions } = await getPermission();
 
   if (!request.nextUrl.pathname.startsWith("/dashboard")) {
     if (isPermitted(permissions)) {

@@ -1,10 +1,20 @@
 "use client";
-import { useAppSelector } from "@/redux/hooks";
-import { Sidebar } from "@/components/sidebar/Sidebar";
 
-const SidebarToggle = () => {
-  const showNav = useAppSelector(({ pagination }) => pagination.showNav);
-  return <>{showNav ? <Sidebar /> : null}</>;
-};
+import { useSidebar } from "@/providers/SidebarProvider";
+import { Menu } from "lucide-react";
+import { Button } from "../ui/button";
 
-export default SidebarToggle;
+export default function SidebarToggle() {
+  const { toggleSidebar } = useSidebar();
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="mr-4 bg-white hover:bg-white"
+      onClick={toggleSidebar}
+    >
+      <Menu size={24} />
+    </Button>
+  );
+}

@@ -121,7 +121,7 @@ const Published = ({ productId }: { productId: string }) => {
                 defaultValue={publishedStatus.status}
                 {...register("status")}
                 id="status"
-                className="border h-9 border-primary outline-primary rounded-md min-w-[100px] xl:w-[120px] px-2"
+                className="border h-9 border-primary outline-primary rounded-md min-w-[100px] xl:w-[120px] px-2 cursor-pointer"
               >
                 <option value="Published">Published</option>
                 <option value="Draft">Draft</option>
@@ -133,7 +133,7 @@ const Published = ({ productId }: { productId: string }) => {
                 defaultValue={publishedStatus.visibility}
                 {...register("visibility")}
                 id="visibility"
-                className="border h-9 border-primary outline-primary w-[100px] px-2 rounded-md"
+                className="border h-9 border-primary outline-primary w-[100px] px-2 rounded-md cursor-pointer"
               >
                 <option value="Public">Public</option>
                 {/* <option value="Password protected">Password protected</option> */}

@@ -11,12 +11,12 @@ const AddCategory = async () => {
   });
 
   return (
-    <div className="flex gap-4 justify-between items-start h-screen px-3 pt-3">
-      <Card className="p-4 shadow-none rounded-xl space-y-5 flex-1">
+    <div className="flex gap-4 justify-between items-start h-screen px-4 pt-4">
+      <Card className="space-y-5 flex-1">
         <h2 className="text-xl font-bold">Add New category</h2>
         <AddCategoryForm />
       </Card>
-      <Card className="p-4 shadow-none rounded-xl space-y-5 flex-1">
+      <Card className="space-y-5 flex-1">
         <h2 className="text-xl font-bold">All Categories</h2>
         <div>
           <CategoryTable categories={data} />

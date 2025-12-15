@@ -9,8 +9,8 @@ import { redirect } from "next/navigation";
 import WarrantyClaimData from "./components/WarrantyClaimData";
 import WarrantyClaimTable from "./components/WarrantyClaimTable";
 
-const AllClaimRequestPage = () => {
-  const { permissions = [] } = getPermission();
+const AllClaimRequestPage = async () => {
+  const { permissions = [] } = await getPermission();
 
   const manageWarrantyClaim = isPermitted(
     permissions,
@@ -24,7 +24,7 @@ const AllClaimRequestPage = () => {
   return (
     <>
       <WarrantyClaimData />
-      <Card className="p-4 shadow-none rounded-xl m-3">
+      <Card className="m-4">
         <h2 className="text-2xl font-bold">Warranty Claims</h2>
         <hr className="my-4" />
         <div className="flex justify-end">

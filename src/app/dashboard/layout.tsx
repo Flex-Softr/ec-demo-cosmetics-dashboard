@@ -1,18 +1,21 @@
 import Navbar from "@/components/navbar/Navbar";
 // import ScrollRestoration from "@/components/ScrollRestoration";
 import { Sidebar } from "@/components/sidebar/Sidebar";
+import { SidebarProvider } from "@/providers/SidebarProvider";
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <section>
-      <Navbar></Navbar>
-      <div className="flex">
-        <Sidebar></Sidebar>
-        <div className="w-full h-[calc(100vh-60px)] overflow-y-auto">
-          {children}
+    <SidebarProvider>
+      <section>
+        <Navbar></Navbar>
+        <div className="flex">
+          <Sidebar></Sidebar>
+          <div className="flex-1 h-[calc(100vh-60px)] overflow-y-auto">
+            {children}
+          </div>
+          {/* <ScrollRestoration>{children}</ScrollRestoration> */}
         </div>
-        {/* <ScrollRestoration>{children}</ScrollRestoration> */}
-      </div>
-    </section>
+      </section>
+    </SidebarProvider>
   );
 };
 

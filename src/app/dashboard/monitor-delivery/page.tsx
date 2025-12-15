@@ -10,8 +10,8 @@ import OrdersTable from "./components/OrdersTable";
 import StatusButtons from "./components/StatusButtons";
 import RefreshCourier from "./components/RefreshCourier";
 
-const MonitorDelivery = () => {
-  const { permissions = [] } = getPermission();
+const MonitorDelivery = async () => {
+  const { permissions = [] } = await getPermission();
 
   const manageCourier = isPermitted(permissions, permission.manageCourier);
 
@@ -24,7 +24,7 @@ const MonitorDelivery = () => {
   }
 
   return (
-    <Card className="bg-white px-4 pt-4 rounded-md m-4">
+    <Card className="m-4">
       {/* header section , button , search bar  */}
       <div className="grid grid-cols-2 justify-between items-center">
         <h1 className="text-2xl font-bold">Monitor Delivery</h1>

@@ -6,7 +6,7 @@ const montserrat = Montserrat({ subsets: ["latin"] });
 
 const StatsCard = ({ stat }: { stat: TStats }) => {
   return (
-    <Card className="p-4 shadow-none rounded-xl">
+    <Card>
       <div className="space-y-1">
         <TypographyH4 className="!text-gray-500 !text-lg font-semibold">
           {stat.title}

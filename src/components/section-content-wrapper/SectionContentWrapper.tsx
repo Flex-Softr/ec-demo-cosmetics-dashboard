@@ -21,7 +21,7 @@ const SectionContentWrapper = ({
   };
 
   return (
-    <Card className="p-4 shadow-none rounded-xl space-y-5 relative">
+    <Card className="space-y-5 relative">
       <div className="flex justify-between items-center">
         <h2
           className={`scroll-m-20  text-sm font-semibold tracking-tight first:mt-0 ${className}`}

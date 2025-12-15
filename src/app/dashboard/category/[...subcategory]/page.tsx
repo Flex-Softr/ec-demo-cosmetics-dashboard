@@ -19,8 +19,8 @@ const SubCategory = async ({
   });
 
   return (
-    <div className="flex gap-4 justify-between items-start h-screen ">
-      <Card className="p-4 flex-1 space-y-4">
+    <div className="flex gap-4 justify-between items-start h-screen px-4 pt-4">
+      <Card className="flex-1 space-y-4">
         <SectionTitle>
           {" "}
           Add New Sub Category for{" "}
@@ -28,12 +28,11 @@ const SubCategory = async ({
         </SectionTitle>
         <AddSubCategoryForm category={category} />
       </Card>
-      <Card className="p-4 flex-1">
+      <Card className="flex-1">
         <SectionTitle>
           {" "}
-          Sub Categories of <span className="text-primary">
-            {categoryName}
-          </span>{" "}
+          Sub Categories of{" "}
+          <span className="text-primary">{categoryName}</span>{" "}
         </SectionTitle>
 
         <div>

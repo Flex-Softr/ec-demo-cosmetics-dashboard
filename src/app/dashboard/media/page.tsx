@@ -1,6 +1,7 @@
 "use client";
 import Show from "@/components/Show";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import MediaLibrary from "@/components/uploader/MediaLibrary";
 import UploadFile from "@/components/uploader/UploadFile";
 import { setDeleteImage } from "@/redux/features/imageSelector/imageSelectorSlice";
@@ -16,7 +17,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col gap-5 h-[90%] m-6">
+    <Card className="flex flex-col gap-5 h-[90%] m-4">
       <div className="flex items-center justify-between">
         <div className="space-x-4">
           <Button
@@ -57,7 +58,7 @@ const Page = () => {
         {activeTab === "uploadFile" && <UploadFile />}
         {activeTab === "mediaLibrary" && <MediaLibrary click="delete" />}
       </div>
-    </div>
+    </Card>
   );
 };
 

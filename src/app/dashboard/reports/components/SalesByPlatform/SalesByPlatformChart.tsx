@@ -41,7 +41,7 @@ const SalesByPlatformChart = ({
   }
 
   return (
-    <Card className="p-4 shadow-none rounded-xl">
+    <Card>
       <div className="flex flex-col">
         <div className="flex justify-end">
           <DateRangeSelector

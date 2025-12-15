@@ -9,7 +9,7 @@ const ImageDetails = async ({ params }: { params: { imageId: string } }) => {
   });
 
   return (
-    <div className="max-w-[740px] max-h-[740px] relative rounded-sm mx-auto my-auto">
+    <div className="max-w-[740px] max-h-[740px] relative rounded-sm mx-auto my-4">
       <Image
         src={`${config.base_url}/${data.src}`}
         alt={data.alt}

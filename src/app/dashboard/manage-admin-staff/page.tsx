@@ -8,8 +8,8 @@ import GetAllUser from "./components/GetAllUser";
 import SearchEmployee from "./components/SearchEmployee/SearchEmployee";
 import UsersTable from "./components/UsersTable";
 
-const ManageUser = () => {
-  const { permissions = [] } = getPermission();
+const ManageUser = async () => {
+  const { permissions = [] } = await getPermission();
 
   const manageAdminOrStaff = isPermitted(
     permissions,
@@ -23,7 +23,7 @@ const ManageUser = () => {
   return (
     <>
       <GetAllUser />
-      <Card className="p-4 shadow-none rounded-xl m-3">
+      <Card className="m-4">
         <h2 className="text-2xl font-bold">Manage employs</h2>
         <hr className="mt-4 mb-6" />
         <div className="space-y-3">

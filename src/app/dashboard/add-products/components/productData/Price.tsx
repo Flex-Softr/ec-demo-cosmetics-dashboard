@@ -193,7 +193,7 @@ const Price = ({ isVariation, index }: TProps) => {
       )}
       <div className="flex items-center gap-3 mt-3">
         <Label className="w-40" htmlFor="discount">
-          Discount
+          Discount %
         </Label>
         <Input
           type="number"
