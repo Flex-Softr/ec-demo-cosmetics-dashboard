@@ -203,6 +203,14 @@ export function SidebarClient({ permissions }: TProps) {
             className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
           />
         )}
+        {manageCourier && (
+          <NavLink
+            href="/dashboard/courier-configuration"
+            name={isCollapsed ? "" : "Courier Configuration"}
+            icon={<Truck size={20} />} // Reusing Truck icon or maybe Settings
+            className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
+          />
+        )}
         <NavLink
           href="/dashboard/fraud-check"
           name={isCollapsed ? "" : "Fraud Check"}

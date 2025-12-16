@@ -44,26 +44,7 @@ const customBaseQueryWithRefreshToken: BaseQueryFn = async (
   return result;
 };
 
-type Tags =
-  | "allProducts"
-  | "singleProduct"
-  | "allCustomerProducts"
-  | "allOrders"
-  | "processingOrders"
-  | "processingDoneAndCourierOrders"
-  | "monitorDelivery"
-  | "carts"
-  | "shippingCharge"
-  | "paymentMethod"
-  | "images"
-  | "warrantyClaimRequests"
-  | "users"
-  | "customers"
-  | "mobileNumbers"
-  | "coupons"
-  | "imageToOrderReq"
-  | "registeredCustomers";
-const tags: Tags[] = [
+const tags = [
   "allProducts",
   "singleProduct",
   "allCustomerProducts",
@@ -83,7 +64,8 @@ const tags: Tags[] = [
   "imageToOrderReq",
   "customers",
   "registeredCustomers",
-];
+  "courierConfig",
+] as const;
 
 const baseApi = createApi({
   reducerPath: "baseApi",
