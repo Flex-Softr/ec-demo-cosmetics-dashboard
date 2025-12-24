@@ -32,6 +32,10 @@ export async function Sidebar() {
     permission.manageShippingCharges
   );
   const manageCustomer = isPermitted(permissions, permission.manageCustomers);
+  const managePaymentMethod = isPermitted(
+    permissions,
+    permission.managePaymentMethod
+  );
   const sendSMS = isPermitted(permissions, permission.manageSms);
 
   const permissionsObj = {
@@ -46,6 +50,7 @@ export async function Sidebar() {
     manageCoupons,
     manageShippingCharges,
     manageCustomer,
+    managePaymentMethod,
     sendSMS,
   };
 

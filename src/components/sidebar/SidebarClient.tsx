@@ -45,6 +45,7 @@ type TProps = {
     manageCoupons: boolean;
     manageShippingCharges: boolean;
     manageCustomer: boolean;
+    managePaymentMethod: boolean;
     sendSMS: boolean;
   };
 };
@@ -64,6 +65,7 @@ export function SidebarClient({ permissions }: TProps) {
     manageCoupons,
     manageShippingCharges,
     manageCustomer,
+    managePaymentMethod,
     sendSMS,
   } = permissions;
 
@@ -241,6 +243,17 @@ export function SidebarClient({ permissions }: TProps) {
           <NavLink
             href="/dashboard/manage-shipping-charges"
             name={isCollapsed ? "" : "Shipping Charges"}
+            icon={<CircleDollarSign size={20} />}
+            className={cn(
+              "border-b pb-2",
+              isCollapsed && "justify-center w-full px-0 pl-2 border-none pb-0"
+            )}
+          />
+        )}
+        {managePaymentMethod && (
+          <NavLink
+            href="/dashboard/payment-configuration"
+            name={isCollapsed ? "" : "Payment Configuration"}
             icon={<CircleDollarSign size={20} />}
             className={cn(
               "border-b pb-2",

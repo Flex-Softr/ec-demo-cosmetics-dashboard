@@ -26,6 +26,7 @@ import imageToOrderReqSlice from "./features/imageToOrder/imageToOrderSlice";
 import monitorDeliveryReducer from "./features/monitorDelivery/monitorDeliverySlice";
 import ordersReducer from "./features/orders/ordersSlice";
 import paginationReducer from "./features/pagination/PaginationSlice";
+import paymentMethodReducer from "./features/paymentMethod/paymentMethodSlice";
 import processingOrdersReducer from "./features/processingOrders/processingOrdersSlice";
 import registeredCustomer from "./features/registeredCustomer/RegisteredCustomerSlice";
 import searchReducer from "./features/search/searchSlice";
@@ -64,6 +65,7 @@ export const createStore = () => {
       imageToOrder: imageToOrderReqSlice,
       registeredCustomer: registeredCustomer,
       courierConfiguration: courierConfigurationReducer,
+      paymentMethod: paymentMethodReducer,
     },
     middleware: (getDefaultMiddlewares) =>
       getDefaultMiddlewares({
