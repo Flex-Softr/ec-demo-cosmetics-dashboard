@@ -1,6 +1,24 @@
+export type TVariation = {
+  attributes: {
+    name: string;
+    value: string;
+  }[];
+  price: {
+    regularPrice: number;
+    salePrice: number;
+  };
+  inventory: {
+    stockStatus: string;
+    stockQuantity: number;
+    sku: string;
+  };
+};
+
 export type TAllProducts = {
   _id: string;
   title: string;
+  type?: "simple" | "variable";
+  variations?: TVariation[];
   thumbnail: {
     _id: string;
     src: string;

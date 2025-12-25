@@ -1,11 +1,12 @@
 import baseApi from "@/redux/baseApi/baseApi";
 import { TQuery } from "@/types/order/order.interface";
+import { IAdminProductResponse, TProductPayload } from "@/types/products";
 import searchParams from "@/utilities/searchParams";
 
 const allProductsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createProduct: builder.mutation({
-      query: (payload) => ({
+      query: (payload: TProductPayload) => ({
         url: `/products`,
         method: "POST",
         body: payload,
@@ -32,25 +33,29 @@ const allProductsApi = baseApi.injectEndpoints({
       providesTags: ["singleProduct"],
     }),
     updateProduct: builder.mutation({
-      query: ({ id, payload }) => ({
+      query: ({
+        id,
+        payload,
+      }: {
+        id: string;
+        payload: Partial<TProductPayload>;
+      }) => ({
         url: `/products/${id}`,
         method: "PATCH",
         body: payload,
       }),
       invalidatesTags: ["singleProduct", "allProducts"],
     }),
-    getAllProducts: builder.query({
+    getAllProducts: builder.query<IAdminProductResponse, TQuery>({
       query: (args: TQuery) => ({
         url: "/products/admin",
         method: "GET",
         params: searchParams(args),
       }),
-      // transformResponse: (response:unknown) => {
-      //   return {
-      //     data: response.data,
-      //     meta: response.meta,
-      //   };
-      // },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      transformResponse: (response: IAdminProductResponse) => {
+        return response;
+      },
       providesTags: ["allProducts"],
     }),
     getCustomerProducts: builder.query({

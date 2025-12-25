@@ -2,10 +2,10 @@
 import { Button } from "@/components/ui/button";
 import {
   setProducts,
-  setSelectedStatus,
   setSearch,
   setSearchQuery,
   setSearchedProducts,
+  setSelectedStatus,
 } from "@/redux/features/allProducts/allProductsSlice";
 import {
   setIsLoading,
@@ -32,7 +32,9 @@ const CountByStatusButtons = () => {
   if (!products.length && page > 1) {
     dispatch(setPage(1));
   }
-  const [productStatusCount, setCountByStatus] = useState([]);
+  const [productStatusCount, setCountByStatus] = useState<
+    { name: string; total: number }[]
+  >([]);
   const {
     data,
     isLoading: loading,
@@ -50,7 +52,9 @@ const CountByStatusButtons = () => {
     }
     if (data) {
       const { meta, data: products } = data;
-      dispatch(setTotalPage(meta));
+      if (meta) {
+        dispatch(setTotalPage(meta));
+      }
       setCountByStatus(products?.countsByStatus);
       dispatch(setProducts(products?.data));
       dispatch(setSearch(false));
@@ -65,7 +69,7 @@ const CountByStatusButtons = () => {
 
   return (
     <div className="flex flex-wrap items-center justify-start gap-5">
-      {productStatusCount?.map((status: { name: string; total: string }) => {
+      {productStatusCount?.map((status: { name: string; total: number }) => {
         const bg = `${backgroundColor(status.name)} text-white`;
         return (
           <Button
@@ -78,7 +82,7 @@ const CountByStatusButtons = () => {
             disabled={isLoading}
             className={`capitalize bg-white flex items-center gap-1 rounded-2xl ${borderColor(status.name)} ${filter === status.name ? bg : ""}`}
             title={
-              status.name == "Draft"
+              status.name == "Draft" || status.name === "draft"
                 ? "Draft products will be automatically deleted after 30 days."
                 : undefined
             }

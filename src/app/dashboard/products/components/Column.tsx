@@ -1,11 +1,14 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { ColumnDef } from "@tanstack/react-table";
-import Image from "next/image";
 import config from "@/config/config";
+import { IAdminProduct } from "@/types/products";
+import { ColumnDef } from "@tanstack/react-table";
+// import { ChevronDown, ChevronRight } from "lucide-react";
+import { Minus } from "lucide-react";
+import Image from "next/image";
 import Actions from "./Actions";
-import { TAllProducts } from "@/redux/features/allProducts/allProductsInterface";
+import ProductVariations from "./ProductVariations";
 
-export const columns: ColumnDef<TAllProducts>[] = [
+export const columns: ColumnDef<IAdminProduct>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -43,7 +46,7 @@ export const columns: ColumnDef<TAllProducts>[] = [
     cell: ({ row }) => {
       const { thumbnail } = row.original;
       return (
-        <div className="flex justify-start items-center gap-3 rounded">
+        <div className="flex justify-start items-center gap-3 rounded py-2 px-2">
           <Image
             width={50}
             height={50}
@@ -58,12 +61,124 @@ export const columns: ColumnDef<TAllProducts>[] = [
     accessorKey: "title",
     header: "Title",
     cell: ({ row }) => (
-      <span title={row.original.title}>
-        {row.original.title.length > 20
-          ? row.original.title.slice(0, 20) + "..."
-          : row.original.title}
-      </span>
+      <div className="flex flex-col items-start gap-1 py-2 px-2">
+        <div className="flex items-center gap-2">
+          {/* {row.getCanExpand() ? (
+            <button
+              {...{
+                onClick: row.getToggleExpandedHandler(),
+                style: { cursor: "pointer" },
+              }}
+            >
+              {row.getIsExpanded() ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </button>
+          ) : (
+            <span className="w-4" />
+          )} */}
+          <span title={row.original.title} className="font-semibold text-left">
+            {row.original.title}
+          </span>
+        </div>
+        {row.original.type === "variable" && (
+          <div className="mt-0.5">
+            <ProductVariations
+              variations={row.original.variations!}
+              type="attributes"
+            />
+          </div>
+        )}
+      </div>
     ),
+  },
+  {
+    accessorKey: "sku",
+    header: "SKU",
+    cell: ({ row }) =>
+      row.original.type === "simple" ? (
+        <div className="flex justify-start px-2">
+          <span>{row.original.sku}</span>
+        </div>
+      ) : (
+        <div className="flex flex-col justify-start px-2">
+          <p className="min-h-[32px] flex items-center">
+            <Minus className="h-4 w-4" />
+          </p>
+          <ProductVariations variations={row.original.variations!} type="sku" />
+        </div>
+      ),
+  },
+  {
+    accessorKey: "price",
+    header: "Price",
+    cell: ({ row: { original } }) =>
+      original.type === "simple" ? (
+        <div className="flex flex-col items-start px-2">
+          <span
+            className={
+              original.salePrice
+                ? "line-through text-muted-foreground text-[10px]"
+                : ""
+            }
+          >
+            ৳ {original.regularPrice}
+          </span>
+          {original.salePrice && <span>৳ {original.salePrice}</span>}
+        </div>
+      ) : (
+        <div className="flex flex-col justify-start px-2">
+          <p className="min-h-[32px] flex items-center">
+            <Minus className="h-4 w-4" />
+          </p>
+          <ProductVariations variations={original.variations!} type="price" />
+        </div>
+      ),
+  },
+  {
+    accessorKey: "stock",
+    header: "Stock",
+    cell: ({ row }) =>
+      row.original.type === "simple" ? (
+        <div className="flex flex-col gap-1 justify-start items-start min-w-[90px] px-2">
+          {row.original.stockStatus === "In stock" ? (
+            <span className="text-green-500">{row.original.stockStatus}</span>
+          ) : row.original.stockStatus === "Out of stock" ? (
+            <span className="text-red-700">{row.original.stockStatus}</span>
+          ) : (
+            <span className="text-yellow-700">{row.original.stockStatus}</span>
+          )}
+        </div>
+      ) : (
+        <div className="flex flex-col justify-start px-2">
+          <p className="min-h-[32px] flex items-center">
+            <Minus className="h-4 w-4" />
+          </p>
+          <ProductVariations
+            variations={row.original.variations!}
+            type="stock"
+          />
+        </div>
+      ),
+  },
+  {
+    accessorKey: "stockAvailable",
+    header: "Qty",
+    cell: ({ row: { original } }) =>
+      original.type === "simple" ? (
+        <div className="flex justify-start px-2">
+          <span>{original.stockAvailable}</span>
+        </div>
+      ) : (
+        <div className="flex flex-col justify-start px-2">
+          <p className="min-h-[32px] flex items-center">
+            <Minus className="h-4 w-4" />
+          </p>
+          <ProductVariations variations={original.variations!} type="qty" />
+        </div>
+      ),
   },
   {
     accessorKey: "category",
@@ -80,52 +195,22 @@ export const columns: ColumnDef<TAllProducts>[] = [
     },
   },
   {
-    accessorKey: "sku",
-    header: "SKU",
-    cell: ({ row }) => <span>{row.original.sku}</span>,
-  },
-  {
-    accessorKey: "stock",
-    header: "Stock",
-    cell: ({ row }) => (
-      <div className="flex flex-col gap-1 justify-center items-center min-w-[90px]">
-        <span>{row.original.stockAvailable}</span>
-        {row.original.stockStatus === "In stock" ? (
-          <span className="text-green-500">{row.original.stockStatus}</span>
-        ) : row.original.stockStatus === "Out of stock" ? (
-          <span className="text-red-700">{row.original.stockStatus}</span>
-        ) : (
-          <span className="text-yellow-700">{row.original.stockStatus}</span>
-        )}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "price",
-    header: "Price",
-    cell: ({ row: { original } }) => (
-      <span>৳ {original.salePrice || original.regularPrice}</span>
-    ),
-  },
-  // {
-  //   accessorKey: "sales",
-  //   header: "Sales",
-  //   cell: ({ row }) => <span>{row.original.sales}150</span>,
-  // },
-  // {
-  //   accessorKey: "rating",
-  //   header: "Rating",
-  //   cell: ({ row }) => (
-  //     <div className="flex flex-col gap-1">
-  //       <span>{row.original.totalReview}</span>
-  //       <span>{row.original.averageRating}55555</span>
-  //     </div>
-  //   ),
-  // },
-  {
-    accessorKey: "published",
-    header: "Published",
-    cell: ({ row }) => <span>{row.original.published}</span>,
+    accessorKey: "publishedStatus",
+    header: "Status",
+    cell: ({ row }) => {
+      const statusValue = row.original.publishedStatus;
+      let colorClass = "";
+
+      if (statusValue === "published") {
+        colorClass = "text-green-500";
+      } else if (statusValue === "draft") {
+        colorClass = "text-yellow-700";
+      } else if (statusValue === "private") {
+        colorClass = "text-red-600";
+      }
+
+      return <span className={`capitalize ${colorClass}`}>{statusValue}</span>;
+    },
   },
   {
     id: "actions",

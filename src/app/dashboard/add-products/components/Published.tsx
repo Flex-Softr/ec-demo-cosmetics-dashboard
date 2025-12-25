@@ -1,10 +1,10 @@
 "use client";
 import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
+import { productStatus } from "@/const/products";
 import { resetProduct } from "@/redux/features/addProduct/addProductSlice";
-import { TPublishedStatus } from "@/redux/features/addProduct/interface";
+
 import {
   setDefaultSelectedAttributeValue,
   setDefaultVariation,
@@ -21,6 +21,8 @@ import {
   setThumbnail,
 } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { TProductPayload } from "@/types/products";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import modifiedVariations from "../lib/modifiedVariations";
 import ProductSchema from "../lib/productValidation";
@@ -39,16 +41,31 @@ const Published = ({ productId }: { productId: string }) => {
   const { variations, selectedAttributeValue, selectedAttribute } =
     useAppSelector(({ productVariation }) => productVariation);
 
-  const { register, handleSubmit } = useForm<TPublishedStatus>();
+  const { register, handleSubmit, setValue } = useForm<{ status: string }>();
 
-  const onSubmit: SubmitHandler<TPublishedStatus> = async (data) => {
+  // Sync Redux state with React Hook Form
+  useEffect(() => {
+    if (publishedStatus) {
+      setValue("status", publishedStatus);
+    }
+  }, [publishedStatus, setValue]);
+
+  const onSubmit: SubmitHandler<{ status: string }> = async (data) => {
     productData.attributes = selectedAttributeValue.map(({ value, child }) => ({
       name: value as string,
       values: child.map(({ value }) => value as string),
     }));
     productData.image = image;
-    productData.variations = modifiedVariations(variations, product);
-    productData.publishedStatus = data;
+    if (productData.type === "variable") {
+      productData.variations = modifiedVariations(variations, product);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (productData as any).price;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (productData as any).inventory;
+    } else {
+      productData.variations = [];
+    }
+    productData.publishedStatus = data.status;
 
     try {
       if (productId) {
@@ -61,7 +78,7 @@ const Published = ({ productId }: { productId: string }) => {
 
         const res = await updateProduct({
           id: productId,
-          payload: validatedData,
+          payload: validatedData as unknown as TProductPayload,
         }).unwrap();
 
         // dispatch(resetProduct())
@@ -77,7 +94,9 @@ const Published = ({ productId }: { productId: string }) => {
           throw new Error("Attribute value is required");
         }
 
-        const res = await createProduct(validatedData).unwrap();
+        const res = await createProduct(
+          validatedData as unknown as TProductPayload
+        ).unwrap();
 
         toast({
           className: "bg-success text-white text-2xl",
@@ -112,22 +131,23 @@ const Published = ({ productId }: { productId: string }) => {
 
   return (
     <>
-      <SectionContentWrapper heading="Published" className="text-center">
+      <SectionContentWrapper heading="Published status" className="text-center">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="flex items-center justify-evenly gap-10">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="status">Status</Label>
-              <select
-                defaultValue={publishedStatus.status}
-                {...register("status")}
-                id="status"
-                className="border h-9 border-primary outline-primary rounded-md min-w-[100px] xl:w-[120px] px-2 cursor-pointer"
-              >
-                <option value="Published">Published</option>
-                <option value="Draft">Draft</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-2">
+            <select
+              defaultValue={publishedStatus}
+              {...register("status")}
+              id="status"
+              className="capitalize border h-9 border-primary outline-primary rounded-md px-2 cursor-pointer w-full"
+            >
+              {Object.values(productStatus).map((status) => (
+                <option key={status} value={status} className="capitalize">
+                  {status}
+                </option>
+              ))}
+            </select>
+
+            {/* <div className="flex flex-col gap-2">
               <Label htmlFor="visibility">Visibility</Label>
               <select
                 defaultValue={publishedStatus.visibility}
@@ -136,10 +156,9 @@ const Published = ({ productId }: { productId: string }) => {
                 className="border h-9 border-primary outline-primary w-[100px] px-2 rounded-md cursor-pointer"
               >
                 <option value="Public">Public</option>
-                {/* <option value="Password protected">Password protected</option> */}
                 <option value="Private">Private</option>
               </select>
-            </div>
+            </div> */}
           </div>
           {/* <div className="flex items-center justify-evenly gap-4">
             <Label htmlFor="date">Published on :</Label>

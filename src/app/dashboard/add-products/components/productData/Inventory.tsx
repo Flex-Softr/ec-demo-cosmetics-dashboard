@@ -33,6 +33,10 @@ const Inventory = ({ isVariation, index, productId }: TProps) => {
     }
   });
 
+  const { type: rootProductType } = useAppSelector((state) => state.addProduct);
+  const effectiveProductType = isVariation ? "variable" : rootProductType;
+  const isSkuRequired = isVariation || effectiveProductType === "simple";
+
   const handleCheckedChange = (event: {
     target: { name: string; checked: boolean };
   }) => {
@@ -68,7 +72,7 @@ const Inventory = ({ isVariation, index, productId }: TProps) => {
         </Label>
         <div className="space-y-2 w-full">
           <select
-            defaultValue={stockStatus}
+            value={stockStatus || "In stock"}
             // {...register("stockStatus")}
             onChange={handleChange}
             name="stockStatus"
@@ -98,7 +102,7 @@ const Inventory = ({ isVariation, index, productId }: TProps) => {
         <div className="space-y-2 w-full">
           <Input
             type="number"
-            defaultValue={stockQuantity || ""}
+            value={stockQuantity || ""}
             // {...register("stockQuantity")}
             onChange={handleChange}
             name="stockQuantity"
@@ -123,7 +127,7 @@ const Inventory = ({ isVariation, index, productId }: TProps) => {
         <div className="space-y-2 w-full">
           <Input
             type="number"
-            defaultValue={stockAvailable || ""}
+            value={stockAvailable || ""}
             // {...register("stockAvailable")}
             onChange={handleChange}
             name="stockAvailable"
@@ -142,6 +146,7 @@ const Inventory = ({ isVariation, index, productId }: TProps) => {
       <div className="flex items-center gap-3 mb-3">
         <Label className="flex gap-3 w-48" htmlFor="sku">
           SKU
+          {isSkuRequired && <span className="text-red-500">*</span>}
           <span title="A unique identifier for the product.">
             <i className="fa-solid fa-circle-question">i</i>
           </span>
@@ -149,7 +154,7 @@ const Inventory = ({ isVariation, index, productId }: TProps) => {
         <div className="space-y-2 w-full">
           <Input
             type="text"
-            defaultValue={sku}
+            value={sku || ""}
             // {...register("sku")}
             onChange={handleChange}
             name="sku"
@@ -218,7 +223,7 @@ const Inventory = ({ isVariation, index, productId }: TProps) => {
           <div className="space-y-2 w-full">
             <Input
               type="number"
-              defaultValue={lowStockWarning || ""}
+              value={lowStockWarning || ""}
               // {...register("lowStockWarning")}
               name="lowStockWarning"
               onChange={handleChange}
@@ -246,7 +251,7 @@ const Inventory = ({ isVariation, index, productId }: TProps) => {
             <Input
               type="checkbox"
               // {...register("hideStock")}
-              defaultChecked={hideStock}
+              checked={hideStock}
               onChange={handleCheckedChange}
               name="hideStock"
               id="hideStock"

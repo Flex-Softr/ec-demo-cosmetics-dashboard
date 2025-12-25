@@ -34,11 +34,12 @@ const borderColor = (status: string) => {
                             ? "ring-1 ring-[#00C3C6] text-[#00C3C6] hover:text-white hover:bg-[#00C3C6]"
                             : status === "Public"
                               ? "ring-1 ring-[#32CD32] text-[#32CD32] hover:text-white hover:bg-[#32CD32]"
-                              : status === "Private"
+                              : status === "Private" || status === "private"
                                 ? "ring-1 ring-[#fe5461] text-[#fe5461]  hover:text-white hover:bg-[#fe5461]"
-                                : status === "Published"
+                                : status === "Published" ||
+                                    status === "published"
                                   ? "ring-1 ring-[#6BD3B0] text-[#6BD3B0] hover:bg-[#6BD3B0] hover:text-white"
-                                  : status === "Draft"
+                                  : status === "Draft" || status === "draft"
                                     ? "ring-1 ring-[#808080] text-[#808080] hover:text-white hover:bg-[#808080]"
                                     : "ring-1 ring-primary text-primary hover:bg-primary hover:text-white";
 };

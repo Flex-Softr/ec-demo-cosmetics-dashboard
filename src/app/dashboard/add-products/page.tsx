@@ -14,7 +14,6 @@ import Link from "next/link";
 import Brand from "./components/Brand";
 import ShortDescription from "./components/ShortDescription";
 import AdditionalInfo from "./components/AdditionalInfo";
-import UsageGuidelines from "./components/UsageGuidelines";
 // import getBrands from "./lib/getBrands";
 
 const AddProducts = async ({ productId }: { productId: string }) => {
@@ -51,7 +50,6 @@ const AddProducts = async ({ productId }: { productId: string }) => {
           {/* product data */}
           <ProductData attributes={attributes} productId={productId} />
           <AdditionalInfo />
-          <UsageGuidelines />
           {/* <SeoData /> */}
         </div>
         {/* right Sidebar of add products */}

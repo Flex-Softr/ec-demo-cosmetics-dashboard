@@ -25,6 +25,7 @@ import { useGetAProductQuery } from "@/redux/features/allProducts/allProductsApi
 const SetProduct = ({ productId }: { productId: string }) => {
   const dispatch = useAppDispatch();
   const { data } = useGetAProductQuery(productId);
+
   useEffect(() => {
     const setProductData = async () => {
       // const { data: { thumbnail, gallery, featured, warranty, warrantyInfo, category, brand, attributes = [], variations, ...data } } = await fetchData({
@@ -51,7 +52,7 @@ const SetProduct = ({ productId }: { productId: string }) => {
       }
       if (warranty) {
         const { duration, terms } = warrantyInfo;
-        const [quantity, unit] = duration.split(" ");
+        const { quantity, unit } = duration || {};
         dispatch(
           setAdvanced({ featured, warranty, quantity, unit: unit, terms })
         );

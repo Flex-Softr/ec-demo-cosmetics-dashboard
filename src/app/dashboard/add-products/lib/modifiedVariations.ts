@@ -2,8 +2,8 @@ import { TProduct } from "@/redux/features/addProduct/interface";
 import { TVariation } from "@/redux/features/addProduct/variation/interface";
 
 const modifiedVariations = (variations: TVariation[], product: TProduct) => {
-  return [...variations].map(({ _id, attributes, price, inventory }) => {
-    const { regularPrice, salePrice, discountPercent } = product.price;
+  return [...variations].map(({ _id, attributes, price, inventory, image }) => {
+    const { regularPrice, salePrice, discountPercent } = product.price || {};
     const {
       stockStatus,
       stockQuantity,
@@ -11,7 +11,7 @@ const modifiedVariations = (variations: TVariation[], product: TProduct) => {
       manageStock,
       lowStockWarning,
       hideStock,
-    } = product.inventory;
+    } = product.inventory || {};
 
     const modifiedPrice = { ...price };
     const modifiedInventory = { ...inventory };
@@ -65,6 +65,7 @@ const modifiedVariations = (variations: TVariation[], product: TProduct) => {
       attributes,
       price: modifiedPrice,
       inventory: modifiedInventory,
+      image,
     };
   });
 };
