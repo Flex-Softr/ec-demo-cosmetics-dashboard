@@ -8,6 +8,7 @@ export type Payment = {
     name: string;
     image: string;
   };
+  paymentDetails?: Record<string, string>;
 };
 
 type StatusHistory = {
@@ -79,6 +80,7 @@ export type TOrders = {
   reasonNotes?: string;
   orderSource: { name: string; url: string; lpNo: number };
   courierDetails: { trackingId: string };
+  eventId?: string;
 };
 
 export type TPermissionEnum = (typeof permission)[keyof typeof permission];
@@ -97,6 +99,7 @@ export const permission = {
   manageImageToOrder: "manage image to order",
   manageSms: "manage sms",
   manageCustomers: "manage customers",
+  managePaymentMethod: "manage payment methods",
 } as const;
 
 export type TQuery = {

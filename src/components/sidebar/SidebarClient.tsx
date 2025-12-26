@@ -1,6 +1,6 @@
 "use client";
 
-import config from "@/config/config";
+// import config from "@/config/config";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "@/providers/SidebarProvider";
 import {
@@ -8,8 +8,8 @@ import {
   CircleDollarSign,
   ClipboardList,
   Home,
-  Image as ImageIcon,
-  ImagePlusIcon,
+  // Image as ImageIcon,
+  LucideIcon,
   MapPinned,
   MessageSquareText,
   Package,
@@ -50,6 +50,20 @@ type TProps = {
   };
 };
 
+type SidebarItem = {
+  name: string;
+  href?: string;
+  icon?: LucideIcon;
+};
+
+type SidebarGroup = {
+  key: string;
+  label: string;
+  icon: LucideIcon;
+  items: SidebarItem[];
+  visible: boolean;
+};
+
 export function SidebarClient({ permissions }: TProps) {
   const { isCollapsed } = useSidebar();
 
@@ -57,7 +71,7 @@ export function SidebarClient({ permissions }: TProps) {
     isSuperAdmin,
     manageProduct,
     manageOrder,
-    manageImgToOrder,
+    // manageImgToOrder,
     manageProcessing,
     manageCourier,
     manageAdminOrStaff,
@@ -70,39 +84,225 @@ export function SidebarClient({ permissions }: TProps) {
   } = permissions;
 
   const productManagementLinks = [
+    { href: "/products", name: "All Products" },
+    { href: "/add-products", name: "Add Product" },
+    { href: "/category", name: "Category" },
+    { href: "/attribute", name: "Attribute" },
+    { href: "/brand", name: "Brand" },
+    { href: "/media", name: "Media" },
+  ];
+
+  const sidebarGroups: SidebarGroup[] = [
     {
-      href: "/products",
-      name: "All Products",
+      key: "products",
+      label: "Products",
+      icon: Package,
+      visible: !!manageProduct,
+      items: productManagementLinks.map((link) => ({
+        name: link.name,
+        href: `/dashboard${link.href}`,
+      })),
     },
     {
-      href: "/add-products",
-      name: "Add Product",
+      key: "orders",
+      label: "Orders",
+      icon: ClipboardList,
+      visible: true,
+      items: [
+        manageOrder && { name: "Orders", href: "/dashboard/orders" },
+        manageProcessing && {
+          name: "Processing Orders",
+          href: "/dashboard/processing-orders",
+        },
+        manageCourier && {
+          name: "Courier Shipment",
+          href: "/dashboard/courier-shipment",
+        },
+        (manageCourier || manageProcessing) && {
+          name: "Monitor Delivery",
+          href: "/dashboard/monitor-delivery",
+        },
+        // Boolean(config.next_public_show_ito) === true &&
+        //   manageImgToOrder && {
+        //     name: "Image to order",
+        //     href: "/dashboard/image-to-order",
+        //   },
+        manageWarrantyClaim && {
+          name: "Warranty Claims",
+          href: "/dashboard/warranty-claims",
+          // icon: ShieldAlert,
+        },
+        {
+          name: "Fraud Check",
+          href: "/dashboard/fraud-check",
+          // icon: ShieldCheck,
+        },
+      ].filter(Boolean) as SidebarItem[],
     },
     {
-      href: "/category",
-      name: "Category",
+      key: "configuration",
+      label: "Configuration",
+      icon: Settings,
+      visible: true,
+      items: [
+        (isSuperAdmin || manageProduct) && {
+          name: "Slider Config",
+          href: "/dashboard/slider-section",
+        },
+        manageShippingCharges && {
+          name: "Shipping Charges",
+          href: "/dashboard/manage-shipping-charges",
+        },
+        managePaymentMethod && {
+          name: "Payment Config",
+          href: "/dashboard/payment-configuration",
+        },
+        manageCourier && {
+          name: "Courier Config",
+          href: "/dashboard/courier-configuration",
+        },
+        manageAdminOrStaff && {
+          name: "Manage Employees",
+          href: "/dashboard/manage-admin-staff",
+        },
+      ].filter(Boolean) as SidebarItem[],
     },
     {
-      href: "/attribute",
-      name: "Attribute",
+      key: "marketing",
+      label: "Marketing",
+      icon: TicketPercent,
+      visible: !!(manageCoupons || sendSMS),
+      items: [
+        manageCoupons && {
+          name: "Manage Coupons",
+          href: "/dashboard/manage-coupon",
+        },
+        sendSMS && { name: "SMS", href: "/dashboard/sms" },
+      ].filter(Boolean) as SidebarItem[],
     },
     {
-      href: "/brand",
-      name: "Brand",
-    },
-    {
-      href: "/media",
-      name: "Media",
+      key: "customers",
+      label: "Customers",
+      icon: UsersRound,
+      visible: !!manageCustomer,
+      items: [
+        { name: "Customer List", href: "/dashboard/customers" },
+        {
+          name: "Registered customers",
+          href: "/dashboard/registered-customers",
+        },
+      ],
     },
   ];
 
-  const themeOptionLinks = [
-    {
-      href: "/slider-section",
-      name: "Slider Section",
-      icon: <ImagePlusIcon size={20} />,
-    },
-  ];
+  const getCollapsedItems = () => {
+    const items: SidebarItem[] = [];
+
+    if (manageProduct) {
+      items.push({
+        name: "",
+        href: "/dashboard/products",
+        icon: Package,
+      });
+    }
+
+    if (manageOrder)
+      items.push({ name: "", href: "/dashboard/orders", icon: ClipboardList });
+    if (manageProcessing)
+      items.push({
+        name: "",
+        href: "/dashboard/processing-orders",
+        icon: RefreshCcw,
+      });
+    if (manageCourier)
+      items.push({
+        name: "",
+        href: "/dashboard/courier-shipment",
+        icon: Truck,
+      });
+    if (manageCourier || manageProcessing)
+      items.push({
+        name: "",
+        href: "/dashboard/monitor-delivery",
+        icon: MapPinned,
+      });
+    // if (Boolean(config.next_public_show_ito) === true && manageImgToOrder)
+    //   items.push({
+    //     name: "",
+    //     href: "/dashboard/image-to-order",
+    //     icon: ImageIcon,
+    //   });
+    if (manageWarrantyClaim)
+      items.push({
+        name: "",
+        href: "/dashboard/warranty-claims",
+        icon: ShieldAlert,
+      });
+    items.push({
+      name: "",
+      href: "/dashboard/fraud-check",
+      icon: ShieldCheck,
+    });
+
+    if (manageShippingCharges)
+      items.push({
+        name: "",
+        href: "/dashboard/manage-shipping-charges",
+        icon: CircleDollarSign,
+      });
+    if (managePaymentMethod)
+      items.push({
+        name: "",
+        href: "/dashboard/payment-configuration",
+        icon: CircleDollarSign,
+      });
+    if (manageCourier)
+      items.push({
+        name: "",
+        href: "/dashboard/courier-configuration",
+        icon: Truck,
+      });
+    if (manageAdminOrStaff)
+      items.push({
+        name: "",
+        href: "/dashboard/manage-admin-staff",
+        icon: UserCog,
+      });
+    if (isSuperAdmin || manageProduct)
+      items.push({
+        name: "",
+        href: "/dashboard/slider-section",
+        icon: Settings,
+      });
+
+    if (manageCoupons)
+      items.push({
+        name: "",
+        href: "/dashboard/manage-coupon",
+        icon: TicketPercent,
+      });
+    if (sendSMS)
+      items.push({
+        name: "",
+        href: "/dashboard/sms",
+        icon: MessageSquareText,
+      });
+
+    if (manageCustomer) {
+      items.push({
+        name: "",
+        href: "/dashboard/customers",
+        icon: UsersRound,
+      });
+      items.push({
+        name: "",
+        href: "/dashboard/registered-customers",
+        icon: UserCheck,
+      });
+    }
+
+    return items;
+  };
 
   return (
     <div
@@ -132,207 +332,53 @@ export function SidebarClient({ permissions }: TProps) {
           />
         )}
 
-        {/* Product Accordion */}
-        {manageProduct &&
-          (isCollapsed ? (
-            <NavLink
-              href="/dashboard/products"
-              name=""
-              icon={<Package size={20} />}
-              className="justify-center w-full px-0 pl-2"
-              // On click, maybe expand? For now just a link to main products page or inert
-            />
-          ) : (
-            <Accordion type="single" collapsible className="!mt-0">
-              <AccordionItem value="item-1" className="border-none">
-                <AccordionTrigger className="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground hover:no-underline">
-                  <div className="flex items-center gap-2">
-                    <Package size={20} /> <span>Products</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="ml-8 pb-0">
-                  {productManagementLinks.map((item) => (
-                    <NavLink
-                      key={item.href}
-                      href={`/dashboard${item.href}`}
-                      name={item.name}
-                      className="text-sm"
-                    />
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          ))}
-
-        {Boolean(config.next_public_show_ito) === true && manageImgToOrder && (
-          <NavLink
-            href="/dashboard/image-to-order"
-            name={isCollapsed ? "" : "Image to order"}
-            icon={<ImageIcon size={20} />}
-            className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-          />
+        {isCollapsed ? (
+          <div className="flex flex-col gap-2 w-full items-center">
+            {getCollapsedItems().map((item, idx) => (
+              <NavLink
+                key={idx}
+                href={item.href || "#"}
+                name=""
+                icon={item.icon ? <item.icon size={20} /> : undefined}
+                className="justify-center w-full px-0 pl-2"
+              />
+            ))}
+          </div>
+        ) : (
+          <Accordion type="single" collapsible className="!mt-0 w-full">
+            {sidebarGroups
+              .filter((group) => group.visible && group.items.length > 0)
+              .map((group) => (
+                <AccordionItem
+                  key={group.key}
+                  value={group.key}
+                  className="border-none"
+                >
+                  <AccordionTrigger className="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <group.icon size={20} /> <span>{group.label}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="ml-8 pb-0 space-y-1">
+                    {group.items.map((item, idx) => (
+                      <NavLink
+                        key={idx}
+                        href={item.href || "#"}
+                        name={item.name}
+                        icon={item.icon ? <item.icon size={20} /> : undefined}
+                        className={
+                          item.icon ? "justify-start w-full px-3" : "text-sm"
+                        }
+                      />
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+          </Accordion>
         )}
-        {manageOrder && (
-          <NavLink
-            href="/dashboard/orders"
-            name={isCollapsed ? "" : "Orders"}
-            icon={<ClipboardList size={20} />}
-            className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-          />
-        )}
-
-        {manageProcessing && (
-          <NavLink
-            href="/dashboard/processing-orders"
-            name={isCollapsed ? "" : "Processing Orders"}
-            icon={<RefreshCcw size={20} />}
-            className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-          />
-        )}
-        {manageCourier && (
-          <NavLink
-            href="/dashboard/courier-management"
-            name={isCollapsed ? "" : "Courier Management"}
-            icon={<Truck size={20} />}
-            className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-          />
-        )}
-        {(manageCourier || manageProcessing) && (
-          <NavLink
-            href="/dashboard/monitor-delivery"
-            name={isCollapsed ? "" : "Monitor Delivery"}
-            icon={<MapPinned size={20} />}
-            className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-          />
-        )}
-        {manageCourier && (
-          <NavLink
-            href="/dashboard/courier-configuration"
-            name={isCollapsed ? "" : "Courier Configuration"}
-            icon={<Truck size={20} />} // Reusing Truck icon or maybe Settings
-            className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-          />
-        )}
-        <NavLink
-          href="/dashboard/fraud-check"
-          name={isCollapsed ? "" : "Fraud Check"}
-          icon={<ShieldCheck size={20} />}
-          className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-        />
-        {manageWarrantyClaim && (
-          <NavLink
-            href="/dashboard/warranty-claims"
-            name={isCollapsed ? "" : "Warranty Claims"}
-            icon={<ShieldAlert size={20} />}
-            className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-          />
-        )}
-
-        {manageCoupons && (
-          <NavLink
-            href="/dashboard/manage-coupon"
-            name={isCollapsed ? "" : "Manage Coupons"}
-            icon={<TicketPercent size={20} />}
-            className={cn(
-              "border-t pt-2",
-              isCollapsed && "justify-center w-full px-0 pl-2 border-none pt-0"
-            )}
-          />
-        )}
-        {manageShippingCharges && (
-          <NavLink
-            href="/dashboard/manage-shipping-charges"
-            name={isCollapsed ? "" : "Shipping Charges"}
-            icon={<CircleDollarSign size={20} />}
-            className={cn(
-              "border-b pb-2",
-              isCollapsed && "justify-center w-full px-0 pl-2 border-none pb-0"
-            )}
-          />
-        )}
-        {managePaymentMethod && (
-          <NavLink
-            href="/dashboard/payment-configuration"
-            name={isCollapsed ? "" : "Payment Configuration"}
-            icon={<CircleDollarSign size={20} />}
-            className={cn(
-              "border-b pb-2",
-              isCollapsed && "justify-center w-full px-0 pl-2 border-none pb-0"
-            )}
-          />
-        )}
-
-        {/* Theme Accordion */}
-        {(isSuperAdmin || manageProduct) &&
-          (isCollapsed ? (
-            <NavLink
-              href="/dashboard/slider-section"
-              name=""
-              icon={<Settings size={20} />}
-              className="justify-center w-full px-0 pl-2"
-            />
-          ) : (
-            <Accordion type="single" collapsible className="!mt-0">
-              <AccordionItem value="item-1" className="border-none">
-                <AccordionTrigger className="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent hover:no-underline">
-                  <div className="flex items-center gap-2">
-                    <Settings size={20} /> <span>Theme option</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="ml-8 pb-0">
-                  {themeOptionLinks.map((item) => (
-                    <NavLink
-                      key={item.href}
-                      href={`/dashboard${item.href}`}
-                      name={item.name}
-                      icon={item.icon}
-                    />
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          ))}
-
-        {manageCustomer && (
-          <>
-            <NavLink
-              href="/dashboard/customers"
-              name={isCollapsed ? "" : "Customer List"}
-              icon={<UsersRound size={20} />}
-              className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-            />
-            <NavLink
-              href="/dashboard/registered-customers"
-              name={isCollapsed ? "" : "Registered customers"}
-              icon={<UserCheck size={20} />}
-              className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-            />
-          </>
-        )}
-        {sendSMS && (
-          <NavLink
-            href="/dashboard/sms"
-            name={isCollapsed ? "" : "SMS"}
-            icon={<MessageSquareText size={20} />}
-            className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-          />
-        )}
-
-        {manageAdminOrStaff && (
-          <NavLink
-            href="/dashboard/manage-admin-staff"
-            name={isCollapsed ? "" : "Manage Employees"}
-            icon={<UserCog size={20} />}
-            className={cn(
-              "border-t pt-2",
-              isCollapsed && "justify-center w-full px-0 pl-2 border-none pt-0"
-            )}
-          />
-        )}
-
         <NavLink
           href="/dashboard/accounts"
-          name={isCollapsed ? "" : "Accounts"}
+          name={isCollapsed ? "" : "Profile"}
           icon={<User size={20} />}
           className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
         />

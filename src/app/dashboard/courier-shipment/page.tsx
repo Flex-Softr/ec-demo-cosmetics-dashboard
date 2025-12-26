@@ -25,7 +25,7 @@ const Orders = async () => {
     <Card className="m-4">
       {/* header section , button , search bar  */}
       <div className="grid grid-cols-2 justify-between items-center">
-        <h1 className="text-2xl font-bold">Courier Management</h1>
+        <h1 className="text-2xl font-bold">Courier Shipment</h1>
         <OrderSearchBar endPoint="/orders/admin/processing-done-on-courier-orders" />
       </div>
       <hr className="my-4" />
@@ -39,7 +39,7 @@ const Orders = async () => {
           <Show />
         </div>
         {/* Courier orders table */}
-        <OrdersTable />
+        <OrdersTable permissions={permissions} />
       </div>
     </Card>
   );

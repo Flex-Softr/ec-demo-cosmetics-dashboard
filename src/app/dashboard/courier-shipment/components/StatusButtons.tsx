@@ -1,25 +1,25 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useGetProcessingDoneAndCourierOrdersQuery } from "@/redux/features/courierShipment/courierShipmentApi";
+import {
+  setProcessingDoneOrders,
+  setSelectedStatus,
+} from "@/redux/features/courierShipment/courierShipmentSlice";
 import {
   setIsLoading,
   setLimit,
   setPage,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { useEffect, useState } from "react";
-import {
-  setProcessingDoneOrders,
-  setSelectedStatus,
-} from "@/redux/features/courierManagement/courierManagementSlice";
-import borderColor from "@/utilities/borderColor";
-import backgroundColor from "@/utilities/backgroundColor";
 import {
   setSearch,
   setSearchQuery,
   setSearchedOrders,
 } from "@/redux/features/search/searchSlice";
-import { useGetProcessingDoneAndCourierOrdersQuery } from "@/redux/features/courierManagement/courierManagementApi";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import backgroundColor from "@/utilities/backgroundColor";
+import borderColor from "@/utilities/borderColor";
+import { useEffect, useState } from "react";
 // import DateRangeSelector from "@/components/DateRangeSelector";
 
 const StatusButtons = () => {
@@ -29,7 +29,7 @@ const StatusButtons = () => {
   );
   const { startFrom, endAt } = useAppSelector(({ orders }) => orders);
   const { selectedStatus: filter, processingDoneOrders } = useAppSelector(
-    ({ courierManagement }) => courierManagement
+    ({ courierShipment }) => courierShipment
   );
   if (!processingDoneOrders.length && page > 1) {
     dispatch(setPage(1));
@@ -66,31 +66,6 @@ const StatusButtons = () => {
       throw new Error("Something went wrong!");
     }
   }, [data, loading, error, dispatch]);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     if (filter) {
-  //       dispatch(setIsLoading(true));
-  //       const { data, meta } = await fetchData({
-  //         endPoint: "/orders/admin/processing-done-on-courier-orders",
-  //         tags: ["processingDoneOrders"],
-  //         searchParams: {
-  //           status: filter,
-  //           sort: "-createdAt",
-  //           page,
-  //           limit,
-  //         },
-  //       });
-  //       dispatch(setTotalPage(meta));
-  //       setOrderStatusCount(data.countsByStatus);
-  //       dispatch(setProcessingDoneOrders(data.data));
-  //       dispatch(setSearch(false));
-  //       dispatch(setSearchQuery(""));
-  //       dispatch(setSearchedOrders([]));
-  //       dispatch(setIsLoading(false));
-  //     }
-  //   })();
-  // }, [filter, page, limit, iSOrderUpdate, dispatch]);
 
   return (
     <div className="flex flex-wrap items-center justify-start gap-5">

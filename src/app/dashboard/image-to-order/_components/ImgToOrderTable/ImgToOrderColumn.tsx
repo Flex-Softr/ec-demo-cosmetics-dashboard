@@ -4,7 +4,7 @@ import { TImageToOrderReq } from "@/redux/features/imageToOrder/imageToOrderInte
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import ContactStatus from "./ContactStatus/ContactStatus";
-import CreateOrder from "./CreateOrder/CreateNewOrder";
+import CreateOrder from "./CreateImgToOrder/CreateImgToOrder";
 import CustomerNotes from "./CustomerNotes/CustomerNotes";
 import Images from "./Images/Images";
 import ITOStatus from "./Status/ITOStatus";

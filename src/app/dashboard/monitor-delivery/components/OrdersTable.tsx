@@ -15,6 +15,8 @@ import {
 } from "@/redux/features/monitorDelivery/monitorDeliverySlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 // import { TOrders } from "@/types/order/order.interface";
+import OrderStatus from "@/components/OrderStatus";
+import { TOrders } from "@/types/order/order.interface";
 import formattedOrderData from "@/utilities/formattedOrderData";
 import {
   ColumnDef,
@@ -25,17 +27,17 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect } from "react";
-import { columns } from "./OrdersColumn";
-import { TOrders } from "@/types/order/order.interface";
-import OrderStatus from "@/components/OrderStatus";
 import MonitoringAndTracking from "./MonitoringAndTracking";
+import { columns } from "./OrdersColumn";
 // import ReasonNotes from "./ReasonNotes";
 // import { useCallback,useState ,useRef } from "react";
 
 export default function OrdersTable({
   editPermission,
+  permissions,
 }: {
   editPermission: boolean;
+  permissions: string[];
 }) {
   const dispatch = useAppDispatch();
 
@@ -56,12 +58,14 @@ export default function OrdersTable({
                   status == "cancelled" ? "" : status,
                   "returned",
                 ]}
+                permissions={permissions}
               />
             ) : (
               <OrderStatus
                 order={row.original}
                 deliveryStatus={status}
                 disableStatus={[status]}
+                permissions={permissions}
               />
             )}
           </>

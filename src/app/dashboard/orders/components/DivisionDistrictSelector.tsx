@@ -1,5 +1,9 @@
 "use client";
 
+import { Label } from "@/components/ui/label";
+import BdAddress from "@/lib/bdAddress";
+import { useGetShippingChargeQuery } from "@/redux/features/shippingCharge/shippingCharge";
+import { ShippingCharge } from "@/types/order/order.interface";
 import { useEffect } from "react";
 import {
   Control,
@@ -9,15 +13,20 @@ import {
   UseFormRegister,
   useWatch,
 } from "react-hook-form";
-import { useGetShippingChargeQuery } from "@/redux/features/shippingCharge/shippingCharge";
-import { ShippingCharge } from "@/types/order/order.interface";
-import { Label } from "@/components/ui/label";
-import BdAddress from "@/lib/bdAddress";
 
 type TProps<T extends FieldValues> = {
   register: UseFormRegister<T>;
   control: Control<T>;
-  setValue: (name: Path<T>, value: string) => void;
+  setValue: (
+    name: Path<T>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    value: any,
+    options?: Partial<{
+      shouldValidate: boolean;
+      shouldDirty: boolean;
+      shouldTouch: boolean;
+    }>
+  ) => void;
   shipping: T["shipping"] | undefined;
   shippingCharge: ShippingCharge | undefined;
   errors: FieldErrors<T>;
@@ -146,7 +155,9 @@ const DivisionDistrictUpazilaSelector = <T extends FieldValues>({
           <select
             value={selectedCharge}
             onChange={(e) =>
-              setValue("shippingCharge" as Path<T>, e.target.value)
+              setValue("shippingCharge" as Path<T>, e.target.value, {
+                shouldValidate: true,
+              })
             }
             className="w-full h-9 border border-primary outline-primary rounded-md"
           >

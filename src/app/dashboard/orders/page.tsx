@@ -42,7 +42,7 @@ const Orders = async () => {
           <Show />
         </div>
         {/*All orders table */}
-        <OrdersTable />
+        <OrdersTable permissions={permissions} />
       </div>
     </Card>
   );

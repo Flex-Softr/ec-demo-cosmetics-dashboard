@@ -8,9 +8,15 @@ type TProps = {
   order: TOrders;
   deliveryStatus?: string;
   disableStatus?: string[];
+  permissions: string[];
 };
 
-const OrderStatus = ({ order, deliveryStatus, disableStatus = [] }: TProps) => {
+const OrderStatus = ({
+  order,
+  deliveryStatus,
+  disableStatus = [],
+  permissions,
+}: TProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(!open);
@@ -28,7 +34,9 @@ const OrderStatus = ({ order, deliveryStatus, disableStatus = [] }: TProps) => {
       <button
         onClick={handleOpen}
         disabled={disableStatus.includes(status)}
-        className={`capitalize px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(status)}`}
+        className={`capitalize px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(
+          status
+        )}`}
         title={deliveryStatus ? deliveryStatus : ""}
       >
         {showStatus}
@@ -42,7 +50,9 @@ const OrderStatus = ({ order, deliveryStatus, disableStatus = [] }: TProps) => {
         <div>
           <span>Current status : </span>
           <span
-            className={`capitalize px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(status)}`}
+            className={`capitalize px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(
+              status
+            )}`}
           >
             {status}
           </span>
@@ -51,6 +61,7 @@ const OrderStatus = ({ order, deliveryStatus, disableStatus = [] }: TProps) => {
           status={status}
           _id={order._id}
           handleOpen={handleOpen}
+          permissions={permissions}
           // disableStatus={disableStatus}
         />
       </CommonModal>

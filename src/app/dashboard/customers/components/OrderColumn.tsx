@@ -1,15 +1,15 @@
-import { Checkbox } from "@/components/ui/checkbox";
-import { ColumnDef } from "@tanstack/react-table";
-import { TOrders } from "@/types/order/order.interface";
-import ProductCode from "./ProductCode";
+import AddNotes from "@/components/AddNotes";
 import CustomerInfo from "@/components/CustomerInfo";
+import OrderActionDropDown from "@/components/OrderActionDropDown";
 import OrderIdAndDate from "@/components/OrderIdAndDate";
 import OrderStatus from "@/components/OrderStatus";
-import AddNotes from "@/components/AddNotes";
-import OrderActionDropDown from "@/components/OrderActionDropDown";
 import ProductInfo from "@/components/ProductInfo";
+import { Checkbox } from "@/components/ui/checkbox";
+import { TOrders } from "@/types/order/order.interface";
+import { ColumnDef } from "@tanstack/react-table";
+import ProductCode from "./ProductCode";
 
-export const columns: ColumnDef<TOrders>[] = [
+export const getColumns = (permissions: string[]): ColumnDef<TOrders>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -100,6 +100,7 @@ export const columns: ColumnDef<TOrders>[] = [
           "returned",
           "canceled",
         ]}
+        permissions={permissions}
       />
     ),
   },

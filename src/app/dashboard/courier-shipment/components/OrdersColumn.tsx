@@ -3,13 +3,13 @@ import CustomerInfo from "@/components/CustomerInfo";
 import OrderActionDropDown from "@/components/OrderActionDropDown";
 import OrderIdAndDate from "@/components/OrderIdAndDate";
 import OrderStatus from "@/components/OrderStatus";
+import ProductInfo from "@/components/ProductInfo";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TOrders } from "@/types/order/order.interface";
 import { ColumnDef } from "@tanstack/react-table";
 import ProductCode from "../../processing-orders/components/ProductCode";
-import ProductInfo from "@/components/ProductInfo";
 
-export const columns: ColumnDef<TOrders>[] = [
+export const getColumns = (permissions: string[]): ColumnDef<TOrders>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -87,7 +87,11 @@ export const columns: ColumnDef<TOrders>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <OrderStatus order={row.original} disableStatus={["On courier"]} />
+      <OrderStatus
+        order={row.original}
+        disableStatus={["On courier"]}
+        permissions={permissions}
+      />
     ),
   },
   {

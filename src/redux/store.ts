@@ -19,7 +19,7 @@ import allProductReducer from "./features/allProducts/allProductsSlice";
 import authReducer from "./features/auth/authSlice";
 import couponSlice from "./features/coupon/couponSlice";
 import courierConfigurationReducer from "./features/courierConfiguration/courierConfigurationSlice";
-import courierManagementReducer from "./features/courierManagement/courierManagementSlice";
+import courierShipmentReducer from "./features/courierShipment/courierShipmentSlice";
 import customersSlice from "./features/customers/customersSlice";
 import imageSelectorReducer from "./features/imageSelector/imageSelectorSlice";
 import imageToOrderReqSlice from "./features/imageToOrder/imageToOrderSlice";
@@ -53,7 +53,7 @@ export const createStore = () => {
       imageSelector: imageSelectorReducer,
       orders: ordersReducer,
       processingOrders: processingOrdersReducer,
-      courierManagement: courierManagementReducer,
+      courierShipment: courierShipmentReducer,
       monitorDelivery: monitorDeliveryReducer,
       search: searchReducer,
       pagination: paginationReducer,

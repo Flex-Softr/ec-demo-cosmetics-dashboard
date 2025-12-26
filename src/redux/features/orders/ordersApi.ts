@@ -25,6 +25,12 @@ const updateStatusApi = baseApi.injectEndpoints({
       // },
       providesTags: ["allOrders"],
     }),
+    getSingleOrder: builder.query({
+      query: (id: string) => ({
+        url: `/orders/admin/order-id/${id}`,
+      }),
+      providesTags: (result, error, id) => [{ type: "singleOrder", id }],
+    }),
     updateOrder: builder.mutation({
       query: ({
         payload,
@@ -37,7 +43,8 @@ const updateStatusApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: payload,
       }),
-      invalidatesTags: [
+      invalidatesTags: (result, error, { _id }) => [
+        { type: "singleOrder", id: _id },
         "allOrders",
         "processingOrders",
         "processingDoneAndCourierOrders",
@@ -50,7 +57,8 @@ const updateStatusApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: payload,
       }),
-      invalidatesTags: [
+      invalidatesTags: (result, error, { orderIds }) => [
+        ...orderIds.map((id) => ({ type: "singleOrder", id }) as const),
         "allOrders",
         "processingOrders",
         "processingDoneAndCourierOrders",
@@ -63,7 +71,8 @@ const updateStatusApi = baseApi.injectEndpoints({
         method: "DELETE",
         body: { orderIds },
       }),
-      invalidatesTags: [
+      invalidatesTags: (result, error, orderIds) => [
+        ...orderIds.map((id) => ({ type: "singleOrder", id }) as const),
         "allOrders",
         "processingOrders",
         "processingDoneAndCourierOrders",
@@ -76,6 +85,7 @@ const updateStatusApi = baseApi.injectEndpoints({
 export const {
   useCreateOrderMutation,
   useGetAllOrdersQuery,
+  useGetSingleOrderQuery,
   useUpdateOrderMutation,
   useUpdateOrdersStatusMutation,
   useDeleteOrdersMutation,

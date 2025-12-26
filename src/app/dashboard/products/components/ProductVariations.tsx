@@ -17,10 +17,10 @@ const ProductVariations = ({ variations, type }: ProductVariationsProps) => {
       {variations.map((v, index) => (
         <div
           key={v._id || index}
-          className="text-sm min-h-[32px] py-2 flex items-center justify-start px-2"
+          className="text-sm min-h-[32px] py-2 flex items-center justify-center"
         >
           {type === "attributes" && (
-            <div className="flex flex-wrap gap-1 justify-start">
+            <div className="flex flex-wrap gap-1 justify-center">
               {Object.entries(v.attributes).map(([key, value]) => (
                 <span
                   key={key}
@@ -33,11 +33,11 @@ const ProductVariations = ({ variations, type }: ProductVariationsProps) => {
           )}
           {type === "sku" && <span>{v.inventory.sku}</span>}
           {type === "price" && (
-            <div className="flex gap-2 leading-tight items-center">
+            <div className="flex gap-2 leading-tight items-baseline py-[1px]">
               <span
                 className={
                   v.price.salePrice
-                    ? "line-through text-muted-foreground text-[10px]"
+                    ? "line-through text-muted-foreground text-xs text-red-600"
                     : ""
                 }
               >
@@ -50,8 +50,8 @@ const ProductVariations = ({ variations, type }: ProductVariationsProps) => {
             <span
               className={
                 v.inventory.stockStatus === "In stock"
-                  ? "text-green-500"
-                  : "text-red-500"
+                  ? "text-green-500 whitespace-nowrap"
+                  : "text-red-500 whitespace-nowrap"
               }
             >
               {v.inventory.stockStatus}

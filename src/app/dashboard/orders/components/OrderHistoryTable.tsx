@@ -20,28 +20,38 @@ import {
   // getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import FollowUpDate from "./FollowUpDate";
-import { columns } from "./OrdersColumn";
+import { getColumns } from "./OrdersColumn";
 
-export default function OrderHistoryTable() {
+export default function OrderHistoryTable({
+  permissions,
+}: {
+  permissions: string[];
+}) {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector(({ pagination }) => pagination);
 
   const status = useAppSelector(({ orders }) => orders.selectedStatus);
 
-  const newColumns: ColumnDef<TOrders>[] =
-    status === "follow up"
-      ? [
-          ...columns.slice(0, 8),
-          {
-            accessorKey: "followUpDate",
-            header: "Follow up",
-            cell: ({ row }) => <FollowUpDate order={row.original} />,
-          },
-          ...columns.slice(8),
-        ]
-      : [...columns];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const columns = useMemo(() => getColumns(permissions), [permissions]);
+
+  const newColumns: ColumnDef<TOrders>[] = useMemo(
+    () =>
+      status === "follow up"
+        ? [
+            ...columns.slice(0, 8),
+            {
+              accessorKey: "followUpDate",
+              header: "Follow up",
+              cell: ({ row }) => <FollowUpDate order={row.original} />,
+            },
+            ...columns.slice(8),
+          ]
+        : [...columns],
+    [status, columns]
+  );
 
   const orders = useAppSelector(({ orders, search }) =>
     search.search ? search.searchedOrders : orders.orders

@@ -19,7 +19,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect } from "react";
-import { columns } from "./Column";
+import { ProductColumns } from "./ProductColumn";
 
 export default function ProductsTable() {
   const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ export default function ProductsTable() {
   const search = useAppSelector(({ allProducts }) => allProducts.search);
   const table = useReactTable({
     data: products,
-    columns: columns,
+    columns: ProductColumns,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getRowCanExpand: (row) =>
@@ -58,7 +58,7 @@ export default function ProductsTable() {
               <TableRow key={headerGroup.id} className="hover:bg-muted/0">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="text-left px-2">
+                    <TableHead key={header.id} className="text-left px-4">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -92,7 +92,7 @@ export default function ProductsTable() {
                   {row.getIsExpanded() && (
                     <TableRow>
                       <TableCell
-                        colSpan={columns.length}
+                        colSpan={ProductColumns.length}
                         className="p-4 bg-muted/50"
                       >
                         {row.original.type === "variable" &&
@@ -163,7 +163,7 @@ export default function ProductsTable() {
             ) : isLoading ? (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={ProductColumns.length}
                   className="h-24 text-center"
                 >
                   <TableSkeleton />
@@ -172,7 +172,7 @@ export default function ProductsTable() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={ProductColumns.length}
                   className="h-24 text-center"
                 >
                   No products

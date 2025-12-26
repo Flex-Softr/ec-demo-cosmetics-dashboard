@@ -18,10 +18,14 @@ import {
   // getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect } from "react";
-import { columns } from "./OrderColumn";
+import { useEffect, useMemo } from "react";
+import { getColumns } from "./OrderColumn";
 
-export default function CustomerListOrdersTable() {
+export default function CustomerListOrdersTable({
+  permissions,
+}: {
+  permissions: string[];
+}) {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector(({ pagination }) => pagination);
 
@@ -31,6 +35,9 @@ export default function CustomerListOrdersTable() {
   const search = useAppSelector(({ search }) => {
     return search.search;
   });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const columns = useMemo(() => getColumns(permissions), [permissions]);
 
   const table = useReactTable({
     data: orders,

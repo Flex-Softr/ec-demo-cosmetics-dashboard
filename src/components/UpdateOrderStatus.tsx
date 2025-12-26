@@ -1,13 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierManagement/courierManagementApi";
+import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierShipment/courierShipmentApi";
 import { useCourierReturnedOrdersMutation } from "@/redux/features/monitorDelivery/monitorDeliveryApi";
 import { useUpdateOrdersStatusMutation } from "@/redux/features/orders/ordersApi";
 // import { setIsOrderUpdate } from "@/redux/features/orders/ordersSlice";
 import { useUpdateProcessingOrderStatusMutation } from "@/redux/features/processingOrders/processingOrdersApi";
 // import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { permission } from "@/types/order/order.interface";
 import { refetchData } from "@/utilities/fetchData";
+import isPermitted from "@/utilities/isPermitted";
 import statusOptions from "@/utilities/statusOptions";
 import { useState } from "react";
 
@@ -15,9 +17,15 @@ type TProps = {
   _id: string;
   status: string;
   handleOpen?: () => void;
+  permissions: string[];
 };
 
-const UpdateOrderStatus = ({ _id, status, handleOpen }: TProps) => {
+const UpdateOrderStatus = ({
+  _id,
+  status,
+  handleOpen,
+  permissions,
+}: TProps) => {
   // const dispatch = useAppDispatch();
   const [action, setAction] = useState("");
   const [updateOrdersStatus, { isLoading }] = useUpdateOrdersStatusMutation();
@@ -42,6 +50,16 @@ const UpdateOrderStatus = ({ _id, status, handleOpen }: TProps) => {
     "warranty added",
   ];
   const courierRoute = ["processing done", "cancelled"];
+
+  const hasPermission =
+    (ordersRoute.includes(status) &&
+      isPermitted(permissions, permission.manageOrder)) ||
+    (processingOrdersRoute.includes(status) &&
+      isPermitted(permissions, permission.manageProcessing)) ||
+    (courierRoute.includes(status) &&
+      isPermitted(permissions, permission.manageCourier));
+
+  if (!hasPermission) return null;
 
   const handleSubmit = async () => {
     // const orderData = {

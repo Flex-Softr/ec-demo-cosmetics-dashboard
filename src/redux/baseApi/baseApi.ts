@@ -49,6 +49,7 @@ const tags = [
   "singleProduct",
   "allCustomerProducts",
   "allOrders",
+  "singleOrder",
   "processingOrders",
   "processingDoneAndCourierOrders",
   "monitorDelivery",
