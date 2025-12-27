@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Plus, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Control,
   FieldErrors,
+  UseFormClearErrors,
   UseFormRegister,
   UseFormReset,
   UseFormSetValue,
@@ -15,16 +16,16 @@ import {
 } from "react-hook-form";
 
 import { useToast } from "@/components/ui/use-toast";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useUpdateOrderMutation } from "@/redux/features/orders/ordersApi";
 import { setIsOrderUpdate } from "@/redux/features/orders/ordersSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
-import AddProductToOrder from "./AddProductToOrder";
 import WarrantyCodes from "@/app/dashboard/monitor-delivery/components/WarrantyCodes";
+import AddProductToOrder from "./AddProductToOrder";
 
 import { TOrders } from "@/types/order/order.interface";
-import { TEditOrderFormInput } from "./EditOrder";
 import { refetchData } from "@/utilities/fetchData";
+import { TEditOrderFormInput } from "./EditOrder";
 
 type TEditOrderProps = {
   order: TOrders;
@@ -32,6 +33,7 @@ type TEditOrderProps = {
   control: Control<TEditOrderFormInput>;
   watch: UseFormWatch<TEditOrderFormInput>;
   setValue?: UseFormSetValue<TEditOrderFormInput>;
+  clearErrors?: UseFormClearErrors<TEditOrderFormInput>;
   reset?: UseFormReset<TEditOrderFormInput>;
   errors?: FieldErrors<TEditOrderFormInput>;
 };
@@ -42,6 +44,7 @@ const EditOrderTable = ({
   control,
   watch,
   setValue,
+  clearErrors,
   reset,
 }: TEditOrderProps) => {
   const dispatch = useAppDispatch();
@@ -240,6 +243,8 @@ const EditOrderTable = ({
               setAddProduct={setAddProduct}
               register={register}
               control={control}
+              setValue={setValue}
+              clearErrors={clearErrors}
               watch={watch}
               existingSubTotal={existingSubTotal}
             />

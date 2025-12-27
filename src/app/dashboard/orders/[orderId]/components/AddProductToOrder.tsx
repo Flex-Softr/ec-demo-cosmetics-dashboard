@@ -3,19 +3,21 @@
 import { Input } from "@/components/ui/input";
 import { Dispatch, SetStateAction, useState } from "react";
 
+import { useGetCustomerProductsQuery } from "@/redux/features/allProducts/allProductsApi";
+import { TOrders } from "@/types/order/order.interface";
+import { Trash2 } from "lucide-react";
 import {
   Control,
   FieldErrors,
   useFieldArray,
+  UseFormClearErrors,
   UseFormRegister,
   UseFormReset,
+  UseFormSetValue,
   UseFormWatch,
   useWatch,
 } from "react-hook-form";
 import VariationOptions from "../../components/VariationOptions";
-import { useGetCustomerProductsQuery } from "@/redux/features/allProducts/allProductsApi";
-import { Trash2 } from "lucide-react";
-import { TOrders } from "@/types/order/order.interface";
 import { TEditOrderFormInput } from "./EditOrder";
 
 type TProps = {
@@ -26,6 +28,8 @@ type TProps = {
   register: UseFormRegister<TEditOrderFormInput>;
   control: Control<TEditOrderFormInput>;
   watch: UseFormWatch<TEditOrderFormInput>;
+  setValue?: UseFormSetValue<TEditOrderFormInput>;
+  clearErrors?: UseFormClearErrors<TEditOrderFormInput>;
   reset?: UseFormReset<TEditOrderFormInput>;
   errors?: FieldErrors<TEditOrderFormInput>;
 };
@@ -43,6 +47,8 @@ const AddProductToOrder = (props: TProps) => {
     setAddProduct,
     register,
     control,
+    setValue,
+    clearErrors,
     existingSubTotal,
   } = props;
   // const [productsName, setProductsName] = useState<TProduct[]>([]);
@@ -138,6 +144,8 @@ const AddProductToOrder = (props: TProps) => {
                   index={index}
                   register={register}
                   control={control}
+                  setValue={setValue!}
+                  clearErrors={clearErrors!}
                   product="newProductId"
                   orderedProducts="productDetails"
                   variations={variations}

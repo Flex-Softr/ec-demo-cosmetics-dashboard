@@ -14,9 +14,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
+import DivisionDistrictSelector from "../../components/DivisionDistrictSelector";
 import EditOrderTable from "./EditOrderTable";
 import { dirtyValues } from "./utils";
-import DivisionDistrictSelector from "../../components/DivisionDistrictSelector";
 
 const schema = yup.object().shape({
   shipping: yup.object().shape({
@@ -83,6 +83,7 @@ const EditOrder = ({
     watch,
     reset,
     setValue,
+    clearErrors,
     formState: { dirtyFields },
   } = useForm({
     resolver: yupResolver(schema),
@@ -229,6 +230,7 @@ const EditOrder = ({
                 register={register}
                 watch={watch}
                 setValue={setValue}
+                clearErrors={clearErrors}
                 control={control}
                 reset={reset}
               />

@@ -2,9 +2,9 @@
 
 import { TCategories } from "@/app/dashboard/category/components/CategoryTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TProduct } from "@/redux/features/addProduct/interface";
 import { useGetAllProductsQuery } from "@/redux/features/allProducts/allProductsApi";
 import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
+import { IAdminProduct } from "@/types/products";
 import { Dispatch, SetStateAction } from "react";
 import Select, { MultiValue } from "react-select";
 
@@ -30,7 +30,7 @@ const CouponCategoryProductCondition = ({
   const { data: productRes } = useGetAllProductsQuery({ page: 1, limit: 1000 });
   const { data: categoryRes } = useGetCategoriesQuery({});
 
-  const product = (productRes?.data?.data as TProduct[]) || [];
+  const product = (productRes?.data?.data as IAdminProduct[]) || [];
 
   const productOptions = product.map((item) => ({
     value: item?._id || "",
