@@ -102,9 +102,7 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
 
   return (
     <>
-      <div
-        className={`bg-white shadow-lg rounded-lg max-w-full ${!phoneNumber && "p-4 mx-4 my-4"} `}
-      >
+      <div className={`max-w-full ${!phoneNumber && "p-4 mx-4 my-4"}`}>
         {/* Header Search Section */}
         {phoneNumber ? (
           <h1 className="text-xl font-bold text-center">Fraud Check</h1>

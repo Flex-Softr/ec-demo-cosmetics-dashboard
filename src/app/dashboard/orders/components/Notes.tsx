@@ -2,9 +2,9 @@
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { TFormInput } from "./CreateOrder";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { TOrders } from "@/types/order/order.interface";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { TFormInput } from "./OrderForm";
 
 type TProps = {
   order: TOrders | undefined;

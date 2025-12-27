@@ -1,4 +1,5 @@
 "use client";
+import { useGetAllProductsQuery } from "@/redux/features/allProducts/allProductsApi";
 import {
   setProducts,
   setSearch,
@@ -11,20 +12,19 @@ import {
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { useGetAllProductsQuery } from "@/redux/features/allProducts/allProductsApi";
 
 // import { Button } from "@/components/ui/button";
 // import queryHelper from "@/utilities/queryHelper";
 // import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
+import { useEffect, useState } from "react";
 
 type TCategory = {
   _id: string;
@@ -72,7 +72,9 @@ const Filter = ({ categories }: { categories: TCategory[] }) => {
     }
     if (data) {
       const { meta, data: products } = data;
-      dispatch(setTotalPage(meta));
+      if (meta) {
+        dispatch(setTotalPage(meta));
+      }
       dispatch(setProducts(products?.data));
       dispatch(setSearch(false));
       dispatch(setSearchQuery(""));

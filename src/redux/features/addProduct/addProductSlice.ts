@@ -1,3 +1,4 @@
+import { productStatus } from "@/const/products";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   TAttribute,
@@ -5,7 +6,6 @@ import {
   TOffer,
   TPrice,
   TProduct,
-  TPublishedStatus,
   TSeoData,
 } from "./interface";
 import { TSelectValue } from "./variation/interface";
@@ -13,8 +13,8 @@ import { TSelectValue } from "./variation/interface";
 const initialState: TProduct = {
   title: "",
   // permalink: "",
-  // slug: "",
-  // type: "simple",
+  slug: "",
+  type: "simple",
   description: "",
   shortDescription: "",
   additionalInfo: "",
@@ -74,11 +74,7 @@ const initialState: TProduct = {
     duration: { quantity: "", unit: "" },
     terms: "",
   },
-  publishedStatus: {
-    status: "Published",
-    visibility: "Public",
-    date: "",
-  },
+  publishedStatus: productStatus.published,
 };
 
 const productSlice = createSlice({
@@ -87,6 +83,9 @@ const productSlice = createSlice({
   reducers: {
     setTitle: (state, action: PayloadAction<string>) => {
       state.title = action.payload;
+    },
+    setSlug: (state, action: PayloadAction<string>) => {
+      state.slug = action.payload;
     },
     setDescription: (state, action: PayloadAction<string>) => {
       state.description = action.payload;
@@ -107,6 +106,9 @@ const productSlice = createSlice({
     //   state.image.gallery = [];
     //   state.image.gallery.push(...action.payload);
     // },
+    setProductType: (state, action: PayloadAction<"simple" | "variable">) => {
+      state.type = action.payload;
+    },
     setAttributes: (state, action: PayloadAction<TAttribute[]>) => {
       state.attributes = action.payload;
     },
@@ -152,8 +154,8 @@ const productSlice = createSlice({
     setSeoData: (state, action: PayloadAction<TSeoData>) => {
       state.seoData = { ...action.payload };
     },
-    setPublishedStatus: (state, action: PayloadAction<TPublishedStatus>) => {
-      state.publishedStatus = { ...action.payload };
+    setPublishedStatus: (state, action: PayloadAction<string>) => {
+      state.publishedStatus = action.payload;
     },
     setAdvanced: (state, action: PayloadAction<Record<string, unknown>>) => {
       const { featured, warranty, quantity, unit, terms } = action.payload;
@@ -180,6 +182,7 @@ const productSlice = createSlice({
         shortDescription,
         additionalInfo,
         usageGuidelines,
+        type,
         price,
         // image,
         inventory,
@@ -193,7 +196,9 @@ const productSlice = createSlice({
       state.shortDescription = shortDescription;
       state.additionalInfo = additionalInfo;
       state.usageGuidelines = usageGuidelines;
+      state.type = type || "simple";
       state.price = price;
+      state.slug = action.payload.slug; // Ensure slug is set when editing
       state.inventory = {
         ...inventory,
         preStockQuantity: inventory?.stockQuantity,
@@ -211,10 +216,12 @@ const productSlice = createSlice({
 
 export const {
   setTitle,
+  setSlug,
   setDescription,
   setShortDescription,
   setAdditionalInfo,
   setUsageGuidelines,
+  setProductType,
   // setThumbnail,
   // setGallery,
   setAttributes,

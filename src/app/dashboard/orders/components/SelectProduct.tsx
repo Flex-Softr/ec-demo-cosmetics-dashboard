@@ -1,32 +1,55 @@
 "use client";
-import { useGetCustomerProductsQuery } from "@/redux/features/allProducts/allProductsApi";
-import VariationOptions from "./VariationOptions";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TFormInput } from "./CreateOrder";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useGetCustomerProductsQuery } from "@/redux/features/allProducts/allProductsApi";
 import { Plus, Trash2 } from "lucide-react";
-import { useEffect, useRef } from "react";
-
+import { useEffect, useMemo, useRef } from "react";
 import {
   Control,
   FieldErrors,
   useFieldArray,
+  UseFormClearErrors,
   UseFormRegister,
+  UseFormSetValue,
+  useWatch,
 } from "react-hook-form";
+import { TFormInput } from "./OrderForm";
+import VariationOptions from "./VariationOptions";
 
 type TProps = {
   control: Control<TFormInput>;
   register: UseFormRegister<TFormInput>;
   errors: FieldErrors<TFormInput>;
+  setValue: UseFormSetValue<TFormInput>;
+  clearErrors: UseFormClearErrors<TFormInput>;
 };
 
-const SelectProduct = ({ control, register, errors }: TProps) => {
+const SelectProduct = ({
+  control,
+  register,
+  errors,
+  setValue,
+  clearErrors,
+}: TProps) => {
   const { data, isLoading } = useGetCustomerProductsQuery({
     page: 1,
     limit: 1000,
   });
 
   const { fields, append, remove } = useFieldArray({
+    control,
+    name: "orderedProducts",
+  });
+
+  const watchedOrderedProducts = useWatch({
     control,
     name: "orderedProducts",
   });
@@ -42,22 +65,29 @@ const SelectProduct = ({ control, register, errors }: TProps) => {
   }, [append, fields.length]);
 
   return (
-    <div className="flex gap-5">
-      <div className="space-y-5 w-full">
-        {fields.map((field, index) => {
-          return (
-            <div key={field.id} className="space-y-2">
-              <div className="grid grid-cols-4 gap-5">
-                <div className="flex flex-col col-span-3 gap-2">
-                  <Label htmlFor={`product-${index}`}>
-                    Product name <span className="text-red-600">*</span>
-                  </Label>
+    <div className="space-y-4">
+      <Table>
+        <TableHeader>
+          <TableRow className="border-t">
+            <TableHead className="w-[50%]">Product Name</TableHead>
+            <TableHead className="w-[10%] text-center">Quantity</TableHead>
+            <TableHead className="w-[15%] text-center">Unit Price</TableHead>
+            <TableHead className="w-[15%] text-center">Amount</TableHead>
+            <TableHead className="w-[10%] text-center">Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {fields.map((field, index) => (
+            <TableRow key={field.id}>
+              <TableCell className="align-middle py-4">
+                <div className="space-y-2">
                   <select
                     {...register(`orderedProducts.${index}.product`)}
+                    value={watchedOrderedProducts?.[index]?.product || ""}
                     id={`product-${index}`}
-                    className="w-full h-9 border border-primary outline-primary rounded-md"
+                    className="w-full h-10 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 rounded-md"
                   >
-                    <option value="">-- Select Product --</option>
+                    <option value="">Select Product...</option>
                     {!isLoading &&
                       Array.isArray(data?.data) &&
                       data.data.map(
@@ -68,62 +98,187 @@ const SelectProduct = ({ control, register, errors }: TProps) => {
                         )
                       )}
                   </select>
+                  <VariationOptions<TFormInput>
+                    index={index}
+                    control={control}
+                    register={register}
+                    setValue={setValue}
+                    clearErrors={clearErrors}
+                    product="product"
+                    orderedProducts="orderedProducts"
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    initialAttributes={(field as any).attributes}
+                  />
                   {errors.orderedProducts?.[index]?.product && (
-                    <p className="text-red-600">
+                    <p className="text-red-500 text-xs mt-1">
                       {errors.orderedProducts[index]?.product?.message}
                     </p>
                   )}
                 </div>
+              </TableCell>
+              <TableCell className="align-middle text-center py-4">
+                <UnitPriceDisplay
+                  control={control}
+                  index={index}
+                  products={data?.data}
+                />
+              </TableCell>
+              <TableCell className="align-middle py-4">
+                <Input
+                  type="number"
+                  min={1}
+                  {...register(`orderedProducts.${index}.quantity`)}
+                  placeholder="1"
+                  className="w-full h-10 text-center border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 rounded-md"
+                />
+                {errors.orderedProducts?.[index]?.quantity && (
+                  <p className="text-red-500 text-xs mt-1 text-center">
+                    {errors.orderedProducts[index]?.quantity?.message}
+                  </p>
+                )}
+              </TableCell>
 
-                <div className="flex flex-col gap-2 col-span-1">
-                  <Label htmlFor={`quantity-${index}`}>
-                    Product Quantity <span className="text-red-600">*</span>
-                  </Label>
-                  <Input
-                    type="number"
-                    min={1}
-                    defaultValue={1}
-                    {...register(`orderedProducts.${index}.quantity`)}
-                    id={`quantity-${index}`}
-                    placeholder="Enter quantity"
-                    className="w-full"
-                  />
-                  {errors.orderedProducts?.[index]?.quantity && (
-                    <p className="text-red-600">
-                      {errors.orderedProducts[index]?.quantity?.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <VariationOptions<TFormInput>
-                index={index}
-                control={control}
-                register={register}
-                product="product"
-                orderedProducts="orderedProducts"
-              />
-            </div>
-          );
-        })}
-      </div>
+              <TableCell className="align-middle text-center py-4">
+                <AmountDisplay
+                  control={control}
+                  index={index}
+                  products={data?.data}
+                />
+              </TableCell>
 
-      <div className="flex items-end gap-4 min-w-[188px]">
-        <div
+              <TableCell className="align-middle text-center py-4">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => remove(index)}
+                  className="text-red-500 hover:text-red-700 hover:bg-red-50 h-10 w-10"
+                  disabled={fields.length === 1}
+                >
+                  <Trash2 className="h-5 w-5" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <div className="flex justify-start">
+        <Button
+          type="button"
           onClick={() => append({ product: "", quantity: 1, variation: "" })}
-          className="w-[140px] flex items-center gap-1 rounded-full text-sm font-medium transition-colors bg-primary hover:bg-secondary text-white shadow cursor-pointer h-9 px-2 py-2"
+          className="rounded-full text-sm font-medium"
+          size="sm"
         >
-          <Plus /> <span>Add Product</span>
-        </div>
-
-        {fields.length > 1 && (
-          <span
-            onClick={() => remove(fields.length - 1)}
-            className="text-red-600 text-sm bg-white hover:bg-slate-100 p-1 mb-1 cursor-pointer"
-          >
-            <Trash2 />
-          </span>
-        )}
+          <Plus className="h-4 w-4 mr-2" /> Add More Product
+        </Button>
       </div>
+    </div>
+  );
+};
+
+type Product = {
+  _id: string;
+  title: string;
+  price: number;
+  salePrice?: number;
+  variations?: {
+    _id: string;
+    price?: {
+      regularPrice: number;
+      salePrice?: number;
+    };
+  }[];
+};
+
+const UnitPriceDisplay = ({
+  control,
+  index,
+  products,
+}: {
+  control: Control<TFormInput>;
+  index: number;
+  products: Product[] | undefined;
+}) => {
+  const productId = useWatch({
+    control,
+    name: `orderedProducts.${index}.product` as "orderedProducts.0.product",
+  });
+  const variationId = useWatch({
+    control,
+    name: `orderedProducts.${index}.variation` as "orderedProducts.0.variation",
+  });
+
+  const price = useMemo(() => {
+    if (!products || !productId) return 0;
+    const product = products.find((p) => p._id === productId);
+    if (!product) return 0;
+
+    let unitPrice = product.salePrice || product.price || 0;
+    if (variationId && product.variations) {
+      const variation = product.variations.find((v) => v._id === variationId);
+      if (variation && variation.price) {
+        unitPrice =
+          variation.price.salePrice ||
+          variation.price.regularPrice ||
+          unitPrice;
+      }
+    }
+    return unitPrice;
+  }, [productId, variationId, products]);
+
+  return (
+    <div className="h-10 flex items-center justify-center px-3 text-gray-700 font-medium whitespace-nowrap">
+      ৳ {price.toFixed(2)}
+    </div>
+  );
+};
+
+const AmountDisplay = ({
+  control,
+  index,
+  products,
+}: {
+  control: Control<TFormInput>;
+  index: number;
+  products: Product[] | undefined;
+}) => {
+  const quantity =
+    useWatch({
+      control,
+      name: `orderedProducts.${index}.quantity` as "orderedProducts.0.quantity",
+    }) || 0;
+
+  const productId = useWatch({
+    control,
+    name: `orderedProducts.${index}.product` as "orderedProducts.0.product",
+  });
+  const variationId = useWatch({
+    control,
+    name: `orderedProducts.${index}.variation` as "orderedProducts.0.variation",
+  });
+
+  const price = useMemo(() => {
+    if (!products || !productId) return 0;
+    const product = products.find((p) => p._id === productId);
+    if (!product) return 0;
+
+    let unitPrice = product.salePrice || product.price || 0;
+    if (variationId && product.variations) {
+      const variation = product.variations.find((v) => v._id === variationId);
+      if (variation && variation.price) {
+        unitPrice =
+          variation.price.salePrice ||
+          variation.price.regularPrice ||
+          unitPrice;
+      }
+    }
+    return unitPrice;
+  }, [productId, variationId, products]);
+
+  return (
+    <div className="h-10 flex items-center justify-center px-3 font-semibold whitespace-nowrap">
+      ৳ {(price * Number(quantity)).toFixed(2)}
     </div>
   );
 };

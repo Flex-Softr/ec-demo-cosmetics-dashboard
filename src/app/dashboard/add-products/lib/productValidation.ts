@@ -1,3 +1,4 @@
+import { productStatus } from "@/const/products";
 import * as Yup from "yup";
 
 const PriceValidationSchema = Yup.object().shape({
@@ -58,18 +59,24 @@ const InventoryValidationSchema = Yup.object().shape({
 });
 
 const AttributeSchema = Yup.object().shape({
-  name: Yup.string().optional(),
-  values: Yup.string().when("name", {
-    is: true,
-    then: () => Yup.array().min(1, "Attribute value is required").required(),
-    otherwise: () => Yup.array().notRequired(),
-  }),
+  name: Yup.string().required("Attribute name is required"),
+  values: Yup.array()
+    .of(Yup.string())
+    .min(1, "At least one value is required")
+    .required(),
 });
 
 const VariationSchema = Yup.object().shape({
-  attributes: Yup.object().required("Attributes are required"),
+  attributes: Yup.object()
+    .test(
+      "is-not-empty",
+      "Attributes are required",
+      (value) => value && Object.keys(value).length > 0
+    )
+    .required("Attributes are required"),
   price: PriceValidationSchema.required(),
   inventory: InventoryValidationSchema.required(),
+  image: Yup.string().optional(), // Is optional in modification but required in payload. Letting it be optional for now to avoid breaking if image missing in state? No, payload says required.
 });
 
 const CategorySchema = Yup.object().shape({
@@ -87,20 +94,34 @@ const WarrantyInfoSchema = Yup.object().shape({
   terms: Yup.string().optional(),
 });
 
-const PublishedStatusSchema = Yup.object().shape({
-  status: Yup.string().required("Status is required"),
-  visibility: Yup.string().required("Visibility is required"),
-  // date: Yup.string().required("Published date is required!"),
-});
+const PublishedStatusSchema = Yup.string()
+  .oneOf(Object.values(productStatus), "Invalid status")
+  .required("Status is required");
 
 const ProductSchema = Yup.object().shape({
   title: Yup.string().trim().required("Title is required"),
   description: Yup.string().trim().optional(),
+  type: Yup.string().optional(),
   image: ImageValidationSchema.required(),
-  price: PriceValidationSchema.required(),
-  inventory: InventoryValidationSchema.required(),
+  price: Yup.object().when("type", {
+    is: "variable",
+    then: () => Yup.object().optional(),
+    otherwise: () => PriceValidationSchema.required(),
+  }),
+  inventory: Yup.object().when("type", {
+    is: "variable",
+    then: () => Yup.object().optional(),
+    otherwise: () => InventoryValidationSchema.required(),
+  }),
   attributes: Yup.array().of(AttributeSchema).optional(),
-  variations: Yup.array().of(VariationSchema).optional(),
+  variations: Yup.array().when("type", {
+    is: "variable",
+    then: () =>
+      Yup.array()
+        .of(VariationSchema)
+        .required("Variations are required for variable products"),
+    otherwise: () => Yup.array().of(VariationSchema).optional(),
+  }),
   brand: Yup.string().optional(),
   category: CategorySchema.required(),
   featured: Yup.boolean().optional(),

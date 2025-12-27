@@ -4,6 +4,7 @@ import { OrderStatusToggle } from "./components/OrderStatusToggle";
 import OrderStatusMessage from "./components/OrderStatusMessage";
 import MultiSelectStatus from "./components/MultiSelectStatus";
 import fetchData from "@/utilities/fetchData";
+import { Card } from "@/components/ui/card";
 
 export default async function SMS() {
   const response = await fetchData({
@@ -14,7 +15,7 @@ export default async function SMS() {
   const data = await response.data;
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 mb-16">
       {/* Top Stats Section */}
       {/* <div className="grid grid-cols-4 gap-6">
         <StatCard label="Total SMS Sent" value={1834} color="purple" />
@@ -66,7 +67,7 @@ export default async function SMS() {
       </div> */}
 
       {/* Order Status Configuration Section */}
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-3 gap-6 m-4">
         {/* Toggle Switch Panel */}
         <OrderStatusToggle data={data} />
 
@@ -76,7 +77,9 @@ export default async function SMS() {
         </div>
       </div>
       {/* MultiSelect Component and Message editor*/}
-      <MultiSelectStatus />
+      <Card className="m-4">
+        <MultiSelectStatus />
+      </Card>
     </div>
   );
 }

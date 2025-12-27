@@ -9,8 +9,8 @@ import CreateOrder from "./components/CreateOrder";
 import OrderDateRange from "./components/OrderDateRange";
 import OrdersTable from "./components/OrderHistoryTable";
 import OrdersStatusButtons from "./components/OrdersStatusButtons";
-const Orders = () => {
-  const { permissions = [] } = getPermission();
+const Orders = async () => {
+  const { permissions = [] } = await getPermission();
 
   const manageOrder =
     permissions &&
@@ -22,7 +22,7 @@ const Orders = () => {
   }
 
   return (
-    <Card className="px-4 pt-4 rounded-md m-4">
+    <Card className="m-4">
       {/* header section, search bar  */}
       <div className="grid grid-cols-2 justify-between items-center">
         <h1 className="text-2xl font-bold">All Orders</h1>
@@ -42,7 +42,7 @@ const Orders = () => {
           <Show />
         </div>
         {/*All orders table */}
-        <OrdersTable />
+        <OrdersTable permissions={permissions} />
       </div>
     </Card>
   );

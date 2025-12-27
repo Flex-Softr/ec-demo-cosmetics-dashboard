@@ -42,9 +42,14 @@ const paginationSlice = createSlice({
       state.limit = action.payload;
     },
     setTotalPage: (state, action) => {
-      const { totalPage, total } = action.payload;
-      state.totalPage = totalPage;
-      state.total = total;
+      const payload = action.payload || {};
+      const { totalPage, total } = payload;
+      if (total !== undefined) state.total = total;
+      if (totalPage !== undefined) {
+        state.totalPage = totalPage;
+      } else if (total !== undefined) {
+        state.totalPage = Math.ceil(total / state.limit);
+      }
     },
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;

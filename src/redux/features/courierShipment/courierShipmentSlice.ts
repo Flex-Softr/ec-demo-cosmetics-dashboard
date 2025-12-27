@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { TProcessingOrdersInitialState } from "./courierManagementInterface";
+import { TProcessingOrdersInitialState } from "./courierShipmentInterface";
 
 const initialState: TProcessingOrdersInitialState = {
   processingDoneOrders: [],

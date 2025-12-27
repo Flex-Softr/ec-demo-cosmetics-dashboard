@@ -5,7 +5,7 @@ import { setPrice } from "@/redux/features/addProduct/addProductSlice";
 import { setVariationPrice } from "@/redux/features/addProduct/variation/variationSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 
@@ -59,6 +59,12 @@ const Price = ({ isVariation, index }: TProps) => {
   const [discount, setDiscountPercent] = useState<any>(discountPercent);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [sale, setSalePrice] = useState<any>(salePrice);
+
+  useEffect(() => {
+    setRegularPrice(regularPrice);
+    setDiscountPercent(discountPercent);
+    setSalePrice(salePrice);
+  }, [regularPrice, discountPercent, salePrice]);
 
   const handleRegularPriceChange = (e: { target: { value: string } }) => {
     const price = parseFloat(e.target.value);
@@ -193,7 +199,7 @@ const Price = ({ isVariation, index }: TProps) => {
       )}
       <div className="flex items-center gap-3 mt-3">
         <Label className="w-40" htmlFor="discount">
-          Discount
+          Discount %
         </Label>
         <Input
           type="number"

@@ -105,7 +105,7 @@ const AddBrandForm = () => {
             <Button type="submit">Add Brand</Button>
             <Button
               type="reset"
-              className="bg-transparent border border-red-100 hover:bg-red-500 hover:text-white"
+              className="bg-red-500 hover:bg-red-600 hover:text-white"
               onClick={() => handleReset()}
             >
               Reset

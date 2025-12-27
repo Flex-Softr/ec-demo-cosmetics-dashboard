@@ -5,22 +5,22 @@ import {
   setSelectedStatus,
 } from "@/redux/features/orders/ordersSlice";
 import {
-  setSearch,
-  setSearchQuery,
-  setSearchedOrders,
-} from "@/redux/features/search/searchSlice";
-import {
   setIsLoading,
   setLimit,
   setPage,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
+import {
+  setSearch,
+  setSearchQuery,
+  setSearchedOrders,
+} from "@/redux/features/search/searchSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import backgroundColor from "@/utilities/backgroundColor";
 import borderColor from "@/utilities/borderColor";
 // import fetchData from "@/utilities/fetchData";
-import { useEffect, useState } from "react";
 import { useGetAllOrdersQuery } from "@/redux/features/orders/ordersApi";
+import { useEffect, useState } from "react";
 // import DateRangeSelector from "@/components/DateRangeSelector";
 
 const OrdersStatusButtons = () => {

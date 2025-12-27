@@ -80,7 +80,7 @@ export default function SmsContentEditor({
   };
 
   return (
-    <div className="p-6 bg-white rounded-xl shadow-sm border">
+    <div className="mt-4">
       <label className="block font-semibold text-slate-800">
         Enter SMS Content
       </label>

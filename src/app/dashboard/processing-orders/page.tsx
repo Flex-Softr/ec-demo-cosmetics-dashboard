@@ -9,8 +9,8 @@ import ProcessingOrderDateRange from "./components/ProcessingOrderDateRange";
 import ProcessingOrdersStatusButtons from "./components/processingOrdersStatusButtons";
 import ProcessingOrdersTable from "./components/ProcessingOrdersTable";
 
-const Orders = () => {
-  const { permissions = [] } = getPermission();
+const Orders = async () => {
+  const { permissions = [] } = await getPermission();
 
   const manageProcessing =
     permissions &&
@@ -22,7 +22,7 @@ const Orders = () => {
   }
 
   return (
-    <Card className="bg-white px-4 pt-4 rounded-md m-4">
+    <Card className="m-4">
       {/* header section , search bar  */}
       <div className="grid grid-cols-2 justify-between items-center">
         <h1 className="text-2xl font-bold">Processing orders</h1>
@@ -39,7 +39,7 @@ const Orders = () => {
           <Show />
         </div>
         {/* Processing orders table */}
-        <ProcessingOrdersTable />
+        <ProcessingOrdersTable permissions={permissions} />
       </div>
     </Card>
   );

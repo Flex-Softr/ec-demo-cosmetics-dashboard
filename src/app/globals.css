@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 17% 98%;
     --foreground: 240 10% 3.9%;
 
     --card: 0 0% 100%;
@@ -67,7 +67,6 @@
     --chart-5: 340 75% 55%;
   }
 }
-
 
 @layer utilities {
   .min-h-screen {
@@ -136,5 +135,5 @@
 
 /* Override date time picker style*/
 .react-datetime-picker__wrapper {
-  @apply p-1 rounded-md !border-gray-300 shadow-sm
+  @apply p-1 rounded-md !border-gray-300 shadow-sm;
 }

@@ -30,7 +30,7 @@ const OrderStatusChangeCount = () => {
   };
   return (
     <div>
-      <Card className="p-4 shadow-none rounded-xl space-y-5">
+      <Card className="space-y-5">
         <h2 className="text-xl font-bold">Order status change count</h2>
         <hr className="!mt-2" />
         <div className="flex justify-end">

@@ -6,13 +6,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { TOrders } from "@/types/order/order.interface";
-import Link from "next/link";
-import EditOrder from "@/app/dashboard/orders/[orderId]/components/EditOrder";
 import { useAppSelector } from "@/redux/hooks";
-import CreateOrder from "@/app/dashboard/orders/components/CreateOrder";
-import { Eye } from "lucide-react";
+import { TOrders } from "@/types/order/order.interface";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { Eye, Pencil } from "lucide-react";
+import Link from "next/link";
 
 const OrderActionDropDown = ({ order }: { order: TOrders }) => {
   const editPermission = useAppSelector(
@@ -57,29 +55,17 @@ const OrderActionDropDown = ({ order }: { order: TOrders }) => {
               </Link>
             </DropdownMenuItem>
             {isEdit && (
-              <div className="hover:bg-gray-100">
-                <EditOrder
-                  text="Edit"
-                  order={{ ...order }}
-                  className="bg-white hover:bg-gray-100 text-green-500 hover:text-green-700 my-0 mx-2 px-0 py-0 p-0 text-sm flex items-center gap-1 shadow-none"
-                  iconClassName="w-4 h-4"
-                />
-              </div>
+              <DropdownMenuItem>
+                <Link
+                  href={`/dashboard/orders/${order._id}/edit`}
+                  title="Edit"
+                  className="text-green-500 hover:text-green-700 flex items-center gap-1"
+                >
+                  <Pencil className="w-4 h-4" />
+                  <span>Edit</span>
+                </Link>
+              </DropdownMenuItem>
             )}
-
-            {order.status !== "pending" &&
-              order.status !== "confirmed" &&
-              order.status !== "processing" &&
-              order.status !== "follow up" && (
-                <div className="hover:bg-gray-100">
-                  <CreateOrder
-                    text="Create"
-                    order={{ ...order }}
-                    className="bg-white hover:bg-gray-100 text-green-500 hover:text-green-700 my-0 mx-2 px-0 py-0 p-0 text-sm flex items-center gap-1 shadow-none"
-                    iconClassName="w-4 h-4 font-bold"
-                  />
-                </div>
-              )}
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>

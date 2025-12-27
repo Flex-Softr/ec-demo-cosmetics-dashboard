@@ -97,15 +97,14 @@ const UserMenu = ({ user }: { user: TUserProfile }) => {
           <DropdownMenuGroup>
             {listItems.map((item, index) => (
               <Link key={index} href={item.href}>
-                <DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
                   {item.icon}
                   <span>{item.name}</span>
                 </DropdownMenuItem>
               </Link>
             ))}
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}>
+          <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log out</span>
           </DropdownMenuItem>

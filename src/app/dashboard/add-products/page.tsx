@@ -14,7 +14,6 @@ import Link from "next/link";
 import Brand from "./components/Brand";
 import ShortDescription from "./components/ShortDescription";
 import AdditionalInfo from "./components/AdditionalInfo";
-import UsageGuidelines from "./components/UsageGuidelines";
 // import getBrands from "./lib/getBrands";
 
 const AddProducts = async ({ productId }: { productId: string }) => {
@@ -30,7 +29,7 @@ const AddProducts = async ({ productId }: { productId: string }) => {
 
   return (
     <div className="mb-10">
-      <Card className="flex gap-3 justify-between items-center bg-white rounded-md p-4 m-3">
+      <Card className="flex gap-3 justify-between items-center m-4">
         <h1 className="text-2xl font-bold">
           {productId ? "Edit Product" : "Add Product"}
         </h1>
@@ -40,7 +39,7 @@ const AddProducts = async ({ productId }: { productId: string }) => {
       </Card>
 
       {/* product data section started */}
-      <div className="flex justify-between items-start gap-4 w-full px-3">
+      <div className="flex justify-between items-start gap-4 w-full px-4">
         <div className="w-[65%] space-y-3">
           {/* products title */}
           <Title />
@@ -51,7 +50,6 @@ const AddProducts = async ({ productId }: { productId: string }) => {
           {/* product data */}
           <ProductData attributes={attributes} productId={productId} />
           <AdditionalInfo />
-          <UsageGuidelines />
           {/* <SeoData /> */}
         </div>
         {/* right Sidebar of add products */}

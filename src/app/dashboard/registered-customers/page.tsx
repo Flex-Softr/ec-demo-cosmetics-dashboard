@@ -8,8 +8,8 @@ import RegisteredCustomerData from "./_components/RegisteredCustomerData";
 import RegisteredCustomerTable from "./_components/allRegisteredCustomer/RegisteredCustomerTable";
 import SearchRegisteredUser from "./_components/allRegisteredCustomer/SearchRegisteredUser";
 
-const page = () => {
-  const { permissions = [] } = getPermission();
+const page = async () => {
+  const { permissions = [] } = await getPermission();
 
   const manageAdminOrStaff = isPermitted(
     permissions,
@@ -22,7 +22,7 @@ const page = () => {
   return (
     <>
       <RegisteredCustomerData />
-      <Card className="p-4 shadow-none rounded-xl m-3">
+      <Card className="m-4">
         <h2 className="text-2xl font-bold">Registered customers</h2>
         <hr className="my-4" />
         <div className="flex justify-end">

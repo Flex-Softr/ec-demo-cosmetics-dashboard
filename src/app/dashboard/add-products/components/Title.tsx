@@ -3,19 +3,23 @@ import SectionContentWrapper from "@/components/section-content-wrapper/SectionC
 import { Input } from "@/components/ui/input";
 import {
   resetProduct,
+  setSlug,
   setTitle,
 } from "@/redux/features/addProduct/addProductSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   setDefaultSelectedAttributeValue,
   setDefaultVariation,
   setGeneratedVariations,
   setSelectedAttribute,
 } from "@/redux/features/addProduct/variation/variationSlice";
-import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useEffect, useState } from "react";
 
 const Title = () => {
   const dispatch = useAppDispatch();
+  const slug = useAppSelector(({ addProduct }) => addProduct.slug);
+  const title = useAppSelector(({ addProduct }) => addProduct.title);
+  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
 
   useEffect(() => {
     dispatch(resetProduct());
@@ -25,19 +29,46 @@ const Title = () => {
     dispatch(setSelectedAttribute([]));
   }, [dispatch]);
 
-  const title = useAppSelector(({ addProduct }) => addProduct.title);
+  const generateSlug = (text: string) => {
+    return text
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)+/g, "");
+  };
 
   const handleTitleChange = (e: { target: { value: string } }) => {
-    dispatch(setTitle(e.target.value));
+    const newTitle = e.target.value;
+    dispatch(setTitle(newTitle));
+    if (!isSlugManuallyEdited) {
+      dispatch(setSlug(generateSlug(newTitle)));
+    }
+  };
+
+  const handleSlugChange = (e: { target: { value: string } }) => {
+    dispatch(setSlug(e.target.value));
+    setIsSlugManuallyEdited(true);
   };
 
   return (
-    <SectionContentWrapper heading={"Product Title"}>
-      <Input
-        placeholder="Product Title"
-        value={title}
-        onChange={handleTitleChange}
-      />
+    <SectionContentWrapper heading={"Product Title and Slug"}>
+      <div className="flex flex-col gap-4">
+        <div>
+          <label className="text-sm font-medium mb-1 block">Title</label>
+          <Input
+            placeholder="Product Title"
+            value={title}
+            onChange={handleTitleChange}
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium mb-1 block">Slug</label>
+          <Input
+            placeholder="product-slug"
+            value={slug}
+            onChange={handleSlugChange}
+          />
+        </div>
+      </div>
     </SectionContentWrapper>
   );
 };

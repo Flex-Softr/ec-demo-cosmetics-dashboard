@@ -1,0 +1,107 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useGetCustomerProductsQuery } from "@/redux/features/allProducts/allProductsApi";
+import { useGetShippingChargeQuery } from "@/redux/features/shippingCharge/shippingCharge";
+import { useMemo } from "react";
+import { Control, useWatch } from "react-hook-form";
+import { TFormInput } from "../components/OrderForm";
+
+export const useOrderCalculation = (control: Control<TFormInput>) => {
+  const { data: productsData } = useGetCustomerProductsQuery({ limit: 1000 });
+  const { data: shippingData } = useGetShippingChargeQuery({});
+
+  const orderedProducts = useWatch({
+    control,
+    name: "orderedProducts",
+  });
+
+  const selectedShippingChargeId = useWatch({
+    control,
+    name: "shippingCharge",
+  });
+
+  const discount =
+    useWatch({
+      control,
+      name: "discount",
+    }) || 0;
+
+  const advance =
+    useWatch({
+      control,
+      name: "advance",
+    }) || 0;
+
+  const calculation = useMemo(() => {
+    if (!productsData?.data)
+      return {
+        subtotal: 0,
+        shippingCost: 0,
+        discount,
+        advance,
+        total: 0,
+        orderedProducts: [],
+      };
+
+    let subtotal = 0;
+    const orderedProductsDetails = (orderedProducts || []).map((item: any) => {
+      const product = productsData.data.find(
+        (p: any) => p._id === item.product
+      );
+      if (!product) return { ...item, unitPrice: 0, total: 0 };
+
+      let unitPrice = product.salePrice || product.price || 0;
+
+      // If variation is selected, try to find its price
+      // Note: This assumes variations are loaded. In a real scenario,
+      // we might need to fetch the specific product for variations if not in the bulk list.
+      if (item.variation && product.variations) {
+        const variation = product.variations.find(
+          (v: any) => v._id === item.variation
+        );
+        if (variation && variation.price) {
+          unitPrice =
+            variation.price.salePrice ||
+            variation.price.regularPrice ||
+            unitPrice;
+        }
+      }
+
+      const total = unitPrice * (item.quantity || 0);
+      subtotal += total;
+
+      return {
+        ...item,
+        title: product.title,
+        type: product.type,
+        unitPrice,
+        total,
+      };
+    });
+
+    const shippingCharge = shippingData?.data?.find(
+      (s: any) => s._id === selectedShippingChargeId
+    );
+    const shippingCost = shippingCharge?.amount || 0;
+
+    const total =
+      subtotal + Number(shippingCost) - Number(discount) - Number(advance);
+
+    return {
+      subtotal,
+      shippingCost,
+      discount,
+      advance,
+      total,
+      orderedProducts: orderedProductsDetails,
+    };
+  }, [
+    productsData,
+    shippingData,
+    orderedProducts,
+    selectedShippingChargeId,
+    discount,
+    advance,
+  ]);
+
+  return calculation;
+};

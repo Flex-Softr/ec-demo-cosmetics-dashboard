@@ -69,18 +69,12 @@ export type TWarrantyInfo = {
   terms: string;
 };
 
-export type TPublishedStatus = {
-  status: string;
-  visibility: string;
-  date: string;
-};
-
 export type TProduct = {
   _id?: string;
   title: string;
   permalink?: string;
   slug?: string;
-  type?: string;
+  type?: "simple" | "variable";
   description: string;
   shortDescription: string;
   additionalInfo: string;
@@ -100,5 +94,5 @@ export type TProduct = {
   review?: boolean;
   warranty: boolean;
   warrantyInfo: TWarrantyInfo;
-  publishedStatus: TPublishedStatus;
+  publishedStatus: string;
 };

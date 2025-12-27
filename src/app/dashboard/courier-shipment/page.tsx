@@ -9,8 +9,8 @@ import ProcessingOrderDateRange from "./components/CourierDateRange";
 import OrdersTable from "./components/OrdersTable";
 import StatusButtons from "./components/StatusButtons";
 
-const Orders = () => {
-  const { permissions = [] } = getPermission();
+const Orders = async () => {
+  const { permissions = [] } = await getPermission();
 
   const manageCourier =
     permissions &&
@@ -22,10 +22,10 @@ const Orders = () => {
   }
 
   return (
-    <Card className="bg-white px-4 pt-4 rounded-md m-4">
+    <Card className="m-4">
       {/* header section , button , search bar  */}
       <div className="grid grid-cols-2 justify-between items-center">
-        <h1 className="text-2xl font-bold">Courier Management</h1>
+        <h1 className="text-2xl font-bold">Courier Shipment</h1>
         <OrderSearchBar endPoint="/orders/admin/processing-done-on-courier-orders" />
       </div>
       <hr className="my-4" />
@@ -39,7 +39,7 @@ const Orders = () => {
           <Show />
         </div>
         {/* Courier orders table */}
-        <OrdersTable />
+        <OrdersTable permissions={permissions} />
       </div>
     </Card>
   );

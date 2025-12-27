@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -7,12 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 // import { refetchData } from "@/utilities/fetchData";
-import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierManagement/courierManagementApi";
-import { setBulkOrder } from "@/redux/features/courierManagement/courierManagementSlice";
+import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierShipment/courierShipmentApi";
+import { setBulkOrder } from "@/redux/features/courierShipment/courierShipmentSlice";
 import { refetchData } from "@/utilities/fetchData";
 import statusOptions from "@/utilities/statusOptions";
 import { useState } from "react";
@@ -22,10 +22,10 @@ const CourierBulkAction = () => {
   const [sendCourierAndUpdateStatus, { isLoading }] =
     useSendCourierAndUpdateStatusMutation();
   const { orderIds } = useAppSelector(
-    ({ courierManagement }) => courierManagement.bulkOrders
+    ({ courierShipment }) => courierShipment.bulkOrders
   );
   const filter = useAppSelector(
-    ({ courierManagement }) => courierManagement.selectedStatus
+    ({ courierShipment }) => courierShipment.selectedStatus
   );
   const [bulkAction, setBulkAction] = useState("bulk");
 

@@ -10,8 +10,8 @@ const AccountsPage = async () => {
     ? `${config.base_url}/${user?.profilePicture}`
     : dummyUser.src;
   return (
-    <div className="flex-1 space-y-7">
-      <Card className="p-4 shadow-none rounded-xl">
+    <div className="flex-1 space-y-6">
+      <Card>
         <div className="flex gap-5">
           <div>
             <Avatar className="rounded-full w-20 h-20">
@@ -26,7 +26,7 @@ const AccountsPage = async () => {
           </div>
         </div>
       </Card>
-      <Card className="p-4 shadow-none rounded-xl">
+      <Card>
         <h2 className="font-semibold text-lg">Personal information</h2>
         <div className="grid grid-cols-2 mt-5 gap-3">
           <div>

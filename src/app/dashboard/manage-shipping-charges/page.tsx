@@ -4,9 +4,10 @@ import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
 import AllShippingCharges from "./_components/allShippingCharge/AllShippingCharges";
 import CreateShippingCharge from "./_components/createShippingCharge/CreateShippingCharge";
+import { Card } from "@/components/ui/card";
 
-const ManageShippingCharges = () => {
-  const { permissions = [] } = getPermission();
+const ManageShippingCharges = async () => {
+  const { permissions = [] } = await getPermission();
 
   const manageAdminOrStaff = isPermitted(permissions, permission.manageCoupon);
 
@@ -15,10 +16,10 @@ const ManageShippingCharges = () => {
   }
 
   return (
-    <div className="px-3 pt-3 grid grid-cols-5 gap-5">
+    <Card className="grid grid-cols-5 gap-5 m-4">
       <CreateShippingCharge />
       <AllShippingCharges />
-    </div>
+    </Card>
   );
 };
 

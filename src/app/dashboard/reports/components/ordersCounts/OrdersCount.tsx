@@ -37,7 +37,7 @@ const OrdersCount = () => {
 
   return (
     <div className="col-span-2">
-      <Card className="p-4 shadow-none rounded-xl">
+      <Card>
         <h2 className="text-xl font-bold mb-2">Orders</h2>
         <hr />
         <OrdersChart ordersCount={ordersCount} handlerFN={handleDateChange} />

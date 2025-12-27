@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { setBulkOrder } from "@/redux/features/courierManagement/courierManagementSlice";
+import { setBulkOrder } from "@/redux/features/courierShipment/courierShipmentSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 // import { TOrders } from "@/types/order/order.interface";
 import formattedOrderData from "@/utilities/formattedOrderData";
@@ -20,22 +20,29 @@ import {
   // getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect } from "react";
-import { columns } from "./OrdersColumn";
+import { useEffect, useMemo } from "react";
+import { getColumns } from "./OrdersColumn";
 // import ReasonNotes from "./ReasonNotes";
 
-export default function OrdersTable() {
+export default function OrdersTable({
+  permissions,
+}: {
+  permissions: string[];
+}) {
   const dispatch = useAppDispatch();
 
   const { isLoading } = useAppSelector(({ pagination }) => pagination);
-  const orders = useAppSelector(({ search, courierManagement }) => {
+  const orders = useAppSelector(({ search, courierShipment }) => {
     return search.search
       ? search.searchedOrders
-      : courierManagement.processingDoneOrders;
+      : courierShipment.processingDoneOrders;
   });
   const search = useAppSelector(({ search }) => {
     return search.search;
   });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const columns = useMemo(() => getColumns(permissions), [permissions]);
 
   const table = useReactTable({
     data: orders,

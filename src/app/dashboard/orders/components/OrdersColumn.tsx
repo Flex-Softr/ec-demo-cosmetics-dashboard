@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { TOrders } from "@/types/order/order.interface";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<TOrders>[] = [
+export const getColumns = (permissions: string[]): ColumnDef<TOrders>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -75,7 +75,7 @@ export const columns: ColumnDef<TOrders>[] = [
   {
     accessorKey: "payment",
     header: "Payment",
-    cell: () => <p>Case on delivery</p>,
+    cell: ({ row }) => <p>{row.original.payment?.paymentMethod?.name}</p>,
   },
   {
     accessorKey: "status",
@@ -84,6 +84,7 @@ export const columns: ColumnDef<TOrders>[] = [
       <OrderStatus
         order={row.original}
         disableStatus={["processing", "deleted"]}
+        permissions={permissions}
       />
     ),
   },
