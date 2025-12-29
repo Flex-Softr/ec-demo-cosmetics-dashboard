@@ -1,33 +1,15 @@
 "use client";
 import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
 import { Input } from "@/components/ui/input";
-import {
-  resetProduct,
-  setSlug,
-  setTitle,
-} from "@/redux/features/addProduct/addProductSlice";
-import {
-  setDefaultSelectedAttributeValue,
-  setDefaultVariation,
-  setGeneratedVariations,
-  setSelectedAttribute,
-} from "@/redux/features/addProduct/variation/variationSlice";
+import { setSlug, setTitle } from "@/redux/features/addProduct/addProductSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Title = () => {
   const dispatch = useAppDispatch();
   const slug = useAppSelector(({ addProduct }) => addProduct.slug);
   const title = useAppSelector(({ addProduct }) => addProduct.title);
   const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
-
-  useEffect(() => {
-    dispatch(resetProduct());
-    dispatch(setDefaultSelectedAttributeValue([]));
-    dispatch(setDefaultVariation([]));
-    dispatch(setGeneratedVariations([]));
-    dispatch(setSelectedAttribute([]));
-  }, [dispatch]);
 
   const generateSlug = (text: string) => {
     return text

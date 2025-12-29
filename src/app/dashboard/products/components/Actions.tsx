@@ -54,7 +54,7 @@ const Actions = ({ _id }: { _id: string }) => {
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <Link
-                href={`/dashboard/products/${_id}/edit`}
+                href={`/dashboard/products/${_id}`}
                 className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
               >
                 <svg

@@ -48,7 +48,7 @@ const Media = ({ isVariation }: TProps) => {
             }}
             className="flex flex-col items-center justify-center mx-auto mt-5 bg-gray-200 w-48 h-48 border border-dotted  border-blue-gray-200 cursor-pointer relative rounded-sm"
           >
-            {thumbnailImage?.data && thumbnail ? (
+            {thumbnailImage?.data?.src && thumbnail ? (
               <Image
                 src={`${config.base_url}/${thumbnailImage.data.src}`}
                 alt={thumbnailImage.data.alt || "Thumbnail"}
@@ -90,7 +90,7 @@ const Media = ({ isVariation }: TProps) => {
             }}
             className="flex flex-col items-center justify-center mx-auto mt-5 bg-gray-200 w-48 h-48 border border-dotted  border-blue-gray-200 cursor-pointer relative rounded-sm group"
           >
-            {galleryImage?.data && gallery.length ? (
+            {galleryImage?.data?.src && gallery.length ? (
               <>
                 <Image
                   src={`${config.base_url}/${galleryImage.data.src}`}

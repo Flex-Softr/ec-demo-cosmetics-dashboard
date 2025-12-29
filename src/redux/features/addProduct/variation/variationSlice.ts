@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { TInventory, TPrice } from "../interface";
 import {
   TSelectedAttribute,
   TSelectValue,
   TVariation,
   TVariationInitialState,
 } from "./interface";
-import { TInventory, TPrice } from "../interface";
 
 // const variations: TVariation = {
 //   attributes: {},
@@ -178,6 +178,12 @@ const variationSlice = createSlice({
     // setVariationOffer: (state, action: PayloadAction<TOffer>) => {
     //   state.variations[action.payload.index || 0].offer = { ...action.payload };
     // },
+    resetVariation: (state) => {
+      state.selectedAttribute = initialState.selectedAttribute;
+      state.selectedAttributeValue = initialState.selectedAttributeValue;
+      state.generatedVariations = initialState.generatedVariations;
+      state.variations = initialState.variations;
+    },
   },
 });
 
@@ -194,6 +200,7 @@ export const {
   setVariationInventory,
   // setVariationOffer,
   setDefaultVariation,
+  resetVariation,
 } = variationSlice.actions;
 
 export default variationSlice.reducer;

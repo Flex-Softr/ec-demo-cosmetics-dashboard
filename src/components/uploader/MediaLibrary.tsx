@@ -1,25 +1,27 @@
 import config from "@/config/config";
 // import { setVariationThumbnail } from "@/redux/features/addProduct/variation/variationSlice";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  useDeleteImageMutation,
+  useGetImagesQuery,
+} from "@/redux/features/imageSelector/imageApi";
 import {
   setDeleteImage,
   setGallery,
   setThumbnail,
 } from "@/redux/features/imageSelector/imageSelectorSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { CheckIcon } from "@radix-ui/react-icons";
-import Image from "next/image";
-import { PagePagination } from "../pagination/PagePagination";
-import { useGetImagesQuery } from "@/redux/features/imageSelector/imageApi";
-import { Button } from "../ui/button";
 import {
   setIsLoading,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
-import { useEffect } from "react";
-import { useDeleteImageMutation } from "@/redux/features/imageSelector/imageApi";
-import { useToast } from "@/components/ui/use-toast";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { CheckIcon } from "@radix-ui/react-icons";
 import { EyeIcon } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { PagePagination } from "../pagination/PagePagination";
+import { Button } from "../ui/button";
 
 type TImage = { _id: string; src: string; alt: string };
 type TProps = {
@@ -40,47 +42,55 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
     ({ imageSelector }) => imageSelector
   );
 
-  // const image = useAppSelector(
-  //   ({ productVariation }) =>
-  //     productVariation.variations[index || 0]?.image || {}
-  // );
+  // Local state for handling selections
+  const [localThumbnail, setLocalThumbnail] = useState<string>(thumbnail);
+  const [localGallery, setLocalGallery] = useState<string[]>(gallery);
+  const [localDeleteImages, setLocalDeleteImages] =
+    useState<string[]>(deleteImages);
 
   const selectImage = (imageId: string) => {
     if (click === "thumbnail") {
-      if (thumbnail === imageId) {
-        dispatch(setThumbnail(""));
+      if (localThumbnail === imageId) {
+        setLocalThumbnail("");
       } else {
-        dispatch(setThumbnail(imageId));
+        setLocalThumbnail(imageId);
       }
     }
-    // if (click === "variation") {
-    //   if (thumbnail === imageId) {
-    //     dispatch(setVariationThumbnail({ index: 0, image: "" }));
-    //   } else {
-    //     dispatch(setVariationThumbnail({ index: 0, image: imageId }));
-    //   }
-    // }
     if (click === "gallery") {
-      if (gallery.includes(imageId)) {
-        const restItem = gallery.filter((item: string) => item !== imageId);
-        dispatch(setGallery(restItem));
-      } else if (gallery.length === 5) {
+      if (localGallery.includes(imageId)) {
+        const restItem = localGallery.filter(
+          (item: string) => item !== imageId
+        );
+        setLocalGallery(restItem);
+      } else if (localGallery.length === 5) {
         alert("You can select maximum 5 gallery images");
       } else {
-        dispatch(setGallery([...gallery, imageId]));
+        setLocalGallery([...localGallery, imageId]);
       }
     }
     if (click === "delete") {
-      if (deleteImages.includes(imageId)) {
-        const restItem = deleteImages.filter(
+      if (localDeleteImages.includes(imageId)) {
+        const restItem = localDeleteImages.filter(
           (item: string) => item !== imageId
         );
-        dispatch(setDeleteImage(restItem));
-      } else if (deleteImages.length === 50) {
+        setLocalDeleteImages(restItem);
+      } else if (localDeleteImages.length === 50) {
         alert("You can select maximum 50 images");
       } else {
-        dispatch(setDeleteImage([...deleteImages, imageId]));
+        setLocalDeleteImages([...localDeleteImages, imageId]);
       }
+    }
+  };
+
+  const handleDone = () => {
+    if (click === "thumbnail") {
+      dispatch(setThumbnail(localThumbnail));
+    } else if (click === "gallery") {
+      dispatch(setGallery(localGallery));
+    }
+
+    if (handleOpen) {
+      handleOpen(false);
     }
   };
 
@@ -108,15 +118,16 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
 
   const handleDelete = async () => {
     try {
-      if (!deleteImages.length) {
+      if (!localDeleteImages.length) {
         alert("Please select images.");
         return;
       } else {
         alert("Are you sure to delete the images?");
       }
-      const res = await deleteImage(deleteImages).unwrap();
+      const res = await deleteImage(localDeleteImages).unwrap();
       if (!res.error) {
-        dispatch(setDeleteImage([]));
+        setLocalDeleteImages([]);
+        dispatch(setDeleteImage([])); // Clean global state as well if needed
       }
       toast({
         className: "bg-success text-white text-2xl",
@@ -140,7 +151,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
               <div
                 key={image._id}
                 onClick={() => selectImage(image._id)}
-                className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${thumbnail === image._id && "border-2 border-blue-600"}`}
+                className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${localThumbnail === image._id && "border-2 border-blue-600"}`}
               >
                 <Image
                   src={`${config.base_url}/${image.src}`}
@@ -149,7 +160,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                   className="object-cover rounded-sm"
                   sizes="(max-width: 208px) 100vw,"
                 />
-                {thumbnail === image._id && (
+                {localThumbnail === image._id && (
                   <button className="bg-white text-green-500 absolute right-1 bottom-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
                     {/* <Cross2Icon className="h-5 w-5" /> */}
                     <CheckIcon className="h-5 w-5" />
@@ -162,8 +173,8 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                 key={image._id}
                 onClick={() => selectImage(image._id)}
                 className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${
-                  (gallery.includes(image._id) ||
-                    deleteImages.includes(image._id)) &&
+                  (localGallery.includes(image._id) ||
+                    localDeleteImages.includes(image._id)) &&
                   "border-2 border-blue-600"
                 }`}
               >
@@ -184,8 +195,8 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                   />
                 </span>
 
-                {(gallery.includes(image._id) ||
-                  deleteImages.includes(image._id)) && (
+                {(localGallery.includes(image._id) ||
+                  localDeleteImages.includes(image._id)) && (
                   <button className="bg-white text-green-500 absolute right-1 bottom-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
                     {/* <Cross2Icon className="h-5 w-5" /> */}
                     <CheckIcon className="h-5 w-5" />
@@ -198,7 +209,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
         {data?.meta?.totalPage > 1 && <PagePagination />}
         <div className="flex justify-end">
           <Button
-            onClick={() => (handleOpen ? handleOpen(false) : handleDelete())}
+            onClick={() => (click === "delete" ? handleDelete() : handleDone())}
             disabled={loading}
           >
             {click === "delete" ? "Delete" : "Done"}

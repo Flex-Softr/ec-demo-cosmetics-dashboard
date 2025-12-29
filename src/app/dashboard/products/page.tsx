@@ -1,7 +1,6 @@
 import Show from "@/components/Show";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import fetchData from "@/utilities/fetchData";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import CountByStatusButtons from "./components/CountByStatusButtons";
@@ -10,12 +9,7 @@ import ProductBulkAction from "./components/ProductBulkAction";
 import ProductSearchBar from "./components/ProductSearchBar";
 import ProductsTable from "./components/ProductsTable";
 
-const AllProducts = async () => {
-  const { data: categories } = await fetchData({
-    endPoint: "/categories",
-    tags: ["categories"],
-  });
-
+const AllProducts = () => {
   return (
     <Card className="m-4">
       {/* header section, search bar  */}
@@ -37,7 +31,7 @@ const AllProducts = async () => {
             </Button>
           </Link>
           {/* Filter options by category and stock status*/}
-          <Filter categories={categories} />
+          <Filter />
           {/* </div> */}
           <Show />
         </div>

@@ -5,15 +5,16 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
+import { useDeleteSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
 import { refetchData } from "@/utilities/fetchData";
 import { SquarePen, Trash2Icon } from "lucide-react";
 import { useState } from "react";
-import UpdateSubCategoryForm from "./UpdateSubcategoryForm";
 import { TSubCategories } from "./SubCategoryTable";
-import { useDeleteSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
+import UpdateSubCategoryForm from "./UpdateSubcategoryForm";
 
 const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
   const { _id, name, image } = category;
@@ -52,7 +53,9 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
           <SquarePen className="text-green-500" />
         </DialogTrigger>
         <DialogContent className=" h-fit">
-          <h1 className="text-2xl font-semibold">Update sub category</h1>
+          <DialogTitle className="text-2xl font-semibold">
+            Update sub category
+          </DialogTitle>
           <div>
             <UpdateSubCategoryForm
               id={_id}
@@ -68,7 +71,7 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
           <Trash2Icon className="text-red-500" />
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          <h1 className="text-3xl">Are you sure?</h1>
+          <DialogTitle className="text-3xl">Are you sure?</DialogTitle>
           <div className="flex gap-4 items-center ">
             <DialogClose asChild>
               <Button className="bg-red-500 hover:bg-red-500">Cancel</Button>

@@ -10,11 +10,6 @@ import Media from "./Media";
 import { Button } from "@/components/ui/button";
 import { useGetAttributesQuery } from "@/redux/features/addAttributes/attributesApi";
 import { setProductType } from "@/redux/features/addProduct/addProductSlice";
-import {
-  setDeleteImage,
-  setGallery,
-  setThumbnail,
-} from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Advanced from "./Advanced";
 import Attributes from "./Attributes";
@@ -40,12 +35,6 @@ const ProductData = ({ productId }: { productId: string }) => {
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
-
-  useEffect(() => {
-    dispatch(setThumbnail(""));
-    dispatch(setGallery([]));
-    dispatch(setDeleteImage([]));
-  }, [dispatch]);
 
   // Sync active tab when product type changes
   useEffect(() => {

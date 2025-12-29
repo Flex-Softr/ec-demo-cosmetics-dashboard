@@ -6,6 +6,7 @@ import {
   setSearchQuery,
   setSearchedProducts,
 } from "@/redux/features/allProducts/allProductsSlice";
+import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
 import {
   setIsLoading,
   setPage,
@@ -13,9 +14,6 @@ import {
 } from "@/redux/features/pagination/PaginationSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
-// import { Button } from "@/components/ui/button";
-// import queryHelper from "@/utilities/queryHelper";
-// import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -35,14 +33,12 @@ type TCategory = {
   }[];
 };
 
-const Filter = ({ categories }: { categories: TCategory[] }) => {
+const Filter = () => {
+  const { data: categoriesData } = useGetCategoriesQuery({});
+  const categories: TCategory[] = categoriesData?.data || [];
   // const router = useRouter();
   const [category, setCategory] = useState("");
   const [stock, setStatus] = useState("");
-
-  // const handleSubmit = async () => {
-  //   router.push(`/dashboard/all-products?${queryHelper({ category, stock })}`);
-  // };
 
   const dispatch = useAppDispatch();
   const { page, limit } = useAppSelector(({ pagination }) => pagination);
