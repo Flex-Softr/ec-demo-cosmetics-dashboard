@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -25,6 +26,9 @@ const CommonModal = ({
         <DialogContent className={`${className}`}>
           <DialogHeader>
             <DialogTitle>{modalTitle}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {modalTitle}
+            </DialogDescription>
           </DialogHeader>
           {children}
         </DialogContent>

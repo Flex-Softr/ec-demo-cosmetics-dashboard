@@ -1,32 +1,20 @@
 // Import necessary components
 import { Card } from "@/components/ui/card";
-import { SectionTitle } from "@/components/ui/sectionTitle";
-import fetchData from "@/utilities/fetchData";
 import AddSlider from "./components/AddSlider";
 import SliderMediaTable from "./components/SliderMediaTable";
 
-const SliderSection = async () => {
-  const { data } = await fetchData({
-    endPoint: "/slider-banner/",
-    tags: ["sliders"],
-  });
-
+const SliderSection = () => {
   return (
-    <div className="flex gap-4 mb-16">
-      <div className="flex-1 m-4 mr-0">
-        <Card className="w-full">
-          <SectionTitle>Slider Banner Set Up</SectionTitle>
-          <AddSlider />
-        </Card>
+    <Card className="m-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Slider Banner Set Up</h1>
+        <AddSlider />
       </div>
-
-      <div className="flex-1 m-4 ml-0">
-        <Card className="w-full">
-          <SectionTitle>Slider Banner Set Up</SectionTitle>
-          <SliderMediaTable slider={data} />
-        </Card>
+      <hr className="my-4" />
+      <div className="w-full">
+        <SliderMediaTable />
       </div>
-    </div>
+    </Card>
   );
 };
 

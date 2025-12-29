@@ -2,6 +2,13 @@ import baseApi from "@/redux/baseApi/baseApi";
 
 const sliderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getSliders: builder.query({
+      query: () => ({
+        url: `/slider-banner/`,
+        method: "GET",
+      }),
+      providesTags: ["slider"],
+    }),
     deleteSlider: builder.mutation({
       query: (data) => ({
         url: `/slider-banner`,
@@ -10,6 +17,7 @@ const sliderApi = baseApi.injectEndpoints({
           sliderSectionIds: [data],
         },
       }),
+      invalidatesTags: ["slider"],
     }),
     addSlider: builder.mutation({
       query: (data) => ({
@@ -17,15 +25,15 @@ const sliderApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["slider"],
     }),
     updateSlider: builder.mutation({
-      query: ({ isActive, id }) => ({
+      query: ({ id, data }) => ({
         url: `/slider-banner/${id}`,
         method: "PATCH",
-        body: {
-          isActive: isActive,
-        },
+        body: data,
       }),
+      invalidatesTags: ["slider"],
     }),
   }),
 });
@@ -34,4 +42,5 @@ export const {
   useDeleteSliderMutation,
   useAddSliderMutation,
   useUpdateSliderMutation,
+  useGetSlidersQuery,
 } = sliderApi;

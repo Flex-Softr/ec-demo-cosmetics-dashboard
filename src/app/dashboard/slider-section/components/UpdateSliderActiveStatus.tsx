@@ -18,8 +18,10 @@ const UpdateSliderActiveStatus = ({ slider }: { slider: TSlider }) => {
     setIsChecked(updatedData);
     try {
       const res = await updateSlider({
-        isActive: updatedData,
         id: slider._id,
+        data: {
+          isActive: updatedData,
+        },
       }).unwrap();
 
       if (res.success) {

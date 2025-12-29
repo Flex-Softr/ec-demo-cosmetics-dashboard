@@ -2,6 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Form,
   FormField,
   FormItem,
@@ -15,6 +23,7 @@ import { useAddSliderMutation } from "@/redux/features/sliderBanner/sliderApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { refetchData } from "@/utilities/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import SliderSectionMedia from "./SliderSectionMedia";
@@ -59,6 +68,8 @@ const AddSlider = () => {
     },
   });
 
+  const [open, setOpen] = useState(false);
+
   const onSubmit = async (data: TAddBannerForm) => {
     data.image = thumbnail || undefined;
     const addedSlider = await addSlider(data).unwrap();
@@ -66,6 +77,7 @@ const AddSlider = () => {
       await refetchData("sliders");
       form.reset();
       dispatch(setThumbnail(""));
+      setOpen(false);
 
       toast({
         className: "bg-success text-white text-2xl",
@@ -75,11 +87,20 @@ const AddSlider = () => {
   };
 
   return (
-    <div>
-      <div className="flex items-start justify-between gap-4 w-full">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Add Slider</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[525px]">
+        <DialogHeader>
+          <DialogTitle>Add Slider</DialogTitle>
+          <DialogDescription className="sr-only">
+            Add a new slider
+          </DialogDescription>
+        </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className=" w-full">
+            <div className=" w-full px-2">
               <FormField
                 control={form.control}
                 name="name"
@@ -94,7 +115,7 @@ const AddSlider = () => {
               <span className="p-4 ">
                 <SliderSectionMedia />
               </span>
-              <div className="w-full space-y-2 items-start">
+              <div className="w-full space-y-2 items-start mt-4">
                 <FormField
                   control={form.control}
                   name="bannerLink"
@@ -112,8 +133,8 @@ const AddSlider = () => {
             </div>
           </form>
         </Form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

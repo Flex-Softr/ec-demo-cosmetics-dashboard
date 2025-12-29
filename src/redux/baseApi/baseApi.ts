@@ -70,6 +70,8 @@ const tags = [
   "brands",
   "categories",
   "subcategories",
+  "slider",
+  "sliders",
 ] as const;
 
 const baseApi = createApi({

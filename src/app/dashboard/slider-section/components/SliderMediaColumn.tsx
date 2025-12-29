@@ -4,6 +4,7 @@ import config from "@/config/config";
 import Image from "next/image";
 import DeleteSlider from "./DeleteSlider";
 import { TSlider } from "./SliderMediaTable";
+import UpdateSlider from "./UpdateSlider";
 import UpdateSliderActiveStatus from "./UpdateSliderActiveStatus";
 
 const columns: ColumnDef<TSlider>[] = [
@@ -38,11 +39,25 @@ const columns: ColumnDef<TSlider>[] = [
   },
 
   {
+    accessorKey: "bannerLink",
+    header: "Banner Link",
+    cell: ({ row }) => <p className="text-center">{row.original.bannerLink}</p>,
+  },
+  {
+    accessorKey: "isActive",
+    header: "Status",
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <UpdateSliderActiveStatus slider={row.original} />
+      </div>
+    ),
+  },
+  {
     accessorKey: "action",
     header: () => <h2 className="text-end"> Action</h2>,
     cell: ({ row }) => (
       <div className="flex justify-between items-center">
-        <UpdateSliderActiveStatus slider={row.original} />
+        <UpdateSlider slider={row.original} />
         <DeleteSlider slider={row.original} />
       </div>
     ),

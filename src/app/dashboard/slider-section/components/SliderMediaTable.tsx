@@ -19,17 +19,28 @@ export type TSlider = {
   _id: string;
   name: string;
   image: {
+    _id: string;
     src: string;
   };
   isActive: boolean;
+  bannerLink?: string;
 };
 
-const SliderMediaTable = ({ slider }: { slider: TSlider[] }) => {
+import { useGetSlidersQuery } from "@/redux/features/sliderBanner/sliderApi";
+
+const SliderMediaTable = () => {
+  const { data: slider, isLoading } = useGetSlidersQuery(undefined);
+
   const table = useReactTable({
-    data: slider,
+    data: slider?.data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="rounded-lg overflow-hidden">
       <SliderTable className="w-full">
@@ -52,7 +63,7 @@ const SliderMediaTable = ({ slider }: { slider: TSlider[] }) => {
           ))}
         </TableHeader>
         <TableBody>
-          {slider?.length ? (
+          {slider?.data?.length ? (
             table?.getRowModel()?.rows?.map((row) => (
               <TableRow
                 key={row?.id}
