@@ -1,46 +1,24 @@
 import { Card } from "@/components/ui/card";
-import { SectionTitle } from "@/components/ui/sectionTitle";
-import { Pagination } from "@/components/ui/pagination";
 import AddSubCategoryForm from "./components/AddSubCategoryForm";
 import { CategoryTable } from "./components/SubCategoryTable";
-import fetchData from "@/utilities/fetchData";
 
-const SubCategory = async ({
-  params,
-}: {
-  params: { subcategory: string[] };
-}) => {
+const SubCategory = ({ params }: { params: { subcategory: string[] } }) => {
   const categoryName = params?.subcategory[0].replace(/-/g, " ");
-  const category = params?.subcategory[1];
-
-  const { data } = await fetchData({
-    endPoint: `/sub-categories/${category}`,
-    tags: ["subcategories"],
-  });
+  const categoryId = params?.subcategory[1];
 
   return (
-    <div className="flex gap-4 justify-between items-start h-screen px-4 pt-4">
-      <Card className="flex-1 space-y-4">
-        <SectionTitle>
-          {" "}
-          Add New Sub Category for{" "}
-          <span className="text-primary">{categoryName}</span>{" "}
-        </SectionTitle>
-        <AddSubCategoryForm category={category} />
-      </Card>
-      <Card className="flex-1">
-        <SectionTitle>
-          {" "}
-          Sub Categories of{" "}
-          <span className="text-primary">{categoryName}</span>{" "}
-        </SectionTitle>
-
-        <div>
-          <CategoryTable categories={data} />
-          <Pagination />
-        </div>
-      </Card>
-    </div>
+    <Card className="m-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">
+          Sub Categories of <span className="text-primary">{categoryName}</span>
+        </h1>
+        <AddSubCategoryForm category={categoryId} />
+      </div>
+      <hr className="my-4" />
+      <div className="w-full">
+        <CategoryTable categoryId={categoryId} />
+      </div>
+    </Card>
   );
 };
 

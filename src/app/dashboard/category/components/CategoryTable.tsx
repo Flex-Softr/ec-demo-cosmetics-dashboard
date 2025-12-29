@@ -22,8 +22,10 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import config from "@/config/config";
-import { useDeleteCategoryMutation } from "@/redux/features/category/categoryApi";
-import { refetchData } from "@/utilities/fetchData";
+import {
+  useDeleteCategoryMutation,
+  useGetCategoriesQuery,
+} from "@/redux/features/category/categoryApi";
 import {
   ColumnDef,
   VisibilityState,
@@ -110,18 +112,15 @@ export const columns: ColumnDef<TCategories>[] = [
   },
 ];
 
-export const CategoryTable = ({
-  categories,
-}: {
-  categories: TCategories[];
-}) => {
+export const CategoryTable = () => {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [deleteCategory] = useDeleteCategoryMutation();
+  const { data: categories, isLoading } = useGetCategoriesQuery(undefined);
 
   const table = useReactTable({
-    data: categories,
+    data: categories?.data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -142,7 +141,7 @@ export const CategoryTable = ({
     if (categoryIds.length) {
       const res = await deleteCategory(categoryIds).unwrap();
       if (res?.success) {
-        await refetchData("categories");
+        // refetchData is handled by tags now
         toast({
           className: "bg-success text-white ",
           title: "Category deleted successfully!",
@@ -157,6 +156,10 @@ export const CategoryTable = ({
       alert("Please select categories!");
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="w-full">

@@ -22,7 +22,10 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import config from "@/config/config";
-import { useDeleteSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
+import {
+  useDeleteSubCategoryMutation,
+  useGetSubCategoriesQuery,
+} from "@/redux/features/category/subCategoryApi";
 import { refetchData } from "@/utilities/fetchData";
 import {
   ColumnDef,
@@ -105,18 +108,20 @@ export const columns: ColumnDef<TSubCategories>[] = [
   },
 ];
 
-export const CategoryTable = ({
-  categories,
-}: {
-  categories: TSubCategories[];
-}) => {
+export const CategoryTable = ({ categoryId }: { categoryId: string }) => {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [deleteSubCategory] = useDeleteSubCategoryMutation();
+  const { data: categories, isLoading } = useGetSubCategoriesQuery(
+    {
+      category: categoryId,
+    },
+    { refetchOnMountOrArgChange: true }
+  );
 
   const table = useReactTable({
-    data: categories,
+    data: categories?.data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -153,6 +158,10 @@ export const CategoryTable = ({
       alert("Please select sub categories!");
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="w-full">

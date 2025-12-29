@@ -1,29 +1,19 @@
 import { Card } from "@/components/ui/card";
-import { Pagination } from "@/components/ui/pagination";
 import AddCategoryForm from "./components/AddCategoryForm";
 import { CategoryTable } from "./components/CategoryTable";
-import fetchData from "@/utilities/fetchData";
 
-const AddCategory = async () => {
-  const { data } = await fetchData({
-    endPoint: "/categories",
-    tags: ["categories"],
-  });
-
+const AddCategory = () => {
   return (
-    <div className="flex gap-4 justify-between items-start h-screen px-4 pt-4">
-      <Card className="space-y-5 flex-1">
-        <h2 className="text-xl font-bold">Add New category</h2>
+    <Card className="m-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Category Set Up</h1>
         <AddCategoryForm />
-      </Card>
-      <Card className="space-y-5 flex-1">
-        <h2 className="text-xl font-bold">All Categories</h2>
-        <div>
-          <CategoryTable categories={data} />
-          <Pagination />
-        </div>
-      </Card>
-    </div>
+      </div>
+      <hr className="my-4" />
+      <div className="w-full">
+        <CategoryTable />
+      </div>
+    </Card>
   );
 };
 

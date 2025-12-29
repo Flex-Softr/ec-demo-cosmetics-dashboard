@@ -2,6 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Form,
   FormField,
   FormItem,
@@ -15,7 +23,7 @@ import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { refetchData } from "@/utilities/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import AddCategoryMedia from "../../components/AddCategoryMedia";
@@ -38,6 +46,7 @@ const AddSubCategoryForm = ({ category }: { category: string }) => {
   const [addSubCategory] = useAddSubCategoryMutation();
   const dispatch = useAppDispatch();
   const { thumbnail } = useAppSelector(({ imageSelector }) => imageSelector);
+  const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,6 +74,7 @@ const AddSubCategoryForm = ({ category }: { category: string }) => {
           await refetchData("subcategories");
           form.reset();
           dispatch(setThumbnail(""));
+          setOpen(false);
           toast({
             className: "bg-success text-white text-2xl",
             title: addedSubCategory?.message,
@@ -89,39 +99,49 @@ const AddSubCategoryForm = ({ category }: { category: string }) => {
   };
 
   return (
-    <div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <Input placeholder="Sub Category Name" {...field} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Add Sub Category</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[525px]">
+        <DialogHeader>
+          <DialogTitle>Add Sub Category</DialogTitle>
+          <DialogDescription className="sr-only">
+            Fill in the details to add a new sub category.
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <Input placeholder="Sub Category Name" {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <AddCategoryMedia />
+            <AddCategoryMedia />
 
-          <div className="flex gap-3 items-center">
-            <Button type="submit" className="">
-              Add Sub Category
-            </Button>
-            <Button
-              type="reset"
-              className="bg-transparent border border-red-100 text-black hover:bg-red-500 hover:text-white"
-              onClick={() => handleReset()}
-            >
-              Reset
-            </Button>
-          </div>
-          <div></div>
-        </form>
-      </Form>
-    </div>
+            <div className="flex gap-3 items-center">
+              <Button type="submit" className="">
+                Add Sub Category
+              </Button>
+              <Button
+                type="reset"
+                className="bg-transparent border border-red-100 text-black hover:bg-red-500 hover:text-white"
+                onClick={() => handleReset()}
+              >
+                Reset
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };
 
