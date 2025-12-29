@@ -4,6 +4,7 @@ import {
   setCategory,
   setSubcategory,
 } from "@/redux/features/addProduct/addProductSlice";
+import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 type TCategories = {
@@ -12,7 +13,9 @@ type TCategories = {
   subcategories?: TCategories[];
 };
 
-const Category = ({ categories }: { categories: TCategories[] }) => {
+const Category = () => {
+  const { data, isLoading } = useGetCategoriesQuery({ isActive: true });
+  const categories = data?.data || [];
   const dispatch = useAppDispatch();
   const selectCategory = useAppSelector(
     ({ addProduct }) => addProduct.category
@@ -94,16 +97,22 @@ const Category = ({ categories }: { categories: TCategories[] }) => {
   return (
     <SectionContentWrapper heading="Select Category">
       <div className=" max-h-64  overflow-y-scroll ">
-        <ul className="list-none">
-          {categories.map((category: TCategories) => (
-            <li className="p-2" key={category._id}>
-              {renderCategory(category)}
-              {selectCategory.name == category._id &&
-                category.subcategories &&
-                renderSubcategories(category.subcategories)}
-            </li>
-          ))}
-        </ul>
+        {isLoading ? (
+          <p className="p-4 text-center text-gray-500 italic">
+            Loading categories...
+          </p>
+        ) : (
+          <ul className="list-none">
+            {categories.map((category: TCategories) => (
+              <li className="p-2" key={category._id}>
+                {renderCategory(category)}
+                {selectCategory.name == category._id &&
+                  category.subcategories &&
+                  renderSubcategories(category.subcategories)}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </SectionContentWrapper>
   );

@@ -15,7 +15,6 @@ import { IAdminProduct } from "@/types/products";
 import {
   flexRender,
   getCoreRowModel,
-  getExpandedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect } from "react";
@@ -30,15 +29,10 @@ export default function ProductsTable() {
       : (allProducts.products as unknown as IAdminProduct[])
   );
   const search = useAppSelector(({ allProducts }) => allProducts.search);
-  const table = useReactTable({
+  const table = useReactTable<IAdminProduct>({
     data: products,
     columns: ProductColumns,
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getRowCanExpand: (row) =>
-      row.original.type === "variable" &&
-      (row.original.variations?.length ?? 0) > 0,
-    // getPaginationRowModel: getPaginationRowModel(),
   });
 
   const selectedRows = table?.getFilteredSelectedRowModel()?.rows;
@@ -74,91 +68,20 @@ export default function ProductsTable() {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <>
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                    className="border-b"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="text-left p-0">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  {row.getIsExpanded() && (
-                    <TableRow>
-                      <TableCell
-                        colSpan={ProductColumns.length}
-                        className="p-4 bg-muted/50"
-                      >
-                        {row.original.type === "variable" &&
-                        row.original.variations?.length ? (
-                          <div className="rounded-md border bg-white">
-                            <Table>
-                              <TableHeader>
-                                <TableRow>
-                                  <TableHead>Attributes</TableHead>
-                                  <TableHead>Price</TableHead>
-                                  <TableHead>Stock</TableHead>
-                                  <TableHead>SKU</TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {row.original.variations.map(
-                                  (variation, index) => (
-                                    <TableRow key={index}>
-                                      <TableCell>
-                                        {Object.entries(
-                                          variation.attributes
-                                        ).map(([name, value]) => (
-                                          <span
-                                            key={name}
-                                            className="mr-2 px-2 py-1 bg-gray-100 rounded text-xs"
-                                          >
-                                            {name}: {value}
-                                          </span>
-                                        ))}
-                                      </TableCell>
-                                      <TableCell>
-                                        ৳{" "}
-                                        {variation.price?.salePrice ||
-                                          variation.price?.regularPrice}
-                                      </TableCell>
-                                      <TableCell>
-                                        <span
-                                          className={
-                                            variation.inventory?.stockStatus ===
-                                            "In stock"
-                                              ? "text-green-600"
-                                              : "text-red-600"
-                                          }
-                                        >
-                                          {variation.inventory?.stockStatus} (
-                                          {variation.inventory?.stockQuantity})
-                                        </span>
-                                      </TableCell>
-                                      <TableCell>
-                                        {variation.inventory?.sku}
-                                      </TableCell>
-                                    </TableRow>
-                                  )
-                                )}
-                              </TableBody>
-                            </Table>
-                          </div>
-                        ) : (
-                          <div className="p-4 text-center text-muted-foreground">
-                            No variations data available.
-                          </div>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="border-b"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="text-left p-0">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))
             ) : isLoading ? (
               <TableRow>

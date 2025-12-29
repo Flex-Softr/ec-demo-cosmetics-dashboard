@@ -1,12 +1,15 @@
 "use client";
+import { TAttribute } from "@/app/dashboard/attribute/lib/attribute.interface";
 import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
+import { TSelectedAttribute } from "@/redux/features/addProduct/variation/interface";
 import { useEffect, useState } from "react";
+
 import Inventory from "./Inventory";
 import Media from "./Media";
 // import Offer from "./Offer";
 import { Button } from "@/components/ui/button";
+import { useGetAttributesQuery } from "@/redux/features/addAttributes/attributesApi";
 import { setProductType } from "@/redux/features/addProduct/addProductSlice";
-import { TSelectedAttribute } from "@/redux/features/addProduct/variation/interface";
 import {
   setDeleteImage,
   setGallery,
@@ -14,17 +17,22 @@ import {
 } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Advanced from "./Advanced";
+import Attributes from "./Attributes";
 import Price from "./Price";
 import Variations from "./Variations";
-import Attributes from "./attribute/Attributes";
 
-const ProductData = ({
-  attributes,
-  productId,
-}: {
-  attributes: TSelectedAttribute[];
-  productId: string;
-}) => {
+const ProductData = ({ productId }: { productId: string }) => {
+  const { data, isLoading } = useGetAttributesQuery({ isActive: true });
+  const attributes: TSelectedAttribute[] =
+    data?.data?.map((attr: TAttribute) => ({
+      label: attr.name,
+      value: attr._id,
+      child:
+        attr.values?.map((val: { name: string; _id: string }) => ({
+          label: val.name,
+          value: val._id,
+        })) || [],
+    })) || [];
   const dispatch = useAppDispatch();
   const productType = useAppSelector((state) => state.addProduct.type);
   const [activeTab, setActiveTab] = useState<string>("media");
@@ -141,7 +149,14 @@ const ProductData = ({
           <Inventory productId={productId} />
         )}
         {activeTab === "price" && productType === "simple" && <Price />}
-        {activeTab === "attributes" && <Attributes attributes={attributes} />}
+        {activeTab === "attributes" &&
+          (isLoading ? (
+            <p className="p-4 text-center text-gray-500 italic">
+              Loading attributes...
+            </p>
+          ) : (
+            <Attributes attributes={attributes} />
+          ))}
         {activeTab === "variations" && productType === "variable" && (
           <Variations />
         )}

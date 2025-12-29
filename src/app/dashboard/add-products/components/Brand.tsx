@@ -9,15 +9,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { setBrand } from "@/redux/features/addProduct/addProductSlice";
+import { useGetBrandsQuery } from "@/redux/features/brand/brandApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
-type TBrand = {
-  brands: {
-    _id: string;
-    name: string;
-  }[];
-};
-const Brand = ({ brands }: TBrand) => {
+const Brand = () => {
+  const { data, isLoading } = useGetBrandsQuery({ isActive: true });
+  const brands = data?.data || [];
   const dispatch = useAppDispatch();
   const selectedBrand = useAppSelector(({ addProduct }) => addProduct.brand);
 
@@ -39,7 +36,13 @@ const Brand = ({ brands }: TBrand) => {
     <SectionContentWrapper heading="Product brand">
       <Select onValueChange={(v) => handleChange(v)}>
         <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
-          <SelectValue placeholder={defaultValue?.name || "Select brand"} />
+          <SelectValue
+            placeholder={
+              isLoading
+                ? "Loading brands..."
+                : defaultValue?.name || "Select brand"
+            }
+          />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup className="capitalized">

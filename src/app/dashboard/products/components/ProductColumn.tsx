@@ -67,22 +67,6 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     cell: ({ row }) => (
       <div className="flex flex-col items-start gap-1 py-2 px-4">
         <div className="flex items-center gap-2">
-          {/* {row.getCanExpand() ? (
-            <button
-              {...{
-                onClick: row.getToggleExpandedHandler(),
-                style: { cursor: "pointer" },
-              }}
-            >
-              {row.getIsExpanded() ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-            </button>
-          ) : (
-            <span className="w-4" />
-          )} */}
           <span title={row.original.title} className="font-semibold text-left">
             {row.original.title.length > 70
               ? `${row.original.title.substring(0, 70)}...`
