@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { TBrandForm, TBrandPayload } from "../lib/brand.interface";
 import AddBrandMedia from "./AddBrandMedia";
 
 const formSchema = z.object({
@@ -27,12 +28,6 @@ const formSchema = z.object({
   logo: z.string().optional(),
   description: z.string().optional(),
 });
-
-type TBrandForm = {
-  name: string;
-  description?: string;
-  logo?: string;
-};
 
 const AddBrandForm = () => {
   const { thumbnail } = useAppSelector(({ imageSelector }) => imageSelector);
@@ -53,8 +48,11 @@ const AddBrandForm = () => {
     },
   });
 
-  const onSubmit = async (data: TBrandForm) => {
-    data.logo = thumbnail || undefined;
+  const onSubmit = async (formData: TBrandForm) => {
+    const data: TBrandPayload = {
+      ...formData,
+      logo: thumbnail || undefined,
+    };
     const addedBrand = await addBrand(data).unwrap();
 
     if (addedBrand?.success) {

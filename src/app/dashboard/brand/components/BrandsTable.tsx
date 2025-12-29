@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,7 +23,10 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import config from "@/config/config";
-import { useDeleteBrandMutation } from "@/redux/features/brand/brandApi";
+import {
+  useDeleteBrandMutation,
+  useGetBrandsQuery,
+} from "@/redux/features/brand/brandApi";
 import { refetchData } from "@/utilities/fetchData";
 import {
   ColumnDef,
@@ -36,20 +40,11 @@ import {
 } from "@tanstack/react-table";
 import Image from "next/image";
 import * as React from "react";
+import { TBrand } from "../lib/brand.interface";
 import BrandActions from "./BrandActions";
+import UpdateBrandActiveStatus from "./UpdateBrandActiveStatus";
 
-export type TBrands = {
-  _id: string;
-  name: string;
-  slug: string;
-  logo: {
-    src: string;
-    alt: string;
-  };
-  description: string;
-};
-
-export const columns: ColumnDef<TBrands>[] = [
+export const columns: ColumnDef<TBrand>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -58,14 +53,18 @@ export const columns: ColumnDef<TBrands>[] = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(value: boolean | "indeterminate") =>
+          table.toggleAllPageRowsSelected(!!value)
+        }
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        onCheckedChange={(value: boolean | "indeterminate") =>
+          row.toggleSelected(!!value)
+        }
         aria-label="Select row"
       />
     ),
@@ -104,6 +103,11 @@ export const columns: ColumnDef<TBrands>[] = [
     },
   },
   {
+    accessorKey: "isActive",
+    header: "Status",
+    cell: ({ row }) => <UpdateBrandActiveStatus brand={row.original} />,
+  },
+  {
     id: "_id",
     accessorKey: "_id",
     header: () => <div className="text-center">Action</div>,
@@ -112,7 +116,9 @@ export const columns: ColumnDef<TBrands>[] = [
   },
 ];
 
-export const BrandTable = ({ brands }: { brands: TBrands[] }) => {
+export const BrandTable = () => {
+  const { data, isLoading } = useGetBrandsQuery({});
+  const brands = data?.data || [];
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -132,6 +138,14 @@ export const BrandTable = ({ brands }: { brands: TBrands[] }) => {
       rowSelection,
     },
   });
+
+  if (isLoading) {
+    return (
+      <Card className="flex items-center justify-center h-40">
+        <p className="text-xl font-semibold text-gray-900">Loading brands...</p>
+      </Card>
+    );
+  }
 
   const selectedRows = table?.getFilteredSelectedRowModel()?.rows;
   const brandIds = selectedRows.map(({ original }) => original._id);

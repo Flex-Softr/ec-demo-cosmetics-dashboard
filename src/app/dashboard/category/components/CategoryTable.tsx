@@ -38,6 +38,7 @@ import Image from "next/image";
 import * as React from "react";
 import CategoryAction from "./CategoryAction";
 import NavigateSubCategory from "./NavigateSubCategory";
+import UpdateCategoryActiveStatus from "./UpdateCategoryActiveStatus";
 
 export type TCategories = {
   _id: string;
@@ -46,6 +47,7 @@ export type TCategories = {
     alt: string;
   };
   name: string;
+  isActive: boolean;
   subcategories: [];
 };
 
@@ -93,6 +95,11 @@ export const columns: ColumnDef<TCategories>[] = [
     accessorKey: "items",
     header: "Sub Categories",
     cell: ({ row }) => <NavigateSubCategory category={row.original} />,
+  },
+  {
+    accessorKey: "isActive",
+    header: "Status",
+    cell: ({ row }) => <UpdateCategoryActiveStatus category={row.original} />,
   },
   {
     id: "_id",

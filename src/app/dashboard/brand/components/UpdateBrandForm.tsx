@@ -17,25 +17,17 @@ import { refetchData } from "@/utilities/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { TBrandForm, TBrandPayload } from "../lib/brand.interface";
 import UpdateCategoryMedia from "./UpdateBrandMedia";
 
 const formSchema = z.object({
   name: z.string().min(2, {
-    message: "Category Name must be at least 2 characters.",
+    message: "Brand Name must be at least 2 characters.",
   }),
   logo: z.string().optional(),
   description: z.string().optional(),
 });
 
-type TBrandForm = {
-  name: string;
-  logo?: string;
-  description?: string;
-};
-type TBrandImage = {
-  src: string;
-  alt: string;
-};
 const UpdateBrandForm = ({
   id,
   name,
@@ -46,7 +38,7 @@ const UpdateBrandForm = ({
   id: string;
   name: string;
   description: string;
-  logo: TBrandImage;
+  logo: { src: string; alt: string };
   handleOpen: (open: boolean) => void;
 }) => {
   const { thumbnail } = useAppSelector(({ imageSelector }) => imageSelector);
@@ -62,8 +54,11 @@ const UpdateBrandForm = ({
     },
   });
 
-  const onSubmit = async (data: TBrandForm) => {
-    data.logo = thumbnail || undefined;
+  const onSubmit = async (formData: TBrandForm) => {
+    const data: TBrandPayload = {
+      ...formData,
+      logo: thumbnail || undefined,
+    };
 
     const updatedCategory = await updateBrand({ id, data }).unwrap();
 

@@ -10,7 +10,6 @@ import {
   TAttributeValueForm,
   TAttributeValueItem,
 } from "../lib/attribute.interface";
-import { refetchData } from "@/utilities/fetchData";
 
 const UpdateAttributeValue = ({
   item,
@@ -30,7 +29,6 @@ const UpdateAttributeValue = ({
       valueIds: [attributeValueId],
     }).unwrap();
     if (res?.success) {
-      refetchData("attributes");
       toast({
         className: "bg-success text-white text-2xl",
         title: res?.message,
@@ -68,19 +66,18 @@ const UpdateAttributeValue = ({
 
   //update Attribute Value
   const onSubmit = async (data: TAttributeValueForm) => {
-    const updatedData = {
-      attributeId,
-      values: [
-        {
-          _id: item?._id,
-          name: data.name,
-        },
-      ],
-    };
-
-    const res = await updateAttribute(updatedData).unwrap();
+    const res = await updateAttribute({
+      id: attributeId,
+      data: {
+        values: [
+          {
+            _id: item?._id,
+            name: data.name,
+          },
+        ],
+      },
+    }).unwrap();
     if (res?.success) {
-      refetchData("attributes");
       reset();
       toast({
         className: "bg-success text-white text-2xl",

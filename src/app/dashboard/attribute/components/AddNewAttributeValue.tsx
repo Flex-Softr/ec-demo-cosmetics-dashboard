@@ -4,7 +4,6 @@ import { toast } from "@/components/ui/use-toast";
 import { useUpdateAttributeMutation } from "@/redux/features/addAttributes/attributesApi";
 import { useForm } from "react-hook-form";
 import { TAttributeValueItem } from "../lib/attribute.interface";
-import { refetchData } from "@/utilities/fetchData";
 
 type TAttributeValueForm = {
   value: string[];
@@ -41,14 +40,11 @@ const AddNewAttributeValue = ({ attributeId }: { attributeId: string }) => {
       name: x,
     }));
 
-    const attributeValueData = {
-      attributeId: attributeId,
-      values: formattedValues,
-    };
-
-    const res = await updateAttribute(attributeValueData).unwrap();
+    const res = await updateAttribute({
+      id: attributeId,
+      data: { values: formattedValues },
+    }).unwrap();
     if (res?.success) {
-      refetchData("attributes");
       reset();
       toast({
         className: "bg-success text-white text-2xl",

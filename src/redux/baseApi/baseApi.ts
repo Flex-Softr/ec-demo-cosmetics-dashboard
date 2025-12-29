@@ -66,6 +66,10 @@ const tags = [
   "customers",
   "registeredCustomers",
   "courierConfig",
+  "attributes",
+  "brands",
+  "categories",
+  "subcategories",
 ] as const;
 
 const baseApi = createApi({

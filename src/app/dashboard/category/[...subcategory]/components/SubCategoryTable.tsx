@@ -20,7 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { toast } from "@/components/ui/use-toast";
 import config from "@/config/config";
+import { useDeleteSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
+import { refetchData } from "@/utilities/fetchData";
 import {
   ColumnDef,
   VisibilityState,
@@ -34,9 +37,7 @@ import {
 import Image from "next/image";
 import * as React from "react";
 import SubCategoryAction from "./SubCategoryAction";
-import { refetchData } from "@/utilities/fetchData";
-import { toast } from "@/components/ui/use-toast";
-import { useDeleteSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
+import UpdateSubCategoryActiveStatus from "./UpdateSubCategoryActiveStatus";
 
 export type TSubCategories = {
   _id: string;
@@ -45,6 +46,7 @@ export type TSubCategories = {
     alt: string;
   };
   name: string;
+  isActive: boolean;
 };
 
 export const columns: ColumnDef<TSubCategories>[] = [
@@ -86,6 +88,13 @@ export const columns: ColumnDef<TSubCategories>[] = [
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "isActive",
+    header: "Status",
+    cell: ({ row }) => (
+      <UpdateSubCategoryActiveStatus subcategory={row.original} />
+    ),
   },
   {
     id: "_id",

@@ -1,21 +1,15 @@
-import fetchData from "@/utilities/fetchData";
 import AddAttribute from "./components/AddAttributes";
 import AddedAttributes from "./components/AddedAttributes";
 
 const Attributes = async () => {
-  const { data } = await fetchData({
-    endPoint: "/attributes",
-    tags: ["attributes"],
-  });
-
   return (
-    <div className="h-screen">
+    <div className="h-screen text-gray-900">
       <div className="flex justify-between gap-5 px-4 pt-4">
         <div className="flex-1">
           <AddAttribute />
         </div>
         <div className="flex-1">
-          <AddedAttributes attributes={data} />
+          <AddedAttributes />
         </div>
       </div>
     </div>

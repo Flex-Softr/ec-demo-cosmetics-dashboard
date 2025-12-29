@@ -23,11 +23,15 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: "#0EBEF0",
-        "primary-light": "#e6f8fc",
-        secondary: "#0dbdef ",
-        tertiary: "#2B77C2",
         success: "#28a745",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
@@ -46,6 +50,10 @@ module.exports = {
         },
         card: {
           DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        "base-100": {
+          DEFAULT: "var(--base-100)",
           foreground: "hsl(var(--card-foreground))",
         },
       },

@@ -1,7 +1,6 @@
 "use client";
 import { JSX, useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { JSX, useCallback, useEffect, useRef, useState } from "react";
 
 type TProps = {
   children: JSX.Element;

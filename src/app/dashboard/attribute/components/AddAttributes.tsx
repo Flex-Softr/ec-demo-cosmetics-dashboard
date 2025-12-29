@@ -11,7 +11,6 @@ import {
 } from "../lib/attribute.interface";
 
 import { Label } from "@/components/ui/label";
-import { refetchData } from "@/utilities/fetchData";
 
 // Custom validation resolver
 const resolver = async (values: TAttributeForm) => {
@@ -65,7 +64,6 @@ const AddAttribute = () => {
       }).unwrap();
 
       if (addedAttribute) {
-        refetchData("attributes");
         reset();
         toast({
           className: "bg-success text-white",

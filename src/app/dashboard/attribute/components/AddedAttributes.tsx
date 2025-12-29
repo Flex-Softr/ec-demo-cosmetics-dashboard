@@ -22,15 +22,18 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import {
   useDeleteAttributeMutation,
+  useGetAttributesQuery,
   useUpdateAttributeMutation,
 } from "@/redux/features/addAttributes/attributesApi";
 import { PencilIcon, Settings, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { TAttribute } from "../lib/attribute.interface";
 import AttributeValueUpdateModal from "./AttributeValueUpdateModal";
-import { refetchData } from "@/utilities/fetchData";
+import UpdateAttributeActiveStatus from "./UpdateAttributeActiveStatus";
 
-const AddedAttributes = ({ attributes = [] }: { attributes: TAttribute[] }) => {
+const AddedAttributes = () => {
+  const { data, isLoading } = useGetAttributesQuery({});
+  const attributes = data?.data || [];
   const [attributeName, setAttributeName] = useState("");
   //handle delete an attributes
   const [deleteAttribute] = useDeleteAttributeMutation();
@@ -39,7 +42,6 @@ const AddedAttributes = ({ attributes = [] }: { attributes: TAttribute[] }) => {
   const handleDeleteAttributes = async (attributeId: string) => {
     const res = await deleteAttribute({ attributeIds: [attributeId] }).unwrap();
     if (res?.success) {
-      refetchData("attributes");
       toast({
         className: "bg-success text-white text-2xl",
         title: res?.message,
@@ -54,11 +56,12 @@ const AddedAttributes = ({ attributes = [] }: { attributes: TAttribute[] }) => {
 
   // update Attribute Name
   const handleUpdateAttributes = async (attributeId: string) => {
-    const data = { attributeId: attributeId, name: attributeName };
-    const res = await updateAttribute(data).unwrap();
+    const res = await updateAttribute({
+      id: attributeId,
+      data: { name: attributeName },
+    }).unwrap();
 
     if (res?.success) {
-      refetchData("attributes");
       toast({
         className: "bg-success text-white text-2xl",
         title: res?.message,
@@ -71,6 +74,16 @@ const AddedAttributes = ({ attributes = [] }: { attributes: TAttribute[] }) => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <Card className="flex items-center justify-center h-40">
+        <p className="text-xl font-semibold text-gray-900">
+          Loading attributes...
+        </p>
+      </Card>
+    );
+  }
+
   return (
     <div className="w-full">
       <Card className="space-y-5">
@@ -80,10 +93,11 @@ const AddedAttributes = ({ attributes = [] }: { attributes: TAttribute[] }) => {
             <TableRow>
               <TableHead className="w-[100px]">Name</TableHead>
               <TableHead>Terms</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {attributes?.map((singleAttribute) => (
+            {attributes?.map((singleAttribute: TAttribute) => (
               <TableRow key={singleAttribute?._id}>
                 <TableCell className="font-medium">
                   <div>{singleAttribute?.name}</div>
@@ -170,6 +184,9 @@ const AddedAttributes = ({ attributes = [] }: { attributes: TAttribute[] }) => {
                       </DialogContent>
                     </Dialog>
                   </div>
+                </TableCell>
+                <TableCell>
+                  <UpdateAttributeActiveStatus attribute={singleAttribute} />
                 </TableCell>
               </TableRow>
             ))}

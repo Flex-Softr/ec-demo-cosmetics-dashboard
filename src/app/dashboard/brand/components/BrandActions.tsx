@@ -3,6 +3,9 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
@@ -10,10 +13,10 @@ import { useDeleteBrandMutation } from "@/redux/features/brand/brandApi";
 import { refetchData } from "@/utilities/fetchData";
 import { SquarePen, Trash2Icon } from "lucide-react";
 import { useState } from "react";
-import { TBrands } from "./BrandsTable";
+import { TBrand } from "../lib/brand.interface";
 import UpdateBrandForm from "./UpdateBrandForm";
 
-const BrandActions = ({ brand }: { brand: TBrands }) => {
+const BrandActions = ({ brand }: { brand: TBrand }) => {
   const [deleteBrand] = useDeleteBrandMutation();
   const { _id, name, description, logo } = brand;
 
@@ -47,7 +50,12 @@ const BrandActions = ({ brand }: { brand: TBrands }) => {
           <SquarePen className="text-green-500" />
         </DialogTrigger>
         <DialogContent>
-          <h1 className="text-2xl font-semibold">Update Brand</h1>
+          <DialogHeader>
+            <DialogTitle>Update Brand</DialogTitle>
+            <DialogDescription>
+              Modify the details of the brand below.
+            </DialogDescription>
+          </DialogHeader>
           <div>
             <UpdateBrandForm
               id={_id}
@@ -64,7 +72,13 @@ const BrandActions = ({ brand }: { brand: TBrands }) => {
           <Trash2Icon className="text-red-500" />
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          <h1 className="text-3xl">Are you sure?</h1>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. This will permanently delete the
+              brand.
+            </DialogDescription>
+          </DialogHeader>
           <div className="flex gap-4 items-center ">
             <DialogClose asChild>
               <Button className="bg-red-500 hover:bg-red-500">Cancel</Button>

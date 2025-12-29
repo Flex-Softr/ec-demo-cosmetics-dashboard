@@ -1,7 +1,8 @@
 export type TAttribute = {
   _id: string;
   name: string;
-  values?: [{ _id: string; name: string }]; // Changed from 'attributeValues' to 'values'
+  isActive: boolean;
+  values?: { _id: string; name: string }[];
 };
 
 export type TAttributeForm = {
