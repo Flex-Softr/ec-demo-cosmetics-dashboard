@@ -108,6 +108,16 @@ const SelectProduct = ({
                     orderedProducts="orderedProducts"
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     initialAttributes={(field as any).attributes}
+                    availableVariations={
+                      Array.isArray(data?.data)
+                        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          data.data.find(
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            (p: any) =>
+                              p._id === watchedOrderedProducts?.[index]?.product
+                          )?.variations
+                        : undefined
+                    }
                   />
                   {errors.orderedProducts?.[index]?.product && (
                     <p className="text-red-500 text-xs mt-1">

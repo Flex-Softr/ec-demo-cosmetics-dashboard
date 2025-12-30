@@ -12,7 +12,11 @@ import {
   useWatch,
 } from "react-hook-form";
 
-type Variation = { _id: string; price: Record<string, unknown> };
+type Variation = {
+  _id: string;
+  price: Record<string, unknown>;
+  attributes?: Record<string, unknown>;
+};
 // Update the type constraint for T
 type VariationOptionsProps<T extends FieldValues> = {
   index: number;
@@ -25,6 +29,7 @@ type VariationOptionsProps<T extends FieldValues> = {
   variations?: Variation[];
   setVariations?: React.Dispatch<React.SetStateAction<Variation[]>>;
   initialAttributes?: Record<string, any>;
+  availableVariations?: Variation[];
 };
 
 const VariationOptions = <T extends FieldValues>(
@@ -41,6 +46,7 @@ const VariationOptions = <T extends FieldValues>(
     variations = [],
     setVariations,
     initialAttributes,
+    availableVariations,
   } = props;
   // inside your component
   const productId = useWatch({
@@ -48,17 +54,21 @@ const VariationOptions = <T extends FieldValues>(
     name: `${orderedProducts}.${index}.${product}` as Path<T>,
   });
 
-  const { data } = useGetACustomerProductQuery(productId ?? "null");
+  const { data } = useGetACustomerProductQuery(productId ?? "null", {
+    skip: !!availableVariations?.length,
+  });
 
   const variationId = useWatch({
     control,
     name: `${orderedProducts}.${index}.variation` as Path<T>,
   });
 
+  const allVariations = availableVariations || data?.variations || [];
+
   useEffect(() => {
-    if (data?.variations?.length) {
+    if (allVariations?.length) {
       // 1. Logic to set variations array for parent component (existing logic)
-      const selectedVariation = data.variations.find(
+      const selectedVariation = allVariations.find(
         (variation: { _id: string }) => variation._id === variationId
       );
       if (selectedVariation) {
@@ -67,7 +77,7 @@ const VariationOptions = <T extends FieldValues>(
 
       // 2. Logic to auto-select variation based on initialAttributes (new logic)
       if (!variationId && initialAttributes) {
-        const matchingVariation = data.variations.find(
+        const matchingVariation = allVariations.find(
           (v: { attributes: Record<string, any>; _id: string }) => {
             // Compare attributes. Keys match and values match.
             // Using JSON stringify for simple comparison if order matches, but safer to compare entries.
@@ -93,11 +103,18 @@ const VariationOptions = <T extends FieldValues>(
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, setVariations, variationId, initialAttributes, setValue]);
+  }, [
+    allVariations,
+    setVariations,
+    variationId,
+    initialAttributes,
+    setValue,
+    availableVariations, // Added dependency
+  ]);
 
   return (
     <>
-      {data?.variations?.length ? (
+      {allVariations?.length ? (
         <div>
           <select
             {...register(`${orderedProducts}.${index}.variation` as Path<T>)}
@@ -114,7 +131,7 @@ const VariationOptions = <T extends FieldValues>(
             className="w-full h-8 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 rounded-md font-semibold"
           >
             <option value="">-- Select Attribute --</option>
-            {data?.variations?.map(
+            {allVariations?.map(
               ({
                 _id,
                 attributes = {},
