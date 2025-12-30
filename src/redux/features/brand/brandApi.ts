@@ -3,7 +3,7 @@ import {
   TBrandPayload,
 } from "@/app/dashboard/brand/lib/brand.interface";
 import baseApi from "@/redux/baseApi/baseApi";
-import { TSuccessResponse } from "@/types/response/response";
+import { TSuccessResponse } from "@/types/response";
 
 const brandApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

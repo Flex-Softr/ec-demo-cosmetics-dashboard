@@ -1,3 +1,5 @@
+import { ROLES } from "@/const/role";
+
 const backgroundColor = (status: string) => {
   return status === "all"
     ? "bg-primary"
@@ -48,9 +50,9 @@ const backgroundColor = (status: string) => {
                                   ? "bg-[#6BD3B0]"
                                   : status === "Draft" || status === "draft"
                                     ? "bg-[#808080]"
-                                    : status === "admin"
+                                    : status === ROLES.ADMIN
                                       ? "bg-teal-500"
-                                      : status === "staff"
+                                      : status === ROLES.STAFF
                                         ? "bg-cyan-500"
                                         : "bg-primary";
 };

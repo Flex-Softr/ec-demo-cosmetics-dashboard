@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useGetPaymentMethodQuery } from "@/redux/features/paymentMethod/paymentMethodAPI";
-import { Payment } from "@/types/order/order.interface";
+import { Payment } from "@/types/order.interface";
 import { useMemo } from "react";
 import {
   Control,

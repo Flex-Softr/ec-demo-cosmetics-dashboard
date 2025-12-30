@@ -7,11 +7,12 @@ import Invoice from "@/components/invoice/Invoice";
 import { Card } from "@/components/ui/card";
 import { SectionTitle } from "@/components/ui/sectionTitle";
 import { Separator } from "@/components/ui/separator";
+import { PERMISSIONS } from "@/const/permissions";
 import BdAddress from "@/lib/bdAddress";
 import { useGetSingleOrderQuery } from "@/redux/features/orders/ordersApi";
-import { permission, TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import backgroundColor from "@/utilities/backgroundColor";
-import isPermitted from "@/utilities/isPermitted";
+import isPermitted, { TPermission } from "@/utilities/isPermitted";
 import {
   CreditCard,
   Edit,
@@ -28,7 +29,7 @@ import SetOrderHistoryData from "./SetOrderHistoryData";
 
 type OrderDetailsViewProps = {
   orderId: string;
-  permissions: string[];
+  permissions: TPermission[];
 };
 
 const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
@@ -36,7 +37,10 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
   const order: TOrders = response?.data;
 
   // Use permissions passed from server
-  const editPermission = isPermitted(permissions, permission.manageProcessing);
+  const editPermission = isPermitted(
+    permissions,
+    PERMISSIONS.MANAGE_PROCESSING_ORDER
+  );
 
   if (isLoading) {
     return (

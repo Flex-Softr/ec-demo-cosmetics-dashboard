@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import config from "@/config/config";
+import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
-import { permission } from "@/types/order/order.interface";
 import isPermitted from "@/utilities/isPermitted";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -14,7 +14,7 @@ const AllClaimRequestPage = async () => {
 
   const manageWarrantyClaim = isPermitted(
     permissions,
-    permission.manageWarrantyClaim
+    PERMISSIONS.MANAGE_WARRANTY_CLAIM
   );
 
   if (!manageWarrantyClaim) {

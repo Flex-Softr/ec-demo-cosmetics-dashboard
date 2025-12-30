@@ -2,8 +2,8 @@
 
 import { Card } from "@/components/ui/card";
 import { useGetBestSellingProductsQuery } from "@/redux/features/reports/reportsApi";
-import { TBestSellingProduct } from "@/types/reports/period";
-import { TSuccessResponse } from "@/types/response/response";
+import { TBestSellingProduct } from "@/types/period";
+import { TSuccessResponse } from "@/types/response";
 import BestSellingProductsTable from "./BestSellingProductsTable";
 const BestSellingProducts = () => {
   const { data, isLoading } = useGetBestSellingProductsQuery({});

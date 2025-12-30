@@ -2,7 +2,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateShippingChargeMutation } from "@/redux/features/shippingCharge/shippingCharge";
 import { TShippingCharge } from "@/redux/features/shippingCharge/shippingChargeInterface";
-import { TErrorResponse, TSuccessResponse } from "@/types/response/response";
+import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { useState } from "react";
 
 const UpdateActiveStatus = ({

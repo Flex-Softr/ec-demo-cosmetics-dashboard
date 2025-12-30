@@ -3,11 +3,11 @@ import CustomerInfo from "@/components/CustomerInfo";
 import OrderActionDropDown from "@/components/OrderActionDropDown";
 import OrderIdAndDate from "@/components/OrderIdAndDate";
 import { Checkbox } from "@/components/ui/checkbox";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { ColumnDef } from "@tanstack/react-table";
 // import ReasonNotes from "./ReasonNotes";
-import ProductCode from "../../processing-orders/components/ProductCode";
 import ProductInfo from "@/components/ProductInfo";
+import ProductCode from "../../processing-orders/components/ProductCode";
 
 export const columns: ColumnDef<TOrders>[] = [
   {

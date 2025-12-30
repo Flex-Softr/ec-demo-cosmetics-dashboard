@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
+import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
-import { permission } from "@/types/order/order.interface";
+import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
 import FetchAllImageToOrderReq from "./_components/FetchAllImageToOrderReq";
 import ImgToOrderTable from "./_components/ImgToOrderTable/ImgToOrder";
@@ -8,10 +9,10 @@ import ImgToOrderTable from "./_components/ImgToOrderTable/ImgToOrder";
 const AllImageToOrderPage = async () => {
   const { permissions = [] } = await getPermission();
 
-  const manageOrder =
-    permissions &&
-    (permissions.includes(permission.superAdmin) ||
-      permissions.includes(permission.manageOrder));
+  const manageOrder = isPermitted(
+    permissions,
+    PERMISSIONS.MANAGE_IMAGE_TO_ORDER
+  );
 
   if (!manageOrder) {
     redirect("/error");

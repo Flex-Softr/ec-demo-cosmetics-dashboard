@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useUpdateWarrantyClamReqMutation } from "@/redux/features/warrantyClaimRequests/warrantyClaimApi";
 import { TWarrantyClaim } from "@/redux/features/warrantyClaimRequests/warrantyClaimInterface";
-import { TErrorResponse, TSuccessResponse } from "@/types/response/response";
+import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { ChangeEvent, useState } from "react";
 
 const OfficialNotes = ({ reqData }: { reqData: TWarrantyClaim }) => {

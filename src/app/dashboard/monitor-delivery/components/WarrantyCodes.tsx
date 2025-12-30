@@ -3,7 +3,7 @@ import CommonModal from "@/components/modal/CommonModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { useState } from "react";
 import { UseFormRegister } from "react-hook-form";
 import { TEditOrderFormInput } from "../../orders/[orderId]/components/EditOrder";

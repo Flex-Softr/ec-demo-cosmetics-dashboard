@@ -2,7 +2,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 
 import { useUpdateSliderMutation } from "@/redux/features/sliderBanner/sliderApi";
-import { TErrorResponse } from "@/types/response/response";
+import { TErrorResponse } from "@/types/response";
 import { refetchData } from "@/utilities/fetchData";
 import { useState } from "react";
 import { TSlider } from "./SliderMediaTable";

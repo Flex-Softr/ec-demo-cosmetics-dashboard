@@ -8,7 +8,7 @@ import {
   TErrorMessages,
   TErrorResponse,
   TSuccessResponse,
-} from "@/types/response/response";
+} from "@/types/response";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Dispatch, SetStateAction, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";

@@ -11,7 +11,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { useUpdateWarrantyClamReqMutation } from "@/redux/features/warrantyClaimRequests/warrantyClaimApi";
 import { TWarrantyClaimResult } from "@/redux/features/warrantyClaimRequests/warrantyClaimInterface";
-import { TErrorResponse, TSuccessResponse } from "@/types/response/response";
+import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { Dispatch, SetStateAction, useState } from "react";
 
 const UpdateResult = ({

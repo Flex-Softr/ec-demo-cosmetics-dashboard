@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useCreateWarrantyClamOrderMutation } from "@/redux/features/warrantyClaimRequests/warrantyClaimApi";
-import { TErrorResponse } from "@/types/response/response";
+import { TErrorResponse } from "@/types/response";
 import fetchData, { refetchData } from "@/utilities/fetchData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";

@@ -5,11 +5,14 @@ import OrderIdAndDate from "@/components/OrderIdAndDate";
 import OrderStatus from "@/components/OrderStatus";
 import ProductInfo from "@/components/ProductInfo";
 import { Checkbox } from "@/components/ui/checkbox";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { ColumnDef } from "@tanstack/react-table";
 import ProductCode from "../../processing-orders/components/ProductCode";
+import { TPermission } from "@/utilities/isPermitted";
 
-export const getColumns = (permissions: string[]): ColumnDef<TOrders>[] => [
+export const getColumns = (
+  permissions: TPermission[]
+): ColumnDef<TOrders>[] => [
   {
     id: "select",
     header: ({ table }) => (

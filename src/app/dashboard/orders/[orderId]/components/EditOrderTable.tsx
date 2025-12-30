@@ -23,7 +23,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import WarrantyCodes from "@/app/dashboard/monitor-delivery/components/WarrantyCodes";
 import AddProductToOrder from "./AddProductToOrder";
 
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { refetchData } from "@/utilities/fetchData";
 import { TEditOrderFormInput } from "./EditOrder";
 

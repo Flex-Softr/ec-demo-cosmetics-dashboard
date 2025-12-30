@@ -1,8 +1,9 @@
 "use server";
 import { NextRequest } from "next/server";
+import { PERMISSIONS } from "./const/permissions";
+import { ROLES } from "./const/role";
 import getAccessToken, { getPermission } from "./lib/getAccessToken";
 import { TUser } from "./redux/features/auth/interface";
-import { permission } from "./types/order/order.interface";
 import decodeJWT from "./utilities/decodeJWT";
 import isPermitted from "./utilities/isPermitted";
 
@@ -23,9 +24,9 @@ export async function middleware(request: NextRequest) {
   // const currentUser = { role: "admin" }; // Decode the JWT
 
   if (
-    currentUser.role !== "superAdmin" &&
-    currentUser.role !== "admin" &&
-    currentUser.role !== "staff"
+    currentUser.role !== ROLES.SUPER_ADMIN &&
+    currentUser.role !== ROLES.ADMIN &&
+    currentUser.role !== ROLES.STAFF
   ) {
     return Response.redirect(new URL("/error", request.url));
   }
@@ -35,23 +36,23 @@ export async function middleware(request: NextRequest) {
   if (!request.nextUrl.pathname.startsWith("/dashboard")) {
     if (isPermitted(permissions)) {
       return Response.redirect(new URL("/dashboard", request.url));
-    } else if (isPermitted(permissions, permission.manageProduct)) {
+    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_PRODUCT)) {
       return Response.redirect(new URL("/dashboard/products", request.url));
-    } else if (isPermitted(permissions, permission.manageOrder)) {
+    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_ORDER)) {
       return Response.redirect(new URL("/dashboard/orders", request.url));
-    } else if (isPermitted(permissions, permission.manageProcessing)) {
+    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_PROCESSING_ORDER)) {
       return Response.redirect(
         new URL("/dashboard/processing-orders", request.url)
       );
-    } else if (isPermitted(permissions, permission.manageCourier)) {
+    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_COURIER)) {
       return Response.redirect(
         new URL("/dashboard/courier-management", request.url)
       );
-    } else if (isPermitted(permissions, permission.manageWarrantyClaim)) {
+    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_WARRANTY_CLAIM)) {
       return Response.redirect(
         new URL("/dashboard/warranty-claims", request.url)
       );
-    } else if (isPermitted(permissions, permission.manageAdminOrStaff)) {
+    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_ADMIN_OR_STAFF)) {
       return Response.redirect(
         new URL("/dashboard/manage-admin-staff", request.url)
       );

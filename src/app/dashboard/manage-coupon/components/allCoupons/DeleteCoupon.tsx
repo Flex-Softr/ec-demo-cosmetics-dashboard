@@ -3,7 +3,7 @@ import CommonModal from "@/components/modal/CommonModal";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateCouponsMutation } from "@/redux/features/coupon/couponApi";
 import { TCoupon } from "@/redux/features/coupon/couponInterface";
-import { TErrorResponse, TSuccessResponse } from "@/types/response/response";
+import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { Dispatch, SetStateAction } from "react";
 
 const DeleteCoupon = ({

@@ -1,4 +1,4 @@
-import { TOrderedProducts } from "@/types/order/order.interface";
+import { TOrderedProducts } from "@/types/order.interface";
 
 const ProductInfo = ({ products = [] }: { products: TOrderedProducts[] }) => {
   const length = products?.length;

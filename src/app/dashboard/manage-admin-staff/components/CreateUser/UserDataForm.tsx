@@ -18,10 +18,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { ROLES } from "@/const/role";
 import { formatDate } from "@/lib/formatDate";
 import { cn } from "@/lib/utils";
 import { useCreateStaffOrAdminMutation } from "@/redux/features/user/userApi";
-import { TErrorResponse, TSuccessResponse } from "@/types/response/response";
+import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CalendarIcon } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -254,10 +255,10 @@ const UserDataForm = ({
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Role</SelectLabel>
-                    <SelectItem value="admin" className="capitalize">
+                    <SelectItem value={ROLES.ADMIN} className="capitalize">
                       Admin
                     </SelectItem>
-                    <SelectItem value="staff" className="capitalize">
+                    <SelectItem value={ROLES.STAFF} className="capitalize">
                       Staff
                     </SelectItem>
                   </SelectGroup>

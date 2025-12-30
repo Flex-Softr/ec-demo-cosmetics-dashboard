@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import config from "@/config/config";
-import { TOrderedProducts } from "@/types/order/order.interface";
+import { TOrderedProducts } from "@/types/order.interface";
 
 import {
   ColumnDef,

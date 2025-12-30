@@ -21,10 +21,11 @@ import {
 import { useEffect, useMemo } from "react";
 import { getColumns } from "./OrderColumn";
 
+import { TPermission } from "@/utilities/isPermitted";
 export default function CustomerListOrdersTable({
   permissions,
 }: {
-  permissions: string[];
+  permissions: TPermission[];
 }) {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector(({ pagination }) => pagination);

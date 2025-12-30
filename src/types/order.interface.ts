@@ -1,4 +1,4 @@
-import { TVariation } from "../../redux/features/addProduct/variation/interface";
+import { TVariation } from "../redux/features/addProduct/variation/interface";
 
 export type ShippingCharge = { _id?: string; name: string; amount: number };
 
@@ -82,25 +82,6 @@ export type TOrders = {
   courierDetails: { trackingId: string };
   eventId?: string;
 };
-
-export type TPermissionEnum = (typeof permission)[keyof typeof permission];
-
-export const permission = {
-  manageAdminOrStaff: "manage admin or staff",
-  superAdmin: "super admin",
-  manageShippingCharges: "manage shipping charges",
-  manageCoupon: "manage coupon",
-  managePermission: "manage permission",
-  manageOrder: "manage orders",
-  manageProcessing: "manage warehouse",
-  manageCourier: "manage courier",
-  manageWarrantyClaim: "manage warranty claim",
-  manageProduct: "manage product",
-  manageImageToOrder: "manage image to order",
-  manageSms: "manage sms",
-  manageCustomers: "manage customers",
-  managePaymentMethod: "manage payment methods",
-} as const;
 
 export type TQuery = {
   status?: string;

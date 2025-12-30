@@ -1,5 +1,5 @@
 import baseApi from "@/redux/baseApi/baseApi";
-import { TQuery } from "@/types/order/order.interface";
+import { TQuery } from "@/types/order.interface";
 import searchParams from "@/utilities/searchParams";
 
 const customersAPIs = baseApi.injectEndpoints({

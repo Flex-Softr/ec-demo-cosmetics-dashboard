@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
+import { PERMISSIONS } from "@/const/permissions";
 import { TPermission } from "@/redux/features/permissions/permissionInterface";
 import { useAddOrRemovePermissionFromUserMutation } from "@/redux/features/permissions/permissionsAPi";
 import { TUser } from "@/redux/features/user/userInterface";
-import { permission as permissionList } from "@/types/order/order.interface";
-import { TSuccessResponse } from "@/types/response/response";
+import { TSuccessResponse } from "@/types/response";
 import { TGenericErrorResponse } from "@/utilities/response";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -31,29 +31,29 @@ const PermissionTable = ({
   const [addRemovePermission] = useAddOrRemovePermissionFromUserMutation();
   const { toast } = useToast();
   const FormSchema = z.object({
-    superAdmin: z.boolean().optional(),
-    manageAdminOrStaff: z.boolean().optional(),
-    manageShippingCharges: z.boolean().optional(),
-    manageCoupon: z.boolean().optional(),
-    managePermission: z.boolean().optional(),
-    manageOrder: z.boolean().optional(),
-    manageProcessing: z.boolean().optional(),
-    manageCourier: z.boolean().optional(),
-    manageWarrantyClaim: z.boolean().optional(),
-    manageProduct: z.boolean().optional(),
-    manageSms: z.boolean().optional(),
-    manageCustomers: z.boolean().optional(),
+    [PERMISSIONS.SUPER_ADMIN]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_ADMIN_OR_STAFF]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_SHIPPING_CHARGE]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_COUPON]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_PERMISSION]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_ORDER]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_PROCESSING_ORDER]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_SHIPMENT_ORDER]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_WARRANTY_CLAIM]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_PRODUCT]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_SMS]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_CUSTOMER]: z.boolean().optional(),
   });
 
-  const defaultValues = Object.keys(permissionList).reduce(
-    (acc, key) => {
-      const permissionKey = key as keyof typeof permissionList;
-      acc[permissionKey] = (user?.permissions || []).includes(
-        permissionList[permissionKey]
-      );
+  const defaultValues = Object.values(PERMISSIONS).reduce(
+    (acc, permissionValue) => {
+      // Cast permissionValue to match FormSchema keys (which are the same strings)
+      acc[permissionValue as keyof typeof FormSchema.shape] = (
+        user?.permissions || []
+      ).some((p) => p.name === permissionValue);
       return acc;
     },
-    {} as Record<keyof typeof permissionList, boolean>
+    {} as Record<string, boolean>
   );
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -63,75 +63,91 @@ const PermissionTable = ({
 
   const formFieldData = [
     {
-      ...permissionData.find((item) => item.name === "super admin"),
+      ...permissionData.find((item) => item.name === PERMISSIONS.SUPER_ADMIN),
       description: "Can do anything. Do not give this to anyone.",
-      fieldName: "superAdmin",
+      fieldName: PERMISSIONS.SUPER_ADMIN,
       warn: "Be careful",
     },
     {
-      ...permissionData.find((item) => item.name === "manage admin or staff"),
+      ...permissionData.find(
+        (item) => item.name === PERMISSIONS.MANAGE_ADMIN_OR_STAFF
+      ),
       description: "Manage admin and staff",
-      fieldName: "manageAdminOrStaff",
+      fieldName: PERMISSIONS.MANAGE_ADMIN_OR_STAFF,
       warn: undefined,
     },
     {
-      ...permissionData.find((item) => item.name === "manage shipping charges"),
+      ...permissionData.find(
+        (item) => item.name === PERMISSIONS.MANAGE_SHIPPING_CHARGE
+      ),
       description: "Can manage shipping charges",
-      fieldName: "manageShippingCharges",
+      fieldName: PERMISSIONS.MANAGE_SHIPPING_CHARGE,
       warn: undefined,
     },
     {
-      ...permissionData.find((item) => item.name === "manage coupon"),
+      ...permissionData.find((item) => item.name === PERMISSIONS.MANAGE_COUPON),
       description: "Can add or delete coupons",
-      fieldName: "manageCoupon",
+      fieldName: PERMISSIONS.MANAGE_COUPON,
       warn: undefined,
     },
     {
-      ...permissionData.find((item) => item.name === "manage permission"),
+      ...permissionData.find(
+        (item) => item.name === PERMISSIONS.MANAGE_PERMISSION
+      ),
       description: "Can add new permission",
-      fieldName: "managePermission",
+      fieldName: PERMISSIONS.MANAGE_PERMISSION,
       warn: undefined,
     },
     {
-      ...permissionData.find((item) => item.name === "manage orders"),
+      ...permissionData.find((item) => item.name === PERMISSIONS.MANAGE_ORDER),
       description: "Can manage orders",
-      fieldName: "manageOrder",
+      fieldName: PERMISSIONS.MANAGE_ORDER,
       warn: undefined,
     },
     {
-      ...permissionData.find((item) => item.name === "manage warehouse"),
+      ...permissionData.find(
+        (item) => item.name === PERMISSIONS.MANAGE_PROCESSING_ORDER
+      ),
       description: "Can manage processing orders and can add warranty codes",
-      fieldName: "manageProcessing",
+      fieldName: PERMISSIONS.MANAGE_PROCESSING_ORDER,
       warn: undefined,
     },
     {
-      ...permissionData.find((item) => item.name === "manage courier"),
+      ...permissionData.find(
+        (item) => item.name === PERMISSIONS.MANAGE_SHIPMENT_ORDER
+      ),
       description: "Can book courier",
-      fieldName: "manageCourier",
+      fieldName: PERMISSIONS.MANAGE_SHIPMENT_ORDER,
       warn: undefined,
     },
     {
-      ...permissionData.find((item) => item.name === "manage warranty claim"),
+      ...permissionData.find(
+        (item) => item.name === PERMISSIONS.MANAGE_WARRANTY_CLAIM
+      ),
       description: "Can manage warranty claims",
-      fieldName: "manageWarrantyClaim",
+      fieldName: PERMISSIONS.MANAGE_WARRANTY_CLAIM,
       warn: undefined,
     },
     {
-      ...permissionData.find((item) => item.name === "manage product"),
+      ...permissionData.find(
+        (item) => item.name === PERMISSIONS.MANAGE_PRODUCT
+      ),
       description: "Can manage products",
-      fieldName: "manageProduct",
+      fieldName: PERMISSIONS.MANAGE_PRODUCT,
       warn: undefined,
     },
     {
-      ...permissionData.find((item) => item.name === "manage sms"),
+      ...permissionData.find((item) => item.name === PERMISSIONS.MANAGE_SMS),
       description: "Can send sms",
-      fieldName: "manageSms",
+      fieldName: PERMISSIONS.MANAGE_SMS,
       warn: undefined,
     },
     {
-      ...permissionData.find((item) => item.name === "manage customers"),
+      ...permissionData.find(
+        (item) => item.name === PERMISSIONS.MANAGE_CUSTOMER
+      ),
       description: "Can manage customers",
-      fieldName: "manageCustomers",
+      fieldName: PERMISSIONS.MANAGE_CUSTOMER,
       warn: undefined,
     },
   ];

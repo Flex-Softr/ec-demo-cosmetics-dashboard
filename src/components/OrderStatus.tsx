@@ -1,6 +1,7 @@
 import CommonModal from "@/components/modal/CommonModal";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import backgroundColor from "@/utilities/backgroundColor";
+import { TPermission } from "@/utilities/isPermitted";
 import { useState } from "react";
 import UpdateOrderStatus from "./UpdateOrderStatus";
 
@@ -8,7 +9,7 @@ type TProps = {
   order: TOrders;
   deliveryStatus?: string;
   disableStatus?: string[];
-  permissions: string[];
+  permissions: TPermission[];
 };
 
 const OrderStatus = ({

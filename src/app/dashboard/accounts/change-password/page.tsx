@@ -3,7 +3,7 @@ import EcButton from "@/components/EcButton/EcButton";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useChangePasswordMutation } from "@/redux/features/auth/authApi";
-import { TErrorMessages, TErrorResponse } from "@/types/response/response";
+import { TErrorMessages, TErrorResponse } from "@/types/response";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 

@@ -1,7 +1,7 @@
 import Show from "@/components/Show";
 import { Card } from "@/components/ui/card";
+import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
-import { permission } from "@/types/order/order.interface";
 import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
 import RegisteredCustomerData from "./_components/RegisteredCustomerData";
@@ -13,7 +13,7 @@ const page = async () => {
 
   const manageAdminOrStaff = isPermitted(
     permissions,
-    permission.manageCustomers
+    PERMISSIONS.MANAGE_CUSTOMER
   );
 
   if (!manageAdminOrStaff) {

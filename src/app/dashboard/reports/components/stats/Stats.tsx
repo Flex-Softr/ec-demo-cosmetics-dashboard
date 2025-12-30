@@ -5,7 +5,7 @@ import DateRangeSelector, {
 } from "@/components/DateRangeSelector";
 import { useGetStatsQuery } from "@/redux/features/reports/reportsApi";
 import { TStats } from "@/redux/features/reports/reportsInterface";
-import { TSuccessResponse } from "@/types/response/response";
+import { TSuccessResponse } from "@/types/response";
 import { useState } from "react";
 import StatsCard from "./StatsCard";
 const Stats = () => {

@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAppSelector } from "@/redux/hooks";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { Eye, Pencil } from "lucide-react";
 import Link from "next/link";

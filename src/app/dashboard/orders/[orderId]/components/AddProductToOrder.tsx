@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import { useGetCustomerProductsQuery } from "@/redux/features/allProducts/allProductsApi";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { Trash2 } from "lucide-react";
 import {
   Control,

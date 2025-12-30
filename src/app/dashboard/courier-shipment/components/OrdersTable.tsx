@@ -24,10 +24,11 @@ import { useEffect, useMemo } from "react";
 import { getColumns } from "./OrdersColumn";
 // import ReasonNotes from "./ReasonNotes";
 
+import { TPermission } from "@/utilities/isPermitted";
 export default function OrdersTable({
   permissions,
 }: {
-  permissions: string[];
+  permissions: TPermission[];
 }) {
   const dispatch = useAppDispatch();
 

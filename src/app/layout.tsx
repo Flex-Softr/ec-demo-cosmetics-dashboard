@@ -1,17 +1,17 @@
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import AllProvider from "../provider/AllProvider";
+import AllProvider from "../providers/AllProvider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "Oneself",
-    template: "%s | Oneself",
+    default: "Nora Life Style",
+    template: "%s | Nora Life Style",
   },
-  description: "Oneself",
+  description: "Nora Life Style",
 };
 
 export default function RootLayout({

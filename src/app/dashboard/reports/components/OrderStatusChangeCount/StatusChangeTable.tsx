@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TOrderStatusChangeCount } from "@/types/reports/period";
+import { TOrderStatusChangeCount } from "@/types/period";
 
 export const columns: ColumnDef<TOrderStatusChangeCount>[] = [
   {

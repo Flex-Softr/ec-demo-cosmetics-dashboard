@@ -1,10 +1,10 @@
 import CommonModal from "@/components/modal/CommonModal";
-import { TOrders } from "@/types/order/order.interface";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import { useUpdateOrderMutation } from "@/redux/features/orders/ordersApi";
+import { TOrders } from "@/types/order.interface";
 import { refetchData } from "@/utilities/fetchData";
 import { useState } from "react";
-import { useUpdateOrderMutation } from "@/redux/features/orders/ordersApi";
 
 const backgroundColor = (status: string) => {
   switch (status) {

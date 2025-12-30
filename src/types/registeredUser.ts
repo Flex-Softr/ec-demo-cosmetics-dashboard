@@ -1,4 +1,4 @@
-import { Shipping } from "../order/order.interface";
+import { Shipping } from "./order.interface";
 
 export type TRegisteredUserStatus = "active" | "banned" | "deleted";
 

@@ -2,7 +2,7 @@
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { TFormInput } from "./OrderForm";
 

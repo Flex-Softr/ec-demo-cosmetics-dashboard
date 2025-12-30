@@ -1,17 +1,18 @@
-import { TPermissionEnum, permission } from "@/types/order/order.interface";
+import { PERMISSIONS, TPermissionName } from "@/const/permissions";
+
+export type TPermission = { _id: string; name: string };
 
 const isPermitted = (
-  permissions?: string[],
-  requiredPermission?: TPermissionEnum
+  permissions?: TPermission[],
+  requiredPermission?: TPermissionName
 ) => {
   const neededPermission = requiredPermission
     ? requiredPermission
-    : "super admin";
+    : PERMISSIONS.SUPER_ADMIN;
   if (permissions?.length) {
     return (
-      permissions &&
-      (permissions.includes(permission.superAdmin) ||
-        permissions.includes(neededPermission))
+      permissions.some((p) => p.name === PERMISSIONS.SUPER_ADMIN) ||
+      permissions.some((p) => p.name === neededPermission)
     );
   }
   return false;

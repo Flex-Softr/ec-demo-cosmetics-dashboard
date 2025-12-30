@@ -38,14 +38,15 @@ type TProps = {
     manageProduct: boolean;
     manageOrder: boolean;
     manageImgToOrder: boolean;
-    manageProcessing: boolean;
-    manageCourier: boolean;
+    manageProcessingOrder: boolean;
+    manageShipmentOrder: boolean;
     manageAdminOrStaff: boolean;
     manageWarrantyClaim: boolean;
-    manageCoupons: boolean;
-    manageShippingCharges: boolean;
+    manageCoupon: boolean;
+    manageShippingCharge: boolean;
     manageCustomer: boolean;
     managePaymentMethod: boolean;
+    manageCourier: boolean;
     sendSMS: boolean;
   };
 };
@@ -72,14 +73,15 @@ export function SidebarClient({ permissions }: TProps) {
     manageProduct,
     manageOrder,
     // manageImgToOrder,
-    manageProcessing,
-    manageCourier,
+    manageProcessingOrder,
+    manageShipmentOrder,
     manageAdminOrStaff,
     manageWarrantyClaim,
-    manageCoupons,
-    manageShippingCharges,
+    manageCoupon,
+    manageShippingCharge,
     manageCustomer,
     managePaymentMethod,
+    manageCourier,
     sendSMS,
   } = permissions;
 
@@ -110,15 +112,15 @@ export function SidebarClient({ permissions }: TProps) {
       visible: true,
       items: [
         manageOrder && { name: "Orders", href: "/dashboard/orders" },
-        manageProcessing && {
+        manageProcessingOrder && {
           name: "Processing Orders",
           href: "/dashboard/processing-orders",
         },
-        manageCourier && {
+        manageShipmentOrder && {
           name: "Courier Shipment",
           href: "/dashboard/courier-shipment",
         },
-        (manageCourier || manageProcessing) && {
+        (manageCourier || manageProcessingOrder) && {
           name: "Monitor Delivery",
           href: "/dashboard/monitor-delivery",
         },
@@ -132,7 +134,10 @@ export function SidebarClient({ permissions }: TProps) {
           href: "/dashboard/warranty-claims",
           // icon: ShieldAlert,
         },
-        {
+        (manageOrder ||
+          manageProcessingOrder ||
+          manageShipmentOrder ||
+          isSuperAdmin) && {
           name: "Fraud Check",
           href: "/dashboard/fraud-check",
           // icon: ShieldCheck,
@@ -149,7 +154,7 @@ export function SidebarClient({ permissions }: TProps) {
           name: "Slider Config",
           href: "/dashboard/slider-section",
         },
-        manageShippingCharges && {
+        manageShippingCharge && {
           name: "Shipping Charges",
           href: "/dashboard/manage-shipping-charges",
         },
@@ -171,9 +176,9 @@ export function SidebarClient({ permissions }: TProps) {
       key: "marketing",
       label: "Marketing",
       icon: TicketPercent,
-      visible: !!(manageCoupons || sendSMS),
+      visible: !!(manageCoupon || sendSMS),
       items: [
-        manageCoupons && {
+        manageCoupon && {
           name: "Manage Coupons",
           href: "/dashboard/manage-coupon",
         },
@@ -208,19 +213,19 @@ export function SidebarClient({ permissions }: TProps) {
 
     if (manageOrder)
       items.push({ name: "", href: "/dashboard/orders", icon: ClipboardList });
-    if (manageProcessing)
+    if (manageProcessingOrder)
       items.push({
         name: "",
         href: "/dashboard/processing-orders",
         icon: RefreshCcw,
       });
-    if (manageCourier)
+    if (manageShipmentOrder)
       items.push({
         name: "",
         href: "/dashboard/courier-shipment",
         icon: Truck,
       });
-    if (manageCourier || manageProcessing)
+    if (manageCourier || manageProcessingOrder)
       items.push({
         name: "",
         href: "/dashboard/monitor-delivery",
@@ -244,7 +249,7 @@ export function SidebarClient({ permissions }: TProps) {
       icon: ShieldCheck,
     });
 
-    if (manageShippingCharges)
+    if (manageShippingCharge)
       items.push({
         name: "",
         href: "/dashboard/manage-shipping-charges",
@@ -275,7 +280,7 @@ export function SidebarClient({ permissions }: TProps) {
         icon: Settings,
       });
 
-    if (manageCoupons)
+    if (manageCoupon)
       items.push({
         name: "",
         href: "/dashboard/manage-coupon",

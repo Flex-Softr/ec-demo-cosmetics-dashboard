@@ -1,4 +1,4 @@
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { createSlice } from "@reduxjs/toolkit";
 
 type TInitialState = {

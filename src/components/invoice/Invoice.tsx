@@ -1,4 +1,4 @@
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { MapPin, Phone, ScissorsLineDashedIcon, UserRound } from "lucide-react";
 import Image from "next/image";
 import logo from "../../../public/logo.jpg";
@@ -108,19 +108,19 @@ function Invoice({ orders }: { orders: TOrders[] }) {
                       <span className="font-bold flex items-center gap-2">
                         <UserRound className="w-4 text-primary" />
                       </span>
-                      <span>Oneself</span>
+                      <span>Nora Life Style</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
                       <span className="font-bold flex items-center gap-2">
                         <Phone className="w-4 text-primary" />
                       </span>
-                      <span>01967214215</span>
+                      <span>01755555555</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
                       <span className="font-bold flex items-center gap-2">
                         <MapPin className="w-4 text-primary" />
                       </span>
-                      <span>Khulna, Bangladesh</span>
+                      <span>Dhaka, Bangladesh</span>
                     </div>
                   </div>
                 </div>

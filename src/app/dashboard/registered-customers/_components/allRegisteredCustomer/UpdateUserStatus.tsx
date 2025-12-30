@@ -13,8 +13,8 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { useUpdateCustomerMutation } from "@/redux/features/registeredCustomer/RegisteredCustomerApi";
 
-import { TRegisteredUserStatus } from "@/types/registeredUser/registeredUser";
-import { TErrorResponse, TSuccessResponse } from "@/types/response/response";
+import { TRegisteredUserStatus } from "@/types/registeredUser";
+import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import backgroundColor from "@/utilities/backgroundColor";
 import { useState } from "react";
 

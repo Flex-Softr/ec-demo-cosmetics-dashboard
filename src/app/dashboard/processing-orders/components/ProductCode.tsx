@@ -10,7 +10,7 @@ import {
   useUpdateWarrantyCodeMutation,
 } from "@/redux/features/warranty/warrantySlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { refetchData } from "@/utilities/fetchData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";

@@ -1,5 +1,5 @@
 import CustomerInfo from "@/components/CustomerInfo";
-import { TRegisteredCustomer } from "@/types/registeredUser/registeredUser";
+import { TRegisteredCustomer } from "@/types/registeredUser";
 import { ColumnDef } from "@tanstack/react-table";
 import RegisteredCustomerDetails from "./RegisteredCustomerDetails";
 import UpdateUserStatus from "./UpdateUserStatus";

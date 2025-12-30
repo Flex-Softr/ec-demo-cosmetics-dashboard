@@ -1,15 +1,18 @@
+import { TPermissionName } from "@/const/permissions";
+import { TRole } from "@/const/role";
+
 export type TUser = {
   userId: string;
-  role: string;
-  permissions: string[];
+  role: TRole;
+  permissions: { _id: string; name: TPermissionName }[]; // Use TPermissionName for name to keep strictness if possible, or just string
   iat: number;
   exp: number;
 };
 
 type UserProfile = {
-  permissions: string[];
+  permissions: { _id: string; name: TPermissionName }[];
   _id: string;
-  role: string;
+  role: TRole;
   phoneNumber: string;
   email: string;
   status: string;

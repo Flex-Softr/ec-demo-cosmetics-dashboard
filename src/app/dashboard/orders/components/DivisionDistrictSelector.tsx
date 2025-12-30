@@ -3,7 +3,7 @@
 import { Label } from "@/components/ui/label";
 import BdAddress from "@/lib/bdAddress";
 import { useGetShippingChargeQuery } from "@/redux/features/shippingCharge/shippingCharge";
-import { ShippingCharge } from "@/types/order/order.interface";
+import { ShippingCharge } from "@/types/order.interface";
 import { useEffect } from "react";
 import {
   Control,

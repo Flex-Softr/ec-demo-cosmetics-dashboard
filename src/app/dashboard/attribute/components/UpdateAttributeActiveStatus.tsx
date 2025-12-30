@@ -1,7 +1,7 @@
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateAttributeMutation } from "@/redux/features/addAttributes/attributesApi";
-import { TErrorResponse, TSuccessResponse } from "@/types/response/response";
+import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { useState } from "react";
 import { TAttribute } from "../lib/attribute.interface";
 

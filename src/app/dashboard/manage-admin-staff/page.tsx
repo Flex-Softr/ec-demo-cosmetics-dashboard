@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
+import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
-import { permission } from "@/types/order/order.interface";
 import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
 import CreateUser from "./components/CreateUser/CreateUser";
@@ -13,7 +13,7 @@ const ManageUser = async () => {
 
   const manageAdminOrStaff = isPermitted(
     permissions,
-    permission.manageAdminOrStaff
+    PERMISSIONS.MANAGE_ADMIN_OR_STAFF
   );
 
   if (!manageAdminOrStaff) {

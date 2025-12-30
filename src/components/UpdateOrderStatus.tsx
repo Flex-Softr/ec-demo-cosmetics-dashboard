@@ -7,9 +7,9 @@ import { useUpdateOrdersStatusMutation } from "@/redux/features/orders/ordersApi
 // import { setIsOrderUpdate } from "@/redux/features/orders/ordersSlice";
 import { useUpdateProcessingOrderStatusMutation } from "@/redux/features/processingOrders/processingOrdersApi";
 // import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { permission } from "@/types/order/order.interface";
+import { PERMISSIONS } from "@/const/permissions";
 import { refetchData } from "@/utilities/fetchData";
-import isPermitted from "@/utilities/isPermitted";
+import isPermitted, { TPermission } from "@/utilities/isPermitted";
 import statusOptions from "@/utilities/statusOptions";
 import { useState } from "react";
 
@@ -17,7 +17,7 @@ type TProps = {
   _id: string;
   status: string;
   handleOpen?: () => void;
-  permissions: string[];
+  permissions: TPermission[];
 };
 
 const UpdateOrderStatus = ({
@@ -53,11 +53,11 @@ const UpdateOrderStatus = ({
 
   const hasPermission =
     (ordersRoute.includes(status) &&
-      isPermitted(permissions, permission.manageOrder)) ||
+      isPermitted(permissions, PERMISSIONS.MANAGE_ORDER)) ||
     (processingOrdersRoute.includes(status) &&
-      isPermitted(permissions, permission.manageProcessing)) ||
+      isPermitted(permissions, PERMISSIONS.MANAGE_PROCESSING_ORDER)) ||
     (courierRoute.includes(status) &&
-      isPermitted(permissions, permission.manageCourier));
+      isPermitted(permissions, PERMISSIONS.MANAGE_SHIPMENT_ORDER));
 
   if (!hasPermission) return null;
 

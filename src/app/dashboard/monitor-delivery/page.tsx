@@ -1,8 +1,8 @@
 import OrderSearchBar from "@/components/OrderSearchBar";
 import Show from "@/components/Show";
 import { Card } from "@/components/ui/card";
+import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
-import { permission } from "@/types/order/order.interface";
 import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
 import MonitorOrderDateRange from "./components/MonitorDateRange";
@@ -13,13 +13,17 @@ import StatusButtons from "./components/StatusButtons";
 const MonitorDelivery = async () => {
   const { permissions = [] } = await getPermission();
 
-  const manageCourier = isPermitted(permissions, permission.manageCourier);
+  const manageShipmentOrder = isPermitted(
+    permissions,
+    PERMISSIONS.MANAGE_SHIPMENT_ORDER
+  );
 
-  const manageProcessing = permissions.includes(permission.manageProcessing);
+  const manageProcessingOrder = isPermitted(
+    permissions,
+    PERMISSIONS.MANAGE_PROCESSING_ORDER
+  );
 
-  const editPermission = isPermitted(permissions, permission.manageProcessing);
-
-  if (!manageCourier && !manageProcessing) {
+  if (!manageShipmentOrder && !manageProcessingOrder) {
     redirect("/error");
   }
 
@@ -34,7 +38,7 @@ const MonitorDelivery = async () => {
       <div className="space-y-3">
         {/* All, Pending, canceled, on courier etc status*/}
         <StatusButtons
-          manageProcessing={manageCourier ? false : manageProcessing}
+          manageProcessing={manageShipmentOrder ? false : manageProcessingOrder}
         />
         <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
           {/*Bulk actions for Orders*/}
@@ -44,7 +48,7 @@ const MonitorDelivery = async () => {
         </div>
         {/*Monitor delivery orders table */}
         <OrdersTable
-          editPermission={editPermission}
+          editPermission={manageProcessingOrder}
           permissions={permissions}
         />
       </div>

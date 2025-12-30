@@ -1,6 +1,6 @@
 import { TAttribute } from "@/app/dashboard/attribute/lib/attribute.interface";
 import baseApi from "@/redux/baseApi/baseApi";
-import { TSuccessResponse } from "@/types/response/response";
+import { TSuccessResponse } from "@/types/response";
 
 const attributesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

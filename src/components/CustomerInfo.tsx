@@ -1,4 +1,6 @@
 "use client";
+import FraudCheck from "@/app/dashboard/fraud-check/FraudCheck";
+import CustomerOrderHistory from "@/app/dashboard/orders/components/CustomerOrderHistory";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,15 +8,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, MapPin, Phone, UserRound } from "lucide-react";
-import CommonModal from "./modal/CommonModal";
-import { useState } from "react";
-import CustomerOrderHistory from "@/app/dashboard/orders/components/CustomerOrderHistory";
-import { TOrders } from "@/types/order/order.interface";
 import config from "@/config/config";
-import Link from "next/link";
-import FraudCheck from "@/app/dashboard/fraud-check/FraudCheck";
+import { TOrders } from "@/types/order.interface";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { Eye, MapPin, Phone, UserRound } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import CommonModal from "./modal/CommonModal";
 
 const CustomerInfo = ({ order }: { order: TOrders }) => {
   const { shipping: customer, deliveryStatus } = order || {};

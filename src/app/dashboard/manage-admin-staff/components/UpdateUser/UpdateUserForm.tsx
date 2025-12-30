@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { PERMISSIONS } from "@/const/permissions";
 import { formatDate } from "@/lib/formatDate";
 import { cn } from "@/lib/utils";
 import { TPermission } from "@/redux/features/permissions/permissionInterface";
@@ -25,8 +26,7 @@ import { useGetAllPermissionsQuery } from "@/redux/features/permissions/permissi
 import { useUpdateStaffOrAdminMutation } from "@/redux/features/user/userApi";
 import { TUser } from "@/redux/features/user/userInterface";
 import { useAppSelector } from "@/redux/hooks";
-import { permission } from "@/types/order/order.interface";
-import { TErrorResponse, TSuccessResponse } from "@/types/response/response";
+import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import isPermitted from "@/utilities/isPermitted";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CalendarIcon } from "lucide-react";
@@ -83,7 +83,7 @@ const UpdateUserForm = ({
 
   const canMangePermission = isPermitted(
     loggedInUser?.permissions,
-    permission.managePermission
+    PERMISSIONS.MANAGE_PERMISSION
   );
   const {
     register,

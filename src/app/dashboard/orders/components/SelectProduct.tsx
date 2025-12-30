@@ -70,8 +70,8 @@ const SelectProduct = ({
         <TableHeader>
           <TableRow className="border-t">
             <TableHead className="w-[50%]">Product Name</TableHead>
+            <TableHead className="w-[10%] text-center">Unit Price</TableHead>
             <TableHead className="w-[10%] text-center">Quantity</TableHead>
-            <TableHead className="w-[15%] text-center">Unit Price</TableHead>
             <TableHead className="w-[15%] text-center">Amount</TableHead>
             <TableHead className="w-[10%] text-center">Action</TableHead>
           </TableRow>

@@ -1,5 +1,5 @@
 import baseApi from "@/redux/baseApi/baseApi";
-import { TQuery } from "@/types/order/order.interface";
+import { TQuery } from "@/types/order.interface";
 import { IAdminProductResponse, TProductPayload } from "@/types/products";
 import searchParams from "@/utilities/searchParams";
 

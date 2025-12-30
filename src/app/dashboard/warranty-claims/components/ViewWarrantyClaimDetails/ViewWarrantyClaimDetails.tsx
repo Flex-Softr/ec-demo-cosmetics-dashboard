@@ -18,7 +18,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { useUpdateVariationMutation } from "@/redux/features/warrantyClaimRequests/warrantyClaimApi";
 import { TWarrantyClaim } from "@/redux/features/warrantyClaimRequests/warrantyClaimInterface";
-import { TErrorResponse } from "@/types/response/response";
+import { TErrorResponse } from "@/types/response";
 import Link from "next/link";
 
 import { useState } from "react";

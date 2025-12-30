@@ -1,5 +1,5 @@
+import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
-import { permission } from "@/types/order/order.interface";
 import isPermitted from "@/utilities/isPermitted";
 import { SidebarClient } from "./SidebarClient";
 
@@ -7,50 +7,57 @@ export async function Sidebar() {
   const { permissions = [] } = await getPermission();
 
   const isSuperAdmin = isPermitted(permissions);
-  const manageProduct = isPermitted(permissions, permission.manageProduct);
-  const manageOrder = isPermitted(permissions, permission.manageOrder);
+  const manageProduct = isPermitted(permissions, PERMISSIONS.MANAGE_PRODUCT);
+  const manageOrder = isPermitted(permissions, PERMISSIONS.MANAGE_ORDER);
   const manageImgToOrder = isPermitted(
     permissions,
-    permission.manageImageToOrder
+    PERMISSIONS.MANAGE_IMAGE_TO_ORDER
   );
-  const manageProcessing = isPermitted(
+  const manageProcessingOrder = isPermitted(
     permissions,
-    permission.manageProcessing
+    PERMISSIONS.MANAGE_PROCESSING_ORDER
   );
-  const manageCourier = isPermitted(permissions, permission.manageCourier);
+  const manageShipmentOrder = isPermitted(
+    permissions,
+    PERMISSIONS.MANAGE_SHIPMENT_ORDER
+  );
   const manageAdminOrStaff = isPermitted(
     permissions,
-    permission.manageAdminOrStaff
+    PERMISSIONS.MANAGE_ADMIN_OR_STAFF
   );
   const manageWarrantyClaim = isPermitted(
     permissions,
-    permission.manageWarrantyClaim
+    PERMISSIONS.MANAGE_WARRANTY_CLAIM
   );
-  const manageCoupons = isPermitted(permissions, permission.manageCoupon);
-  const manageShippingCharges = isPermitted(
+  const manageCoupon = isPermitted(permissions, PERMISSIONS.MANAGE_COUPON);
+  const manageShippingCharge = isPermitted(
     permissions,
-    permission.manageShippingCharges
+    PERMISSIONS.MANAGE_SHIPPING_CHARGE
   );
-  const manageCustomer = isPermitted(permissions, permission.manageCustomers);
+  const manageCustomer = isPermitted(permissions, PERMISSIONS.MANAGE_CUSTOMER);
   const managePaymentMethod = isPermitted(
     permissions,
-    permission.managePaymentMethod
+    PERMISSIONS.MANAGE_PAYMENT_METHOD
   );
-  const sendSMS = isPermitted(permissions, permission.manageSms);
+
+  const manageCourier = isPermitted(permissions, PERMISSIONS.MANAGE_COURIER);
+
+  const sendSMS = isPermitted(permissions, PERMISSIONS.MANAGE_SMS);
 
   const permissionsObj = {
     isSuperAdmin,
     manageProduct,
     manageOrder,
     manageImgToOrder,
-    manageProcessing,
-    manageCourier,
+    manageProcessingOrder,
+    manageShipmentOrder,
     manageAdminOrStaff,
     manageWarrantyClaim,
-    manageCoupons,
-    manageShippingCharges,
+    manageCoupon,
+    manageShippingCharge,
     manageCustomer,
     managePaymentMethod,
+    manageCourier,
     sendSMS,
   };
 

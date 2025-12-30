@@ -8,8 +8,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useGetOrderStatusChangeCountQuery } from "@/redux/features/reports/reportsApi";
-import { TOrderStatusChangeCount } from "@/types/reports/period";
-import { TSuccessResponse } from "@/types/response/response";
+import { TOrderStatusChangeCount } from "@/types/period";
+import { TSuccessResponse } from "@/types/response";
 import { format } from "date-fns";
 import { useState } from "react";
 import StatusChangeTable from "./StatusChangeTable";

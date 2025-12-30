@@ -8,8 +8,20 @@ import Filter from "./components/Filter";
 import ProductBulkAction from "./components/ProductBulkAction";
 import ProductSearchBar from "./components/ProductSearchBar";
 import ProductsTable from "./components/ProductsTable";
+import { getPermission } from "@/lib/getAccessToken";
+import { PERMISSIONS } from "@/const/permissions";
+import isPermitted from "@/utilities/isPermitted";
+import { redirect } from "next/navigation";
 
-const AllProducts = () => {
+const AllProducts = async () => {
+  const { permissions = [] } = await getPermission();
+
+  const manageProduct = isPermitted(permissions, PERMISSIONS.MANAGE_PRODUCT);
+
+  if (!manageProduct) {
+    redirect("/error");
+  }
+
   return (
     <Card className="m-4">
       {/* header section, search bar  */}

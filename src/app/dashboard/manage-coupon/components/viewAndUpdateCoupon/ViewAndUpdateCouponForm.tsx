@@ -13,7 +13,7 @@ import {
   TErrorMessages,
   TErrorResponse,
   TSuccessResponse,
-} from "@/types/response/response";
+} from "@/types/response";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Label } from "@radix-ui/react-label";
 import { Dispatch, SetStateAction, useState } from "react";

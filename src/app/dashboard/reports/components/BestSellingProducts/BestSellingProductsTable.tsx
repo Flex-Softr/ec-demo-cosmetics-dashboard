@@ -1,5 +1,5 @@
 "use client";
-import { TBestSellingProduct } from "@/types/reports/period";
+import { TBestSellingProduct } from "@/types/period";
 import {
   ColumnDef,
   flexRender,

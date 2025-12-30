@@ -1,7 +1,7 @@
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateBrandMutation } from "@/redux/features/brand/brandApi";
-import { TErrorResponse, TSuccessResponse } from "@/types/response/response";
+import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { refetchData } from "@/utilities/fetchData";
 import { useState } from "react";
 import { TBrand } from "../lib/brand.interface";

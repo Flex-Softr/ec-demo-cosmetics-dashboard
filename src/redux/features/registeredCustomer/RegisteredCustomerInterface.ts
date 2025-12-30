@@ -1,4 +1,4 @@
-import { TRegisteredCustomer } from "@/types/registeredUser/registeredUser";
+import { TRegisteredCustomer } from "@/types/registeredUser";
 
 export type TRegisteredCustomerSlice = {
   users?: TRegisteredCustomer[];

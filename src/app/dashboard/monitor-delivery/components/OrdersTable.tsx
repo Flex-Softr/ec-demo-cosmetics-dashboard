@@ -16,7 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 // import { TOrders } from "@/types/order/order.interface";
 import OrderStatus from "@/components/OrderStatus";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import formattedOrderData from "@/utilities/formattedOrderData";
 import {
   ColumnDef,
@@ -32,12 +32,14 @@ import { columns } from "./OrdersColumn";
 // import ReasonNotes from "./ReasonNotes";
 // import { useCallback,useState ,useRef } from "react";
 
+import { TPermission } from "@/utilities/isPermitted";
+
 export default function OrdersTable({
   editPermission,
   permissions,
 }: {
   editPermission: boolean;
-  permissions: string[];
+  permissions: TPermission[];
 }) {
   const dispatch = useAppDispatch();
 

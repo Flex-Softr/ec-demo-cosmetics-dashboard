@@ -1,23 +1,24 @@
 import OrderSearchBar from "@/components/OrderSearchBar";
 import Show from "@/components/Show";
 import { Card } from "@/components/ui/card";
+import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
-import { permission } from "@/types/order/order.interface";
+import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
 import BulkAction from "./components/BulkAction";
 import ProcessingOrderDateRange from "./components/ProcessingOrderDateRange";
 import ProcessingOrdersStatusButtons from "./components/processingOrdersStatusButtons";
 import ProcessingOrdersTable from "./components/ProcessingOrdersTable";
 
-const Orders = async () => {
+const ProcessingOrders = async () => {
   const { permissions = [] } = await getPermission();
 
-  const manageProcessing =
-    permissions &&
-    (permissions.includes(permission.superAdmin) ||
-      permissions.includes(permission.manageProcessing));
+  const manageProcessingOrder = isPermitted(
+    permissions,
+    PERMISSIONS.MANAGE_PROCESSING_ORDER
+  );
 
-  if (!manageProcessing) {
+  if (!manageProcessingOrder) {
     redirect("/error");
   }
 
@@ -45,4 +46,4 @@ const Orders = async () => {
   );
 };
 
-export default Orders;
+export default ProcessingOrders;

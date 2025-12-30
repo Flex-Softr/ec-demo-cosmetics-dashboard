@@ -4,7 +4,7 @@ import { TDateRangeSelectorHandlerFN } from "@/components/DateRangeSelector";
 import { Card } from "@/components/ui/card";
 import { useGetOrdersByPlatformCountQuery } from "@/redux/features/reports/reportsApi";
 import { TReportPlatformCount } from "@/redux/features/reports/reportsInterface";
-import { TSuccessResponse } from "@/types/response/response";
+import { TSuccessResponse } from "@/types/response";
 import { useState } from "react";
 import SalesByPlatformChart from "./SalesByPlatformChart";
 const SalesByPlatform = () => {

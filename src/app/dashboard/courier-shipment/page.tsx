@@ -1,23 +1,24 @@
 import OrderSearchBar from "@/components/OrderSearchBar";
 import Show from "@/components/Show";
 import { Card } from "@/components/ui/card";
+import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
-import { permission } from "@/types/order/order.interface";
+import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
 import CourierBulkAction from "./components/CourierBulkAction";
 import ProcessingOrderDateRange from "./components/CourierDateRange";
 import OrdersTable from "./components/OrdersTable";
 import StatusButtons from "./components/StatusButtons";
 
-const Orders = async () => {
+const CourierShipmentOrder = async () => {
   const { permissions = [] } = await getPermission();
 
-  const manageCourier =
-    permissions &&
-    (permissions.includes(permission.superAdmin) ||
-      permissions.includes(permission.manageCourier));
+  const manageShipmentOrder = isPermitted(
+    permissions,
+    PERMISSIONS.MANAGE_SHIPMENT_ORDER
+  );
 
-  if (!manageCourier) {
+  if (!manageShipmentOrder) {
     redirect("/error");
   }
 
@@ -25,7 +26,7 @@ const Orders = async () => {
     <Card className="m-4">
       {/* header section , button , search bar  */}
       <div className="grid grid-cols-2 justify-between items-center">
-        <h1 className="text-2xl font-bold">Courier Shipment</h1>
+        <h1 className="text-2xl font-bold">Shipment Order</h1>
         <OrderSearchBar endPoint="/orders/admin/processing-done-on-courier-orders" />
       </div>
       <hr className="my-4" />
@@ -45,4 +46,4 @@ const Orders = async () => {
   );
 };
 
-export default Orders;
+export default CourierShipmentOrder;

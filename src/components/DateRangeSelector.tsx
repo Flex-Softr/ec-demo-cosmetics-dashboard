@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAppDispatch } from "@/redux/hooks";
-import { TPeriod } from "@/types/reports/period";
+import { TPeriod } from "@/types/period";
 import {
   endOfMonth,
   endOfWeek,

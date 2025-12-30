@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { setBulkOrder } from "@/redux/features/orders/ordersSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import formattedOrderData from "@/utilities/formattedOrderData";
 import {
   ColumnDef,
@@ -24,10 +24,11 @@ import { useEffect, useMemo } from "react";
 import FollowUpDate from "./FollowUpDate";
 import { getColumns } from "./OrdersColumn";
 
+import { TPermission } from "@/utilities/isPermitted";
 export default function OrderHistoryTable({
   permissions,
 }: {
-  permissions: string[];
+  permissions: TPermission[];
 }) {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector(({ pagination }) => pagination);

@@ -1,11 +1,10 @@
 import OrderSearchBar from "@/components/OrderSearchBar";
 import Show from "@/components/Show";
 import { Card } from "@/components/ui/card";
+import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
-import { permission } from "@/types/order/order.interface";
-import { redirect } from "next/navigation";
-// import BulkAction from "./components/BulkAction";
 import isPermitted from "@/utilities/isPermitted";
+import { redirect } from "next/navigation";
 import CustomerFilterClear from "./components/CustomerFilterClear";
 import CustomerListOrderDateRange from "./components/CustomerListOrderDateRange";
 import CustomerListOrdersStatusButtons from "./components/CustomerListOrdersStatusButtons";
@@ -20,7 +19,7 @@ const Orders = async () => {
 
   const manageAdminOrStaff = isPermitted(
     permissions,
-    permission.manageCustomers
+    PERMISSIONS.MANAGE_CUSTOMER
   );
 
   if (!manageAdminOrStaff) {

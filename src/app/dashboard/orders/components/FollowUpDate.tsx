@@ -9,7 +9,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { useUpdateOrderMutation } from "@/redux/features/orders/ordersApi";
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 import { refetchData } from "@/utilities/fetchData";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { SetStateAction, useEffect, useState } from "react";

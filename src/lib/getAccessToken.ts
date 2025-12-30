@@ -1,5 +1,6 @@
 "use server";
 import config from "@/config/config";
+import { PERMISSIONS } from "@/const/permissions";
 import { TUser } from "@/redux/features/auth/interface";
 import decodeJWT from "@/utilities/decodeJWT";
 import { cookies } from "next/headers";
@@ -53,10 +54,11 @@ export const getPermission = () => {
   const accessToken = cookies().get("__app.ec.at")?.value;
   if (accessToken) {
     const user = decodeJWT(accessToken);
+
     return user as TUser;
   } else {
     return {
-      permissions: ["super admin"],
+      permissions: [{ _id: "super_admin_id", name: PERMISSIONS.SUPER_ADMIN }],
     };
   }
 };

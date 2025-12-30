@@ -6,7 +6,7 @@ import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { setUser } from "@/redux/features/auth/authSlice";
 import { TUser } from "@/redux/features/auth/interface";
 import { useAppDispatch } from "@/redux/hooks";
-import { TErrorMessages, TErrorResponse } from "@/types/response/response";
+import { TErrorMessages, TErrorResponse } from "@/types/response";
 import decodeJWT from "@/utilities/decodeJWT";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

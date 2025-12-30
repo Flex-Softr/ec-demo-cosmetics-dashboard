@@ -13,7 +13,7 @@ export type TUserProfile = {
   birthCertificateNo?: string;
   dateOfBirth?: string;
   joiningDate?: string;
-  permissions?: string[];
+  permissions?: { _id: string; name: string }[];
   address?: {
     fullAddress?: string;
   };

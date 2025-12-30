@@ -1,6 +1,6 @@
-import { TPermissionEnum } from "@/types/order/order.interface";
+import { TPermissionName } from "@/const/permissions";
 
 export type TPermission = {
   _id: string;
-  name: TPermissionEnum;
+  name: TPermissionName;
 };

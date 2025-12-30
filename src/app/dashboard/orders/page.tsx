@@ -1,8 +1,9 @@
 import OrderSearchBar from "@/components/OrderSearchBar";
 import Show from "@/components/Show";
 import { Card } from "@/components/ui/card";
+import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
-import { permission } from "@/types/order/order.interface";
+import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
 import BulkAction from "./components/BulkAction";
 import CreateOrder from "./components/CreateOrder";
@@ -12,10 +13,7 @@ import OrdersStatusButtons from "./components/OrdersStatusButtons";
 const Orders = async () => {
   const { permissions = [] } = await getPermission();
 
-  const manageOrder =
-    permissions &&
-    (permissions.includes(permission.superAdmin) ||
-      permissions.includes(permission.manageOrder));
+  const manageOrder = isPermitted(permissions, PERMISSIONS.MANAGE_ORDER);
 
   if (!manageOrder) {
     redirect("/error");

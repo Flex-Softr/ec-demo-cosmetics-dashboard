@@ -4,7 +4,7 @@ import { TDateRangeSelectorHandlerFN } from "@/components/DateRangeSelector";
 import { Card } from "@/components/ui/card";
 import { useGetOrdersCountQuery } from "@/redux/features/reports/reportsApi";
 import { TReportOrdersCount } from "@/redux/features/reports/reportsInterface";
-import { TSuccessResponse } from "@/types/response/response";
+import { TSuccessResponse } from "@/types/response";
 import { useState } from "react";
 import OrdersChart from "./OrdersChart";
 

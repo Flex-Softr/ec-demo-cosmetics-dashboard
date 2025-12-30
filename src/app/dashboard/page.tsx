@@ -6,7 +6,7 @@ import dummyUser from "../../../public/icons/user.jpg";
 
 export const metadata: Metadata = {
   title: "Dashboard",
-  description: "Oneself",
+  description: "Nora Life Style",
 };
 
 const Dashboard = async () => {

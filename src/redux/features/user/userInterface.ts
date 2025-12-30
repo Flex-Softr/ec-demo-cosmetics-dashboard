@@ -1,4 +1,4 @@
-import { TUserProfile } from "@/types/user/user.interface";
+import { TUserProfile } from "@/types/user.interface";
 
 export type TUser = TUserProfile;
 

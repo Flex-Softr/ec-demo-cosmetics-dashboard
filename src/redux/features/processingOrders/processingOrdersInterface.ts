@@ -1,4 +1,4 @@
-import { TOrders } from "@/types/order/order.interface";
+import { TOrders } from "@/types/order.interface";
 
 export type TProduct = {
   _id: string;
