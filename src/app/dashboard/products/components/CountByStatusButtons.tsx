@@ -80,12 +80,12 @@ const CountByStatusButtons = () => {
               dispatch(setSelectedStatus(status.name));
             }}
             disabled={isLoading}
-            className={`capitalize bg-white flex items-center gap-1 rounded-2xl ${borderColor(status.name)} ${filter === status.name ? bg : ""}`}
-            title={
-              status.name == "Draft" || status.name === "draft"
-                ? "Draft products will be automatically deleted after 30 days."
-                : undefined
-            }
+            className={`capitalize bg-white flex items-center gap-1 rounded-2xl ${borderColor(
+              status.name
+            )
+              .split(" ")
+              .filter((c) => !c.startsWith("text-"))
+              .join(" ")} ${filter === status.name ? bg : "text-black"}`}
           >
             <span>{status.name}</span>
             <span>({status.total})</span>

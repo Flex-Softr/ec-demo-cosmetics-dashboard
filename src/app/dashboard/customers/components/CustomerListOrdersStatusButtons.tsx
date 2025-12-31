@@ -8,19 +8,19 @@ import {
 } from "@/redux/features/pagination/PaginationSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 // import fetchData from "@/utilities/fetchData";
-import { useEffect, useState } from "react";
+import { useGetCustomersQuery } from "@/redux/features/customers/customersAPIs";
 import {
   setCustomers,
   setSelectedStatus,
 } from "@/redux/features/customers/customersSlice";
-import borderColor from "@/utilities/borderColor";
-import backgroundColor from "@/utilities/backgroundColor";
 import {
   setSearch,
   setSearchQuery,
   setSearchedOrders,
 } from "@/redux/features/search/searchSlice";
-import { useGetCustomersQuery } from "@/redux/features/customers/customersAPIs";
+import backgroundColor from "@/utilities/backgroundColor";
+import borderColor from "@/utilities/borderColor";
+import { useEffect, useState } from "react";
 // import DateRangeSelector from "@/components/DateRangeSelector";
 
 const CustomerListOrdersStatusButtons = () => {
@@ -97,7 +97,7 @@ const CustomerListOrdersStatusButtons = () => {
               dispatch(setSelectedStatus(status.name));
             }}
             disabled={isLoading}
-            className={`capitalize bg-white flex items-center gap-1 rounded-2xl ${borderColor(status.name)} ${selectedStatus === status.name ? bg : ""}`}
+            className={`capitalize bg-white flex items-center gap-1 rounded-2xl ${borderColor(status.name)} ${selectedStatus === status.name ? bg : "text-black"}`}
           >
             <span>{status.name}</span>
             <span>({status.total})</span>
