@@ -1,69 +1,69 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { useEffect } from "react";
-import {
-  setGeneratedVariations,
-  setVariationAttributes,
-} from "@/redux/features/addProduct/variation/variationSlice";
 import { Button } from "@/components/ui/button";
-import SingleVariation from "./SingleVariation";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import generateVariations from "../../lib/generateVariation";
+import SingleVariation from "./SingleVariation";
 
 const Variations = () => {
-  const dispatch = useAppDispatch();
-  const { generatedVariations, selectedAttributeValue, variations } =
-    useAppSelector(({ productVariation }) => productVariation);
+  const { control, watch } = useFormContext();
+  const { fields, replace, remove } = useFieldArray({
+    control,
+    name: "variations",
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const selectedAttributes = (watch("attributes") || []) as any[];
+  const selectedAttributeValues = watch("attributeValues") || [];
 
   const variation = () => {
-    const generatedData = generateVariations(
-      [...selectedAttributeValue],
-      [...variations]
+    // Reconstruct input for generateVariations
+    // We need to merge selectedAttributes (which has labels) with selectedAttributeValues (which has options)
+    const formattedData = selectedAttributes.map(
+      (attr: { label: string }, index: number) => ({
+        label: attr.label,
+        child: selectedAttributeValues[index] || [],
+      })
     );
 
-    if (generatedData.length < 2) {
-      alert(
-        "Selected attribute value have to be more than one to generate variations!"
-      );
-    } else {
-      dispatch(setGeneratedVariations(generatedData));
+    // Filter to ensure we have values
+    const validValues = formattedData.filter(
+      (v: { child: unknown[] }) => v.child && v.child.length > 0
+    );
+
+    if (validValues.length < 1) {
+      alert("Please select attributes and values to generate variations!");
+      return;
     }
+
+    const generatedData = generateVariations(formattedData, []);
+
+    replace(generatedData);
   };
 
-  useEffect(() => {
-    generatedVariations.map(({ attributes }, index) =>
-      dispatch(setVariationAttributes({ index, item: attributes }))
-    );
-  }, [dispatch, generatedVariations]);
-
-  const showText =
-    Object.keys(selectedAttributeValue).length < 1 &&
-    generatedVariations.length < 1;
-  const showBtn =
-    Object.keys(selectedAttributeValue).length > 0 &&
-    generatedVariations.length < 1;
-
-  const removeVariation = () => {
-    dispatch(setGeneratedVariations([]));
-  };
+  const showText = selectedAttributes.length < 1 && fields.length < 1;
+  const showBtn = selectedAttributes.length > 0 && fields.length < 1;
 
   return (
     <div className="space-y-2 min-h-20 flex flex-col items-center justify-center">
       {showText ? (
         <p>Select attributes to generate product variations.</p>
       ) : showBtn ? (
-        <Button onClick={variation}>Generate variations</Button>
+        <Button type="button" onClick={variation}>
+          Generate variations
+        </Button>
       ) : (
         <>
-          <Button onClick={removeVariation} className="mb-2">
+          <Button type="button" onClick={() => remove()} className="mb-2">
             Remove variation
           </Button>
-          {generatedVariations.map(({ _id, attributes, isDeleted }, index) => (
+          {fields.map((field, index) => (
             <SingleVariation
-              _id={_id}
-              item={attributes}
+              key={field.id}
               index={index}
-              key={index}
-              isDelete={isDeleted}
+              item={
+                (field as unknown as { attributes: Record<string, string> })
+                  .attributes
+              }
             />
           ))}
         </>

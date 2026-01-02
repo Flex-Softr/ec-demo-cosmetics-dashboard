@@ -3,8 +3,9 @@
 import { Input } from "@/components/ui/input";
 import { Dispatch, SetStateAction, useState } from "react";
 
-import { useGetCustomerProductsQuery } from "@/redux/features/allProducts/allProductsApi";
+import { useGetCustomerProductsQuery } from "@/redux/features/products/productsApi";
 import { TOrders } from "@/types/order.interface";
+import { IAdminProduct } from "@/types/products";
 import { Trash2 } from "lucide-react";
 import {
   Control,
@@ -34,12 +35,6 @@ type TProps = {
   errors?: FieldErrors<TEditOrderFormInput>;
 };
 
-type TProduct = {
-  _id: string;
-  title: string;
-  salePrice: number;
-};
-
 const AddProductToOrder = (props: TProps) => {
   const {
     addProduct,
@@ -61,29 +56,14 @@ const AddProductToOrder = (props: TProps) => {
     page: 1,
     limit: 1000,
   });
-  const productsName: TProduct[] = data?.data ?? [];
+  const productsName: IAdminProduct[] = data?.data ?? [];
 
   const { remove } = useFieldArray({
     control,
     name: "productDetails",
   });
 
-  // const selectedProductIds = useMemo(
-  //   () => order?.products?.map((p) => p._id) || [],
-  //   [order?.products]
-  // );
-
-  // useEffect(() => {
-  //   if (products?.length > 0 ) {
-  //     console.log("products", products);
-  //     console.log("selectedProductIds", selectedProductIds);
-  //     const filtered = products.filter(
-  //       (item: TProduct) => !selectedProductIds.includes(item._id)
-  //     );
-  //     console.log("filteredProducts", filtered);
-  //     setProductsName(filtered);
-  //   }
-  // }, [products, selectedProductIds]);
+  // ... (keeping omitted code if possible, but lines 70-86 were commented out anyway)
 
   const handleRemoveProduct = (index: number) => {
     const productIndex = [...addProduct];
@@ -148,6 +128,7 @@ const AddProductToOrder = (props: TProps) => {
                   clearErrors={clearErrors!}
                   product="newProductId"
                   orderedProducts="productDetails"
+                  selectedProduct={product}
                   variations={variations}
                   setVariations={setVariations}
                 />

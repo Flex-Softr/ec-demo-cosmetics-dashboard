@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { useUpdateAttributeMutation } from "@/redux/features/addAttributes/attributesApi";
+import { useUpdateAttributeMutation } from "@/redux/features/attributes/attributesApi";
 import { useForm } from "react-hook-form";
 import { TAttributeValueItem } from "../lib/attribute.interface";
 

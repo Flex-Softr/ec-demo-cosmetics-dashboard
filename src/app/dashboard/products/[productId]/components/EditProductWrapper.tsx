@@ -1,7 +1,7 @@
 "use client";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
-import { useGetAProductQuery } from "@/redux/features/allProducts/allProductsApi";
-import React from "react";
+import { useGetAProductQuery } from "@/redux/features/products/productsApi";
+import { TProduct } from "@/redux/features/products/productsInterface";
 
 type EditProductWrapperProps = {
   productId: string;
@@ -12,7 +12,16 @@ const EditProductWrapper = ({
   productId,
   children,
 }: EditProductWrapperProps) => {
-  const { isLoading } = useGetAProductQuery(productId);
+  // Assuming 'params' and 'skipToken' are available in this scope,
+  // or that 'productId' should be used instead of 'params.productId'.
+  // For now, I'll use 'productId' as it's available in the component props.
+  // If 'params' and 'skipToken' are intended, they would need to be defined or imported.
+  const { isLoading } = useGetAProductQuery(
+    productId // Changed from params.productId ? params.productId : skipToken to productId
+  ) as { data: TProduct | null; isLoading: boolean };
+
+  // Assuming useUpdateProductMutation is imported from somewhere, e.g., productsApi
+  // const [updateProduct, { isSuccess, isError, error }] = useUpdateProductMutation();
 
   if (isLoading) {
     return (

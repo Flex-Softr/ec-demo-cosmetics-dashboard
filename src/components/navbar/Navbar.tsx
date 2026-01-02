@@ -1,4 +1,4 @@
-import { getProfile } from "@/lib/getAccessToken";
+import { accessTokenFromCookies, getProfile } from "@/lib/getAccessToken";
 import UserMenu from "../userMenu/UserMenu";
 import NavbarLogo from "./NavbarLogo";
 import SidebarToggle from "./SidebarToggle";
@@ -6,6 +6,7 @@ import SidebarToggle from "./SidebarToggle";
 
 const Navbar = async () => {
   const user = await getProfile();
+  const accessToken = await accessTokenFromCookies();
 
   return (
     <div className="w-full h-[60px] flex justify-between items-center bg-white  border-b py-2 px-4 top-0 sticky z-10">
@@ -16,7 +17,7 @@ const Navbar = async () => {
         {/* <HideOrShowButton /> */}
       </div>
       <div>
-        <UserMenu user={user} />
+        <UserMenu user={user} accessToken={accessToken} />
       </div>
     </div>
   );

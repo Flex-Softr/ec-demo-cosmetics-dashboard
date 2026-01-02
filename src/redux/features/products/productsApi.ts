@@ -3,7 +3,7 @@ import { TQuery } from "@/types/order.interface";
 import { IAdminProductResponse, TProductPayload } from "@/types/products";
 import searchParams from "@/utilities/searchParams";
 
-const allProductsApi = baseApi.injectEndpoints({
+const productsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createProduct: builder.mutation({
       query: (payload: TProductPayload) => ({
@@ -44,9 +44,9 @@ const allProductsApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: payload,
       }),
-      invalidatesTags: ["singleProduct", "allProducts"],
+      invalidatesTags: ["singleProduct", "products"],
     }),
-    getAllProducts: builder.query<IAdminProductResponse, TQuery>({
+    getProducts: builder.query<IAdminProductResponse, TQuery>({
       query: (args: TQuery) => ({
         url: "/products/admin",
         method: "GET",
@@ -56,7 +56,7 @@ const allProductsApi = baseApi.injectEndpoints({
       transformResponse: (response: IAdminProductResponse) => {
         return response;
       },
-      providesTags: ["allProducts"],
+      providesTags: ["products"],
     }),
     getCustomerProducts: builder.query({
       query: (args: TQuery) => ({
@@ -78,7 +78,7 @@ const allProductsApi = baseApi.injectEndpoints({
         method: "DELETE",
         body: { productIds },
       }),
-      invalidatesTags: ["allProducts", "allCustomerProducts"],
+      invalidatesTags: ["products", "allCustomerProducts"],
     }),
   }),
 });
@@ -87,8 +87,8 @@ export const {
   useCreateProductMutation,
   useGetAProductQuery,
   useGetACustomerProductQuery,
-  useGetAllProductsQuery,
+  useGetProductsQuery,
   useGetCustomerProductsQuery,
   useUpdateProductMutation,
   useDeleteProductsMutation,
-} = allProductsApi;
+} = productsApi;

@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/use-toast";
-import { useDeleteProductsMutation } from "@/redux/features/allProducts/allProductsApi";
+import { useDeleteProductsMutation } from "@/redux/features/products/productsApi";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useState } from "react";

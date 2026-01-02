@@ -14,7 +14,7 @@ import { productStatus } from "@/const/products";
 import {
   useDeleteProductsMutation,
   useUpdateProductMutation,
-} from "@/redux/features/allProducts/allProductsApi";
+} from "@/redux/features/products/productsApi";
 import { useAppSelector } from "@/redux/hooks";
 import { TProductPayload } from "@/types/products";
 import { useState } from "react";
@@ -25,7 +25,7 @@ const ProductBulkAction = () => {
   const [updateProduct, { isLoading: isUpdateLoading }] =
     useUpdateProductMutation();
   const { productsIds } = useAppSelector(
-    ({ allProducts }) => allProducts.bulkProducts
+    ({ products }) => products.bulkProducts
   );
   const [open, setOpen] = useState(false);
 

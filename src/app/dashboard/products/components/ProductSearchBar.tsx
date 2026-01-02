@@ -1,14 +1,11 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import {
-  setIsLoading,
-  // setPage,
-} from "@/redux/features/pagination/PaginationSlice";
+import { setIsLoading } from "@/redux/features/pagination/PaginationSlice";
 import {
   setSearch,
-  setSearchQuery,
   setSearchedProducts,
-} from "@/redux/features/allProducts/allProductsSlice";
+  setSearchQuery,
+} from "@/redux/features/products/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import fetchData from "@/utilities/fetchData";
 import { Search, X } from "lucide-react";
@@ -16,10 +13,9 @@ import { SetStateAction } from "react";
 
 const ProductSearchBar = ({ endPoint }: { endPoint: string }) => {
   const dispatch = useAppDispatch();
-  const searchQuery = useAppSelector(
-    ({ allProducts }) => allProducts.searchQuery
-  );
+  const searchQuery = useAppSelector(({ products }) => products.searchQuery);
   const { isLoading } = useAppSelector(({ pagination }) => pagination);
+  const { selectedStatus } = useAppSelector(({ products }) => products);
 
   const handleInputChange = (e: {
     target: { value: SetStateAction<string> };
@@ -36,11 +32,14 @@ const ProductSearchBar = ({ endPoint }: { endPoint: string }) => {
   const handleSearch = async () => {
     if (searchQuery) {
       dispatch(setIsLoading(true));
+
       const { data } = await fetchData({
-        endPoint,
-        // tags: ["allOrders"],
+        // This line was modified to keep fetchData as useGetProductsQuery cannot be called here
+        endPoint, // Keep endPoint for fetchData
         searchParams: {
-          search: searchQuery,
+          // Keep searchParams for fetchData
+          status: selectedStatus,
+          searchTerm: searchQuery,
           sort: "-createdAt",
         },
       });

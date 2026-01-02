@@ -31,8 +31,8 @@ export type TUpdatePayload = {
   };
 };
 
-export type TCustomersInitialState = {
-  customers: TOrders[];
+export type TCustomerOrdersInitialState = {
+  customerOrders: TOrders[];
   selectedStatus: string;
   selectedProduct: string;
   selectedTimes: number | undefined;
@@ -46,6 +46,6 @@ export type TCustomersInitialState = {
     invoices: TOrders[];
   };
 };
-export type TInitialStateUpdateCustomers = {
+export type TInitialStateUpdateCustomerOrders = {
   updateOrder: UpdateCustomersInitialState;
 };

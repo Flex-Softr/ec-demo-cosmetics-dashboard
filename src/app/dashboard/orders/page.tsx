@@ -5,7 +5,7 @@ import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
-import BulkAction from "./components/BulkAction";
+import BulkAction from "./components/OrderBulkAction";
 import CreateOrder from "./components/CreateOrder";
 import OrderDateRange from "./components/OrderDateRange";
 import OrdersTable from "./components/OrderHistoryTable";

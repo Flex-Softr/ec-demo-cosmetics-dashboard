@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import objectToSearchParams from "./searchParams";
 
 type TTags =
-  | "allProducts"
+  | "products"
   | "singleProduct"
   | "ProductsName"
   | "paymentMethod"

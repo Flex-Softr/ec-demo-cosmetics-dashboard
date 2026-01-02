@@ -1,17 +1,17 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { useGetAllProductsQuery } from "@/redux/features/allProducts/allProductsApi";
+import { useToast } from "@/components/ui/use-toast";
+import { useGetProductsQuery } from "@/redux/features/products/productsApi";
 import { useGetMobilesForSMSQuery } from "@/redux/features/sms/smsApi";
 import { useAppSelector } from "@/redux/hooks";
 import { useEffect, useMemo, useState } from "react";
 import Select from "react-select";
+import FilterBySource from "../../customers/components/FilterBySource";
 import OrderDateRange from "../../orders/components/OrderDateRange";
 import SmsContentEditor from "./SmsContentEditor";
-import { useToast } from "@/components/ui/use-toast";
-import FilterBySource from "../../customers/components/FilterBySource";
 // import FilterByTimes from "../../customers/components/FilterByTimes";
-import FilterByDivisionDistrict from "../../customers/components/FilterByDivisionDistrict";
 import CustomerFilterClear from "../../customers/components/CustomerFilterClear";
+import FilterByDivisionDistrict from "../../customers/components/FilterByDivisionDistrict";
 
 type Option = {
   value: string;
@@ -40,13 +40,13 @@ export default function MultiSelectStatus() {
     selectedUpazila,
     selectedDistrict,
     selectedDivision,
-  } = useAppSelector(({ customers }) => customers);
+  } = useAppSelector(({ customerOrders }) => customerOrders);
 
   const {
     data: productsData,
     isLoading: productsLoading,
     error: productsError,
-  } = useGetAllProductsQuery({
+  } = useGetProductsQuery({
     status: "all",
     sort: "-createdAt",
     page: 1,

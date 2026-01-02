@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { setBulkOrder } from "@/redux/features/customers/customersSlice";
+import { setBulkOrder } from "@/redux/features/customerOrders/customerOrdersSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import formattedOrderData from "@/utilities/formattedOrderData";
 import {
@@ -30,8 +30,10 @@ export default function CustomerListOrdersTable({
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector(({ pagination }) => pagination);
 
-  const orders = useAppSelector(({ customers, search }) => {
-    return search.search ? search.searchedOrders : customers.customers;
+  const orders = useAppSelector(({ customerOrders, search }) => {
+    return search.search
+      ? search.searchedOrders
+      : customerOrders.customerOrders;
   });
   const search = useAppSelector(({ search }) => {
     return search.search;

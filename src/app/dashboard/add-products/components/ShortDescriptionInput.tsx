@@ -1,33 +1,31 @@
 "use client";
-import dynamic from "next/dynamic";
 import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
-import { setShortDescription } from "@/redux/features/addProduct/addProductSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import dynamic from "next/dynamic";
+import { Controller, useFormContext } from "react-hook-form";
 // Dynamically import JoditEditor without SSR
 const JoditEditor = dynamic(() => import("jodit-react"), {
   ssr: false, // Disable SSR
 });
-const ShortDescription = () => {
-  const dispatch = useAppDispatch();
-  const shortDescription = useAppSelector(
-    ({ addProduct }) => addProduct.shortDescription
-  );
-
-  const handleChange = (data: string) => {
-    dispatch(setShortDescription(data));
-  };
+const ShortDescriptionInput = () => {
+  const { control } = useFormContext();
 
   return (
     <SectionContentWrapper heading={"Product Short Description"}>
-      <JoditEditor
-        value={shortDescription}
-        onChange={(newContent: string) => handleChange(newContent)}
+      <Controller
+        name="shortDescription"
+        control={control}
+        render={({ field }) => (
+          <JoditEditor
+            value={field.value}
+            onChange={(newContent) => field.onChange(newContent)}
+          />
+        )}
       />
     </SectionContentWrapper>
   );
 };
 
-export default ShortDescription;
+export default ShortDescriptionInput;
 
 // "use client";
 // import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";

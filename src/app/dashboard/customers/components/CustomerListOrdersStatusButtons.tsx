@@ -8,11 +8,10 @@ import {
 } from "@/redux/features/pagination/PaginationSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 // import fetchData from "@/utilities/fetchData";
-import { useGetCustomersQuery } from "@/redux/features/customers/customersAPIs";
 import {
-  setCustomers,
+  setCustomerOrders,
   setSelectedStatus,
-} from "@/redux/features/customers/customersSlice";
+} from "@/redux/features/customerOrders/customerOrdersSlice";
 import {
   setSearch,
   setSearchQuery,
@@ -21,6 +20,7 @@ import {
 import backgroundColor from "@/utilities/backgroundColor";
 import borderColor from "@/utilities/borderColor";
 import { useEffect, useState } from "react";
+import { useGetCustomerOrdersQuery } from "@/redux/features/customerOrders/customerOrdersApi";
 // import DateRangeSelector from "@/components/DateRangeSelector";
 
 const CustomerListOrdersStatusButtons = () => {
@@ -37,10 +37,10 @@ const CustomerListOrdersStatusButtons = () => {
     selectedUpazila,
     selectedDistrict,
     selectedDivision,
-    customers,
-  } = useAppSelector(({ customers }) => customers);
+    customerOrders,
+  } = useAppSelector(({ customerOrders }) => customerOrders);
 
-  if (!customers.length && page > 1) {
+  if (!customerOrders.length && page > 1) {
     dispatch(setPage(1));
   }
 
@@ -50,7 +50,7 @@ const CustomerListOrdersStatusButtons = () => {
     data,
     isLoading: loading,
     error,
-  } = useGetCustomersQuery({
+  } = useGetCustomerOrdersQuery({
     status: selectedStatus,
     orderedTimes: selectedTimes,
     orderSource: selectedSource,
@@ -73,7 +73,7 @@ const CustomerListOrdersStatusButtons = () => {
       const { meta, data: orders } = data;
       dispatch(setTotalPage(meta));
       setOrderStatusCount(orders?.countsByStatus);
-      dispatch(setCustomers(orders?.data));
+      dispatch(setCustomerOrders(orders?.data));
       dispatch(setSearch(false));
       dispatch(setSearchQuery(""));
       dispatch(setSearchedOrders([]));

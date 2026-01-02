@@ -2,9 +2,9 @@ import baseApi from "@/redux/baseApi/baseApi";
 import { TQuery } from "@/types/order.interface";
 import searchParams from "@/utilities/searchParams";
 
-const customersAPIs = baseApi.injectEndpoints({
+const customerOrdersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCustomers: builder.query({
+    getCustomerOrders: builder.query({
       query: (args: TQuery) => ({
         url: "/orders/admin/completed-returned",
         params: searchParams(args),
@@ -14,4 +14,4 @@ const customersAPIs = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetCustomersQuery } = customersAPIs;
+export const { useGetCustomerOrdersQuery } = customerOrdersApi;

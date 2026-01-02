@@ -37,7 +37,7 @@
 
 //   return (
 //     <SectionContentWrapper heading={"SEO Data"} className="mt-10">
-//       <form onChange={handleSubmit(onSubmit)} className="w-full">
+//       <div onChange={handleSubmit(onSubmit)} className="w-full">
 //         <div className="flex items-center gap-3 mb-3 w-full">
 //           <Label className="flex gap-3 w-56" htmlFor="focusKeyphrase">
 //             Focus key phrase
@@ -123,7 +123,7 @@
 //             )}
 //           </div>
 //         </div>
-//       </form>
+//       </div>
 //     </SectionContentWrapper>
 //   );
 // };

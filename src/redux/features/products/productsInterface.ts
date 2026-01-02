@@ -3,6 +3,7 @@ export type TVariation = {
     name: string;
     value: string;
   }[];
+  _id: string; // Added _id
   price: {
     regularPrice: number;
     salePrice: number;
@@ -14,7 +15,7 @@ export type TVariation = {
   };
 };
 
-export type TAllProducts = {
+export type TProduct = {
   _id: string;
   title: string;
   type?: "simple" | "variable";
@@ -40,13 +41,13 @@ export type TAllProducts = {
 };
 
 export type TProductsInitialState = {
-  products: TAllProducts[];
+  products: TProduct[];
   selectedStatus: string;
   bulkProducts: {
     productsIds: string[];
   };
   search: boolean;
   searchQuery: string;
-  searchedProducts: TAllProducts[];
+  searchedProducts: TProduct[];
   productDataErrors: string[];
 };

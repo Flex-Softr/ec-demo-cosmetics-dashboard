@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { useAddAttributeMutation } from "@/redux/features/addAttributes/attributesApi";
+import { useAddAttributeMutation } from "@/redux/features/attributes/attributesApi";
 import { useForm } from "react-hook-form";
 import {
   TAttributeForm,

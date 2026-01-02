@@ -13,17 +13,16 @@ import { useToast } from "@/components/ui/use-toast";
 import config from "@/config/config";
 import { useLogOutMutation } from "@/redux/features/auth/authApi";
 import { logOut, setUser } from "@/redux/features/auth/authSlice";
+import { TUser } from "@/redux/features/auth/interface";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { TErrorResponse } from "@/types/response";
 import { TUserProfile } from "@/types/user.interface";
+import decodeJWT from "@/utilities/decodeJWT";
 import { Key, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import dummyUser from "../../../public/icons/user.jpg";
 import { useEffect } from "react";
-import { accessTokenFromCookies } from "@/lib/getAccessToken";
-import decodeJWT from "@/utilities/decodeJWT";
-import { TUser } from "@/redux/features/auth/interface";
+import dummyUser from "../../../public/icons/user.jpg";
 
 const listItems = [
   {
@@ -38,7 +37,13 @@ const listItems = [
   },
 ];
 
-const UserMenu = ({ user }: { user: TUserProfile }) => {
+const UserMenu = ({
+  user,
+  accessToken,
+}: {
+  user: TUserProfile;
+  accessToken?: string;
+}) => {
   const router = useRouter();
   const { toast } = useToast();
   const { fullName, profilePicture } = user || {};
@@ -67,16 +72,13 @@ const UserMenu = ({ user }: { user: TUserProfile }) => {
   };
 
   useEffect(() => {
-    (async () => {
-      const accessToken = await accessTokenFromCookies();
-      if (token && accessToken && token == accessToken) {
-        return;
-      } else if (accessToken) {
-        const user = decodeJWT(accessToken) as TUser;
-        dispatch(setUser({ user: user, token: accessToken }));
-      }
-    })();
-  }, [dispatch, token]);
+    if (token && accessToken && token == accessToken) {
+      return;
+    } else if (accessToken) {
+      const user = decodeJWT(accessToken) as TUser;
+      dispatch(setUser({ user: user, token: accessToken }));
+    }
+  }, [dispatch, token, accessToken]);
 
   return (
     <div>

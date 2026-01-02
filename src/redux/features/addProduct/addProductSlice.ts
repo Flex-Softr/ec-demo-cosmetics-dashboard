@@ -18,7 +18,6 @@ const initialState: TProduct = {
   description: "",
   shortDescription: "",
   additionalInfo: "",
-  usageGuidelines: "",
   price: {
     regularPrice: 0,
     salePrice: 0,
@@ -67,7 +66,6 @@ const initialState: TProduct = {
   //   metaDescription: "",
   // },
   featured: false,
-  // downloadable: false,
   // review: false,
   warranty: false,
   warrantyInfo: {
@@ -95,9 +93,6 @@ const productSlice = createSlice({
     },
     setAdditionalInfo: (state, action: PayloadAction<string>) => {
       state.additionalInfo = action.payload;
-    },
-    setUsageGuidelines: (state, action: PayloadAction<string>) => {
-      state.usageGuidelines = action.payload;
     },
     // setThumbnail: (state, action: PayloadAction<string>) => {
     //   state.image.thumbnail = action.payload;
@@ -181,7 +176,6 @@ const productSlice = createSlice({
         description,
         shortDescription,
         additionalInfo,
-        usageGuidelines,
         type,
         price,
         // image,
@@ -195,7 +189,6 @@ const productSlice = createSlice({
       state.description = description;
       state.shortDescription = shortDescription;
       state.additionalInfo = additionalInfo;
-      state.usageGuidelines = usageGuidelines;
       state.type = type || "simple";
       state.price = price;
       state.slug = action.payload.slug; // Ensure slug is set when editing
@@ -220,7 +213,6 @@ export const {
   setDescription,
   setShortDescription,
   setAdditionalInfo,
-  setUsageGuidelines,
   setProductType,
   // setThumbnail,
   // setGallery,

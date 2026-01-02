@@ -1,17 +1,18 @@
 "use client";
-import { useGetAllProductsQuery } from "@/redux/features/allProducts/allProductsApi";
-import { setSelectedProduct } from "@/redux/features/customers/customersSlice";
+import { setSelectedProduct } from "@/redux/features/customerOrders/customerOrdersSlice";
+import { useGetProductsQuery } from "@/redux/features/products/productsApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const FilterByProduct = () => {
   const dispatch = useAppDispatch();
-  const { selectedProduct } = useAppSelector(({ customers }) => customers);
+  const { selectedProduct } = useAppSelector(
+    ({ customerOrders }) => customerOrders
+  );
 
-  const { data, isLoading } = useGetAllProductsQuery({
-    status: "all",
+  const { data, isLoading } = useGetProductsQuery({
+    limit: 1000,
     sort: "-createdAt",
     page: 1,
-    limit: 1000,
   });
 
   return (

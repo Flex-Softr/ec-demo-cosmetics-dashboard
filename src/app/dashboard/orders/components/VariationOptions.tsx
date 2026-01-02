@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useGetACustomerProductQuery } from "@/redux/features/allProducts/allProductsApi";
+import { useGetACustomerProductQuery } from "@/redux/features/products/productsApi";
+import { IAdminProduct } from "@/types/products";
 import { useEffect } from "react";
 import {
   Control,
@@ -25,7 +26,8 @@ type VariationOptionsProps<T extends FieldValues> = {
   setValue: UseFormSetValue<T>;
   clearErrors: UseFormClearErrors<T>;
   orderedProducts: "orderedProducts" | "productDetails";
-  product: "product" | "newProductId";
+  product: string;
+  selectedProduct: IAdminProduct | undefined;
   variations?: Variation[];
   setVariations?: React.Dispatch<React.SetStateAction<Variation[]>>;
   initialAttributes?: Record<string, any>;

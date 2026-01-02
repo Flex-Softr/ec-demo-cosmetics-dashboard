@@ -1,11 +1,7 @@
 "use client";
 import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
-import {
-  setCategory,
-  setSubcategory,
-} from "@/redux/features/addProduct/addProductSlice";
 import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useFormContext } from "react-hook-form";
 
 type TCategories = {
   _id: string;
@@ -13,27 +9,35 @@ type TCategories = {
   subcategories?: TCategories[];
 };
 
-const Category = () => {
+const CategoryInput = () => {
   const { data, isLoading } = useGetCategoriesQuery({ isActive: true });
   const categories = data?.data || [];
-  const dispatch = useAppDispatch();
-  const selectCategory = useAppSelector(
-    ({ addProduct }) => addProduct.category
-  );
+
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext();
+  const categoryName = watch("category.name");
+  const subCategoryName = watch("category.subCategory");
+
+  // Toggle Category: Expects single category selection? Or multiple?
+  // Previous code used setCategory/setSubcategory, seemingly single.
 
   const toggleCategory = (categoryId: string) => {
-    if (selectCategory.name === categoryId) {
-      dispatch(setCategory(""));
+    if (categoryName === categoryId) {
+      setValue("category.name", "");
     } else {
-      dispatch(setCategory(categoryId));
+      setValue("category.name", categoryId, { shouldValidate: true });
     }
-    dispatch(setSubcategory(undefined));
+    setValue("category.subCategory", ""); // Reset sub on category change
   };
-  const toggleSubcategory = (categoryId: string) => {
-    if (selectCategory.subCategory === categoryId) {
-      dispatch(setSubcategory(undefined));
+
+  const toggleSubcategory = (subCategoryId: string) => {
+    if (subCategoryName === subCategoryId) {
+      setValue("category.subCategory", "");
     } else {
-      dispatch(setSubcategory(categoryId));
+      setValue("category.subCategory", subCategoryId, { shouldValidate: true });
     }
   };
 
@@ -48,13 +52,13 @@ const Category = () => {
       <input
         type="checkbox"
         id={category._id as string}
-        checked={selectCategory.name == category._id}
+        checked={categoryName == category._id}
         onChange={() => toggleCategory(category._id)}
         className="mr-1 size-4 "
       />
       <label
         htmlFor={category._id as string}
-        className={`text-gray-800 ${selectCategory.name == category._id ? "font-bold" : ""}`}
+        className={`text-gray-800 ${categoryName == category._id ? "font-bold" : ""}`}
       >
         <span>{category.name}</span>
         {/* <PlusIcon /> */}
@@ -72,13 +76,13 @@ const Category = () => {
       <input
         type="checkbox"
         id={category._id as string}
-        checked={selectCategory.subCategory === category._id}
+        checked={subCategoryName === category._id}
         onChange={() => toggleSubcategory(category._id)}
         className="mr-1 size-4 "
       />
       <label
         htmlFor={category._id as string}
-        className={`text-gray-800  ${selectCategory.subCategory === category._id ? "font-bold" : ""}`}
+        className={`text-gray-800  ${subCategoryName === category._id ? "font-bold" : ""}`}
       >
         {category.name}
       </label>
@@ -94,6 +98,19 @@ const Category = () => {
     </ul>
   );
 
+  const getError = (path: string) => {
+    // Access nested errors safely
+    const parts = path.split(".");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let current: any = errors;
+    for (const p of parts) {
+      if (current?.[p]) current = current[p];
+      else return undefined;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (current as any)?.message as string | undefined;
+  };
+
   return (
     <SectionContentWrapper heading="Select Category">
       <div className=" max-h-64  overflow-y-scroll ">
@@ -106,7 +123,7 @@ const Category = () => {
             {categories.map((category: TCategories) => (
               <li className="p-2" key={category._id}>
                 {renderCategory(category)}
-                {selectCategory.name == category._id &&
+                {categoryName == category._id &&
                   category.subcategories &&
                   renderSubcategories(category.subcategories)}
               </li>
@@ -114,8 +131,11 @@ const Category = () => {
           </ul>
         )}
       </div>
+      {getError("category.name") && (
+        <p className="text-red-500 text-sm mt-2">{getError("category.name")}</p>
+      )}
     </SectionContentWrapper>
   );
 };
 
-export default Category;
+export default CategoryInput;

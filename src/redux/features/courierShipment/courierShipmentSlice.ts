@@ -21,7 +21,7 @@ const initialState: TProcessingOrdersInitialState = {
 };
 
 const courierManagementSlice = createSlice({
-  name: "allProducts",
+  name: "courierShipment",
   initialState,
   reducers: {
     setProcessingDoneOrders: (state, action) => {

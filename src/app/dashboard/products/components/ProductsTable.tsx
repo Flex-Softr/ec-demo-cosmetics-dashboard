@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { setBulkProduct } from "@/redux/features/allProducts/allProductsSlice";
+import { setBulkProduct } from "@/redux/features/products/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { IAdminProduct } from "@/types/products";
 import {
@@ -23,12 +23,12 @@ import { ProductColumns } from "./ProductColumn";
 export default function ProductsTable() {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector(({ pagination }) => pagination);
-  const products = useAppSelector(({ allProducts }) =>
-    allProducts.search
-      ? (allProducts.searchedProducts as unknown as IAdminProduct[])
-      : (allProducts.products as unknown as IAdminProduct[])
-  );
-  const search = useAppSelector(({ allProducts }) => allProducts.search);
+  const products = useAppSelector(({ products }) => {
+    return products.search
+      ? (products.searchedProducts as unknown as IAdminProduct[])
+      : (products.products as unknown as IAdminProduct[]);
+  });
+  const search = useAppSelector(({ products }) => products.search);
   const table = useReactTable<IAdminProduct>({
     data: products,
     columns: ProductColumns,

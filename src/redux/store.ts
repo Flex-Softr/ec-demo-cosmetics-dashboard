@@ -10,17 +10,15 @@ import {
   persistReducer,
   persistStore,
 } from "redux-persist";
-// import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import baseApi from "./baseApi/baseApi";
 import courierBaseApi from "./baseApi/courierBaseApi";
 import addProductReducer from "./features/addProduct/addProductSlice";
 import variationReducer from "./features/addProduct/variation/variationSlice";
-import allProductReducer from "./features/allProducts/allProductsSlice";
 import authReducer from "./features/auth/authSlice";
 import couponSlice from "./features/coupon/couponSlice";
 import courierConfigurationReducer from "./features/courierConfiguration/courierConfigurationSlice";
 import courierShipmentReducer from "./features/courierShipment/courierShipmentSlice";
-import customersSlice from "./features/customers/customersSlice";
+import customerOrdersSlice from "./features/customerOrders/customerOrdersSlice";
 import imageSelectorReducer from "./features/imageSelector/imageSelectorSlice";
 import imageToOrderReqSlice from "./features/imageToOrder/imageToOrderSlice";
 import monitorDeliveryReducer from "./features/monitorDelivery/monitorDeliverySlice";
@@ -28,6 +26,7 @@ import ordersReducer from "./features/orders/ordersSlice";
 import paginationReducer from "./features/pagination/PaginationSlice";
 import paymentMethodReducer from "./features/paymentMethod/paymentMethodSlice";
 import processingOrdersReducer from "./features/processingOrders/processingOrdersSlice";
+import productsReducer from "./features/products/productsSlice";
 import registeredCustomer from "./features/registeredCustomer/RegisteredCustomerSlice";
 import searchReducer from "./features/search/searchSlice";
 import shippingChargesSlice from "./features/shippingCharge/ShippingChargeSlice";
@@ -49,7 +48,7 @@ export const createStore = () => {
       auth: persistedAuthReducer,
       addProduct: addProductReducer,
       productVariation: variationReducer,
-      allProducts: allProductReducer,
+      products: productsReducer,
       imageSelector: imageSelectorReducer,
       orders: ordersReducer,
       processingOrders: processingOrdersReducer,
@@ -59,7 +58,7 @@ export const createStore = () => {
       pagination: paginationReducer,
       warrantyClaim: warrantyClaimSlice,
       users: userSlice,
-      customers: customersSlice,
+      customerOrders: customerOrdersSlice,
       allCoupons: couponSlice,
       shippingCharges: shippingChargesSlice,
       imageToOrder: imageToOrderReqSlice,
@@ -84,29 +83,3 @@ export type AppDispatch = typeof store.dispatch;
 persistStore(store);
 
 export default store;
-
-// const store = configureStore({
-//   reducer: {
-//     [baseApi.reducerPath]: baseApi.reducer,
-//     [courierBaseApi.reducerPath]: courierBaseApi.reducer,
-//     auth: persistedAuthReducer,
-//     addProduct: addProductReducer,
-//     editProduct: editProductReducer,
-//     productVariation: variationReducer,
-//     allProducts: allProductReducer,
-//     imageSelector: imageSelectorReducer,
-//     orders: ordersReducer,
-//     processingOrders: processingOrdersReducer,
-//     courierManagement: courierManagementReducer,
-//     search: searchReducer,
-//     pagination: paginationReducer,
-//     warrantyClaim: warrantyClaimSlice,
-//     users: userSlice,
-//   },
-//   middleware: (getDefaultMiddlewares) =>
-//     getDefaultMiddlewares({
-//       serializableCheck: {
-//         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-//       },
-//     }).concat(baseApi.middleware, courierBaseApi.middleware),
-// });

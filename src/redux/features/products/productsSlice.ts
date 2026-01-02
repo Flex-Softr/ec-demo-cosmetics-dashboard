@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { TProductsInitialState } from "./allProductsInterface";
+import { TProductsInitialState } from "./productsInterface";
 
 const initialState: TProductsInitialState = {
   products: [],
@@ -13,8 +13,8 @@ const initialState: TProductsInitialState = {
   productDataErrors: [],
 };
 
-const allProductSlice = createSlice({
-  name: "allProducts",
+const productsSlice = createSlice({
+  name: "products",
   initialState,
   reducers: {
     setProducts: (state, action) => {
@@ -49,6 +49,6 @@ export const {
   setSearchQuery,
   setSearchedProducts,
   setProductDataErrors,
-} = allProductSlice.actions;
+} = productsSlice.actions;
 
-export default allProductSlice.reducer;
+export default productsSlice.reducer;

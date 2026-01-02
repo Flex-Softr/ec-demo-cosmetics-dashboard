@@ -9,7 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetCustomerProductsQuery } from "@/redux/features/allProducts/allProductsApi";
+import { useGetProductsQuery } from "@/redux/features/products/productsApi";
+import { IAdminProduct } from "@/types/products";
 import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import {
@@ -39,9 +40,9 @@ const SelectProduct = ({
   setValue,
   clearErrors,
 }: TProps) => {
-  const { data, isLoading } = useGetCustomerProductsQuery({
-    page: 1,
-    limit: 1000,
+  const { data: products, isLoading } = useGetProductsQuery({
+    limit: 0,
+    status: "published",
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -89,9 +90,9 @@ const SelectProduct = ({
                   >
                     <option value="">Select Product...</option>
                     {!isLoading &&
-                      Array.isArray(data?.data) &&
-                      data.data.map(
-                        ({ _id, title }: { _id: string; title: string }) => (
+                      Array.isArray(products?.data?.data) &&
+                      products.data.data.map(
+                        ({ _id, title }: IAdminProduct) => (
                           <option value={_id} key={_id}>
                             {title}
                           </option>
@@ -106,14 +107,20 @@ const SelectProduct = ({
                     clearErrors={clearErrors}
                     product="product"
                     orderedProducts="orderedProducts"
+                    selectedProduct={
+                      Array.isArray(products?.data?.data)
+                        ? products?.data?.data.find(
+                            (p: IAdminProduct) =>
+                              p._id === watchedOrderedProducts?.[index]?.product
+                          )
+                        : undefined
+                    }
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     initialAttributes={(field as any).attributes}
                     availableVariations={
-                      Array.isArray(data?.data)
-                        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          data.data.find(
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            (p: any) =>
+                      Array.isArray(products?.data?.data)
+                        ? products?.data?.data.find(
+                            (p: IAdminProduct) =>
                               p._id === watchedOrderedProducts?.[index]?.product
                           )?.variations
                         : undefined
@@ -130,7 +137,7 @@ const SelectProduct = ({
                 <UnitPriceDisplay
                   control={control}
                   index={index}
-                  products={data?.data}
+                  products={products?.data?.data}
                 />
               </TableCell>
               <TableCell className="align-middle py-4">
@@ -152,7 +159,7 @@ const SelectProduct = ({
                 <AmountDisplay
                   control={control}
                   index={index}
-                  products={data?.data}
+                  products={products?.data?.data}
                 />
               </TableCell>
 
@@ -187,20 +194,6 @@ const SelectProduct = ({
   );
 };
 
-type Product = {
-  _id: string;
-  title: string;
-  price: number;
-  salePrice?: number;
-  variations?: {
-    _id: string;
-    price?: {
-      regularPrice: number;
-      salePrice?: number;
-    };
-  }[];
-};
-
 const UnitPriceDisplay = ({
   control,
   index,
@@ -208,7 +201,7 @@ const UnitPriceDisplay = ({
 }: {
   control: Control<TFormInput>;
   index: number;
-  products: Product[] | undefined;
+  products: IAdminProduct[] | undefined;
 }) => {
   const productId = useWatch({
     control,
@@ -224,7 +217,7 @@ const UnitPriceDisplay = ({
     const product = products.find((p) => p._id === productId);
     if (!product) return 0;
 
-    let unitPrice = product.salePrice || product.price || 0;
+    let unitPrice = product.salePrice || product.regularPrice || 0;
     if (variationId && product.variations) {
       const variation = product.variations.find((v) => v._id === variationId);
       if (variation && variation.price) {
@@ -251,7 +244,7 @@ const AmountDisplay = ({
 }: {
   control: Control<TFormInput>;
   index: number;
-  products: Product[] | undefined;
+  products: IAdminProduct[] | undefined;
 }) => {
   const quantity =
     useWatch({
@@ -273,7 +266,7 @@ const AmountDisplay = ({
     const product = products.find((p) => p._id === productId);
     if (!product) return 0;
 
-    let unitPrice = product.salePrice || product.price || 0;
+    let unitPrice = product.salePrice || product.regularPrice || 0;
     if (variationId && product.variations) {
       const variation = product.variations.find((v) => v._id === variationId);
       if (variation && variation.price) {

@@ -24,7 +24,7 @@ import {
   useDeleteAttributeMutation,
   useGetAttributesQuery,
   useUpdateAttributeMutation,
-} from "@/redux/features/addAttributes/attributesApi";
+} from "@/redux/features/attributes/attributesApi";
 import { PencilIcon, Settings, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { TAttribute } from "../lib/attribute.interface";

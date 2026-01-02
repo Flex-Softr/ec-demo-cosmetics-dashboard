@@ -12,7 +12,7 @@ type PriceDate = {
 
 export type TPrice = {
   index?: number;
-  regularPrice: number;
+  regularPrice?: number;
   salePrice?: number;
   discountPercent?: number;
   priceSave?: number;
@@ -28,12 +28,12 @@ export type TInventory = {
   index?: number;
   sku?: string;
   stockStatus: string;
-  stockQuantity: number;
-  stockAvailable: number;
-  preStockQuantity: number;
+  stockQuantity?: number;
+  stockAvailable?: number;
+  preStockQuantity?: number;
   productCode?: string;
   manageStock: boolean;
-  lowStockWarning: number;
+  lowStockWarning?: number;
   // showStockQuantity?: boolean;
   // showStockWithText?: boolean;
   hideStock: boolean;
@@ -78,7 +78,6 @@ export type TProduct = {
   description: string;
   shortDescription: string;
   additionalInfo: string;
-  usageGuidelines: string;
   price: TPrice;
   image: TImage;
   inventory: TInventory;
@@ -90,7 +89,6 @@ export type TProduct = {
   seoData?: TSeoData;
   offer?: TOffer;
   featured: boolean;
-  downloadable?: boolean;
   review?: boolean;
   warranty: boolean;
   warrantyInfo: TWarrantyInfo;

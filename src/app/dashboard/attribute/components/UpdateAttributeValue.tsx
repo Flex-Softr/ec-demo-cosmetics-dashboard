@@ -3,7 +3,7 @@ import { toast } from "@/components/ui/use-toast";
 import {
   useDeleteAttributeMutation,
   useUpdateAttributeMutation,
-} from "@/redux/features/addAttributes/attributesApi";
+} from "@/redux/features/attributes/attributesApi";
 import { Save, TrashIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {

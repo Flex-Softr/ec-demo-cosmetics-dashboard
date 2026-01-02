@@ -1,7 +1,7 @@
 import baseApi from "@/redux/baseApi/baseApi";
 import searchParams from "@/utilities/searchParams";
 
-const couponApi = baseApi.injectEndpoints({
+const customerApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllCustomers: builder.query({
       query: (args) => ({
@@ -14,4 +14,4 @@ const couponApi = baseApi.injectEndpoints({
 });
 
 export const { useGetAllCustomersQuery, useLazyGetAllCustomersQuery } =
-  couponApi;
+  customerApi;

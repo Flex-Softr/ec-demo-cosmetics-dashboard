@@ -71,31 +71,6 @@ const OrdersStatusButtons = () => {
     }
   }, [data, loading, error, dispatch]);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (filter) {
-  //       dispatch(setIsLoading(true));
-  //       const { data, meta } = await fetchData({
-  //         endPoint: "/orders/admin/all-orders",
-  //         tags: ["allOrders"],
-  //         searchParams: {
-  //           status: filter,
-  //           sort: "-createdAt",
-  //           page,
-  //           limit,
-  //         },
-  //       });
-  //       dispatch(setTotalPage(meta));
-  //       setOrderStatusCount(data?.countsByStatus);
-  //       dispatch(setOrders(data?.data));
-  //       dispatch(setSearch(false));
-  //       dispatch(setSearchQuery(""));
-  //       dispatch(setSearchedOrders([]));
-  //       dispatch(setIsLoading(false));
-  //     }
-  //   })();
-  // }, [filter, page, limit, iSOrderUpdate, dispatch]);
-
   return (
     <div className="flex flex-wrap items-center justify-start gap-5">
       {orderStatusCount?.map((status: { name: string; total: string }) => {

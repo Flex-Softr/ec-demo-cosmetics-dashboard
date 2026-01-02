@@ -22,7 +22,7 @@ import {
   setGeneratedVariations,
   setSelectedAttribute,
 } from "@/redux/features/addProduct/variation/variationSlice";
-import { useGetAProductQuery } from "@/redux/features/allProducts/allProductsApi";
+import { useGetAProductQuery } from "@/redux/features/products/productsApi";
 import { useEffect } from "react";
 
 const SetProduct = ({ productId }: { productId: string }) => {

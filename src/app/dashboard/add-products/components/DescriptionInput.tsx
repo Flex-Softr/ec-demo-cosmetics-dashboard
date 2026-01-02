@@ -7,13 +7,13 @@ const JoditEditor = dynamic(() => import("jodit-react"), {
   ssr: false, // Disable SSR
 });
 
-const AdditionalInfo = () => {
+const DescriptionInput = () => {
   const { control } = useFormContext();
 
   return (
-    <SectionContentWrapper heading={"Product Additional Info"}>
+    <SectionContentWrapper heading={"Product Description"}>
       <Controller
-        name="additionalInfo"
+        name="description"
         control={control}
         render={({ field }) => (
           <JoditEditor
@@ -26,4 +26,4 @@ const AdditionalInfo = () => {
   );
 };
 
-export default AdditionalInfo;
+export default DescriptionInput;

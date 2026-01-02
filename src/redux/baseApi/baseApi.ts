@@ -45,7 +45,7 @@ const customBaseQueryWithRefreshToken: BaseQueryFn = async (
 };
 
 const tags = [
-  "allProducts",
+  "products",
   "singleProduct",
   "allCustomerProducts",
   "allOrders",

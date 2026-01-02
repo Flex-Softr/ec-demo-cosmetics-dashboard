@@ -3,38 +3,41 @@ import * as Yup from "yup";
 
 const PriceValidationSchema = Yup.object().shape({
   regularPrice: Yup.number()
+    .transform((value) => (Number.isNaN(value) ? undefined : value))
     .min(1, "Price is required")
-    .typeError("Price is required")
-    .required(),
-  salePrice: Yup.number().min(0, "Sale price cannot be negative"),
-  discountPercent: Yup.number().min(0, "Discount percent cannot be negative"),
+    .typeError("Price must be a valid number")
+    .required("Price is required"),
+  salePrice: Yup.number()
+    .transform((value) => (Number.isNaN(value) ? undefined : value))
+    .min(0, "Sale price cannot be negative")
+    .typeError("Must be a valid number"),
+  discountPercent: Yup.number()
+    .transform((value) => (Number.isNaN(value) ? undefined : value))
+    .min(0, "Discount percent cannot be negative")
+    .typeError("Must be a valid number"),
 });
 
 const ImageValidationSchema = Yup.object().shape({
   thumbnail: Yup.string().required("Thumbnail image is required"),
-  gallery: Yup.array().min(1, "Gallery images is required").required(),
+  gallery: Yup.array()
+    .min(1, "Image gallery is required")
+    .required("Image gallery is required"),
 });
 
 const InventoryValidationSchema = Yup.object().shape({
   stockStatus: Yup.string().required("Stock status is required"),
-  // stockQuantity: Yup.number()
-  //   .min(1, "Stock quantity is required")
-  //   .typeError("Stock quantity is required")
-  //   .required(),
-  // stockQuantity: Yup.number()
-  //   .transform((value, originalValue) => (originalValue === "" ? 0 : value))
-  //   .default(0)
-  //   .test(
-  //     "is-less-than-quantity",
-  //     "Stock quantity cannot less than existing quantity!",
-  //     function (value) {
-  //       const { preStockQuantity } = this.parent;
-  //       return value >= preStockQuantity;
-  //     }
-  //   ),
-  stockQuantity: Yup.number().default(0),
-  stockAvailable: Yup.number().optional(),
-  preStockQuantity: Yup.number().optional(),
+  stockQuantity: Yup.number()
+    .transform((value) => (Number.isNaN(value) ? undefined : value))
+    .typeError("Must be a valid number")
+    .optional(),
+  stockAvailable: Yup.number()
+    .transform((value) => (Number.isNaN(value) ? undefined : value))
+    .typeError("Must be a valid number")
+    .optional(),
+  preStockQuantity: Yup.number()
+    .transform((value) => (Number.isNaN(value) ? undefined : value))
+    .typeError("Must be a valid number")
+    .optional(),
   sku: Yup.string().trim().required("SKU is required"),
   // productCode: Yup.string().trim().optional(),
   manageStock: Yup.boolean().optional(),
@@ -42,6 +45,7 @@ const InventoryValidationSchema = Yup.object().shape({
     is: true,
     then: () =>
       Yup.number()
+        .transform((value) => (Number.isNaN(value) ? undefined : value))
         .min(1, "Low stock warning is required")
         .typeError("Low stock warning is required")
         .required()
@@ -59,11 +63,9 @@ const InventoryValidationSchema = Yup.object().shape({
 });
 
 const AttributeSchema = Yup.object().shape({
-  name: Yup.string().required("Attribute name is required"),
-  values: Yup.array()
-    .of(Yup.string())
-    .min(1, "At least one value is required")
-    .required(),
+  label: Yup.string().required("Attribute name is required"),
+  value: Yup.string().required("Attribute ID is required"),
+  // values: Yup.array().of(Yup.string()), // We handle values in a separate field 'attributeValues' in form state
 });
 
 const VariationSchema = Yup.object().shape({
@@ -100,6 +102,7 @@ const PublishedStatusSchema = Yup.string()
 
 const ProductSchema = Yup.object().shape({
   title: Yup.string().trim().required("Title is required"),
+  slug: Yup.string().trim().required("Slug is required"),
   description: Yup.string().trim().optional(),
   type: Yup.string().optional(),
   image: ImageValidationSchema.required(),

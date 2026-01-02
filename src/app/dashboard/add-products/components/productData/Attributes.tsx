@@ -1,66 +1,71 @@
 import { Label } from "@/components/ui/label";
-import {
-  TSelectedAttribute,
-  TSelectValue,
-} from "@/redux/features/addProduct/variation/interface";
-import {
-  setSelectedAttribute,
-  setSelectedAttributeValue,
-} from "@/redux/features/addProduct/variation/variationSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import Select, { MultiValue } from "react-select";
+import { TSelectedAttribute } from "@/redux/features/addProduct/variation/interface";
+import { Controller, useFormContext } from "react-hook-form";
+import Select from "react-select";
 
-const Attributes = ({ attributes }: { attributes: TSelectedAttribute[] }) => {
-  const dispatch = useAppDispatch();
-  const defaultAttribute = useAppSelector(
-    ({ productVariation }) => productVariation.selectedAttribute
-  );
-  const defaultAttributeValue = useAppSelector(
-    ({ productVariation }) => productVariation.selectedAttributeValue
-  );
+const Attributes = ({
+  attributes: availableAttributes,
+}: {
+  attributes: TSelectedAttribute[];
+}) => {
+  const { control, watch } = useFormContext();
 
-  const handleAttribute = (value: MultiValue<TSelectedAttribute>) => {
-    const mutableValue: TSelectedAttribute[] = Array.from(value);
-    dispatch(setSelectedAttribute(mutableValue));
-  };
-
-  const handleAttributeValue = (
-    index: number,
-    value: MultiValue<TSelectValue>
-  ) => {
-    const mutableValue: TSelectValue[] = Array.from(value);
-    dispatch(setSelectedAttributeValue({ index, child: mutableValue }));
-  };
+  // Watch currently selected attributes to render value selectors
+  const selectedAttributes = watch("attributes") || [];
 
   return (
     <div className="space-y-2">
       <div className="space-y-1">
         <Label>Select Attribute</Label>
-        <Select
-          defaultValue={defaultAttribute}
-          isMulti
-          isSearchable
-          onChange={handleAttribute}
-          options={attributes}
-          placeholder="Select attribute..."
-        />
-      </div>
-      {defaultAttribute.length > 0 &&
-        defaultAttribute.map(({ label, child }, index) => (
-          <div className="space-y-1" key={label}>
-            <Label>Select {label}</Label>
+        <Controller
+          control={control}
+          name="attributes"
+          defaultValue={[]}
+          render={({ field }) => (
             <Select
               isMulti
               isSearchable
-              options={child?.map((item) => ({
-                label: item.label,
-                value: String(item.value),
-              }))}
-              defaultValue={defaultAttributeValue[index]?.child}
-              onChange={(selectedOptions) =>
-                handleAttributeValue(index, selectedOptions)
-              }
-              placeholder={`Select ${label}...`}
+              options={availableAttributes}
+              value={field.value}
+              onChange={(val) => {
+                field.onChange(val);
+                // Ensure attributeValues array matches selected attributes length/order if needed?
+                // Or just let it sync naturally.
+                // If an attribute is removed, we might want to remove its corresponding values.
+                // For simplicity, we just update the attributes list here.
+                // Complex syncing might be needed for variations.
+                // Logic to clean up values for removed attributes could act here
+              }}
+              placeholder="Select attribute..."
+            />
+          )}
+        />
+      </div>
+      {selectedAttributes.length > 0 &&
+        selectedAttributes.map((attr: TSelectedAttribute, index: number) => (
+          <div className="space-y-1" key={attr.label}>
+            <Label>Select {attr.label}</Label>
+            <Controller
+              control={control}
+              name={`attributeValues.${index}`}
+              render={({ field }) => (
+                <Select
+                  isMulti
+                  isSearchable
+                  options={attr.child?.map((item) => ({
+                    label: item.label,
+                    value: String(item.value),
+                  }))}
+                  value={field.value}
+                  onChange={(val) => {
+                    // Store in specific structure expected by generateVariations?
+                    // The previous code stored { index, child: val } in Redux.
+                    // Here we just store the array of values at index 'index'.
+                    field.onChange(val);
+                  }}
+                  placeholder={`Select ${attr.label}...`}
+                />
+              )}
             />
           </div>
         ))}

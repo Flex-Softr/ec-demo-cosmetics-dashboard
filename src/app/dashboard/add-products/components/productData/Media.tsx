@@ -6,7 +6,8 @@ import config from "@/config/config";
 import { useGetSingleImageQuery } from "@/redux/features/addProduct/media/mediaApi";
 import { useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 type TProps = {
   isVariation?: boolean;
@@ -19,9 +20,33 @@ const Media = ({ isVariation }: TProps) => {
     setOpen(!open);
   };
 
+  const {
+    setValue,
+    trigger,
+    formState: { errors, submitCount },
+  } = useFormContext();
+
   const { thumbnail, gallery } = useAppSelector(
     ({ imageSelector }) => imageSelector
   );
+
+  // Sync Redux image state to Form State
+  useEffect(() => {
+    if (isVariation) {
+      // Variation media logic is different?
+      // The original code commented out variations usage (lines 26-28)
+      // So assuming Media currently only supports main product media for now as per this component
+    } else {
+      if (thumbnail) {
+        setValue("image.thumbnail", thumbnail, { shouldValidate: true });
+        trigger("image.thumbnail");
+      }
+      if (gallery) {
+        setValue("image.gallery", gallery, { shouldValidate: true });
+        trigger("image.gallery");
+      }
+    }
+  }, [thumbnail, gallery, setValue, isVariation, trigger]);
 
   // const image = useAppSelector(
   //   ({ productVariation }) => productVariation.variations[index || 0]?.image
@@ -34,9 +59,21 @@ const Media = ({ isVariation }: TProps) => {
     gallery[0] || undefined
   );
 
+  const getError = (path: string) => {
+    const parts = path.split(".");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let current: any = errors;
+    for (const p of parts) {
+      if (current?.[p]) current = current[p];
+      else return undefined;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (current as any)?.message as string | undefined;
+  };
+
   return (
     <>
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col justify-evenly">
           <SectionTitle className="text-center border-primary">
             Add Thumbnail
@@ -46,7 +83,7 @@ const Media = ({ isVariation }: TProps) => {
               handleOpen();
               setClick(isVariation ? "variation" : "thumbnail");
             }}
-            className="flex flex-col items-center justify-center mx-auto mt-5 bg-gray-200 w-48 h-48 border border-dotted  border-blue-gray-200 cursor-pointer relative rounded-sm"
+            className={`flex flex-col items-center justify-center mx-auto mt-5 bg-gray-200 w-48 h-48 border border-dotted cursor-pointer relative rounded-sm ${submitCount > 0 && getError("image.thumbnail") ? "border-red-500" : "border-blue-gray-200"}`}
           >
             {thumbnailImage?.data?.src && thumbnail ? (
               <Image
@@ -78,6 +115,11 @@ const Media = ({ isVariation }: TProps) => {
               </>
             )}
           </div>
+          {submitCount > 0 && getError("image.thumbnail") && (
+            <p className="text-red-500 text-center mt-2">
+              {getError("image.thumbnail")}
+            </p>
+          )}
         </div>
         <div className="flex flex-col justify-center">
           <SectionTitle className="text-center border-primary">
@@ -88,7 +130,7 @@ const Media = ({ isVariation }: TProps) => {
               handleOpen();
               setClick("gallery");
             }}
-            className="flex flex-col items-center justify-center mx-auto mt-5 bg-gray-200 w-48 h-48 border border-dotted  border-blue-gray-200 cursor-pointer relative rounded-sm group"
+            className={`flex flex-col items-center justify-center mx-auto mt-5 bg-gray-200 w-48 h-48 border border-dotted border-blue-gray-200 cursor-pointer relative rounded-sm group ${submitCount > 0 && getError("image.gallery") ? "border-red-500" : "border-blue-gray-200"}`}
           >
             {galleryImage?.data?.src && gallery.length ? (
               <>
@@ -125,6 +167,11 @@ const Media = ({ isVariation }: TProps) => {
               </>
             )}
           </div>
+          {submitCount > 0 && getError("image.gallery") && (
+            <p className="text-red-500 text-center mt-2">
+              {getError("image.gallery")}
+            </p>
+          )}
         </div>
         {/* modal
          */}

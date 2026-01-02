@@ -1,23 +1,23 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-  setProducts,
-  setSearch,
-  setSearchQuery,
-  setSearchedProducts,
-  setSelectedStatus,
-} from "@/redux/features/allProducts/allProductsSlice";
-import {
   setIsLoading,
   setLimit,
   setPage,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
+import { useGetProductsQuery } from "@/redux/features/products/productsApi";
+import {
+  setProducts,
+  setSearch,
+  setSearchQuery,
+  setSearchedProducts,
+  setSelectedStatus,
+} from "@/redux/features/products/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import backgroundColor from "@/utilities/backgroundColor";
 import borderColor from "@/utilities/borderColor";
 // import DateRangeSelector from "@/components/DateRangeSelector";
-import { useGetAllProductsQuery } from "@/redux/features/allProducts/allProductsApi";
 import { useEffect, useState } from "react";
 
 const CountByStatusButtons = () => {
@@ -26,7 +26,7 @@ const CountByStatusButtons = () => {
     ({ pagination }) => pagination
   );
   const { selectedStatus: filter, products } = useAppSelector(
-    ({ allProducts }) => allProducts
+    ({ products }) => products
   );
 
   if (!products.length && page > 1) {
@@ -39,9 +39,12 @@ const CountByStatusButtons = () => {
     data,
     isLoading: loading,
     error,
-  } = useGetAllProductsQuery({
+  } = useGetProductsQuery({
     status: filter,
-    sort: "-createdAt",
+    // price: selectedPriceRange && {
+    //   min: selectedPriceRange[0],
+    //   max: selectedPriceRange[1],
+    // },
     page,
     limit,
   });

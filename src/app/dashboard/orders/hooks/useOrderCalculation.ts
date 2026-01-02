@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useGetCustomerProductsQuery } from "@/redux/features/allProducts/allProductsApi";
+import { useGetCustomerProductsQuery } from "@/redux/features/products/productsApi";
 import { useGetShippingChargeQuery } from "@/redux/features/shippingCharge/shippingCharge";
 import { useMemo } from "react";
 import { Control, useWatch } from "react-hook-form";

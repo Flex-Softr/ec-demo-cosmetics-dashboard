@@ -1,17 +1,17 @@
 "use client";
-import { useGetAllProductsQuery } from "@/redux/features/allProducts/allProductsApi";
-import {
-  setProducts,
-  setSearch,
-  setSearchQuery,
-  setSearchedProducts,
-} from "@/redux/features/allProducts/allProductsSlice";
 import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
 import {
   setIsLoading,
   setPage,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
+import { useGetProductsQuery } from "@/redux/features/products/productsApi";
+import {
+  setProducts,
+  setSearch,
+  setSearchQuery,
+  setSearchedProducts,
+} from "@/redux/features/products/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 import {
@@ -43,7 +43,7 @@ const Filter = () => {
   const dispatch = useAppDispatch();
   const { page, limit } = useAppSelector(({ pagination }) => pagination);
   const { selectedStatus: filter, products } = useAppSelector(
-    ({ allProducts }) => allProducts
+    ({ products }) => products
   );
 
   if (!products.length && page > 1) {
@@ -53,7 +53,7 @@ const Filter = () => {
     data,
     isLoading: loading,
     error,
-  } = useGetAllProductsQuery({
+  } = useGetProductsQuery({
     status: filter,
     category: category === "All Categories" ? "" : category,
     stock: stock === "All Product Stock" ? "" : stock,
