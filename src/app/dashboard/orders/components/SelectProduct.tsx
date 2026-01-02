@@ -15,6 +15,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import {
   Control,
+  Controller,
   FieldErrors,
   useFieldArray,
   UseFormClearErrors,
@@ -80,25 +81,32 @@ const SelectProduct = ({
         <TableBody>
           {fields.map((field, index) => (
             <TableRow key={field.id}>
-              <TableCell className="align-middle py-4">
+              <TableCell className="align-top py-4">
                 <div className="space-y-2">
-                  <select
-                    {...register(`orderedProducts.${index}.product`)}
-                    value={watchedOrderedProducts?.[index]?.product || ""}
-                    id={`product-${index}`}
-                    className="w-full h-10 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 rounded-md"
-                  >
-                    <option value="">Select Product...</option>
-                    {!isLoading &&
-                      Array.isArray(products?.data?.data) &&
-                      products.data.data.map(
-                        ({ _id, title }: IAdminProduct) => (
-                          <option value={_id} key={_id}>
-                            {title}
-                          </option>
-                        )
-                      )}
-                  </select>
+                  <Controller
+                    control={control}
+                    name={`orderedProducts.${index}.product`}
+                    render={({ field: { onChange, value, ...restField } }) => (
+                      <select
+                        {...restField}
+                        value={value || ""}
+                        onChange={onChange}
+                        id={`product-${index}`}
+                        className="w-full h-10 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 rounded-md"
+                      >
+                        <option value="">Select Product...</option>
+                        {!isLoading &&
+                          Array.isArray(products?.data?.data) &&
+                          products.data.data.map(
+                            ({ _id, title }: IAdminProduct) => (
+                              <option value={_id} key={_id}>
+                                {title}
+                              </option>
+                            )
+                          )}
+                      </select>
+                    )}
+                  />
                   <VariationOptions<TFormInput>
                     index={index}
                     control={control}
@@ -169,7 +177,7 @@ const SelectProduct = ({
                   variant="ghost"
                   size="icon"
                   onClick={() => remove(index)}
-                  className="text-red-500 hover:text-red-700 hover:bg-red-50 h-10 w-10"
+                  className="text-red-500 hover:text-red-700 bg-transparent hover:bg-transparent h-10 w-10"
                   disabled={fields.length === 1}
                 >
                   <Trash2 className="h-5 w-5" />

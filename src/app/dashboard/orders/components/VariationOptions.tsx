@@ -130,7 +130,9 @@ const VariationOptions = <T extends FieldValues>(
                 );
               }
             }}
-            className="w-full h-8 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 rounded-md font-semibold"
+            className={`w-full h-9 border border-gray-300 bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 rounded-md font-semibold ${
+              variationId ? "text-primary" : ""
+            }`}
           >
             <option value="">-- Select Attribute --</option>
             {allVariations?.map(
@@ -141,7 +143,7 @@ const VariationOptions = <T extends FieldValues>(
                 _id: string;
                 attributes: Record<string, unknown>;
               }) => (
-                <option value={_id} key={_id}>
+                <option value={_id} key={_id} className="text-gray-900">
                   {Object.keys(attributes)
                     .map((key) => `${attributes[key]} `)
                     .join("")}
