@@ -6,7 +6,7 @@ const getFraudCheck = async (phoneNumber: string) => {
   const accessToken = cookies().get("__app.ec.at")?.value;
 
   const res = await fetch(
-    `${config.base_url}/api/v1/check/fraud-customers/${phoneNumber}`,
+    `${config.api_base_url}/api/v1/check/fraud-customers/${phoneNumber}`,
     {
       headers: { authorization: `Bearer ${accessToken}` },
       next: { revalidate: 60 },

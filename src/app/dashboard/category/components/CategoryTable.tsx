@@ -21,7 +21,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import config from "@/config/config";
 import {
   useDeleteCategoryMutation,
   useGetCategoriesQuery,
@@ -83,7 +82,7 @@ export const columns: ColumnDef<TCategories>[] = [
       <Image
         width={50}
         height={50}
-        src={`${config.base_url}/${row.original.image?.src}`}
+        src={`${row.original.image?.src}`}
         alt={row?.original?.name}
       />
     ),

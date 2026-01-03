@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import config from "@/config/config";
 import { TUser } from "@/redux/features/user/userInterface";
 import backgroundColor from "@/utilities/backgroundColor";
 import { ColumnDef } from "@tanstack/react-table";
@@ -22,7 +21,7 @@ const columns: ColumnDef<TUser>[] = [
     header: "Image",
     cell: ({ row }) => {
       const profileUrl = row.original.profilePicture
-        ? `${config.base_url}/${row.original.profilePicture}`
+        ? `${row.original.profilePicture}`
         : dummyUser.src;
       return (
         <div className="flex justify-center">

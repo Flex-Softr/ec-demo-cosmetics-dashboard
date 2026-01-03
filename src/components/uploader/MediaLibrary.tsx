@@ -1,4 +1,3 @@
-import config from "@/config/config";
 // import { setVariationThumbnail } from "@/redux/features/addProduct/variation/variationSlice";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -154,7 +153,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                 className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${localThumbnail === image._id && "border-2 border-blue-600"}`}
               >
                 <Image
-                  src={`${config.base_url}/${image.src}`}
+                  src={`${image.src}`}
                   alt={image.alt}
                   fill={true}
                   className="object-cover rounded-sm"
@@ -179,7 +178,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                 }`}
               >
                 <Image
-                  src={`${config.base_url}/${image.src}`}
+                  src={`${image.src}`}
                   alt={image.alt}
                   fill={true}
                   className="object-cover rounded-sm"

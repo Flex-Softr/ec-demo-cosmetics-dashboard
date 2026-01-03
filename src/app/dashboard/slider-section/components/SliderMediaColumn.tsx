@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import config from "@/config/config";
 import Image from "next/image";
 import DeleteSlider from "./DeleteSlider";
 import { TSlider } from "./SliderMediaTable";
@@ -29,7 +28,7 @@ const columns: ColumnDef<TSlider>[] = [
     header: () => <h2 className="text-start">Image</h2>,
     cell: ({ row }) => (
       <Image
-        src={`${config.base_url}/${row.original.image?.src}`}
+        src={`${row.original.image?.src}`}
         className="w-44 "
         alt={""}
         width={300}

@@ -5,7 +5,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import config from "@/config/config";
 import { TVideosAndImages } from "@/redux/features/warrantyClaimRequests/warrantyClaimInterface";
 
 const VideoGallery = ({ videos }: { videos: TVideosAndImages[] }) => {
@@ -15,7 +14,7 @@ const VideoGallery = ({ videos }: { videos: TVideosAndImages[] }) => {
         <CarouselContent>
           {videos.map((video) => (
             <CarouselItem key={video._id} className="block">
-              <video src={`${config.base_url}/${video.path}`} controls></video>
+              <video src={`${video.path}`} controls></video>
             </CarouselItem>
           ))}
         </CarouselContent>

@@ -2,7 +2,6 @@
 import { TypographyH4 } from "@/components/ui/Typography";
 import { SectionTitle } from "@/components/ui/sectionTitle";
 import ImageSelectPopup from "@/components/uploader/ImageSelectPopup";
-import config from "@/config/config";
 import { useGetSingleImageQuery } from "@/redux/features/addProduct/media/mediaApi";
 import { useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
@@ -36,7 +35,7 @@ const AddBrandMedia = () => {
         >
           {thumbnailImage?.data && thumbnail ? (
             <Image
-              src={`${config.base_url}/${thumbnailImage.data.src}`}
+              src={`${thumbnailImage.data.src}`}
               alt={thumbnailImage.data.alt || "Thumbnail"}
               fill={true}
               className="object-cover rounded-sm"

@@ -1,5 +1,4 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import config from "@/config/config";
 import { IAdminProduct } from "@/types/products";
 import { ColumnDef } from "@tanstack/react-table";
 // import { ChevronDown, ChevronRight } from "lucide-react";
@@ -54,7 +53,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
           <Image
             width={80}
             height={80}
-            src={`${config.base_url}/${thumbnail.src}`}
+            src={`${thumbnail.src}`}
             alt={thumbnail.alt}
           />
         </div>

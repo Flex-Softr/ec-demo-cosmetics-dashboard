@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
-import config from "@/config/config";
 import { useLogOutMutation } from "@/redux/features/auth/authApi";
 import { logOut, setUser } from "@/redux/features/auth/authSlice";
 import { TUser } from "@/redux/features/auth/interface";
@@ -50,9 +49,7 @@ const UserMenu = ({
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.auth.token);
 
-  const profilePicUrl = profilePicture
-    ? `${config.base_url}/${profilePicture}`
-    : dummyUser.src;
+  const profilePicUrl = profilePicture ? `${profilePicture}` : dummyUser.src;
 
   // handle logout
   const [logoutUser] = useLogOutMutation();

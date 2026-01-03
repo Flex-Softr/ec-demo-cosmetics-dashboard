@@ -2,7 +2,6 @@
 import { TypographyH4 } from "@/components/ui/Typography";
 import { SectionTitle } from "@/components/ui/sectionTitle";
 import ImageSelectPopup from "@/components/uploader/ImageSelectPopup";
-import config from "@/config/config";
 import { useGetSingleImageQuery } from "@/redux/features/addProduct/media/mediaApi";
 import { useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
@@ -28,9 +27,9 @@ const UpdateBrandMedia = ({ image }: { image: TBrandImage }) => {
 
   const selectImg = thumbnailImage?.data && thumbnail;
   const src = selectImg
-    ? `${config.base_url}/${thumbnailImage.data.src}`
+    ? `${thumbnailImage.data.src}`
     : image
-      ? `${config.base_url}/${image.src}`
+      ? `${image.src}`
       : "";
 
   const alt = selectImg

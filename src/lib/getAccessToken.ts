@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 export default async function getAccessToken(request: NextRequest) {
   try {
     const refreshToken = cookies().get("__app.ec.rt")?.value || "";
-    const res = await fetch(`${config.base_url}/api/v1/auth/access-token`, {
+    const res = await fetch(`${config.api_base_url}/api/v1/auth/access-token`, {
       method: "POST",
       headers: { authorization: refreshToken },
     });
@@ -37,7 +37,7 @@ export default async function getAccessToken(request: NextRequest) {
 
 export async function getProfile() {
   const accessToken = cookies().get("__app.ec.at")?.value;
-  const res = await fetch(`${config.base_url}/api/v1/users/profile`, {
+  const res = await fetch(`${config.api_base_url}/api/v1/users/profile`, {
     method: "GET",
     headers: { authorization: `Bearer ${accessToken}` },
     cache: "force-cache",

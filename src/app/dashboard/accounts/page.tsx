@@ -1,13 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
-import config from "@/config/config";
 import { getProfile } from "@/lib/getAccessToken";
 import dummyUser from "../../../../public/icons/user.jpg";
 
 const AccountsPage = async () => {
   const user = await getProfile();
   const profilePicUrl = user?.profilePicture
-    ? `${config.base_url}/${user?.profilePicture}`
+    ? `${user?.profilePicture}`
     : dummyUser.src;
   return (
     <div className="flex-1 space-y-6">

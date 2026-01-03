@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import config from "@/config/config";
 import { getProfile } from "@/lib/getAccessToken";
 import { Metadata } from "next";
 import dummyUser from "../../../public/icons/user.jpg";
@@ -12,7 +11,7 @@ export const metadata: Metadata = {
 const Dashboard = async () => {
   const user = await getProfile();
   const profilePicUrl = user?.profilePicture
-    ? `${config.base_url}/${user?.profilePicture}`
+    ? `${user?.profilePicture}`
     : dummyUser.src;
   return (
     <div className="flex justify-center items-center h-full">

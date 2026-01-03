@@ -17,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import config from "@/config/config";
 import {
   useAddSubCategoryMutation,
   useDeleteSubCategoryMutation,
@@ -171,7 +170,7 @@ const ManageSubCategories = ({ category }: { category: TCategories }) => {
                     <TableCell>
                       {sub.image?.src && (
                         <Image
-                          src={`${config.base_url}/${sub.image.src}`}
+                          src={`${sub.image.src}`}
                           alt={sub.name}
                           width={40}
                           height={40}

@@ -8,7 +8,7 @@ import { logOut, setUser } from "../features/auth/authSlice";
 import { RootState } from "../store";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: `${config.base_url}/api/v1`,
+  baseUrl: `${config.api_base_url}/api/v1`,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
@@ -28,7 +28,7 @@ const customBaseQueryWithRefreshToken: BaseQueryFn = async (
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 401) {
     // request for getting access token
-    const res = await fetch(`${config.base_url}/api/v1/auth/access-token`, {
+    const res = await fetch(`${config.api_base_url}/api/v1/auth/access-token`, {
       method: "POST",
       credentials: "include",
     });

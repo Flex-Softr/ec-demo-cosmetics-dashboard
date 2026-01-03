@@ -3,6 +3,7 @@ import { TAttribute } from "@/app/dashboard/attribute/lib/attribute.interface";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
+import config from "@/config/config";
 import { productStatus } from "@/const/products";
 import { useGetAttributesQuery } from "@/redux/features/attributes/attributesApi";
 import {
@@ -30,7 +31,6 @@ import Published from "./Published";
 import ShortDescriptionInput from "./ShortDescriptionInput";
 import TitleInput from "./TitleInput";
 import ProductDataTabs from "./productData/ProductDataTabs";
-import fetchData from "@/utilities/fetchData";
 
 const ProductForm = ({ productId }: { productId?: string }) => {
   const dispatch = useAppDispatch();
@@ -280,13 +280,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         dispatch(setGallery([]));
         dispatch(setDeleteImage([]));
       }
-      fetchData({
-        endPoint: "/api/revalidate",
-        searchParams: {
-          key: "products",
-          secret: "secret",
-        },
-      });
+      await fetch(`${config.api_base_url}/api/revalidate`);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       let errors: string[] = [];
