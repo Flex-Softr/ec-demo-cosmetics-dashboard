@@ -40,6 +40,7 @@ import * as React from "react";
 import CategoryAction from "./CategoryAction";
 import NavigateSubCategory from "./NavigateSubCategory";
 import UpdateCategoryActiveStatus from "./UpdateCategoryActiveStatus";
+import config from "@/config/config";
 
 export type TCategories = {
   _id: string;
@@ -145,6 +146,9 @@ export const CategoryTable = () => {
           className: "bg-success text-white ",
           title: "Category deleted successfully!",
         });
+        await fetch(
+          `${config.client_base_url}/api/revalidate?key=allCategories,parent-category&secret=${config.revalidate_secret}`
+        );
       } else {
         toast({
           className: "bg-danger text-whit",

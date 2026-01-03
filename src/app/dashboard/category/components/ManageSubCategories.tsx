@@ -33,6 +33,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import AddCategoryMedia from "./AddCategoryMedia";
 import { TCategories } from "./CategoryTable";
+import config from "@/config/config";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -94,7 +95,13 @@ const ManageSubCategories = ({ category }: { category: TCategories }) => {
       form.reset();
       dispatch(setThumbnail(""));
       setIsAdding(false);
-      toast({ title: "Subcategory added", className: "bg-success text-white" });
+      toast({
+        title: "Subcategory added successfully",
+        className: "bg-success text-white",
+      });
+      await fetch(
+        `${config.client_base_url}/api/revalidate?key=allCategories,parent-category&secret=${config.revalidate_secret}`
+      );
     }
   };
 

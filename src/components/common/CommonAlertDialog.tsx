@@ -27,7 +27,7 @@ const CommonAlertDialog = ({
   description,
   onConfirm,
   loading = false,
-  confirmText = "Continue",
+  confirmText = "Confirm",
   cancelText = "Cancel",
 }: TCommonAlertDialogProps) => {
   return (

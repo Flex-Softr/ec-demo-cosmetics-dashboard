@@ -14,6 +14,7 @@ import { SquarePen, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { TCategories } from "./CategoryTable";
 import UpdateCategoryForm from "./UpdateCategoryForm";
+import config from "@/config/config";
 const CategoryAction = ({ category }: { category: TCategories }) => {
   const { _id, name, image } = category;
   const [deleteCategory] = useDeleteCategoryMutation();
@@ -35,6 +36,9 @@ const CategoryAction = ({ category }: { category: TCategories }) => {
         className: "bg-success text-white ",
         title: "Category Successfully Deleted",
       });
+      await fetch(
+        `${config.client_base_url}/api/revalidate?key=allCategories,parent-category&secret=${config.revalidate_secret}`
+      );
     } else {
       toast({
         className: " bg-danger text-whit",

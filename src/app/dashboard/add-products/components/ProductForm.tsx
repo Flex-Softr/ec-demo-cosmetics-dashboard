@@ -280,7 +280,9 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         dispatch(setGallery([]));
         dispatch(setDeleteImage([]));
       }
-      await fetch(`${config.api_base_url}/api/revalidate`);
+      await fetch(
+        `${config.client_base_url}/api/revalidate?key=product-${productData.slug}&secret=${config.revalidate_secret}`
+      );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       let errors: string[] = [];

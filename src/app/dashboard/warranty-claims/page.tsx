@@ -31,7 +31,7 @@ const AllClaimRequestPage = async () => {
           <Button>
             <Link
               target="_blank"
-              href={`${config.base_client_url}/warranty/find-your-product`}
+              href={`${config.client_base_url}/warranty/find-your-product`}
             >
               Create
             </Link>

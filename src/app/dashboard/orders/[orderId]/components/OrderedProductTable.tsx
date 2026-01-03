@@ -41,7 +41,6 @@ export const columns: ColumnDef<TOrderedProducts>[] = [
       const {
         image,
         title,
-        productId,
         slug,
         // variation,
         attributes = {},
@@ -63,7 +62,7 @@ export const columns: ColumnDef<TOrderedProducts>[] = [
           </div>
           <div>
             <Link
-              href={`${config.base_client_url}/product/${productId}/${slug}}`}
+              href={`${config.client_base_url}/product/${slug}`}
               className="hover:text-blue-700"
               target="_blank"
             >

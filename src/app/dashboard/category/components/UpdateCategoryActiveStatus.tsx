@@ -5,6 +5,7 @@ import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { refetchData } from "@/utilities/fetchData";
 import { useState } from "react";
 import { TCategories } from "./CategoryTable";
+import config from "@/config/config";
 
 const UpdateCategoryActiveStatus = ({
   category,
@@ -30,6 +31,9 @@ const UpdateCategoryActiveStatus = ({
           className: "toast-success",
           title: res?.message,
         });
+        await fetch(
+          `${config.client_base_url}/api/revalidate?key=allCategories,parent-category&secret=${config.revalidate_secret}`
+        );
       }
     } catch (error) {
       const err = (error as { data: TErrorResponse })?.data;
