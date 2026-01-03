@@ -10,7 +10,13 @@ const config = {
     access_token_cookie_expires:
       process.env.NEXT_PUBLIC_ACCESS_TOKEN_COOKIE_EXPIRES,
   },
-  next_public_show_ito: process.env.NEXT_PUBLIC_SHOW_ITO || false,
+  next_public_show_image_to_order:
+    process.env.NEXT_PUBLIC_SHOW_IMAGE_TO_ORDER || false,
+  company_info: {
+    name: process.env.NEXT_PUBLIC_COMPANY_NAME,
+    phone: process.env.NEXT_PUBLIC_COMPANY_PHONE,
+    address: process.env.NEXT_PUBLIC_COMPANY_ADDRESS,
+  },
 };
 
 export default config;

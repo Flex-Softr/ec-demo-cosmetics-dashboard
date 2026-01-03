@@ -141,18 +141,27 @@
   }
 }
 
+/* Print Styles */
+.printContent {
+  display: none;
+}
+
+@media print {
+  .printContent {
+    display: block !important;
+  }
+
+  /* Ensure background colors are printed */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
 .invoice-container {
   display: none;
 }
 
-/* @media print {
-  .invoice-button {
-    display: none;
-  }
-  .invoice-container {
-    display: block;
-  }
-}  */
 
 .toast-error {
   @apply bg-red-500 text-white text-2xl border-0;

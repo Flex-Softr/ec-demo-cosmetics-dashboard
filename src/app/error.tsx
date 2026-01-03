@@ -19,7 +19,7 @@ export default function Error({ error, reset }: TProps) {
       <p>Contact Support</p>
       <div className="space-x-5">
         <button
-          className="text-white py-1 px-4 bg-[#29C1F1] rounded-md"
+          className="text-white py-1 px-4 bg-primary rounded-md"
           onClick={
             // Attempt to recover by trying to re-render the segment
             () => reset()
@@ -28,7 +28,7 @@ export default function Error({ error, reset }: TProps) {
           Try again
         </button>
         <button
-          className="text-white py-1 px-4 bg-[#29C1F1] rounded-md"
+          className="text-white py-1 px-4 bg-primary rounded-md"
           onClick={() => router.push("/dashboard")}
         >
           Back to home

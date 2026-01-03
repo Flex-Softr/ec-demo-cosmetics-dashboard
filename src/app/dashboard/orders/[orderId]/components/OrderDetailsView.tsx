@@ -3,7 +3,6 @@
 import DeleteOrderBtn from "@/components/DeleteOrderBtn";
 import OrderIdAndDate from "@/components/OrderIdAndDate";
 import UpdateOrderStatus from "@/components/UpdateOrderStatus";
-import Invoice from "@/components/invoice/Invoice";
 import { Card } from "@/components/ui/card";
 import { SectionTitle } from "@/components/ui/sectionTitle";
 import { Separator } from "@/components/ui/separator";
@@ -26,6 +25,7 @@ import { ReactNode } from "react";
 import OrderHistoryTable from "../../components/OrderHistoryTable";
 import { OrderedProductTable } from "./OrderedProductTable";
 import SetOrderHistoryData from "./SetOrderHistoryData";
+import PrintInvoiceButton from "./invoice/PrintInvoiceButton";
 
 type OrderDetailsViewProps = {
   orderId: string;
@@ -139,11 +139,10 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
             </div>
 
             <div className="flex gap-3">
-              {isInvoice && <Invoice orders={[order]} />}
               {isEdit && (
                 <Link
                   href={`/dashboard/orders/${order._id}/edit`}
-                  className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-all shadow-sm text-sm font-medium"
+                  className="flex items-center gap-2 bg-primary text-white hover:bg-primary/95 border border-gray-300 dark:border-gray-800 px-3 py-1 rounded-md text-sm"
                 >
                   <Edit className="w-4 h-4" />
                   <span>Edit Order</span>
@@ -251,7 +250,10 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
           </div>
 
           {/* Order Summary */}
-          <div className="flex justify-end mt-3">
+          <div className="flex justify-end mt-3 gap-10">
+            <div className="flex flex-col gap-2 justify-end">
+              {isInvoice && <PrintInvoiceButton orders={[order]} />}
+            </div>
             <div className="w-full md:w-1/2 lg:w-1/3 space-y-3 bg-gray-50/50 p-4 rounded-lg border">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>

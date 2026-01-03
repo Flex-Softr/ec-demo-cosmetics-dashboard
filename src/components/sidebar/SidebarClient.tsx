@@ -124,7 +124,7 @@ export function SidebarClient({ permissions }: TProps) {
           name: "Monitor Delivery",
           href: "/dashboard/monitor-delivery",
         },
-        // Boolean(config.next_public_show_ito) === true &&
+        // Boolean(config.next_public_show_image_to_order) === true &&
         //   manageImgToOrder && {
         //     name: "Image to order",
         //     href: "/dashboard/image-to-order",

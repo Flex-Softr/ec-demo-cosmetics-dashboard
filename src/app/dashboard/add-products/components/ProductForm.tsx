@@ -30,6 +30,7 @@ import Published from "./Published";
 import ShortDescriptionInput from "./ShortDescriptionInput";
 import TitleInput from "./TitleInput";
 import ProductDataTabs from "./productData/ProductDataTabs";
+import fetchData from "@/utilities/fetchData";
 
 const ProductForm = ({ productId }: { productId?: string }) => {
   const dispatch = useAppDispatch();
@@ -279,6 +280,13 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         dispatch(setGallery([]));
         dispatch(setDeleteImage([]));
       }
+      fetchData({
+        endPoint: "/api/revalidate",
+        searchParams: {
+          key: "products",
+          secret: "secret",
+        },
+      });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       let errors: string[] = [];

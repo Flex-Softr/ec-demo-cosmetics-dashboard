@@ -1,14 +1,4 @@
 "use client";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import * as React from "react";
 
 import {
   Table,
@@ -18,23 +8,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { TOrderedProducts } from "@/types/order.interface";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
-type TProduct = {
-  _id: string;
-  title: string;
-  attributes?: {
-    [key: string]: string;
-  };
-  image: {
-    src: string;
-    alt: string;
-  };
-  unitPrice: number;
-  quantity: number;
-  total: number;
-};
-
-export const columns: ColumnDef<TProduct>[] = [
+export const columns: ColumnDef<TOrderedProducts>[] = [
   {
     accessorKey: "",
     header: "SL",
@@ -45,7 +27,7 @@ export const columns: ColumnDef<TProduct>[] = [
     ),
   },
   {
-    accessorKey: "product",
+    accessorKey: "title",
     header: "Product Description",
     cell: ({ row }) => {
       const { title, attributes = {} } = row.original;
@@ -54,7 +36,7 @@ export const columns: ColumnDef<TProduct>[] = [
         .join(" ");
       return (
         <p>
-          {title}
+          <span className="font-semibold">{title}</span>
           {variationProps && (
             <span
               style={{ fontStyle: "italic", color: "#555", fontWeight: 600 }}
@@ -70,45 +52,48 @@ export const columns: ColumnDef<TProduct>[] = [
     accessorKey: "unitPrice",
     header: "Price",
     cell: ({ row }) => (
-      <span className="lowercase text-center">{row.getValue("unitPrice")}</span>
+      <span className="lowercase text-center">{row.original.unitPrice}</span>
     ),
   },
   {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => (
-      <div className="lowercase text-center">{row.getValue("quantity")}</div>
-    ),
+    cell: ({ row }) => <div className="lowercase">{row.original.quantity}</div>,
   },
   {
     accessorKey: "total",
     header: "Amount",
-    cell: ({ row }) => (
-      <div className="lowercase text-center">{row.getValue("total")}</div>
-    ),
+    cell: ({ row }) => <div className="lowercase">{row.original.total}</div>,
   },
 ];
 
-export function InvoiceTable({ products }: { products: TProduct[] }) {
+export function InvoiceItemsTable({
+  products,
+}: {
+  products: TOrderedProducts[];
+}) {
   const table = useReactTable({
     data: products,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
   });
 
   return (
-    <div>
-      <Table className="border-b" id="tbl">
-        <TableHeader className="bg-secondary text-white ">
-          {table?.getHeaderGroups()?.map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="border-none">
-              {headerGroup?.headers?.map((header) => {
+    <div className="rounded-lg border border-gray-200 overflow-hidden">
+      <Table>
+        <TableHeader className="bg-primary">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow
+              key={headerGroup.id}
+              className="hover:bg-primary/90 border-none"
+            >
+              {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id} className="font-bold">
-                    {header?.isPlaceholder
+                  <TableHead
+                    key={header.id}
+                    className="font-bold text-white h-9 text-xs uppercase px-2 first:pl-4 last:pr-4"
+                  >
+                    {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
@@ -121,11 +106,15 @@ export function InvoiceTable({ products }: { products: TProduct[] }) {
           ))}
         </TableHeader>
         <TableBody>
-          {table && table?.getRowModel()?.rows?.length ? (
-            table?.getRowModel()?.rows.map((row) => (
-              <TableRow key={row.id} className="border-b">
-                {row.getVisibleCells()?.map((cell) => (
-                  <TableCell key={cell.id} className="bg-muted/50">
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+                className="border-gray-100"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="py-3 px-4 text-sm">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -134,7 +123,7 @@ export function InvoiceTable({ products }: { products: TProduct[] }) {
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No information.
+                No results.
               </TableCell>
             </TableRow>
           )}

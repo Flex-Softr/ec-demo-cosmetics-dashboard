@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Invoice from "@/components/invoice/Invoice";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { setIsOrderUpdate } from "@/redux/features/orders/ordersSlice";
@@ -17,6 +16,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { refetchData } from "@/utilities/fetchData";
 import statusOptions from "@/utilities/statusOptions";
 import { useState } from "react";
+import PrintInvoiceButton from "../../orders/[orderId]/components/invoice/PrintInvoiceButton";
 
 const BulkAction = () => {
   const dispatch = useAppDispatch();
@@ -92,7 +92,7 @@ const BulkAction = () => {
           </Button>
         </div>
       )}
-      <Invoice orders={invoices} />
+      <PrintInvoiceButton orders={invoices} />
     </div>
   );
 };
