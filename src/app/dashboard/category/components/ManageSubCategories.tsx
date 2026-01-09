@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import config from "@/config/config";
+import { formatImageSrc } from "@/lib/utils";
 import {
   useAddSubCategoryMutation,
   useDeleteSubCategoryMutation,
@@ -26,6 +26,7 @@ import {
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { refetchData } from "@/utilities/fetchData";
+import { revalidateTag } from "@/utilities/revalidate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Archive, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -34,7 +35,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import AddCategoryMedia from "./AddCategoryMedia";
 import { TCategories } from "./CategoryTable";
-import { formatImageSrc } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -100,9 +100,8 @@ const ManageSubCategories = ({ category }: { category: TCategories }) => {
         title: "Subcategory added successfully",
         className: "bg-success text-white",
       });
-      await fetch(
-        `${config.client_base_url}/api/revalidate?key=allCategories,parent-category&secret=${config.revalidate_secret}`
-      );
+
+      await revalidateTag(["allCategories", "parentCategory"]);
     }
   };
 

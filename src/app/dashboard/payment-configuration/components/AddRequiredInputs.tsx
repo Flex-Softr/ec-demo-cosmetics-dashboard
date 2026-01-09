@@ -47,12 +47,11 @@ export default function AddRequiredInputs({
         <Label>Required Inputs</Label>
         <Button
           type="button"
-          variant="outline"
           size="sm"
           onClick={() =>
             append({ type: "text", name: "", is_required: false, enums: "" })
           }
-          className="text-gray-600 dark:text-foreground rounded-full"
+          className="dark:text-foreground rounded-full"
         >
           <Plus className="w-4 h-4 mr-1" /> Add Field
         </Button>
@@ -135,6 +134,7 @@ export default function AddRequiredInputs({
               <Button
                 type="button"
                 variant="ghost"
+                className="bg-inherit"
                 size="icon"
                 onClick={() => remove(index)}
               >

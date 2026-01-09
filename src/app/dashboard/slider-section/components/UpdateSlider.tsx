@@ -30,6 +30,7 @@ import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice"
 import { useUpdateSliderMutation } from "@/redux/features/sliderBanner/sliderApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { refetchData } from "@/utilities/fetchData";
+import { revalidateTag } from "@/utilities/revalidate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SquarePen } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -142,6 +143,7 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
           title: res?.message,
         });
       }
+      await revalidateTag("sliderBanner");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({

@@ -42,8 +42,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { revalidateTag } from "@/utilities/revalidate";
 import { useState } from "react";
-import config from "@/config/config";
 
 const AddCategoryForm = () => {
   const { thumbnail } = useAppSelector(({ imageSelector }) => imageSelector);
@@ -79,9 +79,8 @@ const AddCategoryForm = () => {
         title: addedCategory?.message,
       });
     }
-    await fetch(
-      `${config.client_base_url}/api/revalidate?key=allCategories,parent-category&secret=${config.revalidate_secret}`
-    );
+
+    await revalidateTag(["allCategories", "parentCategory"]);
   };
 
   //handle Rest

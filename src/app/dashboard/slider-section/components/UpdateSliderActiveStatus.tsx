@@ -1,9 +1,8 @@
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
-
 import { useUpdateSliderMutation } from "@/redux/features/sliderBanner/sliderApi";
 import { TErrorResponse } from "@/types/response";
-import { refetchData } from "@/utilities/fetchData";
+import { revalidateTag } from "@/utilities/revalidate";
 import { useState } from "react";
 import { TSlider } from "./SliderMediaTable";
 
@@ -25,12 +24,12 @@ const UpdateSliderActiveStatus = ({ slider }: { slider: TSlider }) => {
       }).unwrap();
 
       if (res.success) {
-        refetchData("sliders");
         toast({
           className: "toast-success",
           title: res?.message,
         });
       }
+      await revalidateTag("sliderBanner");
     } catch (error) {
       const err = (error as { data: TErrorResponse })?.data;
       toast({

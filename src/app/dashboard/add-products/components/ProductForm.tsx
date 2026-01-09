@@ -3,7 +3,6 @@ import { TAttribute } from "@/app/dashboard/attribute/lib/attribute.interface";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import config from "@/config/config";
 import { productStatus } from "@/const/products";
 import { useGetAttributesQuery } from "@/redux/features/attributes/attributesApi";
 import {
@@ -17,6 +16,7 @@ import {
   useUpdateProductMutation,
 } from "@/redux/features/products/productsApi";
 import { useAppDispatch } from "@/redux/hooks";
+import { revalidateTag } from "@/utilities/revalidate";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
@@ -283,9 +283,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         dispatch(setDeleteImage([]));
       }
       if (productId) {
-        await fetch(
-          `${config.client_base_url}/api/revalidate?key=product-${productData.slug}&secret=${config.revalidate_secret}`
-        );
+        await revalidateTag(`product-${productData.slug}`);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

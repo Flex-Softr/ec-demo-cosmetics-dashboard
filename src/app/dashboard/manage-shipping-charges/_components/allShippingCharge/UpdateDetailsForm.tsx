@@ -10,6 +10,7 @@ import {
   TErrorResponse,
   TSuccessResponse,
 } from "@/types/response";
+import { revalidateTag } from "@/utilities/revalidate";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Dispatch, SetStateAction, useState } from "react";
 import "react-calendar/dist/Calendar.css";
@@ -60,6 +61,8 @@ const UpdateDetailsForm = ({
           title: res?.message,
         });
       }
+
+      await revalidateTag("shippingCharge");
     } catch (error) {
       const err = (error as { data: TErrorResponse })?.data;
       setServerErrors(err?.errorMessages);

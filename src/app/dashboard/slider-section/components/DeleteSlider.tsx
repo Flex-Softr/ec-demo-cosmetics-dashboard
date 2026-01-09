@@ -2,7 +2,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 import { useDeleteSliderMutation } from "@/redux/features/sliderBanner/sliderApi";
 import { TErrorResponse } from "@/types/response";
-import { refetchData } from "@/utilities/fetchData";
+import { revalidateTag } from "@/utilities/revalidate";
 import { Trash2Icon } from "lucide-react";
 import { TSlider } from "./SliderMediaTable";
 
@@ -20,7 +20,8 @@ const DeleteSlider = ({ slider }: { slider: TSlider }) => {
           className: "toast-success",
           title: res?.message,
         });
-        refetchData("sliders");
+
+        await revalidateTag("sliderBanner");
       }
     } catch (error) {
       const err = (error as { data: TErrorResponse })?.data;

@@ -13,11 +13,11 @@ import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { refetchData } from "@/utilities/fetchData";
+import { revalidateTag } from "@/utilities/revalidate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import UpdateCategoryMedia from "./UpdateCategoryMedia";
-import config from "@/config/config";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -77,9 +77,8 @@ const UpdateCategoryForm = ({
       });
       handleOpen(false);
       handleClose();
-      await fetch(
-        `${config.client_base_url}/api/revalidate?key=allCategories,parent-category&secret=${config.revalidate_secret}`
-      );
+      handleClose();
+      await revalidateTag(["allCategories", "parentCategory"]);
     }
   };
 

@@ -9,6 +9,7 @@ import {
   TErrorResponse,
   TSuccessResponse,
 } from "@/types/response";
+import { revalidateTag } from "@/utilities/revalidate";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import "react-calendar/dist/Calendar.css";
@@ -51,6 +52,8 @@ const CreateShippingForm = () => {
           className: "toast-success",
           title: res?.message,
         });
+
+        await revalidateTag("shippingCharge");
       }
     } catch (error) {
       const err = (error as { data: TErrorResponse })?.data;

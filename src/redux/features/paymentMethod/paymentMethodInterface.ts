@@ -10,6 +10,7 @@ export type TPaymentMethod = {
   name: string;
   instructions?: string;
   isActive: boolean;
+  sortOrder?: number;
   logo?: { _id: string; src: string; alt: string };
   required_inputs?: TRequiredInput[];
   createdAt?: string;

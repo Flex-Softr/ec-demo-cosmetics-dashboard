@@ -21,11 +21,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import config from "@/config/config";
+import { formatImageSrc } from "@/lib/utils";
 import {
   useDeleteCategoryMutation,
   useGetCategoriesQuery,
 } from "@/redux/features/category/categoryApi";
+import { revalidateTag } from "@/utilities/revalidate";
 import {
   ColumnDef,
   VisibilityState,
@@ -41,7 +42,6 @@ import * as React from "react";
 import CategoryAction from "./CategoryAction";
 import NavigateSubCategory from "./NavigateSubCategory";
 import UpdateCategoryActiveStatus from "./UpdateCategoryActiveStatus";
-import { formatImageSrc } from "@/lib/utils";
 
 export type TCategories = {
   _id: string;
@@ -147,9 +147,7 @@ export const CategoryTable = () => {
           className: "bg-success text-white ",
           title: "Category deleted successfully!",
         });
-        await fetch(
-          `${config.client_base_url}/api/revalidate?key=allCategories,parent-category&secret=${config.revalidate_secret}`
-        );
+        await revalidateTag(["allCategories", "parentCategory"]);
       } else {
         toast({
           className: "bg-danger text-whit",

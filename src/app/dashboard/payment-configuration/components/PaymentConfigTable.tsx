@@ -29,6 +29,7 @@ import {
 import { TPaymentMethod } from "@/redux/features/paymentMethod/paymentMethodInterface";
 import { setSelectedPaymentMethod } from "@/redux/features/paymentMethod/paymentMethodSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import { revalidateTag } from "@/utilities/revalidate";
 import { Edit, Trash2 } from "lucide-react";
 import Image from "next/image";
 
@@ -56,6 +57,8 @@ export default function PaymentConfigTable({
         className: "bg-success text-white text-2xl",
         title: res.message || "Payment method deleted successfully",
       });
+
+      await revalidateTag("paymentMethod");
     } catch (error) {
       toast({
         title: "Failed to delete payment method.",
@@ -73,6 +76,7 @@ export default function PaymentConfigTable({
       <Table>
         <TableHeader className="bg-primary text-white hover:!bg-primary">
           <TableRow className="hover:!bg-primary">
+            <TableHead className="text-white">SL</TableHead>
             <TableHead className="text-white">Name</TableHead>
             <TableHead className="text-white">Logo</TableHead>
             <TableHead className="text-white">Input Fields</TableHead>
@@ -83,13 +87,14 @@ export default function PaymentConfigTable({
         <TableBody>
           {paymentMethods.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={4} className="h-24 text-center">
+              <TableCell colSpan={5} className="h-24 text-center">
                 No payment methods configured.
               </TableCell>
             </TableRow>
           ) : (
             paymentMethods.map((method) => (
               <TableRow key={method._id}>
+                <TableCell>{method.sortOrder ?? "N/A"}</TableCell>
                 <TableCell className="font-medium">{method.name}</TableCell>
                 <TableCell>
                   {method.logo?.src ? (

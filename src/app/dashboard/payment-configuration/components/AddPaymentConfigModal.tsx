@@ -9,7 +9,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import {
@@ -20,6 +28,7 @@ import { TPaymentMethodPayload } from "@/redux/features/paymentMethod/paymentMet
 import { setSelectedPaymentMethod } from "@/redux/features/paymentMethod/paymentMethodSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
+import { revalidateTag } from "@/utilities/revalidate";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import AddRequiredInputs from "./AddRequiredInputs";
@@ -57,6 +66,7 @@ export default function AddPaymentConfigModal({
       name: "",
       instructions: "",
       isActive: true,
+      sortOrder: 1,
       required_inputs: [],
       logo: "",
     },
@@ -67,6 +77,7 @@ export default function AddPaymentConfigModal({
       setValue("name", selectedPaymentMethod.name);
       setValue("instructions", selectedPaymentMethod.instructions || "");
       setValue("isActive", selectedPaymentMethod.isActive);
+      setValue("sortOrder", selectedPaymentMethod.sortOrder || 1);
       setValue(
         "required_inputs",
         selectedPaymentMethod.required_inputs?.map((input) => ({ ...input })) ||
@@ -89,6 +100,7 @@ export default function AddPaymentConfigModal({
         name: "",
         instructions: "",
         isActive: true,
+        sortOrder: 1,
         required_inputs: [],
         logo: "",
       });
@@ -110,24 +122,32 @@ export default function AddPaymentConfigModal({
   };
 
   const onSubmit = async (data: TPaymentMethodPayload) => {
+    // Sanitize payload: if logo is empty string, set to undefined to avoid ObjectId cast error
+    const payload = {
+      ...data,
+      logo: data.logo === "" ? undefined : data.logo,
+    };
+
     try {
       if (selectedPaymentMethod) {
         const res = await updatePaymentMethod({
           id: selectedPaymentMethod._id,
-          payload: data,
+          payload: payload,
         }).unwrap();
         toast({
           className: "bg-success text-white text-2xl",
           title: res.message || "Payment method updated successfully",
         });
       } else {
-        const res = await addPaymentMethod(data).unwrap();
+        const res = await addPaymentMethod(payload).unwrap();
         toast({
           className: "bg-success text-white text-2xl",
           title: res.message || "Payment method added successfully",
         });
       }
+
       handleClose();
+      await revalidateTag("paymentMethod");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       let errorsList = [];
@@ -159,29 +179,55 @@ export default function AddPaymentConfigModal({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             <div className="shrink-0">
               <PaymentMethodMedia logo={selectedPaymentMethod?.logo} />
             </div>
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="name">Payment Method Name</Label>
-              <Controller
-                name="name"
-                control={control}
-                rules={{ required: "Payment Method Name is required" }}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    id="name"
-                    placeholder="e.g. BKash or Cash on delivery"
-                  />
+            <div className="flex-1 flex flex-col gap-2">
+              <div className="flex-1 space-y-2">
+                <Label htmlFor="name">Payment Method Name</Label>
+                <Controller
+                  name="name"
+                  control={control}
+                  rules={{ required: "Payment Method Name is required" }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="name"
+                      placeholder="e.g. BKash or Cash on delivery"
+                    />
+                  )}
+                />
+                {errors.name && (
+                  <span className="text-red-500 text-sm">
+                    {errors.name.message}
+                  </span>
                 )}
-              />
-              {errors.name && (
-                <span className="text-red-500 text-sm">
-                  {errors.name.message}
-                </span>
-              )}
+              </div>
+              <div className="flex-1 space-y-2">
+                <Label>Sort Order</Label>
+                <Controller
+                  control={control}
+                  name="sortOrder"
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      value={field.value?.toString()}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Order" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5].map((num) => (
+                          <SelectItem key={num} value={num.toString()}>
+                            {num}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
             </div>
           </div>
 
@@ -191,10 +237,10 @@ export default function AddPaymentConfigModal({
               name="instructions"
               control={control}
               render={({ field }) => (
-                <Input
+                <Textarea
                   {...field}
                   id="instructions"
-                  placeholder="e.g. Please use cash out for personal numbers."
+                  placeholder="e.g. Please send money to the following number: 1234567890"
                 />
               )}
             />
@@ -224,8 +270,8 @@ export default function AddPaymentConfigModal({
             <Label htmlFor="isActive">Active</Label>
           </div>
 
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button variant="outline" type="button" onClick={handleClose}>
+          <div className="flex justify-end space-x-6 pt-4">
+            <Button variant="destructive" type="button" onClick={handleClose}>
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>

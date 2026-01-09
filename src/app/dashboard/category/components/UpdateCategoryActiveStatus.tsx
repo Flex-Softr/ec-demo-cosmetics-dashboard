@@ -3,9 +3,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi";
 import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { refetchData } from "@/utilities/fetchData";
+import { revalidateTag } from "@/utilities/revalidate";
 import { useState } from "react";
 import { TCategories } from "./CategoryTable";
-import config from "@/config/config";
 
 const UpdateCategoryActiveStatus = ({
   category,
@@ -31,9 +31,8 @@ const UpdateCategoryActiveStatus = ({
           className: "toast-success",
           title: res?.message,
         });
-        await fetch(
-          `${config.client_base_url}/api/revalidate?key=allCategories,parent-category&secret=${config.revalidate_secret}`
-        );
+
+        await revalidateTag(["allCategories", "parentCategory"]);
       }
     } catch (error) {
       const err = (error as { data: TErrorResponse })?.data;
