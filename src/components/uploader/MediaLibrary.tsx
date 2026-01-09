@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PagePagination } from "../pagination/PagePagination";
 import { Button } from "../ui/button";
+import { formatImageSrc } from "@/lib/utils";
 
 type TImage = { _id: string; src: string; alt: string };
 type TProps = {
@@ -153,7 +154,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                 className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${localThumbnail === image._id && "border-2 border-blue-600"}`}
               >
                 <Image
-                  src={`${image.src}`}
+                  src={formatImageSrc(image.src)}
                   alt={image.alt}
                   fill={true}
                   className="object-cover rounded-sm"
@@ -178,7 +179,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                 }`}
               >
                 <Image
-                  src={`${image.src}`}
+                  src={formatImageSrc(image.src)}
                   alt={image.alt}
                   fill={true}
                   className="object-cover rounded-sm"

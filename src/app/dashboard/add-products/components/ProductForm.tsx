@@ -34,8 +34,10 @@ import ProductDataTabs from "./productData/ProductDataTabs";
 
 const ProductForm = ({ productId }: { productId?: string }) => {
   const dispatch = useAppDispatch();
+
   const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
+
   const { data: productData, isLoading: isFetching } = useGetAProductQuery(
     productId as string,
     { skip: !productId }
@@ -280,9 +282,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         dispatch(setGallery([]));
         dispatch(setDeleteImage([]));
       }
-      await fetch(
-        `${config.client_base_url}/api/revalidate?key=product-${productData.slug}&secret=${config.revalidate_secret}`
-      );
+      if (productId) {
+        await fetch(
+          `${config.client_base_url}/api/revalidate?key=product-${productData.slug}&secret=${config.revalidate_secret}`
+        );
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       let errors: string[] = [];

@@ -2,6 +2,7 @@
 import { TypographyH4 } from "@/components/ui/Typography";
 import { SectionTitle } from "@/components/ui/sectionTitle";
 import ImageSelectPopup from "@/components/uploader/ImageSelectPopup";
+import { formatImageSrc } from "@/lib/utils";
 import { useGetSingleImageQuery } from "@/redux/features/addProduct/media/mediaApi";
 import { useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
@@ -86,7 +87,7 @@ const Media = ({ isVariation }: TProps) => {
           >
             {thumbnailImage?.data?.src && thumbnail ? (
               <Image
-                src={`${thumbnailImage.data.src}`}
+                src={formatImageSrc(thumbnailImage.data.src)}
                 alt={thumbnailImage.data.alt || "Thumbnail"}
                 fill={true}
                 className="object-cover rounded-sm"
@@ -134,7 +135,7 @@ const Media = ({ isVariation }: TProps) => {
             {galleryImage?.data?.src && gallery.length ? (
               <>
                 <Image
-                  src={`${galleryImage.data.src}`}
+                  src={formatImageSrc(galleryImage.data.src)}
                   alt={galleryImage.data.alt || "Gallery"}
                   fill={true}
                   className="object-cover rounded-sm"

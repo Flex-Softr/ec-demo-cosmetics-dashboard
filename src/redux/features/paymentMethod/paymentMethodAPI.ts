@@ -1,6 +1,6 @@
 import baseApi from "@/redux/baseApi/baseApi";
 import {
-  TPaymentMethod,
+  TPaymentMethodPayload,
   TPaymentMethodResponse,
   TSinglePaymentMethodResponse,
 } from "./paymentMethodInterface";
@@ -16,7 +16,7 @@ const paymentMethodAPI = baseApi.injectEndpoints({
     }),
     addPaymentMethod: builder.mutation<
       TSinglePaymentMethodResponse,
-      Partial<TPaymentMethod>
+      Partial<TPaymentMethodPayload>
     >({
       query: (payload) => ({
         url: "/payment-method",
@@ -27,7 +27,7 @@ const paymentMethodAPI = baseApi.injectEndpoints({
     }),
     updatePaymentMethod: builder.mutation<
       TSinglePaymentMethodResponse,
-      { id: string; payload: Partial<TPaymentMethod> }
+      { id: string; payload: Partial<TPaymentMethodPayload> }
     >({
       query: ({ id, payload }) => ({
         url: `/payment-method/${id}`,

@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
+import { formatImageSrc } from "@/lib/utils";
 import {
   useDeletePaymentMethodMutation,
   useGetPaymentMethodQuery,
@@ -29,6 +30,7 @@ import { TPaymentMethod } from "@/redux/features/paymentMethod/paymentMethodInte
 import { setSelectedPaymentMethod } from "@/redux/features/paymentMethod/paymentMethodSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { Edit, Trash2 } from "lucide-react";
+import Image from "next/image";
 
 export default function PaymentConfigTable({
   setIsOpen,
@@ -72,6 +74,8 @@ export default function PaymentConfigTable({
         <TableHeader className="bg-primary text-white hover:!bg-primary">
           <TableRow className="hover:!bg-primary">
             <TableHead className="text-white">Name</TableHead>
+            <TableHead className="text-white">Logo</TableHead>
+            <TableHead className="text-white">Input Fields</TableHead>
             <TableHead className="text-white">Status</TableHead>
             <TableHead className="text-right text-white">Actions</TableHead>
           </TableRow>
@@ -79,7 +83,7 @@ export default function PaymentConfigTable({
         <TableBody>
           {paymentMethods.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={3} className="h-24 text-center">
+              <TableCell colSpan={4} className="h-24 text-center">
                 No payment methods configured.
               </TableCell>
             </TableRow>
@@ -87,6 +91,26 @@ export default function PaymentConfigTable({
             paymentMethods.map((method) => (
               <TableRow key={method._id}>
                 <TableCell className="font-medium">{method.name}</TableCell>
+                <TableCell>
+                  {method.logo?.src ? (
+                    <Image
+                      src={formatImageSrc(method.logo.src)}
+                      alt={method.logo?.alt || "logo"}
+                      width={64}
+                      height={64}
+                      className="w-16 h-16 object-cover"
+                    />
+                  ) : (
+                    "N/A"
+                  )}
+                </TableCell>
+                <TableCell>
+                  {method.required_inputs?.length
+                    ? method.required_inputs
+                        .map((input) => input.name)
+                        .join(", ")
+                    : "N/A"}
+                </TableCell>
                 <TableCell>
                   <span
                     className={`px-2 py-1 rounded-full text-xs ${

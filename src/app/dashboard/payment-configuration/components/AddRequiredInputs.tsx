@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { TPaymentMethod } from "@/redux/features/paymentMethod/paymentMethodInterface";
+import { TPaymentMethodPayload } from "@/redux/features/paymentMethod/paymentMethodInterface";
 import { Plus, Trash2 } from "lucide-react";
 import {
   Control,
@@ -24,10 +24,10 @@ const INPUT_TYPE_OPTIONS = [
 ];
 
 type TProps = {
-  control: Control<TPaymentMethod>;
-  register: UseFormRegister<TPaymentMethod>;
-  watch: UseFormWatch<TPaymentMethod>;
-  errors: FieldErrors<TPaymentMethod>;
+  control: Control<TPaymentMethodPayload>;
+  register: UseFormRegister<TPaymentMethodPayload>;
+  watch: UseFormWatch<TPaymentMethodPayload>;
+  errors: FieldErrors<TPaymentMethodPayload>;
 };
 
 export default function AddRequiredInputs({

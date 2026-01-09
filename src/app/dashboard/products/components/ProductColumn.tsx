@@ -6,6 +6,7 @@ import { Minus } from "lucide-react";
 import Image from "next/image";
 import Actions from "./Actions";
 import ProductVariations from "./ProductVariations";
+import { formatImageSrc } from "@/lib/utils";
 
 export const ProductColumns: ColumnDef<IAdminProduct>[] = [
   {
@@ -53,7 +54,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
           <Image
             width={80}
             height={80}
-            src={`${thumbnail.src}`}
+            src={formatImageSrc(thumbnail.src)}
             alt={thumbnail.alt}
           />
         </div>
@@ -114,7 +115,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
           <span
             className={
               original.salePrice
-                ? "line-through text-muted-foreground text-xs"
+                ? "line-through text-muted-foreground text-xs text-red-600"
                 : ""
             }
           >

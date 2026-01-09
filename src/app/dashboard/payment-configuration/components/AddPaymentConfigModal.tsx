@@ -11,17 +11,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
+import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import {
   useAddPaymentMethodMutation,
   useUpdatePaymentMethodMutation,
 } from "@/redux/features/paymentMethod/paymentMethodAPI";
-import { TPaymentMethod } from "@/redux/features/paymentMethod/paymentMethodInterface";
+import { TPaymentMethodPayload } from "@/redux/features/paymentMethod/paymentMethodInterface";
 import { setSelectedPaymentMethod } from "@/redux/features/paymentMethod/paymentMethodSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import AddRequiredInputs from "./AddRequiredInputs";
+import PaymentMethodMedia from "./PaymentMethodMedia";
 
 export default function AddPaymentConfigModal({
   isOpen,
@@ -35,6 +37,8 @@ export default function AddPaymentConfigModal({
   const { selectedPaymentMethod } = useAppSelector(
     (state: RootState) => state.paymentMethod
   );
+  const { thumbnail } = useAppSelector(({ imageSelector }) => imageSelector);
+
   const [addPaymentMethod, { isLoading: isAdding }] =
     useAddPaymentMethodMutation();
   const [updatePaymentMethod, { isLoading: isUpdating }] =
@@ -48,12 +52,13 @@ export default function AddPaymentConfigModal({
     register,
     watch,
     formState: { errors },
-  } = useForm<TPaymentMethod>({
+  } = useForm<TPaymentMethodPayload>({
     defaultValues: {
       name: "",
       instructions: "",
       isActive: true,
       required_inputs: [],
+      logo: "",
     },
   });
 
@@ -67,23 +72,44 @@ export default function AddPaymentConfigModal({
         selectedPaymentMethod.required_inputs?.map((input) => ({ ...input })) ||
           []
       );
+      if (selectedPaymentMethod.logo) {
+        // Handle both string ID and populated object cases
+        const imgId =
+          typeof selectedPaymentMethod.logo === "string"
+            ? selectedPaymentMethod.logo
+            : (selectedPaymentMethod.logo as any)._id; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+        if (imgId) {
+          dispatch(setThumbnail(imgId));
+          setValue("logo", imgId);
+        }
+      }
     } else {
       reset({
         name: "",
         instructions: "",
         isActive: true,
         required_inputs: [],
+        logo: "",
       });
+      dispatch(setThumbnail(""));
     }
-  }, [selectedPaymentMethod, setValue, reset]);
+  }, [selectedPaymentMethod, setValue, reset, dispatch]);
+
+  useEffect(() => {
+    if (thumbnail) {
+      setValue("logo", thumbnail);
+    }
+  }, [thumbnail, setValue]);
 
   const handleClose = () => {
     dispatch(setSelectedPaymentMethod(null));
     setIsOpen(false);
     reset();
+    dispatch(setThumbnail(""));
   };
 
-  const onSubmit = async (data: TPaymentMethod) => {
+  const onSubmit = async (data: TPaymentMethodPayload) => {
     try {
       if (selectedPaymentMethod) {
         const res = await updatePaymentMethod({
@@ -131,26 +157,32 @@ export default function AddPaymentConfigModal({
               : "Add New Payment Method"}
           </DialogTitle>
         </DialogHeader>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Payment Method Name</Label>
-            <Controller
-              name="name"
-              control={control}
-              rules={{ required: "Payment Method Name is required" }}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  id="name"
-                  placeholder="e.g. BKash or Cash on delivery"
-                />
+          <div className="flex gap-4">
+            <div className="shrink-0">
+              <PaymentMethodMedia logo={selectedPaymentMethod?.logo} />
+            </div>
+            <div className="flex-1 space-y-2">
+              <Label htmlFor="name">Payment Method Name</Label>
+              <Controller
+                name="name"
+                control={control}
+                rules={{ required: "Payment Method Name is required" }}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="name"
+                    placeholder="e.g. BKash or Cash on delivery"
+                  />
+                )}
+              />
+              {errors.name && (
+                <span className="text-red-500 text-sm">
+                  {errors.name.message}
+                </span>
               )}
-            />
-            {errors.name && (
-              <span className="text-red-500 text-sm">
-                {errors.name.message}
-              </span>
-            )}
+            </div>
           </div>
 
           <div className="space-y-2">

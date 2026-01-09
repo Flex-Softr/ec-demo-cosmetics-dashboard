@@ -81,7 +81,7 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
                 </div>
                 <Image
                   src={logo}
-                  alt="BRmart Logo"
+                  alt="Logo"
                   className="w-32 h-auto object-contain mix-blend-multiply"
                   priority
                   placeholder="blur"

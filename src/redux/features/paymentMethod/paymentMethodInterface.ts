@@ -10,10 +10,14 @@ export type TPaymentMethod = {
   name: string;
   instructions?: string;
   isActive: boolean;
-  image?: string;
+  logo?: { _id: string; src: string; alt: string };
   required_inputs?: TRequiredInput[];
   createdAt?: string;
   updatedAt?: string;
+};
+
+export type TPaymentMethodPayload = Omit<TPaymentMethod, "logo"> & {
+  logo?: string;
 };
 
 export type TPaymentMethodResponse = {

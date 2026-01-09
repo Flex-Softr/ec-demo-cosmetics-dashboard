@@ -1,3 +1,4 @@
+import { formatImageSrc } from "@/lib/utils";
 import fetchData from "@/utilities/fetchData";
 import Image from "next/image";
 
@@ -10,7 +11,7 @@ const ImageDetails = async ({ params }: { params: { imageId: string } }) => {
   return (
     <div className="max-w-[740px] max-h-[740px] relative rounded-sm mx-auto my-4">
       <Image
-        src={`${data.src}`}
+        src={formatImageSrc(data.src)}
         alt={data.alt}
         layout="responsive"
         width={740} // Sets the maximum width

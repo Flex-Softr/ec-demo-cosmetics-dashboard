@@ -15,7 +15,7 @@ export default async function PaymentConfigurationPage() {
   const isShow = isPermitted(permissions, PERMISSIONS.MANAGE_PAYMENT_METHOD);
 
   if (!isShow) {
-    redirect("/error?s=d");
+    redirect("/error");
   }
 
   return <PaymentConfigContainer />;

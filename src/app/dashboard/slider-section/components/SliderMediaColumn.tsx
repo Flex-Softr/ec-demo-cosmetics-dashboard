@@ -5,6 +5,7 @@ import DeleteSlider from "./DeleteSlider";
 import { TSlider } from "./SliderMediaTable";
 import UpdateSlider from "./UpdateSlider";
 import UpdateSliderActiveStatus from "./UpdateSliderActiveStatus";
+import { formatImageSrc } from "@/lib/utils";
 
 const columns: ColumnDef<TSlider>[] = [
   {
@@ -12,7 +13,7 @@ const columns: ColumnDef<TSlider>[] = [
     header: "SL",
     cell: ({ row }) => (
       <div className="capitalize flex flex-col justify-center items-center">
-        <span className="">{row?.index + 1}</span>
+        <span className="">{row.original?.sortOrder}</span>
       </div>
     ),
   },
@@ -28,7 +29,7 @@ const columns: ColumnDef<TSlider>[] = [
     header: () => <h2 className="text-start">Image</h2>,
     cell: ({ row }) => (
       <Image
-        src={`${row.original.image?.src}`}
+        src={formatImageSrc(row.original.image?.src)}
         className="w-44 "
         alt={""}
         width={300}
@@ -36,7 +37,6 @@ const columns: ColumnDef<TSlider>[] = [
       />
     ),
   },
-
   {
     accessorKey: "bannerLink",
     header: "Banner Link",

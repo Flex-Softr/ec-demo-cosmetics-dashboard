@@ -24,6 +24,7 @@ export type TSlider = {
   };
   isActive: boolean;
   bannerLink?: string;
+  sortOrder: number;
 };
 
 import { useGetSlidersQuery } from "@/redux/features/sliderBanner/sliderApi";

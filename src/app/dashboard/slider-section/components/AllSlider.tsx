@@ -1,3 +1,4 @@
+import { formatImageSrc } from "@/lib/utils";
 import Image from "next/image";
 
 type TSlider = {
@@ -16,7 +17,11 @@ const AllSlider: React.FC<AllSliderProps> = ({ sliders }) => {
       {sliders?.map((slider: TSlider, index: number) => (
         <div key={index}>
           <h3>{slider.name}</h3>
-          <Image src={slider.image} alt={slider.name} priority={true} />
+          <Image
+            src={formatImageSrc(slider.image)}
+            alt={slider.name}
+            priority={true}
+          />
           <a href={slider.bannerLink}>Go to banner</a>
         </div>
       ))}

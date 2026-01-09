@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import config from "@/config/config";
+import { formatImageSrc } from "@/lib/utils";
 import { TOrderedProducts } from "@/types/order.interface";
 
 import {
@@ -56,7 +57,7 @@ export const columns: ColumnDef<TOrderedProducts>[] = [
             <Image
               width={100}
               height={100}
-              src={`${image.src}`}
+              src={formatImageSrc(image.src)}
               alt={image.alt}
             />
           </div>

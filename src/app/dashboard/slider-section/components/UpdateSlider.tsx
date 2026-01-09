@@ -11,12 +11,20 @@ import {
 } from "@/components/ui/dialog";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useUpdateSliderMutation } from "@/redux/features/sliderBanner/sliderApi";
@@ -31,9 +39,10 @@ import { TSlider } from "./SliderMediaTable";
 import SliderSectionMedia from "./SliderSectionMedia";
 
 type TUpdateBannerForm = {
-  name: string;
+  name?: string;
   image?: string;
   bannerLink?: string;
+  sortOrder: string;
 };
 
 const UpdateSlider = ({ slider }: { slider: TSlider }) => {
@@ -43,9 +52,8 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
   const dispatch = useAppDispatch();
 
   const formSchema = z.object({
-    name: z.string().min(2, {
-      message: "Banner Name must be at least 2 characters.",
-    }),
+    name: z.string().optional(),
+    sortOrder: z.string().min(1, { message: "Sort Order is required" }),
     bannerLink: z
       .string()
       .optional()
@@ -58,15 +66,16 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
           message: "Banner Link must be a valid URL or empty.",
         }
       ),
-    image: z.string().optional(),
+    image: z.string().min(1, { message: "Slider Image is required" }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: slider.name,
-      bannerLink: slider.bannerLink || "", // Assuming bannerLink exists on TSlider, need to verify
+      bannerLink: slider.bannerLink || "",
       image: slider.image?.src || "",
+      sortOrder: slider.sortOrder?.toString() || "",
     },
   });
 
@@ -77,6 +86,7 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
         name: slider.name,
         bannerLink: slider.bannerLink || "",
         image: slider.image?.src || "",
+        sortOrder: slider.sortOrder?.toString() || "",
       });
       // Also set the thumbnail in redux so the media selector shows the current image if possible,
       // or at least we should know clearly we are editing.
@@ -88,39 +98,22 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
     }
   }, [open, slider, dispatch, form]);
 
+  /* sync thumbnail to form state */
+  const { setValue, clearErrors } = form;
+  useEffect(() => {
+    if (thumbnail) {
+      setValue("image", thumbnail);
+      clearErrors("image");
+    }
+  }, [thumbnail, setValue, clearErrors]);
+
   const onSubmit = async (data: TUpdateBannerForm) => {
-    // If a new thumbnail is selected, use it. Otherwise keep existing (handled by default values? no, thumbnail is from redux)
-    // Actually, AddSlider logic: data.image = thumbnail || undefined;
-
-    // For update:
-    // If `thumbnail` (redux state) is present, it means user selected a new image.
-    // If not, we might want to keep the old one.
-    // But `data.image` from form will have the old src string if not touched.
-    // Our API likely expects an Image ID if it's a reference, or a string if it's just a path?
-    // Looking at AddSlider: data.image = thumbnail || undefined;
-    // It seems the API expects an image ID strings.
-
-    // Issue: The form's default `image` is likely the SRC string, not the ID, because `slider.image` is `{ src: string }`.
-    // We need the Image ID to send to the API.
-    // I need to check if `slider` object has the image ID.
-    // Let's assume for now we might need to fetch it or TSlider is incomplete.
-    // Checking SliderMediaTable.tsx:
-    // export type TSlider = { _id: string; name: string; image: { src: string; }; isActive: boolean; };
-    // It seems we only have src. This is a problem if passing 'src' to API is invalid.
-    // However, if the user picks a NEW image, `thumbnail` will be an ID.
-    // If the user DOES NOT pick a new image, we should probably send undefined for image so backend doesn't update it, OR send the old ID.
-
-    // Strategy:
-    // If `thumbnail` is present, it's a new ID. Send it.
-    // If `thumbnail` is empty, check if `data.image` (which we populated with src) is valid?
-    // No, if `thumbnail` is empty, it implies no *new* selection.
-    // We should send `undefined` or existing ID.
-    // Since we don't have existing ID in TSlider type locally, we hopefully have it in the actual object passed at runtime?
-    // Or we just don't send `image` field if it hasn't changed.
-
-    const payload: Partial<TUpdateBannerForm> = {
+    const payload: Omit<Partial<TUpdateBannerForm>, "sortOrder"> & {
+      sortOrder: number;
+    } = {
       name: data.name,
       bannerLink: data.bannerLink,
+      sortOrder: Number(data.sortOrder),
     };
 
     if (thumbnail) {
@@ -149,10 +142,11 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
           title: res?.message,
         });
       }
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Update failed",
+        title: error?.data?.message || "Something went wrong",
       });
     }
   };
@@ -162,7 +156,7 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
       <DialogTrigger>
         <SquarePen className="text-green-500" />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent className="sm:max-w-[725px]">
         <DialogHeader>
           <DialogTitle>Update Slider</DialogTitle>
           <DialogDescription className="sr-only">
@@ -171,21 +165,69 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <Input placeholder="Banner Name" {...field} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-4 items-start">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Name</FormLabel>
+                    <Input placeholder="Banner Name (Optional)" {...field} />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="sortOrder"
+                render={({ field }) => (
+                  <FormItem className="w-32">
+                    <FormLabel>Sort Order</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value.toString()}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Order" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5].map((num) => (
+                          <SelectItem key={num} value={num.toString()}>
+                            {num}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="flex flex-col gap-2">
-              <FormLabel>Image</FormLabel>
-              <SliderSectionMedia />
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image</FormLabel>
+                    <FormControl>
+                      <div className="space-y-2">
+                        <SliderSectionMedia />
+                        <Input
+                          className="hidden"
+                          placeholder="Image"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               {/* Only show "Keep existing" note if no new thumbnail selected? */}
               {!thumbnail && slider.image?.src && (
                 <p className="text-xs text-muted-foreground">
@@ -205,9 +247,11 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Updating..." : "Update Slider"}
-            </Button>
+            <div className="flex justify-end mt-4">
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Updating..." : "Update Slider"}
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>
