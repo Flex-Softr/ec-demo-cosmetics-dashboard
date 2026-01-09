@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
+import config from "@/config/config";
 import {
   useAddSubCategoryMutation,
   useDeleteSubCategoryMutation,
@@ -33,7 +34,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import AddCategoryMedia from "./AddCategoryMedia";
 import { TCategories } from "./CategoryTable";
-import config from "@/config/config";
+import { formatImageSrc } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -177,7 +178,7 @@ const ManageSubCategories = ({ category }: { category: TCategories }) => {
                     <TableCell>
                       {sub.image?.src && (
                         <Image
-                          src={`${sub.image.src}`}
+                          src={formatImageSrc(sub.image.src)}
                           alt={sub.name}
                           width={40}
                           height={40}

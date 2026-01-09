@@ -2,6 +2,7 @@
 import { TypographyH4 } from "@/components/ui/Typography";
 import { SectionTitle } from "@/components/ui/sectionTitle";
 import ImageSelectPopup from "@/components/uploader/ImageSelectPopup";
+import { formatImageSrc } from "@/lib/utils";
 import { useGetSingleImageQuery } from "@/redux/features/addProduct/media/mediaApi";
 import { useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
@@ -22,15 +23,16 @@ const UpdateSubCategoryMedia = ({ image }: { image: TCategoryImage }) => {
   const { thumbnail } = useAppSelector(({ imageSelector }) => imageSelector);
 
   const { data: thumbnailImage } = useGetSingleImageQuery(
-    thumbnail || undefined
+    thumbnail || undefined,
+    { skip: !thumbnail }
   );
 
   const selectImg = thumbnailImage?.data && thumbnail;
   const src = selectImg
-    ? `${thumbnailImage.data.src}`
+    ? formatImageSrc(thumbnailImage.data.src)
     : image
-      ? `${image.src}`
-      : "";
+      ? formatImageSrc(image.src)
+      : "/image-placeholder.webp";
 
   const alt = selectImg
     ? `${thumbnailImage.data.alt}`

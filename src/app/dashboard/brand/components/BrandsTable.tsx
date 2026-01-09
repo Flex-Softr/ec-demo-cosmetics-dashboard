@@ -22,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
+import { formatImageSrc } from "@/lib/utils";
 import {
   useDeleteBrandMutation,
   useGetBrandsQuery,
@@ -77,7 +78,7 @@ export const columns: ColumnDef<TBrand>[] = [
       <Image
         width={50}
         height={50}
-        src={`${row.original.logo?.src}`}
+        src={formatImageSrc(row.original.logo?.src)}
         alt={row?.original?.name}
       />
     ),

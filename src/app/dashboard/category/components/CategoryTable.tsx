@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
+import config from "@/config/config";
 import {
   useDeleteCategoryMutation,
   useGetCategoriesQuery,
@@ -40,7 +41,7 @@ import * as React from "react";
 import CategoryAction from "./CategoryAction";
 import NavigateSubCategory from "./NavigateSubCategory";
 import UpdateCategoryActiveStatus from "./UpdateCategoryActiveStatus";
-import config from "@/config/config";
+import { formatImageSrc } from "@/lib/utils";
 
 export type TCategories = {
   _id: string;
@@ -83,7 +84,7 @@ export const columns: ColumnDef<TCategories>[] = [
       <Image
         width={50}
         height={50}
-        src={`${row.original.image?.src}`}
+        src={formatImageSrc(row.original.image?.src)}
         alt={row?.original?.name}
       />
     ),

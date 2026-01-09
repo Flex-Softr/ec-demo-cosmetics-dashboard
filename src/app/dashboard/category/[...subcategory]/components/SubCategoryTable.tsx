@@ -40,6 +40,7 @@ import Image from "next/image";
 import * as React from "react";
 import SubCategoryAction from "./SubCategoryAction";
 import UpdateSubCategoryActiveStatus from "./UpdateSubCategoryActiveStatus";
+import { formatImageSrc } from "@/lib/utils";
 
 export type TSubCategories = {
   _id: string;
@@ -81,7 +82,7 @@ export const columns: ColumnDef<TSubCategories>[] = [
       <Image
         width={50}
         height={50}
-        src={`${row.original.image?.src}`}
+        src={formatImageSrc(row.original.image?.src)}
         alt={row?.original?.name}
       />
     ),
