@@ -32,16 +32,19 @@ const AllProducts = async () => {
       <hr className="my-4" />
       <div className="space-y-3">
         {/* All, published, public, private, draft, Trash status */}
-        <CountByStatusButtons />
-        <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
-          {/*Bulk actions and invoice print for Orders*/}
-          {/* <div className="flex items-center gap-5"> */}
-          <ProductBulkAction />
+        <div className="flex justify-between items-center">
+          <CountByStatusButtons />{" "}
           <Link href={"/dashboard/add-products"} passHref>
             <Button className="rounded-2xl">
               <PlusIcon /> <span>Add New Product</span>
             </Button>
           </Link>
+        </div>
+        <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
+          {/*Bulk actions and invoice print for Orders*/}
+          {/* <div className="flex items-center gap-5"> */}
+          <ProductBulkAction />
+
           {/* Filter options by category and stock status*/}
           <Filter />
           {/* </div> */}

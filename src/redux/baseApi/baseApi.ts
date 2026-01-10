@@ -70,6 +70,7 @@ const tags = [
   "brands",
   "categories",
   "subcategories",
+  "collections",
   "slider",
   "sliders",
 ] as const;

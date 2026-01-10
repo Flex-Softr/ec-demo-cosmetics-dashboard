@@ -58,6 +58,7 @@ const initialState: TProduct = {
     name: "",
     subCategory: undefined,
   },
+  productCollection: undefined,
   // tag: [],
   // seoData: {
   //   focusKeyphrase: "",
@@ -140,6 +141,12 @@ const productSlice = createSlice({
     setSubcategory: (state, action: PayloadAction<string | undefined>) => {
       state.category.subCategory = action.payload;
     },
+    setProductCollection: (
+      state,
+      action: PayloadAction<string | undefined>
+    ) => {
+      state.productCollection = action.payload;
+    },
     setBrand: (state, action: PayloadAction<string | undefined>) => {
       state.brand = action.payload;
     },
@@ -170,7 +177,14 @@ const productSlice = createSlice({
         state.warrantyInfo.terms = terms as string;
       }
     },
-    setProduct: (state, action: PayloadAction<TProduct>) => {
+    setProduct: (
+      state,
+      action: PayloadAction<
+        Omit<TProduct, "productCollection"> & {
+          productCollection?: string | { _id: string };
+        }
+      >
+    ) => {
       const {
         title,
         description,
@@ -183,10 +197,15 @@ const productSlice = createSlice({
         // attributes,
         // brand,
         // category,
+        productCollection,
         publishedStatus,
       } = action.payload;
       state.title = title;
       state.description = description;
+      state.productCollection =
+        typeof productCollection === "string"
+          ? productCollection
+          : productCollection?._id;
       state.shortDescription = shortDescription;
       state.additionalInfo = additionalInfo;
       state.type = type || "simple";
@@ -222,6 +241,7 @@ export const {
   setOffer,
   setCategory,
   setSubcategory,
+  setProductCollection,
   setBrand,
   setTag,
   setSeoData,

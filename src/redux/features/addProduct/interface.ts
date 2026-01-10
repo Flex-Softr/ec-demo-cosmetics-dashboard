@@ -85,6 +85,7 @@ export type TProduct = {
   variations: TVariation[];
   brand: string | undefined;
   category: TCategory;
+  productCollection?: string;
   tag?: TSelectValue[];
   seoData?: TSeoData;
   offer?: TOffer;

@@ -87,6 +87,7 @@ export type TQuery = {
   status?: string;
   deliveryStatus?: string;
   category?: string;
+  collection?: string;
   stock?: string;
   sort?: string;
   startFrom?: string;

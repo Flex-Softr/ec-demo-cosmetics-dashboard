@@ -1,6 +1,7 @@
 "use client";
 import { stockStatusOptions } from "@/const/products";
 import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
+import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import {
   setIsLoading,
   setPage,
@@ -37,8 +38,18 @@ type TCategory = {
 const Filter = () => {
   const { data: categoriesData } = useGetCategoriesQuery({});
   const categories: TCategory[] = categoriesData?.data || [];
+
+  const { data: collectionsData } = useGetCollectionsQuery({ isActive: true });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const collectionsDataRes = collectionsData?.data?.data;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const collections: any[] = Array.isArray(collectionsDataRes)
+    ? collectionsDataRes
+    : [];
+
   // const router = useRouter();
   const [category, setCategory] = useState("");
+  const [collection, setCollection] = useState("");
   const [stock, setStatus] = useState("");
 
   const dispatch = useAppDispatch();
@@ -57,6 +68,7 @@ const Filter = () => {
   } = useGetProductsQuery({
     status: filter,
     category: category === "All Categories" ? "" : category,
+    collection: collection === "All Collections" ? "" : collection,
     stock: stock === "All Product Stock" ? "" : stock,
     sort: "-createdAt",
     page,
@@ -104,6 +116,22 @@ const Filter = () => {
                     </SelectItem>
                   ))}
               </div>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
+      <Select onValueChange={(value) => setCollection(value)}>
+        <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
+          <SelectValue placeholder="All Collections" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="All Collections">All Collections</SelectItem>
+            {collections?.map((col) => (
+              <SelectItem key={col._id} value={col._id} className="font-bold">
+                {col.title}
+              </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>

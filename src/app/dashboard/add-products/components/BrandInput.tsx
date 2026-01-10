@@ -1,49 +1,39 @@
 "use client";
 import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useGetBrandsQuery } from "@/redux/features/brand/brandApi";
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 const BrandInput = () => {
   const { data, isLoading } = useGetBrandsQuery({ isActive: true });
   const brands = data?.data || [];
-  const { control } = useFormContext();
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <SectionContentWrapper heading="Product brand">
-      <Controller
-        name="brand"
-        control={control}
-        render={({ field }) => (
-          <Select
-            onValueChange={(v) => field.onChange(v === "Select brand" ? "" : v)}
-            value={field.value || "Select brand"}
-          >
-            <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
-              <SelectValue
-                placeholder={isLoading ? "Loading brands..." : "Select brand"}
-              />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup className="capitalized">
-                <SelectItem value="Select brand">Select brand</SelectItem>
-                {brands.map(({ _id, name }) => (
-                  <SelectItem key={_id} value={_id}>
-                    {name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+      <div className="flex flex-col gap-2">
+        <select
+          {...register("brand")}
+          className="border h-9 border-primary outline-primary rounded-md px-2 cursor-pointer w-full text-sm"
+          defaultValue=""
+        >
+          <option value="" disabled>
+            {isLoading ? "Loading brands..." : "Select brand"}
+          </option>
+          {brands.map(({ _id, name }) => (
+            <option key={_id} value={_id}>
+              {name}
+            </option>
+          ))}
+        </select>
+        {errors.brand && (
+          <p className="text-red-500 text-sm mt-1">
+            {errors.brand.message as string}
+          </p>
         )}
-      />
+      </div>
     </SectionContentWrapper>
   );
 };

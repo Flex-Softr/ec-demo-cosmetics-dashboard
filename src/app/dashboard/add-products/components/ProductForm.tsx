@@ -25,6 +25,7 @@ import ProductSchema from "../lib/productValidation";
 import AdditionalInfo from "./AdditionalInfo";
 import BrandInput from "./BrandInput";
 import CategoryInput from "./CategoryInput";
+import CollectionInput from "./CollectionInput";
 import DescriptionInput from "./DescriptionInput";
 import ProductResetter from "./ProductResetter";
 import Published from "./Published";
@@ -78,6 +79,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         name: "",
         subCategory: "",
       },
+      productCollection: "",
       featured: false,
       warranty: false,
       warrantyInfo: {
@@ -190,6 +192,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
           name: categoryId,
           subCategory: subCategory?._id || "",
         },
+        productCollection:
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (productData.productCollection as any)?._id ||
+          productData.productCollection ||
+          "",
         brand: brandId,
         attributes: transformedAttributes,
         attributeValues: transformedAttributeValues,
@@ -260,6 +267,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
       // Clean up optional fields that might be empty strings
       if (!payload.brand) delete payload.brand;
+      if (!payload.productCollection) delete payload.productCollection;
 
       let res;
       if (productId) {
@@ -371,6 +379,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
                 isLoading={isCreating || isUpdating}
               />
               <CategoryInput />
+              <CollectionInput />
               <BrandInput />
             </div>
           </div>

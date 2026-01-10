@@ -1,3 +1,5 @@
+import { STOCK_STATUS } from "@/const/products";
+
 export type TProductPayload = {
   // --- Basic Info Section ---
   title: string; // Text input
@@ -29,7 +31,7 @@ export type TProductPayload = {
   // --- Inventory Section ---
   inventory?: {
     sku: string; // Text input
-    stockStatus?: "in_stock" | "out_of_stock" | "on_backorder";
+    stockStatus?: (typeof STOCK_STATUS)[keyof typeof STOCK_STATUS];
     stockQuantity?: number; // Number input
     manageStock?: boolean; // Checkbox
     lowStockWarning?: number; // Number input
@@ -41,6 +43,7 @@ export type TProductPayload = {
     name: string; // Text input (backend finds/creates category)
     subCategory?: string; // Text input (backend finds/creates subcategory)
   };
+  productCollection?: string; // ID of the collection
   brand?: string; // Text input (backend finds/creates brand)
   tag?: {
     // Tag inputs
@@ -119,7 +122,7 @@ export type IAdminProduct = {
   _id: string; // Use for Key and Actions (Edit/Delete)
   title: string; // Product Name Column
   sku: string; // SKU Column
-  stockStatus: string; // Stock Status Badge
+  stockStatus: (typeof STOCK_STATUS)[keyof typeof STOCK_STATUS]; // Stock Status Badge
   stockAvailable: number; // Quantity Column
   thumbnail: {
     src: string; // Thumbnail Image
@@ -127,6 +130,11 @@ export type IAdminProduct = {
   };
   category: {
     name: string; // Category Column
+  };
+  productCollection?: {
+    _id: string;
+    title: string;
+    slug: string;
   };
   type?: "simple" | "variable";
   variations?: {
@@ -141,7 +149,7 @@ export type IAdminProduct = {
     inventory: {
       sku: string;
       stockQuantity: number;
-      stockStatus: string;
+      stockStatus: (typeof STOCK_STATUS)[keyof typeof STOCK_STATUS];
       stockAvailable: number;
     };
   }[];

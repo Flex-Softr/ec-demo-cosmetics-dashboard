@@ -91,6 +91,7 @@ export function SidebarClient({ permissions }: TProps) {
     { href: "/category", name: "Category" },
     { href: "/attribute", name: "Attribute" },
     { href: "/brand", name: "Brand" },
+    { href: "/collection", name: "Collection" },
     { href: "/media", name: "Media" },
   ];
 
