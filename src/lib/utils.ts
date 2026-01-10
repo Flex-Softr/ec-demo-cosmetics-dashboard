@@ -37,3 +37,27 @@ export function formatImageSrc(src: string | undefined | null): string {
 
   return `${cleanBaseUrl}/${cleanSrc}`;
 }
+
+import { STOCK_STATUS, STOCK_STATUS_LABELS } from "@/const/products";
+
+// ... existing imports ...
+
+export function formatStockStatus(status: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (
+    STOCK_STATUS_LABELS[status as keyof typeof STOCK_STATUS_LABELS] || status
+  );
+}
+
+export function getStockStatusColor(status: string) {
+  switch (status) {
+    case STOCK_STATUS.IN_STOCK:
+      return "text-green-500";
+    case STOCK_STATUS.LOW_STOCK:
+      return "text-yellow-600";
+    case STOCK_STATUS.OUT_OF_STOCK:
+      return "text-red-500";
+    default:
+      return "text-muted-foreground";
+  }
+}

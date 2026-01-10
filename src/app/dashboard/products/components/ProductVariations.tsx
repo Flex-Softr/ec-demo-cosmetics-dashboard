@@ -1,3 +1,4 @@
+import { formatStockStatus, getStockStatusColor } from "@/lib/utils";
 import { IAdminProduct } from "@/types/products";
 import { Minus } from "lucide-react";
 
@@ -46,15 +47,12 @@ const ProductVariations = ({ variations, type }: ProductVariationsProps) => {
               {v.price.salePrice && <span>৳ {v.price.salePrice}</span>}
             </div>
           )}
+
           {type === "stock" && (
             <span
-              className={
-                v.inventory.stockStatus === "In stock"
-                  ? "text-green-500 whitespace-nowrap"
-                  : "text-red-500 whitespace-nowrap"
-              }
+              className={`${getStockStatusColor(v.inventory.stockStatus)} whitespace-nowrap`}
             >
-              {v.inventory.stockStatus}
+              {formatStockStatus(v.inventory.stockStatus)}
             </span>
           )}
           {type === "qty" && <span>{v.inventory.stockAvailable}</span>}

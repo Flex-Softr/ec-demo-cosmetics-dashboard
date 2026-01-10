@@ -2,11 +2,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { IAdminProduct } from "@/types/products";
 import { ColumnDef } from "@tanstack/react-table";
 // import { ChevronDown, ChevronRight } from "lucide-react";
+import {
+  formatImageSrc,
+  formatStockStatus,
+  getStockStatusColor,
+} from "@/lib/utils";
 import { Minus } from "lucide-react";
 import Image from "next/image";
 import Actions from "./Actions";
 import ProductVariations from "./ProductVariations";
-import { formatImageSrc } from "@/lib/utils";
 
 export const ProductColumns: ColumnDef<IAdminProduct>[] = [
   {
@@ -140,13 +144,9 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     cell: ({ row }) =>
       row.original.type === "simple" ? (
         <div className="flex flex-col gap-1 justify-center items-center min-w-[90px] px-4 py-2 whitespace-nowrap w-[1%] mx-auto">
-          {row.original.stockStatus === "In stock" ? (
-            <span className="text-green-500">{row.original.stockStatus}</span>
-          ) : row.original.stockStatus === "Out of stock" ? (
-            <span className="text-red-700">{row.original.stockStatus}</span>
-          ) : (
-            <span className="text-yellow-700">{row.original.stockStatus}</span>
-          )}
+          <span className={getStockStatusColor(row.original.stockStatus)}>
+            {formatStockStatus(row.original.stockStatus)}
+          </span>
         </div>
       ) : (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 w-[1%] mx-auto whitespace-nowrap">

@@ -29,8 +29,7 @@ export type TProductPayload = {
   // --- Inventory Section ---
   inventory?: {
     sku: string; // Text input
-    stockStatus?: // Dropdown: "In stock" | "Out of stock" | "On backorder"
-      "In stock" | "Out of stock" | "On backorder";
+    stockStatus?: "in_stock" | "out_of_stock" | "on_backorder";
     stockQuantity?: number; // Number input
     manageStock?: boolean; // Checkbox
     lowStockWarning?: number; // Number input

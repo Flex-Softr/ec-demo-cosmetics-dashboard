@@ -3,6 +3,8 @@ import {
   TVariation,
 } from "@/redux/features/addProduct/variation/interface";
 
+import { STOCK_STATUS } from "@/const/products";
+
 const generateVariations = (
   variations: TSelectedAttribute[],
   existingVariations: TVariation[]
@@ -29,7 +31,7 @@ const generateVariations = (
         },
         inventory: match?.inventory || {
           sku: "",
-          stockStatus: "In stock",
+          stockStatus: STOCK_STATUS.IN_STOCK,
           stockQuantity: undefined,
           preStockQuantity: undefined,
           stockAvailable: undefined,

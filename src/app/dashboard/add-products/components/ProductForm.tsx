@@ -3,7 +3,7 @@ import { TAttribute } from "@/app/dashboard/attribute/lib/attribute.interface";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { productStatus } from "@/const/products";
+import { productStatus, STOCK_STATUS } from "@/const/products";
 import { useGetAttributesQuery } from "@/redux/features/attributes/attributesApi";
 import {
   setDeleteImage,
@@ -63,7 +63,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       },
       inventory: {
         sku: "",
-        stockStatus: "In stock",
+        stockStatus: STOCK_STATUS.IN_STOCK,
         stockQuantity: undefined,
         stockAvailable: undefined,
         preStockQuantity: undefined,

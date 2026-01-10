@@ -1,4 +1,4 @@
-import { productStatus } from "@/const/products";
+import { productStatus, STOCK_STATUS } from "@/const/products";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   TAttribute,
@@ -34,7 +34,7 @@ const initialState: TProduct = {
   },
   inventory: {
     sku: "",
-    stockStatus: "In stock",
+    stockStatus: STOCK_STATUS.IN_STOCK,
     stockQuantity: 0,
     stockAvailable: 0,
     preStockQuantity: 0,

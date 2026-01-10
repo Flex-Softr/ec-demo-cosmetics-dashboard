@@ -1,4 +1,4 @@
-import { productStatus } from "@/const/products";
+import { productStatus, stockStatus } from "@/const/products";
 import * as Yup from "yup";
 
 const PriceValidationSchema = Yup.object().shape({
@@ -25,7 +25,9 @@ const ImageValidationSchema = Yup.object().shape({
 });
 
 const InventoryValidationSchema = Yup.object().shape({
-  stockStatus: Yup.string().required("Stock status is required"),
+  stockStatus: Yup.string()
+    .oneOf(stockStatus, "Invalid stock status")
+    .required("Stock status is required"),
   stockQuantity: Yup.number()
     .transform((value) => (Number.isNaN(value) ? undefined : value))
     .typeError("Must be a valid number")

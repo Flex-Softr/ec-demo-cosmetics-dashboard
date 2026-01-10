@@ -1,7 +1,10 @@
-"use client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { stockStatusOptions } from "@/const/products";
+import { getStockStatusColor } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
+
+// ... (skipping unchanged parts) ...
 
 type TProps = {
   isVariation?: boolean;
@@ -71,14 +74,17 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
           <select
             {...register(`${prefix}.stockStatus`)}
             id={`${prefix}.stockStatus`}
-            className={`w-full h-9 border border-primary outline-primary rounded-md ${stockStatus === "In stock" ? "text-green-500" : "text-red-500"}`}
+            className={`w-full h-9 border border-primary outline-primary rounded-md ${getStockStatusColor(stockStatus)}`}
           >
-            <option value="In stock" className="text-black">
-              In stock
-            </option>
-            <option value="Out of stock" className="text-black">
-              Out of stock
-            </option>
+            {stockStatusOptions.map((status) => (
+              <option
+                key={status.value}
+                value={status.value}
+                className="text-black"
+              >
+                {status.label}
+              </option>
+            ))}
           </select>
           {getError(`${prefix}.stockStatus`) && (
             <p className="text-red-600">{getError(`${prefix}.stockStatus`)}</p>

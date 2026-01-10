@@ -1,4 +1,5 @@
 "use client";
+import { stockStatusOptions } from "@/const/products";
 import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
 import {
   setIsLoading,
@@ -115,8 +116,11 @@ const Filter = () => {
         <SelectContent>
           <SelectGroup className="capitalize">
             <SelectItem value="All Product Stock">All Product Stock</SelectItem>
-            <SelectItem value="In stock">In stock</SelectItem>
-            <SelectItem value="Out of stock">Out of stock</SelectItem>
+            {stockStatusOptions.map((status) => (
+              <SelectItem key={status.value} value={status.value}>
+                {status.label}
+              </SelectItem>
+            ))}
             {/* <SelectItem value="On backorder">On backorder</SelectItem> */}
           </SelectGroup>
         </SelectContent>
