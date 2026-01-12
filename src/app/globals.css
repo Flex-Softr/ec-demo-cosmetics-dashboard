@@ -162,7 +162,6 @@
   display: none;
 }
 
-
 .toast-error {
   @apply bg-red-500 text-white text-2xl border-0;
 }

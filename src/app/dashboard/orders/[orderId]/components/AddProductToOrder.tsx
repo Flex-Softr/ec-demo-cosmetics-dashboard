@@ -170,10 +170,12 @@ const AddProductToOrder = (props: TProps) => {
       <tr className="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800 border-b dark:border-gray-700 bg-blue-600">
         <td className="px-6 py-4" colSpan={5}>
           <div className="space-y-3">
-            <p className="text-right">Sub Total : ৳ {updatedSubTotal}</p>
+            <p className="text-right">Sub Total : &#2547; {updatedSubTotal}</p>
 
             {couponDiscount > 0 && (
-              <p className="text-right">Coupon Discount : ৳ {couponDiscount}</p>
+              <p className="text-right">
+                Coupon Discount : &#2547; {couponDiscount}
+              </p>
             )}
 
             <div className="flex items-center justify-end gap-2">
@@ -199,11 +201,11 @@ const AddProductToOrder = (props: TProps) => {
             </div>
 
             <p className="text-right">
-              Shipping Cost : ৳ {shippingCharge?.amount || 0}
+              Shipping Cost : &#2547; {shippingCharge?.amount || 0}
             </p>
             <hr />
             <p className="font-semibold text-right">
-              Total : ৳{" "}
+              Total : &#2547;{" "}
               {updatedSubTotal + shipping - totalMinus - couponDiscount}
             </p>
           </div>

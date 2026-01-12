@@ -3,7 +3,7 @@
 import { useSidebar } from "@/providers/SidebarProvider";
 import Image from "next/image";
 import Link from "next/link";
-import logo from "../../../public/logo.jpg";
+import logo from "../../../public/logo.png";
 
 export default function NavbarLogo() {
   const { isCollapsed } = useSidebar();

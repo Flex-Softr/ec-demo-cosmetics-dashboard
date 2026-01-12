@@ -27,7 +27,7 @@ const ProductInfo = ({ products = [] }: { products: TOrderedProducts[] }) => {
       <p className="flex flex-col gap-1" title={`${title}\n${variationProps}`}>
         {title.length > 18 ? title.slice(0, 18) + "..." : title}
       </p>
-      <p>৳ {unitPrice || 0}</p>
+      <p>&#2547; {unitPrice || 0}</p>
       <p>Quantity : {quantity || 0}</p>
       {length > 1 && (
         <p className="text-primary">

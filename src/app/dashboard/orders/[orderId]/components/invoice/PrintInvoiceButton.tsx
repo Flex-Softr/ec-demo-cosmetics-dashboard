@@ -6,7 +6,7 @@ import { Printer, ScissorsLineDashedIcon, UserRound } from "lucide-react";
 import Image from "next/image";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import logo from "../../../../../../../public/logo.jpg";
+import logo from "../../../../../../../public/logo.png";
 import { InvoiceItemsTable } from "./InvoiceItemsTable";
 import InvoiceSummary from "./InvoiceSummary";
 import config from "@/config/config";

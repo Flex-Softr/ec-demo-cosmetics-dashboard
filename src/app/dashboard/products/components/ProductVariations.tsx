@@ -42,9 +42,9 @@ const ProductVariations = ({ variations, type }: ProductVariationsProps) => {
                     : ""
                 }
               >
-                ৳ {v.price.regularPrice}
+                &#2547; {v.price.regularPrice}
               </span>
-              {v.price.salePrice && <span>৳ {v.price.salePrice}</span>}
+              {v.price.salePrice && <span>&#2547; {v.price.salePrice}</span>}
             </div>
           )}
 

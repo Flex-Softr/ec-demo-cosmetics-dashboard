@@ -123,9 +123,9 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
                 : ""
             }
           >
-            ৳ {original.regularPrice}
+            &#2547; {original.regularPrice}
           </span>
-          {original.salePrice && <span>৳ {original.salePrice}</span>}
+          {original.salePrice && <span>&#2547; {original.salePrice}</span>}
         </div>
       ) : (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 text-nowrap w-[1%] mx-auto whitespace-nowrap">

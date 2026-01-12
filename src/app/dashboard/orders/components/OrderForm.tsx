@@ -342,17 +342,19 @@ const OrderForm: React.FC<OrderFormProps> = ({
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span>৳ {Number(calculation.subtotal).toFixed(2)}</span>
+                  <span>&#2547; {Number(calculation.subtotal).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Shipping</span>
-                  <span>৳ {Number(calculation.shippingCost).toFixed(2)}</span>
+                  <span>
+                    &#2547; {Number(calculation.shippingCost).toFixed(2)}
+                  </span>
                 </div>
 
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground w-20">Discount</span>
                   <div className="flex items-center gap-1 bg-white border rounded px-2 h-8">
-                    <span>৳</span>
+                    <span>&#2547;</span>
                     <Input
                       type="number"
                       min={0}
@@ -366,7 +368,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground w-20">Advance</span>
                   <div className="flex items-center gap-1 bg-white border rounded px-2 h-8">
-                    <span>৳</span>
+                    <span>&#2547;</span>
                     <Input
                       type="number"
                       min={0}
@@ -381,7 +383,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
               <Separator className="h-0.5" />
               <div className="flex justify-between text-lg font-bold">
                 <span>Total</span>
-                <span>৳ {Number(calculation.total).toFixed(2)}</span>
+                <span>&#2547; {Number(calculation.total).toFixed(2)}</span>
               </div>
 
               <Separator className="h-0.5" />

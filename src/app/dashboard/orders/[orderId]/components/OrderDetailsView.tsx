@@ -204,7 +204,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                 <p className="flex justify-between">
                   <span className="text-muted-foreground">Cost:</span>
                   <span className="font-medium text-gray-900">
-                    ৳ {shippingCharge?.amount}
+                    &#2547; {shippingCharge?.amount}
                   </span>
                 </p>
               </div>
@@ -257,28 +257,30 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
             <div className="w-full md:w-1/2 lg:w-1/3 space-y-3 bg-gray-50/50 p-4 rounded-lg border">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span className="font-medium">৳ {subtotal}</span>
+                <span className="font-medium">&#2547; {subtotal}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Discount</span>
-                <span className="font-medium text-red-600">- ৳ {discount}</span>
+                <span className="font-medium text-red-600">
+                  - &#2547; {discount}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
                 <span className="font-medium">
-                  + ৳ {shippingCharge?.amount}
+                  + &#2547; {shippingCharge?.amount}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Advance</span>
                 <span className="font-medium text-green-600">
-                  - ৳ {advance}
+                  - &#2547; {advance}
                 </span>
               </div>
               <Separator />
               <div className="flex justify-between text-lg font-bold text-gray-900">
                 <span>Total</span>
-                <span>৳ {total}</span>
+                <span>&#2547; {total}</span>
               </div>
             </div>
           </div>

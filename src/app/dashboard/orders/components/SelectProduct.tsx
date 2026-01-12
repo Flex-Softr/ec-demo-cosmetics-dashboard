@@ -240,7 +240,7 @@ const UnitPriceDisplay = ({
 
   return (
     <div className="h-10 flex items-center justify-center px-3 text-gray-700 font-medium whitespace-nowrap">
-      ৳ {price.toFixed(2)}
+      &#2547; {price.toFixed(2)}
     </div>
   );
 };
@@ -289,7 +289,7 @@ const AmountDisplay = ({
 
   return (
     <div className="h-10 flex items-center justify-center px-3 font-semibold whitespace-nowrap">
-      ৳ {(price * Number(quantity)).toFixed(2)}
+      &#2547; {(price * Number(quantity)).toFixed(2)}
     </div>
   );
 };

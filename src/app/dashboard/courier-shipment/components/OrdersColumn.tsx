@@ -6,9 +6,9 @@ import OrderStatus from "@/components/OrderStatus";
 import ProductInfo from "@/components/ProductInfo";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TOrders } from "@/types/order.interface";
+import { TPermission } from "@/utilities/isPermitted";
 import { ColumnDef } from "@tanstack/react-table";
 import ProductCode from "../../processing-orders/components/ProductCode";
-import { TPermission } from "@/utilities/isPermitted";
 
 export const getColumns = (
   permissions: TPermission[]
@@ -79,7 +79,7 @@ export const getColumns = (
   {
     accessorKey: "total",
     header: "Total",
-    cell: ({ row }) => <span>৳ {row.getValue("total")}</span>,
+    cell: ({ row }) => <span>&#2547; {row.getValue("total")}</span>,
   },
   {
     accessorKey: "payment",

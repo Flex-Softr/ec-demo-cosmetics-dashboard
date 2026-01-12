@@ -76,7 +76,7 @@ export const columns: ColumnDef<TOrders>[] = [
   {
     accessorKey: "total",
     header: "Total",
-    cell: ({ row }) => <span>৳ {row.getValue("total")}</span>,
+    cell: ({ row }) => <span>&#2547; {row.getValue("total")}</span>,
   },
   {
     accessorKey: "payment",
