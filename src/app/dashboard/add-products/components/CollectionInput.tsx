@@ -63,7 +63,7 @@ const CollectionInput = () => {
                   id={`collection-${collection._id}`}
                   checked={selectedCollection === collection._id}
                   onChange={() => toggleCollection(collection._id)}
-                  className="mr-1 size-4"
+                  className="mr-1 size-4 cursor-pointer"
                 />
                 <label
                   htmlFor={`collection-${collection._id}`}

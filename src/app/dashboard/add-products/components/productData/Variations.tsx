@@ -5,7 +5,11 @@ import generateVariations from "../../lib/generateVariation";
 import SingleVariation from "./SingleVariation";
 
 const Variations = () => {
-  const { control, watch } = useFormContext();
+  const {
+    control,
+    watch,
+    formState: { errors },
+  } = useFormContext();
   const { fields, replace, remove } = useFieldArray({
     control,
     name: "variations",
@@ -67,6 +71,11 @@ const Variations = () => {
             />
           ))}
         </>
+      )}
+      {errors.variations && (
+        <p className="text-red-500 text-sm mt-1">
+          {errors.variations.message as string}
+        </p>
       )}
     </div>
   );

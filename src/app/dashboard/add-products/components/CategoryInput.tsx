@@ -54,7 +54,7 @@ const CategoryInput = () => {
         id={category._id as string}
         checked={categoryName == category._id}
         onChange={() => toggleCategory(category._id)}
-        className="mr-1 size-4 "
+        className="mr-1 size-4 cursor-pointer"
       />
       <label
         htmlFor={category._id as string}
@@ -78,7 +78,7 @@ const CategoryInput = () => {
         id={category._id as string}
         checked={subCategoryName === category._id}
         onChange={() => toggleSubcategory(category._id)}
-        className="mr-1 size-4 "
+        className="mr-1 size-4 cursor-pointer"
       />
       <label
         htmlFor={category._id as string}

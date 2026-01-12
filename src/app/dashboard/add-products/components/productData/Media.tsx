@@ -75,7 +75,10 @@ const Media = ({ isVariation }: TProps) => {
     <>
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col justify-evenly">
-          <SectionTitle className="text-center border-primary">
+          <SectionTitle
+            className="text-center border-primary cursor-help"
+            title="Upload a representative image for the product."
+          >
             Add Thumbnail
           </SectionTitle>
           <div
@@ -122,7 +125,10 @@ const Media = ({ isVariation }: TProps) => {
           )}
         </div>
         <div className="flex flex-col justify-center">
-          <SectionTitle className="text-center border-primary">
+          <SectionTitle
+            className="text-center border-primary cursor-help"
+            title="Upload additional images for the product gallery."
+          >
             Image Gallery
           </SectionTitle>
           <div

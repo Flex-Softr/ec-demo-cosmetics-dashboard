@@ -17,8 +17,9 @@ const Price = ({ prefix = "price" }: TProps) => {
 
   const regularPrice = watch(`${prefix}.regularPrice`);
 
-  const getError = (fieldName: string) => {
-    const path = fieldName.split(".");
+  // Helper to extract nested errors safely
+  const getBindingError = (name: string) => {
+    const path = name.split(".");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let current: any = errors;
     for (const p of path) {
@@ -32,18 +33,27 @@ const Price = ({ prefix = "price" }: TProps) => {
     return (current as any)?.message as string | undefined;
   };
 
-  const handleRegularPriceChange = (e: { target: { value: string } }) => {
+  const calculatePriceSave = (regular: number, sale: number) => {
+    if (regular > 0 && sale >= 0 && regular > sale) {
+      return regular - sale;
+    }
+    return 0;
+  };
+
+  const handleRegularPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const parsed = parseFloat(value);
     const price = value === "" || isNaN(parsed) ? undefined : parsed;
 
     setValue(`${prefix}.regularPrice`, price, { shouldValidate: true });
-    // Reset sale/discount when regular changes
+
+    // When regular price changes, reset dependent fields to avoid inconsistency
     setValue(`${prefix}.discountPercent`, undefined);
     setValue(`${prefix}.salePrice`, undefined);
+    setValue(`${prefix}.priceSave`, undefined);
   };
 
-  const handleSalePriceChange = (e: { target: { value: string } }) => {
+  const handleSalePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const parsed = parseFloat(value);
     const price = value === "" || isNaN(parsed) ? undefined : parsed;
@@ -56,10 +66,16 @@ const Price = ({ prefix = "price" }: TProps) => {
         ? undefined
         : parseFloat(calculatedDiscount.toFixed(2));
       setValue(`${prefix}.discountPercent`, finalDiscount);
+
+      const saved = calculatePriceSave(regularPrice, price);
+      setValue(`${prefix}.priceSave`, saved);
+    } else {
+      setValue(`${prefix}.discountPercent`, undefined);
+      setValue(`${prefix}.priceSave`, undefined);
     }
   };
 
-  const handleDiscountChange = (e: { target: { value: string } }) => {
+  const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const parsed = parseFloat(value);
     const discount = value === "" || isNaN(parsed) ? undefined : parsed;
@@ -73,13 +89,24 @@ const Price = ({ prefix = "price" }: TProps) => {
         ? undefined
         : parseFloat(calculatedSalePrice.toFixed());
       setValue(`${prefix}.salePrice`, finalSalePrice);
+
+      const saved = calculatePriceSave(regularPrice, finalSalePrice || 0);
+      setValue(`${prefix}.priceSave`, saved);
+    } else {
+      setValue(`${prefix}.salePrice`, undefined);
+      setValue(`${prefix}.priceSave`, undefined);
     }
   };
 
   return (
-    <div className="pt-2">
-      <div className="flex items-center gap-3">
-        <Label className="w-40" htmlFor={`${prefix}.regularPrice`}>
+    <div className="pt-2 space-y-4">
+      {/* Regular Price */}
+      <div className="flex items-start gap-3">
+        <Label
+          className="w-40 py-2 cursor-help"
+          htmlFor={`${prefix}.regularPrice`}
+          title="The regular price of the product."
+        >
           Price
         </Label>
         <div className="w-full">
@@ -94,55 +121,73 @@ const Price = ({ prefix = "price" }: TProps) => {
               onChange: handleRegularPriceChange,
             })}
           />
+          {getBindingError(`${prefix}.regularPrice`) && (
+            <p className="text-red-600 text-sm mt-1">
+              {getBindingError(`${prefix}.regularPrice`)}
+            </p>
+          )}
         </div>
       </div>
-      {getError(`${prefix}.regularPrice`) && (
-        <p className="text-red-600 ml-44 mt-2">
-          {getError(`${prefix}.regularPrice`)}
-        </p>
-      )}
-      <div className="flex items-center gap-3 mt-3">
-        <Label className="w-40" htmlFor={`${prefix}.salePrice`}>
+
+      {/* Sale Price */}
+      <div className="flex items-start gap-3">
+        <Label
+          className="w-40 py-2 cursor-help"
+          htmlFor={`${prefix}.salePrice`}
+          title="The discounted price of the product."
+        >
           Sale Price
         </Label>
-        <Input
-          type="number"
-          min={0}
-          step="0.01"
-          placeholder="Enter sale price"
-          id={`${prefix}.salePrice`}
-          {...register(`${prefix}.salePrice`, {
-            valueAsNumber: true,
-            onChange: handleSalePriceChange,
-          })}
-        />
+        <div className="w-full">
+          <Input
+            type="number"
+            min={0}
+            step="0.01"
+            placeholder="Enter sale price"
+            id={`${prefix}.salePrice`}
+            {...register(`${prefix}.salePrice`, {
+              valueAsNumber: true,
+              onChange: handleSalePriceChange,
+            })}
+            disabled={!regularPrice}
+          />
+          {getBindingError(`${prefix}.salePrice`) && (
+            <p className="text-red-600 text-sm mt-1">
+              {getBindingError(`${prefix}.salePrice`)}
+            </p>
+          )}
+        </div>
       </div>
-      {getError(`${prefix}.salePrice`) && (
-        <p className="text-red-600 ml-40 mt-2">
-          {getError(`${prefix}.salePrice`)}
-        </p>
-      )}
-      <div className="flex items-center gap-3 mt-3">
-        <Label className="w-40" htmlFor={`${prefix}.discountPercent`}>
+
+      {/* Discount Percent */}
+      <div className="flex items-start gap-3">
+        <Label
+          className="w-40 py-2 cursor-help"
+          htmlFor={`${prefix}.discountPercent`}
+          title="The discount percentage applied to the regular price."
+        >
           Discount %
         </Label>
-        <Input
-          type="number"
-          min={0}
-          step="0.01"
-          placeholder="Enter discount percentage"
-          id={`${prefix}.discountPercent`}
-          {...register(`${prefix}.discountPercent`, {
-            valueAsNumber: true,
-            onChange: handleDiscountChange,
-          })}
-        />
+        <div className="w-full">
+          <Input
+            type="number"
+            min={0}
+            step="0.01"
+            placeholder="Enter discount percentage"
+            id={`${prefix}.discountPercent`}
+            {...register(`${prefix}.discountPercent`, {
+              valueAsNumber: true,
+              onChange: handleDiscountChange,
+            })}
+            disabled={!regularPrice}
+          />
+          {getBindingError(`${prefix}.discountPercent`) && (
+            <p className="text-red-600 text-sm mt-1">
+              {getBindingError(`${prefix}.discountPercent`)}
+            </p>
+          )}
+        </div>
       </div>
-      {getError(`${prefix}.discountPercent`) && (
-        <p className="text-red-600 ml-44 mt-2">
-          {getError(`${prefix}.discountPercent`)}
-        </p>
-      )}
     </div>
   );
 };

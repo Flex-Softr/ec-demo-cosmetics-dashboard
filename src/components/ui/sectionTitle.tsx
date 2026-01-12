@@ -1,14 +1,16 @@
 import { ReactNode } from "react";
 
-type TProps = {
+type TProps = React.HTMLAttributes<HTMLSpanElement> & {
   children: string | ReactNode;
   className?: string;
 };
-export function SectionTitle({ children, className }: TProps) {
+
+export function SectionTitle({ children, className, ...props }: TProps) {
   return (
     <>
       <span
         className={`w-full pb-2 text-sm font-semibold tracking-tight first:mt-0 ${className}`}
+        {...props}
       >
         {children}
       </span>

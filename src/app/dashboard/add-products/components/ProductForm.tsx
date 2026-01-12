@@ -21,17 +21,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import ProductSchema from "../lib/productValidation";
-import AdditionalInfo from "./AdditionalInfo";
+import ProductSchema, { ProductFormValues } from "../lib/productValidation";
+// import AdditionalInfo from "./AdditionalInfo";
 import BrandInput from "./BrandInput";
 import CategoryInput from "./CategoryInput";
 import CollectionInput from "./CollectionInput";
 import DescriptionInput from "./DescriptionInput";
+import Featured from "./Featured";
+import ProductDataTabs from "./productData/ProductDataTabs";
 import ProductResetter from "./ProductResetter";
 import Published from "./Published";
+import RelatedProducts from "./RelatedProduct";
 import ShortDescriptionInput from "./ShortDescriptionInput";
 import TitleInput from "./TitleInput";
-import ProductDataTabs from "./productData/ProductDataTabs";
 
 const ProductForm = ({ productId }: { productId?: string }) => {
   const dispatch = useAppDispatch();
@@ -74,12 +76,13 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       },
       attributes: [],
       variations: [],
-      brand: "",
+      brand: undefined,
       category: {
         name: "",
-        subCategory: "",
+        subCategory: undefined,
       },
       productCollection: "",
+      relatedProducts: [],
       featured: false,
       warranty: false,
       warrantyInfo: {
@@ -90,7 +93,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     };
   }, []);
 
-  const methods = useForm({
+  const methods = useForm<ProductFormValues>({
     resolver: yupResolver(ProductSchema),
     defaultValues,
     mode: "all",
@@ -110,6 +113,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         brand,
         attributes = [],
         type,
+        relatedProducts = [],
         ...restProductData
       } = productData;
 
@@ -200,7 +204,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         brand: brandId,
         attributes: transformedAttributes,
         attributeValues: transformedAttributeValues,
-        // variations: variations, // Removed variations sync
+        relatedProducts: relatedProducts,
         featured,
         warranty,
         warrantyInfo: {
@@ -253,6 +257,8 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       const payload = {
         ...data,
         attributes: payloadAttributes,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        relatedProducts: data.relatedProducts?.map((p: any) => p.value) || [],
       };
       // Remove temporary UI field
       delete payload.attributeValues;
@@ -268,6 +274,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       // Clean up optional fields that might be empty strings
       if (!payload.brand) delete payload.brand;
       if (!payload.productCollection) delete payload.productCollection;
+      if (!payload.category.subCategory) delete payload.category.subCategory;
 
       let res;
       if (productId) {
@@ -365,12 +372,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
               {/* products title */}
               <TitleInput />
               <ShortDescriptionInput />
-              {/* products description */}
-              <DescriptionInput />
-
               {/* product data */}
               <ProductDataTabs />
-              <AdditionalInfo />
+              {/* products description */}
+              <DescriptionInput />
+              {/* <AdditionalInfo /> */}
             </div>
             {/* right Sidebar of add products */}
             <div className="w-2/6 space-y-3">
@@ -380,7 +386,9 @@ const ProductForm = ({ productId }: { productId?: string }) => {
               />
               <CategoryInput />
               <CollectionInput />
+              <Featured />
               <BrandInput />
+              <RelatedProducts />
             </div>
           </div>
         </form>

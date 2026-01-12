@@ -35,26 +35,31 @@ const Advanced = () => {
 
   return (
     <div>
-      <div className="flex items-center gap-3 mb-3">
-        <Label className="w-40" htmlFor="featured">
-          Featured
-        </Label>
-        <div>
-          <Input type="checkbox" {...register("featured")} id="featured" />
-        </div>
-      </div>
-      <div className="flex items-center gap-3 mb-3">
-        <Label className="w-40" htmlFor="warranty">
+      <div className="flex items-center gap-3 mb-5">
+        <Label
+          className="w-40 cursor-help"
+          htmlFor="warranty"
+          title="Enable warranty information for this product."
+        >
           Warranty
         </Label>
         <div>
-          <Input type="checkbox" {...register("warranty")} id="warranty" />
+          <Input
+            type="checkbox"
+            {...register("warranty")}
+            id="warranty"
+            className="w-4 h-4 cursor-pointer"
+          />
         </div>
       </div>
       {warranty && (
         <>
           <div className="flex items-center gap-3 mb-3">
-            <Label className="w-40" htmlFor="warrantyDuration">
+            <Label
+              className="w-40 cursor-help"
+              htmlFor="warrantyDuration"
+              title="Specify the duration of the warranty."
+            >
               Warranty duration
             </Label>
             <div className="space-y-2">
@@ -106,7 +111,11 @@ const Advanced = () => {
             </div>
           </div>
           <div className="flex items-start gap-3 pt-3">
-            <Label className="w-40 mt-2" htmlFor="terms">
+            <Label
+              className="w-40 mt-2 cursor-help"
+              htmlFor="terms"
+              title="Enter the terms and conditions of the warranty."
+            >
               Terms
             </Label>
             <div className="w-full space-y-1">

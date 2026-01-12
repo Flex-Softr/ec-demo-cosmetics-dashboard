@@ -62,19 +62,49 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
   };
 
   return (
-    <div>
-      <div className="flex items-center gap-3 mb-3">
-        <Label className="flex gap-3 w-48" htmlFor={`${prefix}.stockStatus`}>
-          Stock Status
-          <span title="Indicates whether the product is in stock, out of stock.">
-            <i className="fa-solid fa-circle-question">i</i>
-          </span>
+    <div className="grid grid-cols-2 gap-4">
+      {/* SKU - Moved to First Order */}
+      <div className="space-y-2">
+        <Label
+          className="flex gap-2 cursor-help"
+          htmlFor={`${prefix}.sku`}
+          title="A unique identifier for the product."
+        >
+          SKU
+          {isSkuRequired && <span className="text-red-500">*</span>}
         </Label>
-        <div className="space-y-2 w-full">
+        <div className="w-full">
+          <Input
+            type="text"
+            {...register(`${prefix}.sku`)}
+            id={`${prefix}.sku`}
+            placeholder="Enter SKU"
+            className="w-full"
+          />
+          {getError(`${prefix}.sku`) && (
+            <p className="text-red-600 text-sm mt-1">
+              {getError(`${prefix}.sku`)}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Stock Status */}
+      <div className="space-y-2">
+        <Label
+          className="flex gap-2 cursor-help"
+          htmlFor={`${prefix}.stockStatus`}
+          title="Indicates whether the product is in stock, out of stock."
+        >
+          Stock Status
+        </Label>
+        <div className="w-full">
           <select
             {...register(`${prefix}.stockStatus`)}
             id={`${prefix}.stockStatus`}
-            className={`w-full h-9 border border-primary outline-primary rounded-md ${getStockStatusColor(stockStatus)}`}
+            className={`w-full h-9 border border-primary outline-primary rounded-md px-2 ${getStockStatusColor(
+              stockStatus
+            )}`}
           >
             {stockStatusOptions.map((status) => (
               <option
@@ -87,18 +117,23 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
             ))}
           </select>
           {getError(`${prefix}.stockStatus`) && (
-            <p className="text-red-600">{getError(`${prefix}.stockStatus`)}</p>
+            <p className="text-red-600 text-sm mt-1">
+              {getError(`${prefix}.stockStatus`)}
+            </p>
           )}
         </div>
       </div>
-      <div className="flex items-center gap-3 mb-3">
-        <Label className="flex gap-3 w-48" htmlFor={`${prefix}.stockQuantity`}>
+
+      {/* Stock Quantity */}
+      <div className="space-y-2">
+        <Label
+          className="flex gap-2 cursor-help"
+          htmlFor={`${prefix}.stockQuantity`}
+          title="The total number of units."
+        >
           Stock Quantity
-          <span title="The total number of units.">
-            <i className="fa-solid fa-circle-question">i</i>
-          </span>
         </Label>
-        <div className="space-y-2 w-full">
+        <div className="w-full">
           <Input
             type="number"
             min={0}
@@ -111,8 +146,6 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
                   isNaN(val) ? undefined : val
                 );
 
-                // Sync stockAvailable
-                // Calculate 'sold' items from defaults: initialQuantity - initialAvailable
                 const initialQuantity =
                   Number(getValue(`${prefix}.stockQuantity`, defaultValues)) ||
                   0;
@@ -124,8 +157,6 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
                   initialQuantity - initialAvailable
                 );
 
-                // New available = New Quantity - Sold Count
-                // If it's a new product (no defaults), soldCount is 0, so Available === Quantity
                 const newAvailable = isNaN(val)
                   ? undefined
                   : Math.max(0, val - soldCount);
@@ -134,24 +165,27 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
               },
             })}
             id={`${prefix}.stockQuantity`}
-            placeholder="Enter stock quantity"
+            placeholder="Enter quantity"
             className="w-full"
           />
           {getError(`${prefix}.stockQuantity`) && (
-            <p className="text-red-600">
+            <p className="text-red-600 text-sm mt-1">
               {getError(`${prefix}.stockQuantity`)}
             </p>
           )}
         </div>
       </div>
-      <div className="flex items-center gap-3 mb-3">
-        <Label className="flex gap-3 w-48" htmlFor={`${prefix}.stockAvailable`}>
+
+      {/* Stock Available */}
+      <div className="space-y-2">
+        <Label
+          className="flex gap-2 cursor-help"
+          htmlFor={`${prefix}.stockAvailable`}
+          title="The current number of units available for sale."
+        >
           Stock Available
-          <span title="The current number of units available for sale. This value decreases as orders are placed.">
-            <i className="fa-solid fa-circle-question">i</i>
-          </span>
         </Label>
-        <div className="space-y-2 w-full">
+        <div className="w-full">
           <Input
             type="number"
             min={0}
@@ -166,62 +200,64 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
               },
             })}
             id={`${prefix}.stockAvailable`}
-            disabled // Typically calculated/read-only?
-            className={`w-full text-blue-700 ${stockAvailable <= (lowStockWarning || 0) ? "text-red-700" : ""} font-bold !opacity-100`}
+            disabled
+            className={`w-full text-blue-700 ${
+              stockAvailable <= (lowStockWarning || 0) ? "text-red-700" : ""
+            } font-bold !opacity-100`}
           />
-        </div>
-      </div>
-      <div className="flex items-center gap-3 mb-3">
-        <Label className="flex gap-3 w-48" htmlFor={`${prefix}.sku`}>
-          SKU
-          {isSkuRequired && <span className="text-red-500">*</span>}
-          <span title="A unique identifier for the product.">
-            <i className="fa-solid fa-circle-question">i</i>
-          </span>
-        </Label>
-        <div className="space-y-2 w-full">
-          <Input
-            type="text"
-            {...register(`${prefix}.sku`)}
-            id={`${prefix}.sku`}
-            placeholder="Enter SKU"
-            className="w-full"
-          />
-          {getError(`${prefix}.sku`) && (
-            <p className="text-red-600">{getError(`${prefix}.sku`)}</p>
-          )}
         </div>
       </div>
 
+      {/* Checkboxes: Hide Stock (Left) & Manage Stock (Right) */}
       {stockQuantity !== undefined && Number(stockQuantity) > 0 && (
-        <div className="flex items-center gap-3 mb-3">
-          <Label className="flex gap-3 w-48" htmlFor={`${prefix}.manageStock`}>
-            Manage Stock
-            <span title="Enable this to track and manage stock levels for this product by email.">
-              <i className="fa-solid fa-circle-question">i</i>
-            </span>
-          </Label>
-          <div className="space-y-2">
+        <>
+          {/* Hide Stock */}
+          <div className="flex items-center space-x-2 py-1">
+            <Input
+              type="checkbox"
+              {...register(`${prefix}.hideStock`)}
+              id={`${prefix}.hideStock`}
+              className="w-4 h-4 cursor-pointer"
+            />
+            <Label
+              className="cursor-help"
+              htmlFor={`${prefix}.hideStock`}
+              title="Enable this to hide the stock quantity from customers."
+            >
+              Hide stock on customer
+            </Label>
+          </div>
+
+          {/* Manage Stock */}
+          <div className="flex items-center space-x-2 py-1">
             <Input
               type="checkbox"
               {...register(`${prefix}.manageStock`)}
               id={`${prefix}.manageStock`}
+              className="w-4 h-4 cursor-pointer"
             />
+            <Label
+              className="cursor-help"
+              htmlFor={`${prefix}.manageStock`}
+              title="Enable this to track and update stock quantity for this product"
+            >
+              Manage Stock
+            </Label>
           </div>
-        </div>
+        </>
       )}
+
+      {/* Low Stock Warning */}
       {manageStock && (
-        <div className="flex items-center gap-3 mb-3">
+        <div className="col-span-2 space-y-2">
           <Label
-            className="flex gap-3 w-48"
+            className="flex gap-2 cursor-help"
             htmlFor={`${prefix}.lowStockWarning`}
+            title="Set a threshold to receive email when stock levels fall below this number."
           >
             Low Stock Warning
-            <span title="Set a threshold to receive email when stock levels fall below this number.">
-              <i className="fa-solid fa-circle-question">i</i>
-            </span>
           </Label>
-          <div className="space-y-2 w-full">
+          <div className="w-full">
             <Input
               type="number"
               min={0}
@@ -240,27 +276,10 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
               className="w-full"
             />
             {getError(`${prefix}.lowStockWarning`) && (
-              <p className="text-red-600">
+              <p className="text-red-600 text-sm mt-1">
                 {getError(`${prefix}.lowStockWarning`)}
               </p>
             )}
-          </div>
-        </div>
-      )}
-      {stockQuantity !== undefined && Number(stockQuantity) > 0 && (
-        <div className="flex items-center gap-3 mb-3">
-          <Label className="flex gap-3 w-48" htmlFor={`${prefix}.hideStock`}>
-            Hide stock
-            <span title="Enable this to hide the stock quantity from customers on the front end.">
-              <i className="fa-solid fa-circle-question">i</i>
-            </span>
-          </Label>
-          <div className="space-y-2">
-            <Input
-              type="checkbox"
-              {...register(`${prefix}.hideStock`)}
-              id={`${prefix}.hideStock`}
-            />
           </div>
         </div>
       )}

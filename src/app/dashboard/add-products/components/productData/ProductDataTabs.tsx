@@ -1,17 +1,16 @@
 "use client";
-import { TAttribute } from "@/app/dashboard/attribute/lib/attribute.interface";
-import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
-import { TSelectedAttribute } from "@/redux/features/addProduct/variation/interface";
-import { useEffect, useState } from "react";
-
-import Inventory from "./Inventory";
 import Media from "./Media";
 // import Offer from "./Offer";
+import { TAttribute } from "@/app/dashboard/attribute/lib/attribute.interface";
+import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
 import { Button } from "@/components/ui/button";
+import { TSelectedAttribute } from "@/redux/features/addProduct/variation/interface";
 import { useGetAttributesQuery } from "@/redux/features/attributes/attributesApi";
+import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import Advanced from "./Advanced";
 import Attributes from "./Attributes";
+import Inventory from "./Inventory";
 import Price from "./Price";
 import Variations from "./Variations";
 
@@ -41,7 +40,7 @@ const ProductDataTabs = () => {
   // Sync active tab when product type changes
   useEffect(() => {
     if (type === "simple") {
-      if (activeTab === "variations") {
+      if (activeTab === "variations" || activeTab === "attributes") {
         setActiveTab("media");
       }
     } else if (type === "variable") {
@@ -61,7 +60,7 @@ const ProductDataTabs = () => {
     media: ["image.thumbnail", "image.gallery"],
     price: ["price.regularPrice", "price.salePrice"],
     inventory: ["inventory.sku", "inventory.stockQuantity"],
-    attributes: ["attributes"],
+    attributes: ["attributes", "attributeValues"],
     variations: ["variations"],
     advanced: ["warrantyInfo.duration.quantity", "warrantyInfo.duration.unit"],
   };
@@ -176,7 +175,7 @@ const ProductDataTabs = () => {
           </>
         )}
 
-        {(type === "simple" || type === "variable") && (
+        {type === "variable" && (
           <Button
             onClick={() => handleTabClick("attributes")}
             variant={activeTab === "attributes" ? "default" : "outline"}
@@ -228,11 +227,12 @@ const ProductDataTabs = () => {
         </Button>
       </div>
 
-      <div className="mt-4 min-h-[300px]">
+      <div className="mt-4">
         {activeTab === "media" && <Media />}
         {activeTab === "inventory" && type === "simple" && <Inventory />}
         {activeTab === "price" && type === "simple" && <Price />}
         {activeTab === "attributes" &&
+          type === "variable" &&
           (isLoading ? (
             <p className="p-4 text-center text-gray-500 italic">
               Loading attributes...

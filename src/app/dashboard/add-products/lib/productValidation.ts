@@ -15,6 +15,9 @@ const PriceValidationSchema = Yup.object().shape({
     .transform((value) => (Number.isNaN(value) ? undefined : value))
     .min(0, "Discount percent cannot be negative")
     .typeError("Must be a valid number"),
+  priceSave: Yup.number()
+    .transform((value) => (Number.isNaN(value) ? undefined : value))
+    .optional(),
 });
 
 const ImageValidationSchema = Yup.object().shape({
@@ -106,6 +109,7 @@ const ProductSchema = Yup.object().shape({
   title: Yup.string().trim().required("Title is required"),
   slug: Yup.string().trim().required("Slug is required"),
   description: Yup.string().trim().optional(),
+  shortDescription: Yup.string().trim().optional(),
   type: Yup.string().optional(),
   image: ImageValidationSchema.required(),
   price: Yup.object().when("type", {
@@ -118,12 +122,31 @@ const ProductSchema = Yup.object().shape({
     then: () => Yup.object().optional(),
     otherwise: () => InventoryValidationSchema.required(),
   }),
-  attributes: Yup.array().of(AttributeSchema).optional(),
+  attributes: Yup.array().when("type", {
+    is: "variable",
+    then: () =>
+      Yup.array()
+        .of(AttributeSchema)
+        .min(1, "At least one attribute is required")
+        .required("Attributes are required"),
+    otherwise: () => Yup.array().of(AttributeSchema).optional(),
+  }),
+  attributeValues: Yup.array().when("type", {
+    is: "variable",
+    then: () =>
+      Yup.array().of(
+        Yup.array()
+          .min(1, "Select at least one value")
+          .required("Select at least one value")
+      ),
+    otherwise: () => Yup.array().optional(),
+  }),
   variations: Yup.array().when("type", {
     is: "variable",
     then: () =>
       Yup.array()
         .of(VariationSchema)
+        .min(1, "At least one variation is required")
         .required("Variations are required for variable products"),
     otherwise: () => Yup.array().of(VariationSchema).optional(),
   }),
@@ -138,6 +161,8 @@ const ProductSchema = Yup.object().shape({
     otherwise: (schema) => schema.optional(),
   }),
   publishedStatus: PublishedStatusSchema.required(),
+  relatedProducts: Yup.array().optional(),
 });
 
+export type ProductFormValues = Yup.InferType<typeof ProductSchema>;
 export default ProductSchema;

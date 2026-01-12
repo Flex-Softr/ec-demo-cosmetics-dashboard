@@ -39,18 +39,3 @@ const BrandInput = () => {
 };
 
 export default BrandInput;
-
-// <Select onValueChange={(v) => handleChange(v)}>
-//   <SelectTrigger className=" border-primary focus:ring-0">
-//     <SelectValue placeholder={defaultValue?.name || "Select brand"} />
-//   </SelectTrigger>
-//   <SelectContent>
-//     <SelectGroup>
-//       {brands.map(({ _id, name }) => (
-//         <SelectItem key={_id} value={_id}>
-//           {name}
-//         </SelectItem>
-//       ))}
-//     </SelectGroup>
-//   </SelectContent>
-// </Select>;

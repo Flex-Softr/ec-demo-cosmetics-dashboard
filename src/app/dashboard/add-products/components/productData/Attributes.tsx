@@ -8,7 +8,11 @@ const Attributes = ({
 }: {
   attributes: TSelectedAttribute[];
 }) => {
-  const { control, watch } = useFormContext();
+  const {
+    control,
+    watch,
+    formState: { errors },
+  } = useFormContext();
 
   // Watch currently selected attributes to render value selectors
   const selectedAttributes = watch("attributes") || [];
@@ -40,6 +44,11 @@ const Attributes = ({
             />
           )}
         />
+        {errors.attributes && (
+          <p className="text-red-500 text-sm mt-1">
+            {errors.attributes.message as string}
+          </p>
+        )}
       </div>
       {selectedAttributes.length > 0 &&
         selectedAttributes.map((attr: TSelectedAttribute, index: number) => (
@@ -48,23 +57,28 @@ const Attributes = ({
             <Controller
               control={control}
               name={`attributeValues.${index}`}
-              render={({ field }) => (
-                <Select
-                  isMulti
-                  isSearchable
-                  options={attr.child?.map((item) => ({
-                    label: item.label,
-                    value: String(item.value),
-                  }))}
-                  value={field.value}
-                  onChange={(val) => {
-                    // Store in specific structure expected by generateVariations?
-                    // The previous code stored { index, child: val } in Redux.
-                    // Here we just store the array of values at index 'index'.
-                    field.onChange(val);
-                  }}
-                  placeholder={`Select ${attr.label}...`}
-                />
+              render={({ field, fieldState: { error } }) => (
+                <>
+                  <Select
+                    isMulti
+                    isSearchable
+                    options={attr.child?.map((item) => ({
+                      label: item.label,
+                      value: String(item.value),
+                    }))}
+                    value={field.value}
+                    onChange={(val) => {
+                      // Store in specific structure expected by generateVariations?
+                      // The previous code stored { index, child: val } in Redux.
+                      // Here we just store the array of values at index 'index'.
+                      field.onChange(val);
+                    }}
+                    placeholder={`Select ${attr.label}...`}
+                  />
+                  {error && (
+                    <p className="text-red-500 text-sm mt-1">{error.message}</p>
+                  )}
+                </>
               )}
             />
           </div>
