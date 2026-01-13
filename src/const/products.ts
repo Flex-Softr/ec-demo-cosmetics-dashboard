@@ -1,3 +1,8 @@
+export const PRODUCT_TYPE = {
+  SIMPLE: "simple",
+  VARIABLE: "variable",
+} as const;
+
 export const productStatus = {
   published: "published",
   draft: "draft",

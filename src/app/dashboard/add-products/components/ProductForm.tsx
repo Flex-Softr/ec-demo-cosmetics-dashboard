@@ -298,8 +298,13 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         dispatch(setDeleteImage([]));
       }
       if (productId) {
-        await revalidateTag(`product-${productData.slug}`);
+        await revalidateTag([`product-${productData.slug}`]);
       }
+      await revalidateTag([
+        `relatedProducts-${productData.slug}`,
+        `collectionProducts-${productData.slug}`,
+        "featuredProducts",
+      ]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       let errors: string[] = [];
@@ -345,8 +350,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
     toast({
       className: "bg-red-600 text-white",
-      title: "Validation Error",
-      description: firstErrorMessage,
+      title: firstErrorMessage,
     });
   };
 

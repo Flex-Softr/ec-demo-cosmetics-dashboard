@@ -25,6 +25,7 @@ export type TVariation = {
   inventory: TInventory;
   offer?: TOffer;
   isDeleted?: boolean;
+  isActive?: boolean;
 };
 
 export type TVariationInitialState = {

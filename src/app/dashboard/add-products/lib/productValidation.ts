@@ -84,6 +84,7 @@ const VariationSchema = Yup.object().shape({
   price: PriceValidationSchema.required(),
   inventory: InventoryValidationSchema.required(),
   image: Yup.string().optional(), // Is optional in modification but required in payload. Letting it be optional for now to avoid breaking if image missing in state? No, payload says required.
+  isActive: Yup.boolean().optional(),
 });
 
 const CategorySchema = Yup.object().shape({

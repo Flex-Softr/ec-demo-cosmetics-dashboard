@@ -3,6 +3,10 @@ import config from "@/config/config";
 type TTags =
   | "products"
   | `product-${string}`
+  | `relatedProducts-${string}`
+  | `collectionProducts-${string}`
+  | "bestSellingProducts"
+  | "featuredProducts"
   | "allCategories"
   | "parentCategory"
   | "paymentMethod"

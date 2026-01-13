@@ -11,6 +11,9 @@ const Attributes = ({
   const {
     control,
     watch,
+    setValue,
+    getValues,
+    clearErrors,
     formState: { errors },
   } = useFormContext();
 
@@ -32,13 +35,25 @@ const Attributes = ({
               options={availableAttributes}
               value={field.value}
               onChange={(val) => {
-                field.onChange(val);
-                // Ensure attributeValues array matches selected attributes length/order if needed?
-                // Or just let it sync naturally.
-                // If an attribute is removed, we might want to remove its corresponding values.
-                // For simplicity, we just update the attributes list here.
-                // Complex syncing might be needed for variations.
-                // Logic to clean up values for removed attributes could act here
+                const newAttributes = (val as TSelectedAttribute[]) || [];
+                const oldAttributes =
+                  (field.value as TSelectedAttribute[]) || [];
+                const currentValues = getValues("attributeValues") || [];
+
+                // Sync attributeValues to match the new attributes list order/presence
+                const newValues = newAttributes.map((newAttr) => {
+                  const oldIndex = oldAttributes.findIndex(
+                    (oldAttr) => oldAttr.label === newAttr.label // Assuming label is unique ID
+                  );
+                  return oldIndex >= 0 ? currentValues[oldIndex] : [];
+                });
+
+                // Clear errors first to ensure clean state
+                clearErrors("attributeValues");
+                setValue("attributeValues", newValues, {
+                  shouldValidate: true,
+                });
+                field.onChange(newAttributes);
               }}
               placeholder="Select attribute..."
             />

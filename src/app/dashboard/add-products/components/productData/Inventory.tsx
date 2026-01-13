@@ -48,7 +48,10 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
 
   // Helper to get value from nested object (for defaultValues)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // Helper to determine if we are in edit mode
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getValue = (fieldName: string, obj: any) => {
+    if (!obj) return undefined;
     const path = fieldName.split(".");
     let current = obj;
     for (const p of path) {
@@ -60,6 +63,18 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
     }
     return current;
   };
+
+  const isEditMode = (() => {
+    if (prefix === "inventory") {
+      return !!defaultValues?._id;
+    } else if (prefix.includes("variations")) {
+      // prefix is like "variations.0.inventory"
+      // we need to check "variations.0._id"
+      const variationPath = prefix.replace(".inventory", "._id");
+      return !!getValue(variationPath, defaultValues);
+    }
+    return false;
+  })();
 
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -137,36 +152,27 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
           <Input
             type="number"
             min={0}
+            disabled={isEditMode}
             {...register(`${prefix}.stockQuantity`, {
               valueAsNumber: true,
               onChange: (e) => {
-                const val = parseFloat(e.target.value);
-                setValue(
-                  `${prefix}.stockQuantity`,
-                  isNaN(val) ? undefined : val
-                );
-
-                const initialQuantity =
-                  Number(getValue(`${prefix}.stockQuantity`, defaultValues)) ||
-                  0;
-                const initialAvailable =
-                  Number(getValue(`${prefix}.stockAvailable`, defaultValues)) ||
-                  0;
-                const soldCount = Math.max(
-                  0,
-                  initialQuantity - initialAvailable
-                );
-
-                const newAvailable = isNaN(val)
-                  ? undefined
-                  : Math.max(0, val - soldCount);
-
-                setValue(`${prefix}.stockAvailable`, newAvailable);
+                // Only sync available stock if NOT in edit mode
+                if (!isEditMode) {
+                  const val = parseFloat(e.target.value);
+                  setValue(
+                    `${prefix}.stockQuantity`,
+                    isNaN(val) ? undefined : val
+                  );
+                  setValue(
+                    `${prefix}.stockAvailable`,
+                    isNaN(val) ? undefined : val
+                  );
+                }
               },
             })}
             id={`${prefix}.stockQuantity`}
             placeholder="Enter quantity"
-            className="w-full"
+            className="w-full disabled:opacity-60 disabled:bg-gray-100"
           />
           {getError(`${prefix}.stockQuantity`) && (
             <p className="text-red-600 text-sm mt-1">
@@ -189,6 +195,7 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
           <Input
             type="number"
             min={0}
+            disabled={!isEditMode}
             {...register(`${prefix}.stockAvailable`, {
               valueAsNumber: true,
               onChange: (e) => {
@@ -197,13 +204,38 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
                   `${prefix}.stockAvailable`,
                   isNaN(val) ? undefined : val
                 );
+
+                if (isEditMode) {
+                  // In edit mode, updating available stock should update total quantity
+                  // Total Quantity = New Available + (Original Quantity - Original Available)
+                  // Sold Count = Original Quantity - Original Available
+
+                  const initialQuantity =
+                    Number(
+                      getValue(`${prefix}.stockQuantity`, defaultValues)
+                    ) || 0;
+                  const initialAvailable =
+                    Number(
+                      getValue(`${prefix}.stockAvailable`, defaultValues)
+                    ) || 0;
+
+                  const soldCount = Math.max(
+                    0,
+                    initialQuantity - initialAvailable
+                  );
+
+                  const newQuantity = isNaN(val)
+                    ? undefined
+                    : Math.max(0, val + soldCount);
+
+                  setValue(`${prefix}.stockQuantity`, newQuantity);
+                }
               },
             })}
             id={`${prefix}.stockAvailable`}
-            disabled
             className={`w-full text-blue-700 ${
               stockAvailable <= (lowStockWarning || 0) ? "text-red-700" : ""
-            } font-bold !opacity-100`}
+            } font-bold !opacity-100 disabled:opacity-60 disabled:bg-gray-100`}
           />
         </div>
       </div>

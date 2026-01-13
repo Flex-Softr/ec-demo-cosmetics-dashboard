@@ -41,6 +41,7 @@ const generateVariations = (
         },
         _id: match?._id,
         isDeleted: match?.isDeleted,
+        isActive: match?.isActive ?? true,
       });
 
       return;
