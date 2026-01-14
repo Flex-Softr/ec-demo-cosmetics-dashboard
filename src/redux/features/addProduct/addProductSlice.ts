@@ -1,4 +1,9 @@
-import { productStatus, STOCK_STATUS } from "@/const/products";
+import {
+  PRODUCT_STATUS,
+  PRODUCT_TYPE,
+  STOCK_STATUS,
+  TProductType,
+} from "@/const/products";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   TAttribute,
@@ -14,7 +19,7 @@ const initialState: TProduct = {
   title: "",
   // permalink: "",
   slug: "",
-  type: "simple",
+  type: PRODUCT_TYPE.SIMPLE,
   description: "",
   shortDescription: "",
   additionalInfo: "",
@@ -73,7 +78,7 @@ const initialState: TProduct = {
     duration: { quantity: "", unit: "" },
     terms: "",
   },
-  publishedStatus: productStatus.published,
+  publishedStatus: PRODUCT_STATUS.PUBLISHED,
 };
 
 const productSlice = createSlice({
@@ -102,7 +107,8 @@ const productSlice = createSlice({
     //   state.image.gallery = [];
     //   state.image.gallery.push(...action.payload);
     // },
-    setProductType: (state, action: PayloadAction<"simple" | "variable">) => {
+    // ...
+    setProductType: (state, action: PayloadAction<TProductType>) => {
       state.type = action.payload;
     },
     setAttributes: (state, action: PayloadAction<TAttribute[]>) => {
@@ -208,7 +214,7 @@ const productSlice = createSlice({
           : productCollection?._id;
       state.shortDescription = shortDescription;
       state.additionalInfo = additionalInfo;
-      state.type = type || "simple";
+      state.type = type || PRODUCT_TYPE.SIMPLE;
       state.price = price;
       state.slug = action.payload.slug; // Ensure slug is set when editing
       state.inventory = {

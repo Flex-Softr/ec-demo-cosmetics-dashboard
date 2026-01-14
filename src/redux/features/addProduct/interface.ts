@@ -1,3 +1,4 @@
+import { TProductType } from "@/const/products";
 import { TVariation } from "./variation/interface";
 
 type TSelectValue = {
@@ -74,7 +75,7 @@ export type TProduct = {
   title: string;
   permalink?: string;
   slug?: string;
-  type?: "simple" | "variable";
+  type?: TProductType;
   description: string;
   shortDescription: string;
   additionalInfo: string;

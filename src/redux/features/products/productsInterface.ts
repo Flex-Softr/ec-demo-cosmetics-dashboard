@@ -1,3 +1,5 @@
+import { TProductType } from "@/const/products";
+
 export type TVariation = {
   attributes: {
     name: string;
@@ -18,7 +20,7 @@ export type TVariation = {
 export type TProduct = {
   _id: string;
   title: string;
-  type?: "simple" | "variable";
+  type?: TProductType;
   variations?: TVariation[];
   thumbnail: {
     _id: string;

@@ -1,4 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
+import { PRODUCT_STATUS, PRODUCT_TYPE } from "@/const/products";
 import { IAdminProduct } from "@/types/products";
 import { ColumnDef } from "@tanstack/react-table";
 // import { ChevronDown, ChevronRight } from "lucide-react";
@@ -77,7 +78,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
               : row.original.title}
           </span>
         </div>
-        {row.original.type === "variable" && (
+        {row.original.type === PRODUCT_TYPE.VARIABLE && (
           <div className="mt-0.5">
             <ProductVariations
               variations={row.original.variations!}
@@ -92,7 +93,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     accessorKey: "sku",
     header: () => <div className="text-center">SKU</div>,
     cell: ({ row }) =>
-      row.original.type === "simple" ? (
+      row.original.type === PRODUCT_TYPE.SIMPLE ? (
         <div className="flex justify-center px-4 py-2 text-nowrap w-[1%] mx-auto">
           <span>{row.original.sku}</span>
         </div>
@@ -114,7 +115,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     accessorKey: "price",
     header: () => <div className="text-center">Price</div>,
     cell: ({ row: { original } }) =>
-      original.type === "simple" ? (
+      original.type === PRODUCT_TYPE.SIMPLE ? (
         <div className="flex gap-2 items-baseline justify-center px-4 py-2 text-nowrap w-[1%] mx-auto">
           <span
             className={
@@ -142,7 +143,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     accessorKey: "stock",
     header: () => <div className="text-center">Stock</div>,
     cell: ({ row }) =>
-      row.original.type === "simple" ? (
+      row.original.type === PRODUCT_TYPE.SIMPLE ? (
         <div className="flex flex-col gap-1 justify-center items-center min-w-[90px] px-4 py-2 whitespace-nowrap w-[1%] mx-auto">
           <span className={getStockStatusColor(row.original.stockStatus)}>
             {formatStockStatus(row.original.stockStatus)}
@@ -166,7 +167,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     accessorKey: "stockAvailable",
     header: () => <div className="text-center">Qty</div>,
     cell: ({ row: { original } }) =>
-      original.type === "simple" ? (
+      original.type === PRODUCT_TYPE.SIMPLE ? (
         <div className="flex justify-center px-4 py-2 whitespace-nowrap w-[1%] mx-auto">
           <span>{original.stockAvailable}</span>
         </div>
@@ -204,11 +205,11 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
       const statusValue = row.original.publishedStatus;
       let colorClass = "";
 
-      if (statusValue === "published") {
+      if (statusValue === PRODUCT_STATUS.PUBLISHED) {
         colorClass = "text-green-500";
-      } else if (statusValue === "draft") {
+      } else if (statusValue === PRODUCT_STATUS.DRAFT) {
         colorClass = "text-yellow-700";
-      } else if (statusValue === "private") {
+      } else if (statusValue === PRODUCT_STATUS.PRIVATE) {
         colorClass = "text-red-600";
       }
 

@@ -3,10 +3,12 @@ export const PRODUCT_TYPE = {
   VARIABLE: "variable",
 } as const;
 
-export const productStatus = {
-  published: "published",
-  draft: "draft",
-  private: "private",
+export type TProductType = (typeof PRODUCT_TYPE)[keyof typeof PRODUCT_TYPE];
+
+export const PRODUCT_STATUS = {
+  PUBLISHED: "published",
+  DRAFT: "draft",
+  PRIVATE: "private",
 } as const;
 
 export const STOCK_STATUS = {

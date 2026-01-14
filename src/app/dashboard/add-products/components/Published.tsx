@@ -1,7 +1,7 @@
 "use client";
 import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
 import { Button } from "@/components/ui/button";
-import { productStatus } from "@/const/products";
+import { PRODUCT_STATUS } from "@/const/products";
 import { useFormContext } from "react-hook-form";
 
 const Published = ({
@@ -26,7 +26,7 @@ const Published = ({
               id="status"
               className="capitalize border h-9 border-primary outline-primary rounded-md px-2 cursor-pointer w-full"
             >
-              {Object.values(productStatus).map((status) => (
+              {Object.values(PRODUCT_STATUS).map((status) => (
                 <option key={status} value={status} className="capitalize">
                   {status}
                 </option>

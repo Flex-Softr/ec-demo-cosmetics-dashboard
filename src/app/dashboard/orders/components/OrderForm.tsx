@@ -25,6 +25,7 @@ import NameMobileAddress from "./NameMobileAddress";
 import Notes from "./Notes";
 import PaymentDiscountAdvance from "./PaymentDiscountAdvance";
 import SelectProduct from "./SelectProduct";
+import { PRODUCT_TYPE } from "@/const/products";
 
 const schema = yup.object().shape({
   shipping: yup.object().shape({
@@ -160,7 +161,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
     // Validation for variable products
     let hasProductError = false;
     calculation.orderedProducts.forEach((product: any, index: number) => {
-      if (product.type === "variable" && !product.variation) {
+      if (product.type === PRODUCT_TYPE.VARIABLE && !product.variation) {
         setError(`orderedProducts.${index}.product` as any, {
           type: "manual",
           message: "Variation is required for variable product",

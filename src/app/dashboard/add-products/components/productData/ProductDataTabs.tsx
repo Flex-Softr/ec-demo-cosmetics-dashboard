@@ -13,6 +13,7 @@ import Attributes from "./Attributes";
 import Inventory from "./Inventory";
 import Price from "./Price";
 import Variations from "./Variations";
+import { PRODUCT_TYPE } from "@/const/products";
 
 const ProductDataTabs = () => {
   const {
@@ -25,7 +26,7 @@ const ProductDataTabs = () => {
 
   const { data, isLoading } = useGetAttributesQuery(
     { isActive: true },
-    { skip: type === "simple" }
+    { skip: type === PRODUCT_TYPE.SIMPLE }
   );
   // Memoize attributes transformation to prevent unnecessary recalculations
   const attributes: TSelectedAttribute[] = useMemo(() => {
@@ -59,14 +60,14 @@ const ProductDataTabs = () => {
         label: "Price",
         component: <Price />,
         fields: ["price.regularPrice", "price.salePrice"],
-        isVisible: type === "simple",
+        isVisible: type === PRODUCT_TYPE.SIMPLE,
       },
       {
         id: "inventory",
         label: "Inventory",
         component: <Inventory />,
         fields: ["inventory.sku", "inventory.stockQuantity"],
-        isVisible: type === "simple",
+        isVisible: type === PRODUCT_TYPE.SIMPLE,
       },
       {
         id: "attributes",
@@ -79,14 +80,14 @@ const ProductDataTabs = () => {
           <Attributes attributes={attributes} />
         ),
         fields: ["attributes", "attributeValues"],
-        isVisible: type === "variable",
+        isVisible: type === PRODUCT_TYPE.VARIABLE,
       },
       {
         id: "variations",
         label: "Variations",
         component: <Variations />,
         fields: ["variations"],
-        isVisible: type === "variable",
+        isVisible: type === PRODUCT_TYPE.VARIABLE,
       },
       {
         id: "advanced",
@@ -166,8 +167,8 @@ const ProductDataTabs = () => {
           {...register("type")}
           className="h-9 border border-primary focus:outline focus:outline-primary rounded-md px-2 w-full"
         >
-          <option value="simple">Simple Product</option>
-          <option value="variable">Variable Product</option>
+          <option value={PRODUCT_TYPE.SIMPLE}>Simple Product</option>
+          <option value={PRODUCT_TYPE.VARIABLE}>Variable Product</option>
         </select>
       </div>
 

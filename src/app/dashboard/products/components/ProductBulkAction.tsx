@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
-import { productStatus } from "@/const/products";
+import { PRODUCT_STATUS } from "@/const/products";
 import {
   useDeleteProductsMutation,
   useUpdateProductMutation,
@@ -58,8 +58,8 @@ const ProductBulkAction = () => {
       if (action === "delete") {
         setOpen(true);
       } else if (
-        Object.values(productStatus).includes(
-          action as (typeof productStatus)[keyof typeof productStatus]
+        Object.values(PRODUCT_STATUS).includes(
+          action as (typeof PRODUCT_STATUS)[keyof typeof PRODUCT_STATUS]
         )
       ) {
         const updatePromises = productsIds.map((id) => {
@@ -104,8 +104,8 @@ const ProductBulkAction = () => {
           <SelectGroup className="capitalize">
             <SelectItem value="bulk">Bulk Actions</SelectItem>
             <SelectItem value="delete">Delete</SelectItem>
-            <SelectItem value={productStatus.published}>Published</SelectItem>
-            <SelectItem value={productStatus.private}>Private</SelectItem>
+            <SelectItem value={PRODUCT_STATUS.PUBLISHED}>Published</SelectItem>
+            <SelectItem value={PRODUCT_STATUS.PRIVATE}>Private</SelectItem>
             {/* <SelectItem value="On courier">Courier Entry</SelectItem> */}
           </SelectGroup>
         </SelectContent>

@@ -3,7 +3,7 @@ import { TAttribute } from "@/app/dashboard/attribute/lib/attribute.interface";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { productStatus, STOCK_STATUS } from "@/const/products";
+import { PRODUCT_STATUS, PRODUCT_TYPE, STOCK_STATUS } from "@/const/products";
 import { useGetAttributesQuery } from "@/redux/features/attributes/attributesApi";
 import {
   setDeleteImage,
@@ -53,7 +53,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       slug: "",
       description: "",
       shortDescription: "",
-      type: "simple",
+      type: PRODUCT_TYPE.SIMPLE,
       image: {
         thumbnail: "",
         gallery: [],
@@ -89,7 +89,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         duration: { quantity: "", unit: "" },
         terms: "",
       },
-      publishedStatus: productStatus.published,
+      publishedStatus: PRODUCT_STATUS.PUBLISHED,
     };
   }, []);
 
@@ -214,7 +214,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
           },
           terms: warrantyInfo?.terms || "",
         },
-        type: type || "simple",
+        type: type || PRODUCT_TYPE.SIMPLE,
       };
 
       reset(formData);
@@ -264,7 +264,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       delete payload.attributeValues;
 
       // Clean up price/inventory based on type
-      if (data.type === "variable") {
+      if (data.type === PRODUCT_TYPE.VARIABLE) {
         delete payload.price;
         delete payload.inventory;
       } else {
@@ -298,11 +298,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         dispatch(setDeleteImage([]));
       }
       if (productId) {
-        await revalidateTag([`product-${productData.slug}`]);
+        await revalidateTag([`product-${productData?.slug}`]);
       }
       await revalidateTag([
-        `relatedProducts-${productData.slug}`,
-        `collectionProducts-${productData.slug}`,
+        `relatedProducts-${productData?.slug}`,
+        `collectionProducts-${productData?.slug}`,
         "featuredProducts",
       ]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

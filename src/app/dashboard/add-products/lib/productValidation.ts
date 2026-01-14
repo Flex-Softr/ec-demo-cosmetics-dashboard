@@ -1,4 +1,4 @@
-import { productStatus, stockStatus } from "@/const/products";
+import { PRODUCT_STATUS, PRODUCT_TYPE, stockStatus } from "@/const/products";
 import * as Yup from "yup";
 
 const PriceValidationSchema = Yup.object().shape({
@@ -103,7 +103,7 @@ const WarrantyInfoSchema = Yup.object().shape({
 });
 
 const PublishedStatusSchema = Yup.string()
-  .oneOf(Object.values(productStatus), "Invalid status")
+  .oneOf(Object.values(PRODUCT_STATUS), "Invalid status")
   .required("Status is required");
 
 const ProductSchema = Yup.object().shape({
@@ -114,17 +114,17 @@ const ProductSchema = Yup.object().shape({
   type: Yup.string().optional(),
   image: ImageValidationSchema.required(),
   price: Yup.object().when("type", {
-    is: "variable",
+    is: PRODUCT_TYPE.VARIABLE,
     then: () => Yup.object().optional(),
     otherwise: () => PriceValidationSchema.required(),
   }),
   inventory: Yup.object().when("type", {
-    is: "variable",
+    is: PRODUCT_TYPE.VARIABLE,
     then: () => Yup.object().optional(),
     otherwise: () => InventoryValidationSchema.required(),
   }),
   attributes: Yup.array().when("type", {
-    is: "variable",
+    is: PRODUCT_TYPE.VARIABLE,
     then: () =>
       Yup.array()
         .of(AttributeSchema)
@@ -133,7 +133,7 @@ const ProductSchema = Yup.object().shape({
     otherwise: () => Yup.array().of(AttributeSchema).optional(),
   }),
   attributeValues: Yup.array().when("type", {
-    is: "variable",
+    is: PRODUCT_TYPE.VARIABLE,
     then: () =>
       Yup.array().of(
         Yup.array()
@@ -143,7 +143,7 @@ const ProductSchema = Yup.object().shape({
     otherwise: () => Yup.array().optional(),
   }),
   variations: Yup.array().when("type", {
-    is: "variable",
+    is: PRODUCT_TYPE.VARIABLE,
     then: () =>
       Yup.array()
         .of(VariationSchema)

@@ -31,7 +31,7 @@ const AllProducts = async () => {
       </div>
       <hr className="my-4" />
       <div className="space-y-3">
-        {/* All, published, public, private, draft, Trash status */}
+        {/* product status list*/}
         <div className="flex justify-between items-center">
           <CountByStatusButtons />{" "}
           <Link href={"/dashboard/add-products"} passHref>

@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PRODUCT_STATUS } from "@/const/products";
 import { useGetProductsQuery } from "@/redux/features/products/productsApi";
 import { IAdminProduct } from "@/types/products";
 import { Plus, Trash2 } from "lucide-react";
@@ -43,7 +44,7 @@ const SelectProduct = ({
 }: TProps) => {
   const { data: products, isLoading } = useGetProductsQuery({
     limit: 0,
-    status: "published",
+    status: PRODUCT_STATUS.PUBLISHED,
   });
 
   const { fields, append, remove } = useFieldArray({

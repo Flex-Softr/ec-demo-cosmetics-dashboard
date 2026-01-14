@@ -1,10 +1,10 @@
-import { STOCK_STATUS } from "@/const/products";
+import { STOCK_STATUS, TProductType } from "@/const/products";
 
 export type TProductPayload = {
   // --- Basic Info Section ---
   title: string; // Text input
   slug?: string; // Auto-generated from title or custom input
-  type?: "simple" | "variable"; // Dropdown/Radio
+  type?: TProductType; // Dropdown/Radio
   description?: string; // Rich Text Editor (HTML)
   shortDescription?: string; // Textarea
   additionalInfo?: string; // Textarea (optional)
@@ -136,7 +136,7 @@ export type IAdminProduct = {
     title: string;
     slug: string;
   };
-  type?: "simple" | "variable";
+  type?: TProductType;
   variations?: {
     _id: string;
     attributes: {
