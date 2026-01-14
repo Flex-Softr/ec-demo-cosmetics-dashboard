@@ -100,4 +100,5 @@ export type TQuery = {
   division?: string;
   page?: number;
   limit?: number;
+  brand?: string;
 };

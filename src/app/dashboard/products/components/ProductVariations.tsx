@@ -38,7 +38,7 @@ const ProductVariations = ({ variations, type }: ProductVariationsProps) => {
               <span
                 className={
                   v.price.salePrice
-                    ? "line-through text-muted-foreground text-xs text-red-600"
+                    ? "line-through text-muted-foreground text-xs"
                     : ""
                 }
               >

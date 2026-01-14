@@ -12,6 +12,7 @@ import { Minus } from "lucide-react";
 import Image from "next/image";
 import Actions from "./Actions";
 import ProductVariations from "./ProductVariations";
+import Link from "next/link";
 
 export const ProductColumns: ColumnDef<IAdminProduct>[] = [
   {
@@ -73,9 +74,11 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
       <div className="flex flex-col items-start gap-1 py-2 px-4">
         <div className="flex items-center gap-2">
           <span title={row.original.title} className="font-semibold text-left">
-            {row.original.title.length > 70
-              ? `${row.original.title.substring(0, 70)}...`
-              : row.original.title}
+            <Link href={`/dashboard/products/${row.original._id}`}>
+              {row.original.title.length > 70
+                ? `${row.original.title.substring(0, 70)}...`
+                : row.original.title}
+            </Link>
           </span>
         </div>
         {row.original.type === PRODUCT_TYPE.VARIABLE && (
@@ -120,7 +123,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
           <span
             className={
               original.salePrice
-                ? "line-through text-muted-foreground text-xs text-red-600"
+                ? "line-through text-muted-foreground text-xs"
                 : ""
             }
           >

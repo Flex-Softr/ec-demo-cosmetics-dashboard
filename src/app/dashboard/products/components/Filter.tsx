@@ -1,5 +1,6 @@
 "use client";
 import { stockStatusOptions } from "@/const/products";
+import { useGetBrandsQuery } from "@/redux/features/brand/brandApi";
 import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
 import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import {
@@ -47,9 +48,13 @@ const Filter = () => {
     ? collectionsDataRes
     : [];
 
+  const { data: brandsData } = useGetBrandsQuery({});
+  const brands = brandsData?.data || [];
+
   // const router = useRouter();
   const [category, setCategory] = useState("");
   const [collection, setCollection] = useState("");
+  const [brand, setBrand] = useState("");
   const [stock, setStatus] = useState("");
 
   const dispatch = useAppDispatch();
@@ -69,6 +74,7 @@ const Filter = () => {
     status: filter,
     category: category === "All Categories" ? "" : category,
     collection: collection === "All Collections" ? "" : collection,
+    brand: brand === "All Brands" ? "" : brand,
     stock: stock === "All Product Stock" ? "" : stock,
     sort: "-createdAt",
     page,
@@ -131,6 +137,22 @@ const Filter = () => {
             {collections?.map((col) => (
               <SelectItem key={col._id} value={col._id} className="font-bold">
                 {col.title}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
+      <Select onValueChange={(value) => setBrand(value)}>
+        <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
+          <SelectValue placeholder="All Brands" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="All Brands">All Brands</SelectItem>
+            {brands?.map((b) => (
+              <SelectItem key={b._id} value={b._id} className="font-bold">
+                {b.name}
               </SelectItem>
             ))}
           </SelectGroup>
