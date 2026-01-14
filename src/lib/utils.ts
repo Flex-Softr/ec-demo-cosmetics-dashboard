@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatImageSrc(src: string | undefined | null): string {
   // Return placeholder if src is missing
-  if (!src) return "/image-placeholder.webp";
+  if (!src) return "/placeholder.png";
 
   // Debug log
   // console.log("formatImageSrc input:", src);
@@ -18,7 +18,7 @@ export function formatImageSrc(src: string | undefined | null): string {
 
   // Check for string "null" or "undefined"
   if (cleanSrc === "null" || cleanSrc === "undefined" || !cleanSrc) {
-    return "/image-placeholder.webp";
+    return "/placeholder.png";
   }
 
   // If already absolute, just return the cleaned URL

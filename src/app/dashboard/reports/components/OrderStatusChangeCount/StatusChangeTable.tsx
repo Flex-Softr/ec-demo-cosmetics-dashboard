@@ -57,7 +57,7 @@ const StatusChangeTable = ({
   return (
     <div className="w-full">
       <div className="rounded-md border overflow-hidden">
-        <Table className="min-w-[500px]">
+        <Table className="min-w-[400px]">
           <TableHeader className="bg-primary text-white">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-muted/0">

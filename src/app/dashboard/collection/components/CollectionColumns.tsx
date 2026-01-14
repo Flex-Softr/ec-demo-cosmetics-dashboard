@@ -17,9 +17,8 @@ export const columns: ColumnDef<ICollection>[] = [
     header: "Image",
     cell: ({ row }) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const img: any = row.original.image;
-      const src = img?.src ? formatImageSrc(img.src) : "/placeholder.png";
-
+      const img = row.original.image as any;
+      const src = formatImageSrc(img?.src);
       return (
         <div className="relative h-10 w-10 overflow-hidden rounded">
           <Image
