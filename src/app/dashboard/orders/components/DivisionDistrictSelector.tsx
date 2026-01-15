@@ -165,7 +165,7 @@ const DivisionDistrictUpazilaSelector = <T extends FieldValues>({
             {shippingCharges?.data?.map(
               ({ _id, name, amount }: ShippingCharge) => (
                 <option key={_id} value={_id}>
-                  {`${name} &#2547; ${amount}`}
+                  {name} &#2547; {amount}
                 </option>
               )
             )}

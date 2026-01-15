@@ -145,8 +145,8 @@ const VariationOptions = <T extends FieldValues>(
               }) => (
                 <option value={_id} key={_id} className="text-gray-900">
                   {Object.keys(attributes)
-                    .map((key) => `${attributes[key]} `)
-                    .join("")}
+                    .map((key) => `${key}: ${attributes[key]}`)
+                    .join(", ")}
                 </option>
               )
             )}

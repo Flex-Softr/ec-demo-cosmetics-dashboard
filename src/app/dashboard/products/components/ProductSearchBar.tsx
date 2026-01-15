@@ -39,9 +39,10 @@ const ProductSearchBar = ({ endPoint }: { endPoint: string }) => {
         searchParams: {
           // Keep searchParams for fetchData
           status: selectedStatus,
-          searchTerm: searchQuery,
+          search: searchQuery,
           sort: "-createdAt",
         },
+        cache: "no-store",
       });
       dispatch(setSearchedProducts(data?.data));
       dispatch(setIsLoading(false));
@@ -64,7 +65,7 @@ const ProductSearchBar = ({ endPoint }: { endPoint: string }) => {
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
           disabled={searchQuery && isLoading ? true : false}
-          className="p-5 w-md outline-none ring-1 ring-primary rounded-md rounded-r-none border-r-0 border-primary h-[40px]"
+          className="p-5 w-md outline-none ring-1 ring-primary rounded-md rounded-r-none border-r-0 border-primary h-[40px] [&::-webkit-search-cancel-button]:appearance-none"
           placeholder="Search products"
         />
         {searchQuery && (

@@ -60,7 +60,7 @@ const OrderSearchBar = ({ endPoint }: { endPoint: string }) => {
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
           disabled={searchQuery && isLoading ? true : false}
-          className="p-5 w-full outline-none ring-1 ring-primary rounded-md rounded-r-none border-r-0 border-primary h-[40px]"
+          className="p-5 w-full outline-none ring-1 ring-primary rounded-md rounded-r-none border-r-0 border-primary h-[40px] [&::-webkit-search-cancel-button]:appearance-none"
           placeholder="Search orders"
         />
         {searchQuery && (

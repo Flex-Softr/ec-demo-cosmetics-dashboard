@@ -289,7 +289,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Customer Info Section - More compact grid */}
         <Card className="border-none shadow-sm">
-          <h2 className="text-base font-semibold mb-3 border-b">
+          <h2 className="text-base font-semibold mb-3 pb-1 border-b">
             Customer Information
           </h2>
           <div className="space-y-3">

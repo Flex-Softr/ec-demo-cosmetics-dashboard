@@ -74,7 +74,10 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
       <div className="flex flex-col items-start gap-1 py-2 px-4">
         <div className="flex items-center gap-2">
           <span title={row.original.title} className="font-semibold text-left">
-            <Link href={`/dashboard/products/${row.original._id}`}>
+            <Link
+              href={`/dashboard/products/${row.original._id}`}
+              className="hover:text-blue-700"
+            >
               {row.original.title.length > 70
                 ? `${row.original.title.substring(0, 70)}...`
                 : row.original.title}

@@ -48,8 +48,8 @@ export const columns: ColumnDef<TOrderedProducts>[] = [
       } = row.original;
 
       const variationProps = Object.keys(attributes)
-        .map((key) => attributes[key])
-        .join(" ");
+        .map((key) => `${key}: ${attributes[key]}`)
+        .join(", ");
 
       return (
         <div className="flex justify-start items-center gap-3">
