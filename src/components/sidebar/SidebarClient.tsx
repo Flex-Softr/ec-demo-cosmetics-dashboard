@@ -118,7 +118,7 @@ export function SidebarClient({ permissions }: TProps) {
           href: "/dashboard/processing-orders",
         },
         manageShipmentOrder && {
-          name: "Courier Shipment",
+          name: "Courier Shipments",
           href: "/dashboard/courier-shipment",
         },
         (manageCourier || manageProcessingOrder) && {
