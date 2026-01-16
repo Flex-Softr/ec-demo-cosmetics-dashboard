@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Plus } from "lucide-react";
 import { useState } from "react";
 import AddCourierConfigModal from "./AddCourierConfigModal";
 import CourierConfigTable from "./CourierConfigTable";
@@ -16,9 +14,9 @@ export default function CourierConfigContainer() {
         <h1 className="text-2xl font-bold tracking-tight">
           Courier Configuration
         </h1>
-        <Button onClick={() => setIsOpen(true)} className="rounded-full">
+        {/* <Button onClick={() => setIsOpen(true)} className="rounded-full">
           <Plus className="mr-2 h-4 w-4" /> Add Courier
-        </Button>
+        </Button> */}
       </div>
 
       <div className="p-4 pt-0">

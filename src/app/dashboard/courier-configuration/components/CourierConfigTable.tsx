@@ -1,16 +1,5 @@
 "use client";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -20,15 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useToast } from "@/components/ui/use-toast";
-import {
-  useDeleteCourierMutation,
-  useGetAllCouriersQuery,
-} from "@/redux/features/courierConfiguration/courierConfigurationApi";
+import { useGetAllCouriersQuery } from "@/redux/features/courierConfiguration/courierConfigurationApi";
 import { TCourierConfig } from "@/redux/features/courierConfiguration/courierConfigurationInterface";
 import { setSelectedCourier } from "@/redux/features/courierConfiguration/courierConfigurationSlice";
 import { useAppDispatch } from "@/redux/hooks";
-import { Edit, Trash2 } from "lucide-react";
+import { PencilLine } from "lucide-react";
 
 export default function CourierConfigTable({
   setIsOpen,
@@ -36,10 +21,9 @@ export default function CourierConfigTable({
   setIsOpen: (isOpen: boolean) => void;
 }) {
   const { data } = useGetAllCouriersQuery();
-  const [deleteCourier] = useDeleteCourierMutation();
+
   const dispatch = useAppDispatch();
 
-  const { toast } = useToast();
   const couriers = data?.data || [];
 
   const handleEdit = (courier: TCourierConfig) => {
@@ -47,28 +31,14 @@ export default function CourierConfigTable({
     setIsOpen(true);
   };
 
-  const confirmDelete = async (id: string) => {
-    try {
-      const res = await deleteCourier(id).unwrap();
-      toast({
-        className: "bg-success text-white text-2xl",
-        title: res.message,
-      });
-    } catch (error) {
-      toast({
-        title: "Failed to delete courier.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="rounded-md border">
       <Table>
         <TableHeader className="bg-primary text-white">
           <TableRow>
+            {/* <TableHead className="w-20">Thumb</TableHead> */}
             <TableHead>Courier Name</TableHead>
-            <TableHead>API Base URL</TableHead>
+            {/* <TableHead>API Base URL</TableHead> */}
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -76,15 +46,29 @@ export default function CourierConfigTable({
         <TableBody>
           {couriers.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={4} className="h-24 text-center">
+              <TableCell colSpan={5} className="h-24 text-center">
                 No couriers configured.
               </TableCell>
             </TableRow>
           ) : (
             couriers.map((courier) => (
               <TableRow key={courier._id}>
+                {/* <TableCell>
+                  <div className="relative w-10 h-10 rounded border overflow-hidden bg-gray-50 flex items-center justify-center">
+                    {courier.thumb ? (
+                      <Image
+                        src={formatImageSrc(courier.thumb)}
+                        alt={courier.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="text-[10px] text-gray-400">No img</span>
+                    )}
+                  </div>
+                </TableCell> */}
                 <TableCell className="font-medium">{courier.name}</TableCell>
-                <TableCell>{courier.apiBaseUrl}</TableCell>
+                {/* <TableCell>{courier.apiBaseUrl}</TableCell> */}
                 <TableCell>
                   <span
                     className={`px-2 py-1 rounded-full text-xs ${
@@ -101,38 +85,10 @@ export default function CourierConfigTable({
                     variant="ghost"
                     size="icon"
                     onClick={() => handleEdit(courier)}
-                    className="!bg-white hover:!bg-white"
+                    className="!bg-white hover:!bg-white rounded-full"
                   >
-                    <Edit className="h-4 w-4" />
+                    <PencilLine className="h-4 w-4" />
                   </Button>
-
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="!bg-white hover:!bg-white"
-                      >
-                        <Trash2 className="h-4 w-4 text-red-500" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          You won&apos;t be able to revert this!
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => confirmDelete(courier._id)}
-                        >
-                          Yes, delete it!
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
                 </TableCell>
               </TableRow>
             ))
