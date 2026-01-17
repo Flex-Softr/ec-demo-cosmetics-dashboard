@@ -10,25 +10,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import ImageSelectPopup from "@/components/uploader/ImageSelectPopup";
 import {
   useAddCourierMutation,
   useUpdateCourierMutation,
 } from "@/redux/features/courierConfiguration/courierConfigurationApi";
-import { TCourierConfigInitialState } from "@/redux/features/courierConfiguration/courierConfigurationInterface";
+import {
+  TCourierConfigInitialState,
+  TCourierCredentials,
+} from "@/redux/features/courierConfiguration/courierConfigurationInterface";
 import { setSelectedCourier } from "@/redux/features/courierConfiguration/courierConfigurationSlice";
+import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
-import { Plus, Trash2 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 type FormData = {
-  name: string;
-  apiBaseUrl: string;
-  apiKey: string;
-  secretKey: string;
-  credentials: { value: string }[];
+  description: string;
+  thumb?: string;
+  credentials: TCourierCredentials[];
   isActive: boolean;
 };
 
@@ -41,10 +44,17 @@ export default function AddCourierConfigModal({
 }) {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
+  const [imagePopupOpen, setImagePopupOpen] = useState(false);
+
   const { selectedCourier } = useAppSelector(
     (state: RootState) =>
       state.courierConfiguration as TCourierConfigInitialState
   );
+
+  const { thumbnail: selectedThumb } = useAppSelector(
+    (state: RootState) => state.imageSelector
+  );
+
   const [addCourier, { isLoading: isAdding }] = useAddCourierMutation();
   const [updateCourier, { isLoading: isUpdating }] = useUpdateCourierMutation();
 
@@ -53,48 +63,52 @@ export default function AddCourierConfigModal({
     handleSubmit,
     reset,
     setValue,
+    // watch,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      name: "",
-      apiBaseUrl: "",
-      apiKey: "",
-      secretKey: "",
+      description: "",
+      thumb: undefined,
       credentials: [],
       isActive: true,
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields } = useFieldArray({
     control,
     name: "credentials",
   });
 
+  // Sync Redux thumbnail with form
+  useEffect(() => {
+    if (selectedThumb) {
+      setValue("thumb", selectedThumb ?? undefined);
+    }
+  }, [selectedThumb, setValue]);
+
   useEffect(() => {
     if (selectedCourier) {
-      setValue("name", selectedCourier.name);
-      setValue("apiBaseUrl", selectedCourier.apiBaseUrl);
-      setValue("apiKey", selectedCourier.apiKey);
-      setValue("secretKey", selectedCourier.secretKey);
-      setValue(
-        "credentials",
-        selectedCourier.credentials?.map((cred) => ({ value: cred })) || []
-      );
+      setValue("description", selectedCourier.description || "");
+      setValue("thumb", selectedCourier.thumb || undefined);
+      if (selectedCourier.thumb) {
+        dispatch(setThumbnail(selectedCourier.thumb));
+      }
+      setValue("credentials", selectedCourier.credentials || []);
       setValue("isActive", selectedCourier.isActive);
     } else {
       reset({
-        name: "",
-        apiBaseUrl: "",
-        apiKey: "",
-        secretKey: "",
+        description: "",
+        thumb: undefined,
         credentials: [],
         isActive: true,
       });
+      dispatch(setThumbnail(""));
     }
-  }, [selectedCourier, setValue, reset]);
+  }, [selectedCourier, setValue, reset, dispatch]);
 
   const handleClose = () => {
     dispatch(setSelectedCourier(null));
+    dispatch(setThumbnail(""));
     setIsOpen(false);
     reset();
   };
@@ -102,13 +116,13 @@ export default function AddCourierConfigModal({
   const onSubmit = async (data: FormData) => {
     const payload = {
       ...data,
-      credentials: data.credentials.map((cred) => cred.value),
+      credentials: data.credentials,
     };
     try {
       if (selectedCourier) {
         const res = await updateCourier({
           id: selectedCourier._id,
-          payload: payload,
+          payload: { ...payload, thumb: payload?.thumb ?? undefined },
         }).unwrap();
         toast({
           className: "bg-success text-white text-2xl",
@@ -134,116 +148,32 @@ export default function AddCourierConfigModal({
       }
       toast({
         className: "bg-red-600 text-white text-2xl",
-        title: errors[0],
+        title: errors[0] || "Something went wrong",
       });
     }
   };
 
   const isLoading = isAdding || isUpdating;
+  // const currentThumb = watch("thumb");
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[625px]">
-        <DialogHeader>
-          <DialogTitle>
-            {selectedCourier ? "Edit Courier" : "Add New Courier"}
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-0 rounded-2xl border-none">
+        <DialogHeader className="p-6 pb-0 flex flex-row items-center justify-between">
+          <DialogTitle className="text-xl font-bold text-[#1e2337]">
+            {selectedCourier ? "Edit Shipping Method" : "Add Shipping Method"}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Courier Name</Label>
-            <Controller
-              name="name"
-              control={control}
-              rules={{ required: "Courier Name is required" }}
-              render={({ field }) => (
-                <Input {...field} id="name" placeholder="e.g. Pathao" />
-              )}
-            />
-            {errors.name && (
-              <span className="text-red-500 text-sm">
-                {errors.name.message}
-              </span>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="apiBaseUrl">Base URL</Label>
-            <Controller
-              name="apiBaseUrl"
-              control={control}
-              rules={{ required: "Base URL is required" }}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  id="apiBaseUrl"
-                  placeholder="https://api.example.com"
-                />
-              )}
-            />
-            {errors.apiBaseUrl && (
-              <span className="text-red-500 text-sm">
-                {errors.apiBaseUrl.message}
-              </span>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="apiKey">API Key</Label>
-            <Controller
-              name="apiKey"
-              control={control}
-              rules={{ required: "API Key is required" }}
-              render={({ field }) => <Input {...field} id="apiKey" />}
-            />
-            {errors.apiKey && (
-              <span className="text-red-500 text-sm">
-                {errors.apiKey.message}
-              </span>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="secretKey">Secret Key</Label>
-            <Controller
-              name="secretKey"
-              control={control}
-              render={({ field }) => <Input {...field} id="secretKey" />}
-            />
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label>Additional Credentials</Label>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => append({ value: "" })}
-              >
-                <Plus className="mr-2 h-4 w-4" /> Add
-              </Button>
-            </div>
-            {fields.map((field, index) => (
-              <div key={field.id} className="flex items-end space-x-2">
-                <div className="flex-1 space-y-2">
-                  <Controller
-                    name={`credentials.${index}.value` as const}
-                    control={control}
-                    rules={{ required: "Value is required" }}
-                    render={({ field }) => (
-                      <Input {...field} placeholder="Credential Value" />
-                    )}
-                  />
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => remove(index)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-          <div className="flex items-center space-x-2">
+
+        <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-6 space-y-6">
+          {/* Active Status Section */}
+          <div className="flex items-center justify-between p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
+            <Label
+              htmlFor="isActive"
+              className="text-base font-medium text-[#1e2337]"
+            >
+              Active Status
+            </Label>
             <Controller
               name="isActive"
               control={control}
@@ -252,21 +182,134 @@ export default function AddCourierConfigModal({
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   id="isActive"
+                  className="data-[state=checked]:bg-[#3c51d6]"
                 />
               )}
             />
-            <Label htmlFor="isActive">Active</Label>
           </div>
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button variant="outline" type="button" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Saving..." : selectedCourier ? "Update" : "Add"}
+
+          {/* Configuration Section (Hidden in screenshot but needed for functional parity) */}
+
+          {/* Thumbnail Section */}
+          {/* <div className="space-y-3">
+            <Label className="text-base font-bold text-[#1e2337]">
+              Thumbnail
+            </Label>
+            <div className="flex flex-col gap-3">
+              <div className="relative w-40 h-32 border border-gray-100 rounded-2xl cursor-pointer overflow-hidden flex items-center justify-center bg-white shadow-sm hover:border-gray-200 transition-all group">
+                {currentThumb ? (
+                  <>
+                    <Image
+                      src={formatImageSrc(currentThumb)}
+                      alt="Thumbnail"
+                      fill
+                      className="object-contain p-4"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 bg-gray-500/80 hover:bg-red-500 text-white p-1 rounded-full transition-colors z-10"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("thumb", "");
+                        dispatch(setThumbnail(""));
+                      }}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </>
+                ) : (
+                  <div
+                    className="flex flex-col items-center gap-2"
+                    onClick={() => setImagePopupOpen(true)}
+                  >
+                    <Plus className="h-6 w-6 text-gray-400" />
+                    <span className="text-xs text-gray-500 font-medium">
+                      Add Image
+                    </span>
+                  </div>
+                )}
+                
+                {currentThumb && (
+                  <div
+                    className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => setImagePopupOpen(true)}
+                  />
+                )}
+              </div>
+              <p className="text-sm text-[#7e84a3] font-medium">
+                Upload a new image to replace the existing one.
+              </p>
+            </div>
+          </div> */}
+
+          <div className="space-y-4 pt-2">
+            <h3 className="text-base font-bold text-[#1e2337]">Credentials</h3>
+            {/* Render additional credentials if any */}
+            <div className="grid grid-cols-2 gap-5">
+              {fields.map((field, index) => (
+                <div key={field.id} className="">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-[#1e2337] capitalize">
+                      {field.key}
+                    </Label>
+                    <Controller
+                      name={`credentials.${index}.value` as const}
+                      control={control}
+                      render={({ field: inputField }) => (
+                        <Input
+                          {...inputField}
+                          placeholder="Value"
+                          className="h-11 rounded-lg border-gray-200"
+                        />
+                      )}
+                    />
+
+                    {errors.credentials?.[index]?.value && (
+                      <span className="text-red-500 text-xs">
+                        {errors.credentials?.[index]?.value?.message}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label
+              htmlFor="description"
+              className="text-sm font-semibold text-[#1e2337]"
+            >
+              Description
+            </Label>
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  id="description"
+                  placeholder="Courier description..."
+                  value={field.value || ""}
+                  className="min-h-[100px] rounded-lg border-gray-200"
+                />
+              )}
+            />
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <Button type="submit" disabled={isLoading} className="">
+              {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>
       </DialogContent>
+      <ImageSelectPopup
+        open={imagePopupOpen}
+        handleOpen={setImagePopupOpen}
+        modalTitle="Select Courier Thumbnail"
+        click="thumbnail"
+      />
     </Dialog>
   );
 }
