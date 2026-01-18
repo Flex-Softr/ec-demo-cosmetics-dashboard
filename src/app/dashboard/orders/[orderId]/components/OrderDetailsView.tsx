@@ -3,6 +3,7 @@
 import DeleteOrderBtn from "@/components/DeleteOrderBtn";
 import OrderIdAndDate from "@/components/OrderIdAndDate";
 import UpdateOrderStatus from "@/components/UpdateOrderStatus";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { SectionTitle } from "@/components/ui/sectionTitle";
 import { Separator } from "@/components/ui/separator";
@@ -21,8 +22,9 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import OrderHistoryTable from "../../components/OrderHistoryTable";
+import SchedulePickup from "../../components/SchedulePickup/SchedulePickup";
 import { OrderedProductTable } from "./OrderedProductTable";
 import SetOrderHistoryData from "./SetOrderHistoryData";
 import PrintInvoiceButton from "./invoice/PrintInvoiceButton";
@@ -35,6 +37,7 @@ type OrderDetailsViewProps = {
 const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
   const { data: response, isLoading } = useGetSingleOrderQuery(orderId);
   const order: TOrders = response?.data;
+  const [openSchedulePickup, setOpenSchedulePickup] = useState(false);
 
   // Use permissions passed from server
   const editPermission = isPermitted(
@@ -139,6 +142,13 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
             </div>
 
             <div className="flex gap-3">
+              <Button
+                onClick={() => setOpenSchedulePickup(true)}
+                variant="outline"
+                className="flex items-center gap-2 border-gray-300 dark:border-gray-800 px-3 py-1 rounded-md text-sm"
+              >
+                Schedule Pickup
+              </Button>
               {isEdit && (
                 <Link
                   href={`/dashboard/orders/${order._id}/edit`}
@@ -336,6 +346,12 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
           </div>
         </Card>
       </div>
+
+      <SchedulePickup
+        open={openSchedulePickup}
+        handleOpen={() => setOpenSchedulePickup(!openSchedulePickup)}
+        order={order}
+      />
     </div>
   );
 };

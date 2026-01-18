@@ -79,6 +79,23 @@ const updateStatusApi = baseApi.injectEndpoints({
         "monitorDelivery",
       ],
     }),
+    getShippingMethodsForOrder: builder.query({
+      query: () => ({
+        url: "/orders/get-courier-for-order",
+      }),
+    }),
+    schedulePickup: builder.mutation({
+      query: (payload) => ({
+        url: "/orders/admin/schedule-pickup",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: (result, error, { order_id }) => [
+        { type: "singleOrder", id: order_id },
+        "allOrders",
+        "processingDoneAndCourierOrders",
+      ],
+    }),
   }),
 });
 
@@ -89,4 +106,6 @@ export const {
   useUpdateOrderMutation,
   useUpdateOrdersStatusMutation,
   useDeleteOrdersMutation,
+  useGetShippingMethodsForOrderQuery,
+  useSchedulePickupMutation,
 } = updateStatusApi;

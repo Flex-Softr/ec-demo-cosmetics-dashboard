@@ -1,4 +1,5 @@
 "use client";
+import SchedulePickup from "@/app/dashboard/orders/components/SchedulePickup/SchedulePickup";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,10 +10,12 @@ import {
 import { useAppSelector } from "@/redux/hooks";
 import { TOrders } from "@/types/order.interface";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { Eye, Pencil } from "lucide-react";
+import { Eye, Pencil, Truck } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 const OrderActionDropDown = ({ order }: { order: TOrders }) => {
+  const [openSchedulePickup, setOpenSchedulePickup] = useState(false);
   const editPermission = useAppSelector(
     ({ monitorDelivery }) => monitorDelivery.editPermission
   );
@@ -54,6 +57,16 @@ const OrderActionDropDown = ({ order }: { order: TOrders }) => {
                 <span>View</span>
               </Link>
             </DropdownMenuItem>
+            {order.status === "processing done" && (
+              <DropdownMenuItem
+                className="gap-2 cursor-pointer"
+                onClick={() => setOpenSchedulePickup(true)}
+              >
+                <Truck className="w-4 h-4" />
+                <span>Schedule pickup</span>
+              </DropdownMenuItem>
+            )}
+
             {isEdit && (
               <DropdownMenuItem>
                 <Link
@@ -69,6 +82,11 @@ const OrderActionDropDown = ({ order }: { order: TOrders }) => {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
+      <SchedulePickup
+        open={openSchedulePickup}
+        handleOpen={() => setOpenSchedulePickup(!openSchedulePickup)}
+        order={order}
+      />
     </div>
   );
 };

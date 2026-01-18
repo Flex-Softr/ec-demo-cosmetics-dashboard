@@ -9,7 +9,8 @@ const statusOptions = (status: string) => {
             status === "warranty added"
           ? ["processing done", "canceled"]
           : status === "processing done"
-            ? ["On courier", "completed", "canceled"]
+            ? // ? ["On courier", "completed", "canceled"]
+              ["completed", "canceled"]
             : status === "follow up"
               ? ["confirmed", "canceled", "deleted"]
               : status === "canceled"
