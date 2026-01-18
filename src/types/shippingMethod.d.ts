@@ -8,7 +8,7 @@ export type TCourierCredentials = {
 };
 
 export type TCourier = {
-  id: string;
+  _id: string;
   name: string;
   slug: TCourierSlug;
   description: string | null;
