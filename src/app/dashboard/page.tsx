@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getProfile } from "@/lib/getAccessToken";
 import { Metadata } from "next";
-import dummyUser from "../../../public/icons/user.jpg";
+import dummyUser from "../../../public/user.jpg";
 
 export const metadata: Metadata = {
   title: "Dashboard",

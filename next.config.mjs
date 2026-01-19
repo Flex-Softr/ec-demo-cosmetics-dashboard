@@ -3,28 +3,16 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
         protocol: "http",
         hostname: "localhost",
       },
       {
         protocol: "http",
-        hostname: "api.oneselfbd.com",
+        hostname: "api.norabd.com",
       },
       {
         protocol: "https",
-        hostname: "api.oneselfbd.com",
-      },
-      {
-        protocol: "https",
-        hostname: "electrocommerce.abirmahmud.top",
-      },
-      {
-        protocol: "https",
-        hostname: "electrocommerce.mustaqim.site",
+        hostname: "api.norabd.com",
       },
     ],
   },

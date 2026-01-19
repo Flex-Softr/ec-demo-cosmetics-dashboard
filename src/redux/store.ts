@@ -11,7 +11,6 @@ import {
   persistStore,
 } from "redux-persist";
 import baseApi from "./baseApi/baseApi";
-import courierBaseApi from "./baseApi/courierBaseApi";
 import addProductReducer from "./features/addProduct/addProductSlice";
 import variationReducer from "./features/addProduct/variation/variationSlice";
 import authReducer from "./features/auth/authSlice";
@@ -44,7 +43,6 @@ export const createStore = () => {
   return configureStore({
     reducer: {
       [baseApi.reducerPath]: baseApi.reducer,
-      [courierBaseApi.reducerPath]: courierBaseApi.reducer,
       auth: persistedAuthReducer,
       addProduct: addProductReducer,
       productVariation: variationReducer,
@@ -71,7 +69,7 @@ export const createStore = () => {
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(baseApi.middleware, courierBaseApi.middleware),
+      }).concat(baseApi.middleware),
   });
 };
 
