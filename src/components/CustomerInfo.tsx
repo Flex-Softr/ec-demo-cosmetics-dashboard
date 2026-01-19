@@ -66,7 +66,7 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
                 {deliveryStatus && (
                   <DropdownMenuItem>
                     <a
-                      href={`${config.courier_url}/${order?.courierDetails?.trackingId}`}
+                      href={`${config.courier_status_check_url}/${order?.courierDetails?.trackingId}`}
                       target="_blank"
                       className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
                     >
