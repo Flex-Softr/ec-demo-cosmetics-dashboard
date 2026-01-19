@@ -21,7 +21,7 @@ import { Key, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import dummyUser from "../../../public/icons/user.jpg";
+import dummyUser from "../../../public/user.jpg";
 
 const listItems = [
   {

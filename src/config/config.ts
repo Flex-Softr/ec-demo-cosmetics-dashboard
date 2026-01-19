@@ -4,10 +4,7 @@ const config = {
   api_base_url: process.env.NEXT_PUBLIC_API_BASE_URL,
   client_base_url: process.env.NEXT_PUBLIC_CLIENT_BASE_URL,
   revalidate_secret: process.env.NEXT_PUBLIC_REVALIDATE_SECRET,
-
-  courier_api_key: process.env.NEXT_PUBLIC_COURIER_API_KEY,
-  courier_secret_key: process.env.NEXT_PUBLIC_COURIER_SECRET_KEY,
-  courier_url: process.env.NEXT_PUBLIC_COURIER_URL,
+  courier_status_check_url: process.env.NEXT_PUBLIC_COURIER_STATUS_CHECK_URL,
   token_data: {
     access_token_cookie_expires:
       process.env.NEXT_PUBLIC_ACCESS_TOKEN_COOKIE_EXPIRES,

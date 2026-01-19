@@ -3,7 +3,7 @@ import { TUser } from "@/redux/features/user/userInterface";
 import backgroundColor from "@/utilities/backgroundColor";
 import { ColumnDef } from "@tanstack/react-table";
 import { Mail, PhoneCall } from "lucide-react";
-import dummyUser from "../../../../../public/icons/user.jpg";
+import dummyUser from "../../../../../public/user.jpg";
 import Action from "./Action/Action";
 
 const columns: ColumnDef<TUser>[] = [

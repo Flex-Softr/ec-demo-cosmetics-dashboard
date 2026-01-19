@@ -23,6 +23,7 @@ import { useEffect, useMemo } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import ProductSchema, { ProductFormValues } from "../lib/productValidation";
 // import AdditionalInfo from "./AdditionalInfo";
+import DeleteProductBtn from "@/components/DeleteProductBtn";
 import BrandInput from "./BrandInput";
 import CategoryInput from "./CategoryInput";
 import CollectionInput from "./CollectionInput";
@@ -371,7 +372,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
           </Card>
 
           {/* product data section started */}
-          <div className="flex justify-between items-start gap-4 w-full px-4">
+          <div className="flex justify-between gap-4 w-full px-4">
             <div className="w-[65%] space-y-3">
               {/* products title */}
               <TitleInput />
@@ -383,7 +384,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
               {/* <AdditionalInfo /> */}
             </div>
             {/* right Sidebar of add products */}
-            <div className="w-2/6 space-y-3">
+            <div className="w-2/6 space-y-3 flex flex-col">
               <Published
                 productId={productId as string}
                 isLoading={isCreating || isUpdating}
@@ -393,6 +394,13 @@ const ProductForm = ({ productId }: { productId?: string }) => {
               <Featured />
               <BrandInput />
               <RelatedProducts />
+              {productId && (
+                <div className="h-full flex flex-col justify-end mt-auto bottom-4">
+                  <DeleteProductBtn id={productId} variant="destructive">
+                    Delete Product
+                  </DeleteProductBtn>
+                </div>
+              )}
             </div>
           </div>
         </form>

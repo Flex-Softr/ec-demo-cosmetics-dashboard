@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { getProfile } from "@/lib/getAccessToken";
-import dummyUser from "../../../../public/icons/user.jpg";
+import dummyUser from "../../../../public/user.jpg";
 
 const AccountsPage = async () => {
   const user = await getProfile();
