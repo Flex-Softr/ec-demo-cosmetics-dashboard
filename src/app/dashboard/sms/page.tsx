@@ -1,10 +1,8 @@
 // import { StatCard } from "./components/StatCard";
 // import { BalanceTopUp } from "./components/BalanceTopUp";
-import { OrderStatusToggle } from "./components/OrderStatusToggle";
-import OrderStatusMessage from "./components/OrderStatusMessage";
-import MultiSelectStatus from "./components/MultiSelectStatus";
 import fetchData from "@/utilities/fetchData";
-import { Card } from "@/components/ui/card";
+import OrderStatusMessage from "./components/OrderStatusMessage";
+import { OrderStatusToggle } from "./components/OrderStatusToggle";
 
 export default async function SMS() {
   const response = await fetchData({
@@ -77,9 +75,9 @@ export default async function SMS() {
         </div>
       </div>
       {/* MultiSelect Component and Message editor*/}
-      <Card className="m-4">
+      {/* <Card className="m-4">
         <MultiSelectStatus />
-      </Card>
+      </Card> */}
     </div>
   );
 }
