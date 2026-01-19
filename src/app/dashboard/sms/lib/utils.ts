@@ -1,3 +1,5 @@
+export type TOrderSMSNotificationMediumType = "phone" | "email" | "whatsapp";
+
 export type Message = {
   _id?: string | null;
   slug: string;
@@ -6,6 +8,8 @@ export type Message = {
   customTemplate?: string;
   defaultTemplate?: string;
   isUpdating?: boolean;
+  activeMedium?: TOrderSMSNotificationMediumType[];
+  emailSubject?: string;
 };
 
 export const statusList = [
