@@ -43,7 +43,9 @@ const InventoryValidationSchema = Yup.object().shape({
     .transform((value) => (Number.isNaN(value) ? undefined : value))
     .typeError("Must be a valid number")
     .optional(),
-  sku: Yup.string().trim().required("SKU is required"),
+  // sku: Yup.string().trim().required("SKU is required"),
+
+  sku: Yup.string().trim().optional(),
   // productCode: Yup.string().trim().optional(),
   manageStock: Yup.boolean().optional(),
   lowStockWarning: Yup.number().when("manageStock", {

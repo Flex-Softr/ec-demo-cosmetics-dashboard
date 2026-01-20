@@ -30,7 +30,7 @@ export type TProductPayload = {
 
   // --- Inventory Section ---
   inventory?: {
-    sku: string; // Text input
+    sku?: string; // Text input
     stockStatus?: (typeof STOCK_STATUS)[keyof typeof STOCK_STATUS];
     stockQuantity?: number; // Number input
     manageStock?: boolean; // Checkbox
@@ -67,7 +67,7 @@ export type TProductPayload = {
     };
     inventory: {
       // Variation specific inventory
-      sku: string;
+      sku?: string;
       stockQuantity: number;
     };
     image: string; // Variation specific image URL
@@ -121,7 +121,7 @@ export type IAdminProductResponse = {
 export type IAdminProduct = {
   _id: string; // Use for Key and Actions (Edit/Delete)
   title: string; // Product Name Column
-  sku: string; // SKU Column
+  sku?: string; // SKU Column
   stockStatus: (typeof STOCK_STATUS)[keyof typeof STOCK_STATUS]; // Stock Status Badge
   stockAvailable: number; // Quantity Column
   thumbnail: {
@@ -147,7 +147,7 @@ export type IAdminProduct = {
       salePrice?: number;
     };
     inventory: {
-      sku: string;
+      sku?: string;
       stockQuantity: number;
       stockStatus: (typeof STOCK_STATUS)[keyof typeof STOCK_STATUS];
       stockAvailable: number;

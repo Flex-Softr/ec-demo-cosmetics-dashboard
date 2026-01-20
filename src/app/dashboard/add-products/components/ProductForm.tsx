@@ -66,7 +66,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         priceSave: undefined,
       },
       inventory: {
-        sku: "",
+        sku: undefined,
         stockStatus: STOCK_STATUS.IN_STOCK,
         stockQuantity: undefined,
         stockAvailable: undefined,
@@ -192,6 +192,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         image: {
           thumbnail: thumbnail?._id || "",
           gallery: galleryData || [],
+        },
+        inventory: {
+          ...defaultValues.inventory,
+          ...restProductData.inventory,
+          sku: restProductData.inventory?.sku || undefined,
         },
         category: {
           name: categoryId,

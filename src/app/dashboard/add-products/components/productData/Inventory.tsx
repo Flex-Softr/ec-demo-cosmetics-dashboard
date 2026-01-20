@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PRODUCT_TYPE, stockStatusOptions } from "@/const/products";
+import { stockStatusOptions } from "@/const/products";
 import { getStockStatusColor } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
 
@@ -11,7 +11,7 @@ type TProps = {
   prefix?: string; // e.g. "inventory" or "variations.0.inventory"
 };
 
-const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
+const Inventory = ({ prefix = "inventory" }: TProps) => {
   const {
     register,
     watch,
@@ -26,12 +26,11 @@ const Inventory = ({ isVariation, prefix = "inventory" }: TProps) => {
   const lowStockWarning = watch(`${prefix}.lowStockWarning`);
   const stockStatus = watch(`${prefix}.stockStatus`);
 
-  const rootProductType = watch("type");
-  const effectiveProductType = isVariation
-    ? PRODUCT_TYPE.VARIABLE
-    : rootProductType;
-  const isSkuRequired =
-    isVariation || effectiveProductType === PRODUCT_TYPE.SIMPLE;
+  // const rootProductType = watch("type");
+  // const effectiveProductType = isVariation
+  //   ? PRODUCT_TYPE.VARIABLE
+  //   : rootProductType;
+  const isSkuRequired = false;
 
   // Error helper
   const getError = (fieldName: string) => {

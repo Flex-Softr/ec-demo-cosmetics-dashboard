@@ -30,7 +30,7 @@ const generateVariations = (
           priceSave: undefined,
         },
         inventory: match?.inventory || {
-          sku: "",
+          sku: undefined,
           stockStatus: STOCK_STATUS.IN_STOCK,
           stockQuantity: undefined,
           preStockQuantity: undefined,

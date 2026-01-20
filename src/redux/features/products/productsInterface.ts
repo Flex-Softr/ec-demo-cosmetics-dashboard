@@ -13,7 +13,7 @@ export type TVariation = {
   inventory: {
     stockStatus: string;
     stockQuantity: number;
-    sku: string;
+    sku?: string;
   };
 };
 
@@ -33,7 +33,7 @@ export type TProduct = {
   };
   regularPrice: number;
   salePrice: number;
-  sku: string;
+  sku?: string;
   sales: number;
   stockStatus: string;
   stockAvailable: number;
