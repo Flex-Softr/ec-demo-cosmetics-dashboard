@@ -3,10 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 const SetBulkPrice = () => {
-  const { setValue, getValues } = useFormContext();
+  const { setValue, getValues, control } = useFormContext();
+  const { fields } = useFieldArray({
+    control,
+    name: "variations",
+  });
 
   const [regularPrice, setRegularPrice] = useState<number | undefined>();
   const [salePrice, setSalePrice] = useState<number | undefined>();
@@ -51,32 +55,130 @@ const SetBulkPrice = () => {
     }
   };
 
-  const handleApply = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const variations = getValues("variations") || [];
+  const calculatePriceSave = (regular: number, sale: number) => {
+    if (regular > 0 && sale >= 0 && regular > sale) {
+      return regular - sale;
+    }
+    return 0;
+  };
 
+  const handleApply = () => {
+    // Fetch all variations from form state to ensure we get values even if unmounted
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    variations.forEach((_: any, index: number) => {
+    const allVariations = getValues("variations") || [];
+
+    const getCurrentRegularPrice = (index: number) => {
+      const valFromPath = getValues(`variations.${index}.price.regularPrice`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const valFromArray = (allVariations[index] as any)?.price?.regularPrice;
+
+      const val =
+        valFromPath !== undefined && valFromPath !== ""
+          ? valFromPath
+          : valFromArray;
+      const numInfo = parseFloat(val);
+      return !isNaN(numInfo) ? numInfo : 0;
+    };
+
+    fields.forEach((_, index) => {
+      // 1. Case: Regular Price is provided (Primary Driver)
       if (regularPrice !== undefined && regularPrice > 0) {
         setValue(`variations.${index}.price.regularPrice`, regularPrice, {
           shouldDirty: true,
           shouldTouch: true,
           shouldValidate: true,
         });
+
+        // Loop handles "Regular + Sale" (Both set)
+        if (salePrice !== undefined && salePrice >= 0) {
+          setValue(`variations.${index}.price.salePrice`, salePrice, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+          if (discountPercent !== undefined) {
+            setValue(
+              `variations.${index}.price.discountPercent`,
+              discountPercent,
+              { shouldDirty: true, shouldValidate: true }
+            );
+          }
+          const saved = calculatePriceSave(regularPrice, salePrice);
+          setValue(`variations.${index}.price.priceSave`, saved);
+        }
+        // Handles "Regular Only" -> Reset dependents (Option B: strict consistency)
+        else {
+          setValue(`variations.${index}.price.salePrice`, undefined, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+          setValue(`variations.${index}.price.discountPercent`, undefined, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+          setValue(`variations.${index}.price.priceSave`, undefined, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+        }
       }
-      if (salePrice !== undefined && salePrice >= 0) {
-        setValue(`variations.${index}.price.salePrice`, salePrice, {
-          shouldDirty: true,
-          shouldTouch: true,
-          shouldValidate: true,
-        });
+
+      // 2. Case: Only Sale Price provided (Use existing Regular Price)
+      else if (salePrice !== undefined && salePrice >= 0) {
+        const currentRegular = getCurrentRegularPrice(index);
+
+        if (currentRegular > 0) {
+          setValue(`variations.${index}.price.salePrice`, salePrice, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+
+          // Calculate Discount
+          const discount =
+            ((currentRegular - salePrice) / currentRegular) * 100;
+          const finalDiscount = isNaN(discount)
+            ? undefined
+            : parseFloat(discount.toFixed(2));
+          setValue(`variations.${index}.price.discountPercent`, finalDiscount, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+
+          // Calculate Save
+          const saved = calculatePriceSave(currentRegular, salePrice);
+          setValue(`variations.${index}.price.priceSave`, saved);
+        } else {
+          // Fallback: just set sale (e.g. regular missing/invalid)
+          setValue(`variations.${index}.price.salePrice`, salePrice, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+        }
       }
-      if (discountPercent !== undefined && discountPercent >= 0) {
-        setValue(`variations.${index}.price.discountPercent`, discountPercent, {
-          shouldDirty: true,
-          shouldTouch: true,
-          shouldValidate: true,
-        });
+
+      // 3. Case: Only Discount provided (Use existing Regular Price)
+      else if (discountPercent !== undefined && discountPercent >= 0) {
+        const currentRegular = getCurrentRegularPrice(index);
+
+        if (currentRegular > 0) {
+          setValue(
+            `variations.${index}.price.discountPercent`,
+            discountPercent,
+            { shouldDirty: true, shouldValidate: true }
+          );
+
+          // Calculate Sale
+          const sale =
+            currentRegular - (currentRegular * discountPercent) / 100;
+          const finalSale = parseFloat(sale.toFixed(0)); // Price.tsx uses toFixed() ~ integer
+          setValue(`variations.${index}.price.salePrice`, finalSale, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+
+          // Calculate Save
+          const saved = calculatePriceSave(currentRegular, finalSale);
+          setValue(`variations.${index}.price.priceSave`, saved);
+        }
       }
     });
 
