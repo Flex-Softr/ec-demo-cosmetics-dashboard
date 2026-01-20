@@ -3,6 +3,7 @@ import { TSelectedAttribute } from "@/redux/features/addProduct/variation/interf
 import { useMemo, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import generateVariations from "../../lib/generateVariation";
+import SetBulkPrice from "./SetBulkPrice";
 import SingleVariation from "./SingleVariation";
 
 const Variations = () => {
@@ -151,6 +152,8 @@ const Variations = () => {
           >
             Remove all variations
           </Button>
+          <SetBulkPrice />
+
           {fields.map((field, index) => (
             <SingleVariation
               key={field.id}
