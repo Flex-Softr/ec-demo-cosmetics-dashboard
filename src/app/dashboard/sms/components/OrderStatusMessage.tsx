@@ -1,18 +1,42 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { getSmsCount } from "@/lib/getSmsCount";
+import { cn } from "@/lib/utils";
 import {
   useCreateOrderSMSMutation,
   useUpdateOrderSMSMutation,
 } from "@/redux/features/sms/smsApi";
 import { refetchData } from "@/utilities/fetchData";
-import { messageTemplate, statusList, Message } from "../lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { useToast } from "@/components/ui/use-toast";
-import { getSmsCount } from "@/lib/getSmsCount";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import {
+  Message,
+  messageTemplate,
+  statusList,
+  TOrderSMSNotificationMediumType,
+} from "../lib/utils";
 
-type MessageMap = { [key: string]: string };
+type MessageState = {
+  customTemplate: string;
+  activeMedium: TOrderSMSNotificationMediumType[];
+  emailSubject: string;
+};
+
+type MessageMap = { [key: string]: MessageState };
+
+const defaultMediums: TOrderSMSNotificationMediumType[] = ["phone"];
+
+const initialMessageState: MessageState = {
+  customTemplate: "",
+  activeMedium: defaultMediums,
+  emailSubject: "",
+};
 
 export default function OrderStatusMessage({
   savedMessages = [],
@@ -21,14 +45,14 @@ export default function OrderStatusMessage({
 }) {
   const { toast } = useToast();
   const [selectedStatus, setSelectedStatus] = useState<string>("order_created");
-  const [messages, setMessages] = useState<MessageMap>({
-    order_created: "",
-    order_confirmed: "",
-    order_canceled: "",
-    shifted: "",
-    courier_assigned: "",
-    // delivered: "",
-    // order_returned: "",
+
+  // Initialize state with all status keys
+  const [messages, setMessages] = useState<MessageMap>(() => {
+    const initial: MessageMap = {};
+    statusList.forEach((s: any) => {
+      initial[s.slug] = { ...initialMessageState };
+    });
+    return initial;
   });
 
   const [hasMounted, setHasMounted] = useState(false);
@@ -37,32 +61,75 @@ export default function OrderStatusMessage({
   const [updateOrderSMS, { isLoading: loading }] = useUpdateOrderSMSMutation();
 
   useEffect(() => {
-    const initialMessages = savedMessages?.reduce(
-      (acc: Record<string, string>, item: Message) => {
-        const { slug, customTemplate } = item;
-        acc[slug] = customTemplate || "";
-        return acc;
-      },
-      { ...messages }
-    );
+    const updatedMessages: MessageMap = {};
+    statusList.forEach((s: any) => {
+      updatedMessages[s.slug] = { ...initialMessageState };
+    });
 
-    if (initialMessages) {
-      setMessages(initialMessages);
-    }
+    savedMessages?.forEach((item: Message) => {
+      const { slug, customTemplate, activeMedium, emailSubject } = item;
+      // Find matching status in statusList to ensure valid slug
+      const isValidSlug = statusList.some((s: any) => s.slug === slug);
+      if (isValidSlug) {
+        updatedMessages[slug] = {
+          customTemplate: customTemplate || "",
+          activeMedium: activeMedium || defaultMediums,
+          emailSubject: emailSubject || "",
+        };
+      }
+    });
 
-    setHasMounted(true); // Prevent initial animation flash
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setMessages((prev) => ({ ...prev, ...updatedMessages }));
+    setHasMounted(true);
   }, [savedMessages]);
 
   const handleStatusClick = (slug: string) => {
     setSelectedStatus(slug);
   };
 
-  const handleInputChange = (text: string) => {
+  const handleMessageChange = (text: string) => {
     setMessages((prev) => ({
       ...prev,
-      [selectedStatus]: text,
+      [selectedStatus]: {
+        ...prev[selectedStatus],
+        customTemplate: text,
+      },
     }));
+  };
+
+  const handleSubjectChange = (text: string) => {
+    setMessages((prev) => ({
+      ...prev,
+      [selectedStatus]: {
+        ...prev[selectedStatus],
+        emailSubject: text,
+      },
+    }));
+  };
+
+  const toggleMedium = (medium: TOrderSMSNotificationMediumType) => {
+    setMessages((prev) => {
+      const currentMessage = prev[selectedStatus];
+      if (!currentMessage) return prev; // Should not happen
+
+      const currentMediums = currentMessage.activeMedium || [];
+      const isActive = currentMediums.includes(medium);
+      let newMediums;
+
+      if (isActive) {
+        newMediums = currentMediums.filter((m) => m !== medium);
+      } else {
+        newMediums = [...currentMediums, medium];
+      }
+
+      return {
+        ...prev,
+        [selectedStatus]: {
+          ...currentMessage,
+          activeMedium: newMediums,
+        },
+      };
+    });
   };
 
   const saveMessage = async () => {
@@ -70,25 +137,30 @@ export default function OrderStatusMessage({
       const id = savedMessages.find(
         (item) => item.slug === selectedStatus
       )?._id;
-      const messageText = messages[selectedStatus];
 
-      if (!messageText && !id) {
+      const currentMessageState = messages[selectedStatus];
+      const { customTemplate, activeMedium, emailSubject } =
+        currentMessageState;
+
+      if (!customTemplate && !id) {
         alert("Please enter a message before saving.");
         return;
       }
 
+      const payloadData = {
+        slug: selectedStatus,
+        ...messageTemplate(customTemplate, selectedStatus),
+        activeMedium,
+        emailSubject,
+      };
+
       const payload = {
-        notificationData: [
-          {
-            slug: selectedStatus,
-            ...messageTemplate(messageText, selectedStatus),
-          },
-        ],
+        notificationData: [payloadData],
       };
 
       if (id) {
         await updateOrderSMS({
-          payload: messageTemplate(messageText, selectedStatus),
+          payload: payloadData,
           _id: id,
         }).unwrap();
 
@@ -113,21 +185,30 @@ export default function OrderStatusMessage({
     }
   };
 
-  const { charCount, smsCount } = getSmsCount(messages[selectedStatus]);
+  const currentData = messages[selectedStatus] || initialMessageState;
+  const { charCount, smsCount } = getSmsCount(currentData.customTemplate);
+
+  const mediums: { value: TOrderSMSNotificationMediumType; label: string }[] = [
+    { value: "phone", label: "Phone" },
+    { value: "email", label: "Email" },
+    { value: "whatsapp", label: "WhatsApp" },
+  ];
 
   return (
     <div className="grid grid-cols-3 gap-6 p-6 bg-white rounded-xl shadow-sm border">
       {/* Left Panel - Status Selector */}
       <div className="space-y-4">
-        {statusList.map(({ slug, status }) => (
+        {statusList.map(({ slug, status }: any) => (
           <Button
             key={slug}
             onClick={() => handleStatusClick(slug)}
-            className={`w-full text-left justify-start px-4 py-2 rounded-lg ${
+            className={cn(
+              "w-full text-left justify-start px-4 py-2 rounded-lg transition-colors",
               selectedStatus === slug
-                ? "bg-primary hover:bg-primary text-white"
-                : "bg-purple-50 text-gray-800 hover:bg-primary hover:text-white"
-            }`}
+                ? "bg-primary hover:bg-primary/90 text-white"
+                : "bg-purple-50 text-gray-800 hover:bg-purple-100/50"
+            )}
+            variant="ghost"
           >
             {status}
           </Button>
@@ -143,33 +224,91 @@ export default function OrderStatusMessage({
             animate={{ rotateY: 0, opacity: 1 }}
             exit={{ rotateY: -90, opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-purple-50 rounded-xl h-full col-span-2 p-4 shadow"
+            className="bg-purple-50 rounded-xl h-full col-span-2 p-6 shadow-sm space-y-6"
           >
-            <h3 className="font-semibold mb-1">Enter Order Status Message</h3>
-            <p className="text-sm text-gray-500 mb-3">
-              Hint: Use variables like{" "}
-              <code>{`{fullName}, {orderId}, {trackingUrl}, {total}, {break}`}</code>
-            </p>
-            <Textarea
-              className="w-full p-3 min-h-40 border rounded"
-              value={messages[selectedStatus]}
-              onChange={(e) => handleInputChange(e.target.value)}
-              placeholder="Enter your message here..."
-            />
-            <p
-              className="text-sm text-slate-500 mt-1"
-              title="1 SMS = 160 characters in English and 1 SMS = 70 characters in other languages or special characters like ~ ^ &#123;&#125; [ ] |"
-            >
-              {charCount} character{charCount !== 1 && "s"}, Total {smsCount}{" "}
-              SMS
-            </p>
-            <div className="flex justify-center mt-4">
+            <div className="flex flex-col gap-3">
+              <Label className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                Notifications Channels
+              </Label>
+              <div className="flex flex-wrap gap-2">
+                {mediums.map((m) => {
+                  const isActive = currentData.activeMedium?.includes(m.value);
+                  return (
+                    <Badge
+                      key={m.value}
+                      variant={isActive ? "default" : "outline"}
+                      className={cn(
+                        "cursor-pointer px-4 py-1.5 text-sm select-none transition-all rounded-full hover:scale-105 active:scale-95",
+                        isActive
+                          ? "bg-primary text-white hover:bg-primary/90 border-transparent shadow-md"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary"
+                      )}
+                      onClick={() => toggleMedium(m.value)}
+                    >
+                      {m.label}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label
+                htmlFor="email-subject"
+                className="text-sm font-semibold text-gray-700 uppercase tracking-wide"
+              >
+                Email Subject
+              </Label>
+              <Input
+                id="email-subject"
+                className="bg-white border-gray-200 focus:border-primary focus:ring-primary/20 transition-all rounded-lg"
+                placeholder="Enter email subject (optional)..."
+                value={currentData.emailSubject}
+                onChange={(e) => handleSubjectChange(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between items-end">
+                <Label
+                  htmlFor="message-body"
+                  className="text-sm font-semibold text-gray-700 uppercase tracking-wide"
+                >
+                  Message Body
+                </Label>
+                <span
+                  className={cn(
+                    "text-xs font-medium",
+                    smsCount > 1 ? "text-amber-600" : "text-slate-400"
+                  )}
+                >
+                  {charCount} char | {smsCount} SMS
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 bg-white/50 p-2 rounded border border-purple-100">
+                <span className="font-semibold">Variables:</span>{" "}
+                <code>{`{fullName}, {orderId}, {trackingUrl}, {total}, {break}`}</code>
+              </p>
+              <Textarea
+                id="message-body"
+                className="w-full p-4 min-h-[160px] border-gray-200 rounded-lg bg-white focus:border-primary focus:ring-primary/20 transition-all resize-y"
+                value={currentData.customTemplate}
+                onChange={(e) => handleMessageChange(e.target.value)}
+                placeholder="Enter your message template here..."
+              />
+              <p className="text-[10px] text-slate-400 mt-1 italic">
+                * Special characters like ~ ^ &#123;&#125; [ ] | reduce char
+                limit per SMS to 70.
+              </p>
+            </div>
+
+            <div className="flex justify-start pt-2">
               <Button
                 onClick={saveMessage}
                 disabled={isLoading || loading}
-                className="w-60 mt-4 rounded-full"
+                className="w-full sm:w-auto px-8 rounded-full font-medium"
               >
-                Save
+                {isLoading || loading ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </motion.div>

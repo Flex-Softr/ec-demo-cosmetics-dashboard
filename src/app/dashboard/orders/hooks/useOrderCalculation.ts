@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import config from "@/config/config";
 import { useGetCustomerProductsQuery } from "@/redux/features/products/productsApi";
 import { useGetShippingChargeQuery } from "@/redux/features/shippingCharge/shippingCharge";
 import { useMemo } from "react";
@@ -13,6 +14,13 @@ export const useOrderCalculation = (control: Control<TFormInput>) => {
     control,
     name: "orderedProducts",
   });
+
+  const totalNumberOfItems =
+    orderedProducts?.reduce((acc, item) => acc + (item?.quantity || 0), 0) || 0;
+
+  const shippingCostExceptFirst = parseFloat(
+    Number((totalNumberOfItems - 1) * config.per_item_shipping_cost).toString()
+  ).toFixed(2);
 
   const selectedShippingChargeId = useWatch({
     control,
@@ -84,7 +92,10 @@ export const useOrderCalculation = (control: Control<TFormInput>) => {
     const shippingCost = shippingCharge?.amount || 0;
 
     const total =
-      subtotal + Number(shippingCost) - Number(discount) - Number(advance);
+      subtotal +
+      Number(shippingCost + Number(shippingCostExceptFirst)) -
+      Number(discount) -
+      Number(advance);
 
     return {
       subtotal,
@@ -93,6 +104,7 @@ export const useOrderCalculation = (control: Control<TFormInput>) => {
       advance,
       total,
       orderedProducts: orderedProductsDetails,
+      shippingCostExceptFirst,
     };
   }, [
     productsData,
@@ -101,6 +113,7 @@ export const useOrderCalculation = (control: Control<TFormInput>) => {
     selectedShippingChargeId,
     discount,
     advance,
+    shippingCostExceptFirst,
   ]);
 
   return calculation;
