@@ -17,16 +17,20 @@ const ProductSearchBar = ({ endPoint }: { endPoint: string }) => {
   const { isLoading } = useAppSelector(({ pagination }) => pagination);
   const { selectedStatus } = useAppSelector(({ products }) => products);
 
-  const handleInputChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    dispatch(setSearchQuery(e.target.value));
-  };
-
   const handleClearSearch = () => {
     dispatch(setSearch(false));
     dispatch(setSearchQuery(""));
     dispatch(setSearchedProducts([]));
+  };
+
+  const handleInputChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
+    const value = e.target.value;
+    dispatch(setSearchQuery(value));
+    if (value === "") {
+      handleClearSearch();
+    }
   };
 
   const handleSearch = async () => {
