@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { SectionTitle } from "@/components/ui/sectionTitle";
 import { Separator } from "@/components/ui/separator";
+import config from "@/config/config";
 import { PERMISSIONS } from "@/const/permissions";
 import BdAddress from "@/lib/bdAddress";
 import { useGetSingleOrderQuery } from "@/redux/features/orders/ordersApi";
@@ -104,6 +105,13 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
   const isInvoice = ["processing"].includes(status);
 
   const isDeleted = ["pending", "follow up"].includes(status);
+
+  const totalNumberOfItems =
+    products?.reduce((acc, item) => acc + (item?.quantity || 0), 0) || 0;
+
+  const shippingCostExceptFirst = Number(
+    (totalNumberOfItems - 1) * config.per_item_shipping_cost
+  );
 
   return (
     <div className="mb-8 space-y-6">
@@ -214,7 +222,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                 <p className="flex justify-between">
                   <span className="text-muted-foreground">Cost:</span>
                   <span className="font-medium text-gray-900">
-                    &#2547; {shippingCharge?.amount}
+                    &#2547; {shippingCharge?.amount} + {shippingCostExceptFirst}
                   </span>
                 </p>
               </div>
@@ -278,7 +286,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
                 <span className="font-medium">
-                  + &#2547; {shippingCharge?.amount}
+                  + &#2547; {shippingCharge?.amount}+ {shippingCostExceptFirst}
                 </span>
               </div>
               <div className="flex justify-between text-sm">

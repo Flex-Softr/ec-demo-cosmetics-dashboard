@@ -19,13 +19,13 @@ import * as yup from "yup";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { PRODUCT_TYPE } from "@/const/products";
 import { useOrderCalculation } from "../hooks/useOrderCalculation";
 import DivisionDistrictSelector from "./DivisionDistrictSelector";
 import NameMobileAddress from "./NameMobileAddress";
 import Notes from "./Notes";
 import PaymentDiscountAdvance from "./PaymentDiscountAdvance";
 import SelectProduct from "./SelectProduct";
-import { PRODUCT_TYPE } from "@/const/products";
 
 const schema = yup.object().shape({
   shipping: yup.object().shape({
@@ -348,7 +348,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Shipping</span>
                   <span>
-                    &#2547; {Number(calculation.shippingCost).toFixed(2)}
+                    &#2547; {Number(calculation.shippingCost).toFixed(2)} +{" "}
+                    {calculation?.shippingCostExceptFirst}
                   </span>
                 </div>
 
