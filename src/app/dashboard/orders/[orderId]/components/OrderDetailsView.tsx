@@ -222,7 +222,9 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                 <p className="flex justify-between">
                   <span className="text-muted-foreground">Cost:</span>
                   <span className="font-medium text-gray-900">
-                    &#2547; {shippingCharge?.amount} + {shippingCostExceptFirst}
+                    &#2547; {shippingCharge?.amount}{" "}
+                    {shippingCostExceptFirst > 0 &&
+                      `+ ${shippingCostExceptFirst}`}
                   </span>
                 </p>
               </div>
@@ -286,7 +288,9 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
                 <span className="font-medium">
-                  + &#2547; {shippingCharge?.amount}+ {shippingCostExceptFirst}
+                  &#2547; {shippingCharge?.amount}{" "}
+                  {shippingCostExceptFirst > 0 &&
+                    `+ ${shippingCostExceptFirst}`}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
