@@ -40,6 +40,8 @@ export type TProduct = {
   totalReview: number;
   averageRating: number | null;
   published: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type TProductsInitialState = {

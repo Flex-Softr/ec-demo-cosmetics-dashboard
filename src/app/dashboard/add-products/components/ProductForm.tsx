@@ -399,6 +399,52 @@ const ProductForm = ({ productId }: { productId?: string }) => {
               {/* products description */}
               <DescriptionInput />
               {/* <AdditionalInfo /> */}
+              {productData?.createdAt && (
+                <div className="text-xs text-muted-foreground flex gap-4">
+                  <p>
+                    <span className="font-semibold">Created At:</span>{" "}
+                    {new Date(productData.createdAt).toLocaleDateString(
+                      "en-GB",
+                      {
+                        day: "numeric",
+                        month: "short",
+                        year: "2-digit",
+                      }
+                    )}
+                    ,{" "}
+                    {new Date(productData.createdAt).toLocaleTimeString(
+                      "en-US",
+                      {
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: true,
+                      }
+                    )}
+                  </p>
+                  {productData.updatedAt && (
+                    <p>
+                      <span className="font-semibold">Updated At:</span>{" "}
+                      {new Date(productData.updatedAt).toLocaleDateString(
+                        "en-GB",
+                        {
+                          day: "numeric",
+                          month: "short",
+                          year: "2-digit",
+                        }
+                      )}
+                      ,{" "}
+                      {new Date(productData.updatedAt).toLocaleTimeString(
+                        "en-US",
+                        {
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: true,
+                        }
+                      )}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
             {/* right Sidebar of add products */}
             <div className="w-2/6 space-y-3 flex flex-col">
