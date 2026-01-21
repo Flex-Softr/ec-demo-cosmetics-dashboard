@@ -77,7 +77,7 @@ const SchedulePickup = ({
       delivery_area_id: undefined,
       parcel_weight: "200",
       value: order?.total?.toString(),
-      item_quantity: order.products.reduce((acc, p) => acc + p.quantity, 0),
+      item_quantity: order?.products?.reduce((acc, p) => acc + p.quantity, 0),
       store_id: 1,
     },
   });
