@@ -155,7 +155,7 @@ const ProductSchema = Yup.object().shape({
   }),
   brand: Yup.string().optional(),
   category: CategorySchema.required(),
-  productCollection: Yup.string().trim().optional(),
+  productCollection: Yup.array().of(Yup.string()).optional(),
   featured: Yup.boolean().optional(),
   warranty: Yup.boolean().required(),
   warrantyInfo: Yup.object().when("warranty", {

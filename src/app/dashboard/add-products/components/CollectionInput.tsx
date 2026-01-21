@@ -18,14 +18,17 @@ const CollectionInput = () => {
     formState: { errors },
   } = useFormContext();
 
-  const selectedCollection = watch("productCollection");
+  const selectedCollections = watch("productCollection");
 
   const toggleCollection = (collectionId: string) => {
-    if (selectedCollection === collectionId) {
-      setValue("productCollection", undefined);
+    let newCollections = [...(selectedCollections || [])];
+
+    if (newCollections.includes(collectionId)) {
+      newCollections = newCollections.filter((id) => id !== collectionId);
     } else {
-      setValue("productCollection", collectionId, { shouldValidate: true });
+      newCollections.push(collectionId);
     }
+    setValue("productCollection", newCollections, { shouldValidate: true });
   };
 
   const getError = (path: string) => {
@@ -61,13 +64,17 @@ const CollectionInput = () => {
                 <input
                   type="checkbox"
                   id={`collection-${collection._id}`}
-                  checked={selectedCollection === collection._id}
+                  checked={selectedCollections?.includes(collection._id)}
                   onChange={() => toggleCollection(collection._id)}
                   className="mr-1 size-4 cursor-pointer"
                 />
                 <label
                   htmlFor={`collection-${collection._id}`}
-                  className={`text-gray-800 ${selectedCollection === collection._id ? "font-bold" : ""}`}
+                  className={`text-gray-800 ${
+                    selectedCollections?.includes(collection._id)
+                      ? "font-bold"
+                      : ""
+                  }`}
                 >
                   {collection.title}
                 </label>

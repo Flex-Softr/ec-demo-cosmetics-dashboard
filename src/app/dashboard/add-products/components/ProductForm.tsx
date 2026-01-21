@@ -82,7 +82,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         name: "",
         subCategory: undefined,
       },
-      productCollection: "",
+      productCollection: [],
       relatedProducts: [],
       featured: false,
       warranty: false,
@@ -202,11 +202,18 @@ const ProductForm = ({ productId }: { productId?: string }) => {
           name: categoryId,
           subCategory: subCategory?._id || "",
         },
-        productCollection:
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (productData.productCollection as any)?._id ||
-          productData.productCollection ||
-          "",
+        productCollection: Array.isArray(productData.productCollection)
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            productData.productCollection.map((pc: any) =>
+              typeof pc === "object" ? pc._id : pc
+            )
+          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (productData.productCollection as any)?._id
+            ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              [(productData.productCollection as any)._id]
+            : productData.productCollection
+              ? [productData.productCollection]
+              : [],
         brand: brandId,
         attributes: transformedAttributes,
         attributeValues: transformedAttributeValues,
@@ -279,7 +286,12 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
       // Clean up optional fields that might be empty strings
       if (!payload.brand) delete payload.brand;
-      if (!payload.productCollection) delete payload.productCollection;
+      if (
+        !payload.productCollection ||
+        (Array.isArray(payload.productCollection) &&
+          payload.productCollection.length === 0)
+      )
+        delete payload.productCollection;
       if (!payload.category.subCategory) delete payload.category.subCategory;
 
       let res;
