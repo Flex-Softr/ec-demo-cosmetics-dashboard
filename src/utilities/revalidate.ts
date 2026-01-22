@@ -1,6 +1,6 @@
 import config from "@/config/config";
 
-type TTags =
+export type TTags =
   | "products"
   | `product-${string}`
   | `relatedProducts-${string}`
@@ -11,7 +11,9 @@ type TTags =
   | "parentCategory"
   | "paymentMethod"
   | "shippingCharge"
-  | "sliderBanner";
+  | "sliderBanner"
+  | `homepageSections`
+  | `homepageSections-${string}`;
 
 export const revalidateTag = async (tag: TTags | TTags[]) => {
   let tags: string;
