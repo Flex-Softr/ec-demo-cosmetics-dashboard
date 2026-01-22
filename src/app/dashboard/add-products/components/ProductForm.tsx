@@ -16,7 +16,7 @@ import {
   useUpdateProductMutation,
 } from "@/redux/features/products/productsApi";
 import { useAppDispatch } from "@/redux/hooks";
-import { revalidateTag } from "@/utilities/revalidate";
+import { revalidateTag, TTags } from "@/utilities/revalidate";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
@@ -24,6 +24,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import ProductSchema, { ProductFormValues } from "../lib/productValidation";
 // import AdditionalInfo from "./AdditionalInfo";
 import DeleteProductBtn from "@/components/DeleteProductBtn";
+import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import BrandInput from "./BrandInput";
 import CategoryInput from "./CategoryInput";
 import CollectionInput from "./CollectionInput";
@@ -37,6 +38,10 @@ import ShortDescriptionInput from "./ShortDescriptionInput";
 import TitleInput from "./TitleInput";
 
 const ProductForm = ({ productId }: { productId?: string }) => {
+  const { data: collectionsResponse, isLoading: collectionLoading } =
+    useGetCollectionsQuery({
+      isActive: true,
+    });
   const dispatch = useAppDispatch();
 
   const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
@@ -304,6 +309,10 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         res = await createProduct(payload).unwrap();
       }
 
+      const revalidateTags = collectionsResponse?.data?.data?.map(
+        (item) => `homepageSections-${item._id}`
+      ) as TTags[];
+
       toast({
         className: "bg-success text-white text-2xl",
         title: res.message,
@@ -316,12 +325,16 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         dispatch(setDeleteImage([]));
       }
       if (productId) {
-        await revalidateTag([`product-${productData?.slug}`]);
+        await revalidateTag([
+          `product-${productData?.slug}`,
+          ...revalidateTags,
+        ]);
       }
       await revalidateTag([
         `relatedProducts-${productData?.slug}`,
         `collectionProducts-${productData?.slug}`,
         "featuredProducts",
+        ...revalidateTags,
       ]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -453,7 +466,10 @@ const ProductForm = ({ productId }: { productId?: string }) => {
                 isLoading={isCreating || isUpdating}
               />
               <CategoryInput />
-              <CollectionInput />
+              <CollectionInput
+                collectionsData={collectionsResponse?.data?.data}
+                isLoading={collectionLoading}
+              />
               <Featured />
               <BrandInput />
               <RelatedProducts />
