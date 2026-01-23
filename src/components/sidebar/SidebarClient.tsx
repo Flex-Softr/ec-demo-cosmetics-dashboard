@@ -8,6 +8,7 @@ import {
   CircleDollarSign,
   ClipboardList,
   Home,
+  LayoutGrid,
   // Image as ImageIcon,
   LucideIcon,
   MapPinned,
@@ -155,6 +156,10 @@ export function SidebarClient({ permissions }: TProps) {
           name: "Slider Config",
           href: "/dashboard/slider-section",
         },
+        (isSuperAdmin || manageProduct) && {
+          name: "Homepage Sections",
+          href: "/dashboard/homepage-section",
+        },
         manageShippingCharge && {
           name: "Shipping Charges",
           href: "/dashboard/manage-shipping-charges",
@@ -274,12 +279,18 @@ export function SidebarClient({ permissions }: TProps) {
         href: "/dashboard/manage-admin-staff",
         icon: UserCog,
       });
-    if (isSuperAdmin || manageProduct)
+    if (isSuperAdmin || manageProduct) {
       items.push({
         name: "",
         href: "/dashboard/slider-section",
         icon: Settings,
       });
+      items.push({
+        name: "",
+        href: "/dashboard/homepage-section",
+        icon: LayoutGrid,
+      });
+    }
 
     if (manageCoupon)
       items.push({

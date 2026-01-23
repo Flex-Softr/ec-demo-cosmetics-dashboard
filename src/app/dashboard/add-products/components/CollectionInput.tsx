@@ -1,15 +1,15 @@
 "use client";
 import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
-import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import { ICollection } from "@/types/collection";
 import { useFormContext } from "react-hook-form";
 
-const CollectionInput = () => {
-  const { data: response, isLoading } = useGetCollectionsQuery({
-    isActive: true,
-  });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const collectionsData = (response?.data as any)?.data;
+const CollectionInput = ({
+  collectionsData,
+  isLoading,
+}: {
+  collectionsData: ICollection[] | undefined;
+  isLoading: boolean;
+}) => {
   const collections = Array.isArray(collectionsData) ? collectionsData : [];
 
   const {
