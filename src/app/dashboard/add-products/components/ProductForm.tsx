@@ -273,6 +273,20 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         relatedProducts: data.relatedProducts?.map((p: any) => p.value) || [],
       };
+
+      if (!payload.inventory?.sku) {
+        delete payload.inventory.sku;
+      }
+
+      if (payload.variations) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        payload.variations.forEach((v: any) => {
+          if (v.inventory && !v.inventory.sku) {
+            delete v.inventory.sku;
+          }
+        });
+      }
+
       // Remove temporary UI field
       delete payload.attributeValues;
 
