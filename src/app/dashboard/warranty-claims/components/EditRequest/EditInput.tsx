@@ -129,7 +129,7 @@ const EditInput = ({
             <div className="space-y-2 w-full">
               <Input
                 type="text"
-                defaultValue={previousClaimedCodes.map((item) => " " + item)}
+                defaultValue={previousClaimedCodes.join(", ")}
                 {...register("warrantyClaimCodes")}
                 id="warrantyClaimCodes"
                 placeholder="Enter claimed codes, separated by commas (e.g., 495, 455, 354)"

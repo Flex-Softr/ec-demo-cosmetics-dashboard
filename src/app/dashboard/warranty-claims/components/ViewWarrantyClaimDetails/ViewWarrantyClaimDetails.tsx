@@ -91,14 +91,16 @@ const ViewWarrantyClaimDetails = ({ reqData }: { reqData: TWarrantyClaim }) => {
                   <p className="flex-1 flex justify-between mr-5">
                     <span>{item.product.title}</span>
                     <span className="flex gap-2 items-center">
-                      {Object.values(item.attributes || {}).map((item) => (
-                        <span
-                          key={item + Math.random()}
-                          className="font-normal"
-                        >
-                          {item + " "}
-                        </span>
-                      ))}
+                      {Object.values(item.attributes || {}).map(
+                        (attrValue, idx) => (
+                          <span
+                            key={`${attrValue}-${idx}`}
+                            className="font-normal"
+                          >
+                            {String(attrValue) + " "}
+                          </span>
+                        )
+                      )}
                       <span>
                         {(item?.product?.variations || []).length ? (
                           <>
@@ -138,7 +140,21 @@ const ViewWarrantyClaimDetails = ({ reqData }: { reqData: TWarrantyClaim }) => {
                             Warranty duration
                           </td>
                           <td className="border-2 px-5 py-3">
-                            {item?.prevWarrantyInformation?.duration || "N/A"}
+                            {(() => {
+                              const duration =
+                                item?.prevWarrantyInformation?.duration;
+                              if (
+                                typeof duration === "object" &&
+                                duration !== null
+                              ) {
+                                const d = duration as unknown as {
+                                  quantity: string;
+                                  unit: string;
+                                };
+                                return `${d.quantity} ${d.unit}`;
+                              }
+                              return duration || "N/A";
+                            })()}
                           </td>
                         </tr>
                         <tr>
@@ -238,12 +254,12 @@ const ViewWarrantyClaimDetails = ({ reqData }: { reqData: TWarrantyClaim }) => {
                                 >
                                   {Object.values(
                                     singleVariation.attributes || {}
-                                  ).map((item) => (
+                                  ).map((attrValue, idx) => (
                                     <span
-                                      key={item + Math.random()}
+                                      key={`${attrValue}-${idx}`}
                                       className="font-normal"
                                     >
-                                      {item + " "}
+                                      {String(attrValue) + " "}
                                     </span>
                                   ))}
                                 </SelectItem>
