@@ -16,7 +16,7 @@ import {
   useUpdateProductMutation,
 } from "@/redux/features/products/productsApi";
 import { useAppDispatch } from "@/redux/hooks";
-import { revalidateTag, TTags } from "@/utilities/revalidate";
+import { revalidateTag } from "@/utilities/revalidate";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
@@ -318,10 +318,6 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         res = await createProduct(payload).unwrap();
       }
 
-      const revalidateTags = collectionsResponse?.data?.data?.map(
-        (item) => `homepageSections-${item._id}`
-      ) as TTags[];
-
       toast({
         className: "bg-success text-white text-2xl",
         title: res.message,
@@ -336,7 +332,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       if (productId) {
         await revalidateTag([
           `product-${productData?.slug}`,
-          ...revalidateTags,
+          "homepageIndividualSection",
         ]);
       }
       await revalidateTag([
@@ -344,7 +340,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         `collectionProducts-${productData?.slug}`,
         "featuredProducts",
         "allCategories",
-        ...revalidateTags,
+        "homepageIndividualSection",
       ]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

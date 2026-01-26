@@ -13,7 +13,8 @@ export type TTags =
   | "shippingCharge"
   | "sliderBanner"
   | `homepageSections`
-  | `homepageSections-${string}`;
+  | `homepageSections-${string}`
+  | "homepageIndividualSection";
 
 export const revalidateTag = async (tag: TTags | TTags[]) => {
   let tags: string;
