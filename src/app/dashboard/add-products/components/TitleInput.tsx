@@ -17,6 +17,8 @@ const TitleInput = () => {
   // We'll keep local state for manual edits valid only for form lifetime?
   // Actually, standard behavior is: if user hasn't manually edited slug, it auto-generates.
   const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
+  const [isTitleEdited, setIsTitleEdited] = useState(false);
+  const [slugSuffix, setSlugSuffix] = useState("");
 
   const generateSlug = (text: string) => {
     return text
@@ -27,21 +29,39 @@ const TitleInput = () => {
       .replace(/-+/g, "-"); // remove multiple hyphens
   };
 
+  const slug = watch("slug");
+  useEffect(() => {
+    if (slug && !isTitleEdited) {
+      setSlugSuffix(slug.split("-").pop()!);
+    }
+  }, [isTitleEdited, slug]);
   // Sync title changes to slug if not manually edited
   // Using useEffect to listen to title changes specifically to avoid "onChange" prop collision with register
   useEffect(() => {
+    if (!isTitleEdited) return;
     if (title && !isSlugManuallyEdited) {
-      const newSlug = generateSlug(title);
+      // 🔁 title changed → regenerate base + keep suffix
+      const base = generateSlug(title);
+      const newSlug = slugSuffix ? `${base}-${slugSuffix}` : base;
+
+      setValue("slug", newSlug, { shouldValidate: true });
       setValue("slug", newSlug, { shouldValidate: true });
     }
-  }, [title, isSlugManuallyEdited, setValue]);
+  }, [isTitleEdited, title, isSlugManuallyEdited, setValue, slugSuffix]);
 
   return (
     <SectionContentWrapper heading={"Product Title and Slug"}>
       <div className="flex flex-col gap-4">
         <div>
           <label className="text-sm font-medium mb-1 block">Title</label>
-          <Input placeholder="Product Title" {...register("title")} />
+          <Input
+            placeholder="Product Title"
+            {...register("title", {
+              onChange: () => {
+                setIsTitleEdited(true);
+              },
+            })}
+          />
           {errors.title && (
             <p className="text-red-500 text-sm mt-1">
               {errors.title.message as string}

@@ -305,12 +305,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
       // Clean up optional fields that might be empty strings
       if (!payload.brand) delete payload.brand;
-      if (
-        !payload.productCollection ||
-        (Array.isArray(payload.productCollection) &&
-          payload.productCollection.length === 0)
-      )
-        delete payload.productCollection;
+
       if (!payload.category.subCategory) delete payload.category.subCategory;
 
       let res;
