@@ -348,6 +348,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         `relatedProducts-${productData?.slug}`,
         `collectionProducts-${productData?.slug}`,
         "featuredProducts",
+        "allCategories",
         ...revalidateTags,
       ]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
