@@ -1,5 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
 import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierShipment/courierShipmentApi";
 import { useCourierReturnedOrdersMutation } from "@/redux/features/monitorDelivery/monitorDeliveryApi";
@@ -167,17 +174,22 @@ const UpdateOrderStatus = ({
 
   return (
     <div className="flex items-center gap-5">
-      <select
-        onChange={(e) => setAction(e.target.value)}
-        className="h-9 border border-primary outline-primary rounded-md capitalize"
-      >
-        <option value="">Update status</option>
-        {statusOptions(status).map((status) => (
-          <option value={status} key={status}>
-            {status}
-          </option>
-        ))}
-      </select>
+      <Select onValueChange={setAction}>
+        <SelectTrigger className="w-[180px] h-9 border-primary capitalize">
+          <SelectValue placeholder="Update status" />
+        </SelectTrigger>
+        <SelectContent>
+          {statusOptions(status).map((statusOption) => (
+            <SelectItem
+              key={statusOption}
+              value={statusOption}
+              className="capitalize"
+            >
+              {statusOption}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <div className="flex justify-end">
         <Button
           onClick={handleSubmit}

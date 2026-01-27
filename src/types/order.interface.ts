@@ -81,6 +81,8 @@ export type TOrders = {
   orderSource: { name: string; url: string; lpNo: number };
   courierDetails: { trackingId: string };
   eventId?: string;
+  messageFromShippingProvider?: string;
+  statusFromShippingProvider?: string;
 };
 
 export type TQuery = {

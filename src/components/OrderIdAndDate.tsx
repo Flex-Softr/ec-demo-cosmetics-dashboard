@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 type TProps = {
   orderId?: string;
   timestamp: string | Date;
@@ -62,10 +62,18 @@ function OrderIdAndDate({ orderId, timestamp, className }: TProps) {
 
   return (
     <div className={`${className}`}>
-      <span>{orderId}</span>
-      <span>{formattedTime}</span>
-      <span>{formattedDate}</span>
-      <span>{timeAgo}</span>
+      <span className="text-primary font-semibold whitespace-nowrap">
+        # {orderId}
+      </span>
+      <span className="whitespace-nowrap text-xs font-semibold text-muted-foreground">
+        {formattedTime}
+      </span>
+      <span className="whitespace-nowrap text-xs font-semibold text-muted-foreground">
+        {formattedDate}
+      </span>
+      <span className="whitespace-nowrap text-xs font-semibold text-muted-foreground">
+        {timeAgo}
+      </span>
     </div>
   );
 }
