@@ -5,7 +5,7 @@ const shippingMethodApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getRedXShippingArea: builder.query<{ data: TRedXDeliveryArea[] }, void>({
       query: () => ({
-        url: "/shipping-methods/redx/areas",
+        url: "/courier-config/area/redx",
       }),
     }),
   }),

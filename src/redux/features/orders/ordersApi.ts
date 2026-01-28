@@ -1,5 +1,7 @@
 import baseApi from "@/redux/baseApi/baseApi";
 import { TQuery } from "@/types/order.interface";
+import { TSuccessResponse } from "@/types/response";
+import { TCourier } from "@/types/shippingMethod";
 import searchParams from "@/utilities/searchParams";
 
 const updateStatusApi = baseApi.injectEndpoints({
@@ -79,7 +81,10 @@ const updateStatusApi = baseApi.injectEndpoints({
         "monitorDelivery",
       ],
     }),
-    getShippingMethodsForOrder: builder.query({
+    getShippingMethodsForOrder: builder.query<
+      TSuccessResponse<TCourier[]>,
+      void
+    >({
       query: () => ({
         url: "/orders/get-courier-for-order",
       }),

@@ -27,6 +27,7 @@ const OrderActionDropDown = ({ order }: { order: TOrders }) => {
     "processing",
     "warranty processing",
     "warranty added",
+    "On courier",
     // "processing done",
   ].includes(order.status);
 

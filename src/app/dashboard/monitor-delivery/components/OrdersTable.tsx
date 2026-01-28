@@ -75,6 +75,18 @@ export default function OrdersTable({
       },
     },
     {
+      accessorKey: "statusFromShippingProvider",
+      header: "Delivery status",
+      cell: ({ row }) => {
+        const status = row.original.statusFromShippingProvider;
+        return (
+          <div className="capitalize whitespace-nowrap min-w-32">
+            {status?.replace("_", " ")?.replaceAll("-", " ")}
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "monitor",
       header: "Monitoring",
       cell: ({ row }) => (

@@ -92,7 +92,7 @@ const MonitoringAndTracking = ({
     <>
       <button
         onClick={handleOpen}
-        className={`capitalize px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(currentStatus)}`}
+        className={`capitalize px-2 pb-[2px]  pt-[1px] whitespace-nowrap text-white rounded ${backgroundColor(currentStatus)}`}
         title={currentStatus}
       >
         {currentStatus}
