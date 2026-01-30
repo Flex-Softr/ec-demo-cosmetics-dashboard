@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import MonitorOrderDateRange from "./components/MonitorDateRange";
 import OrdersTable from "./components/OrdersTable";
 import RefreshCourier from "./components/RefreshCourier";
-import StatusButtons from "./components/StatusButtons";
+// import StatusButtons from "./components/StatusButtons";
 
 const MonitorDelivery = async () => {
   const { permissions = [] } = await getPermission();
@@ -37,9 +37,9 @@ const MonitorDelivery = async () => {
       <hr className="my-4" />
       <div className="space-y-3">
         {/* All, Pending, canceled, on courier etc status*/}
-        <StatusButtons
+        {/* <StatusButtons
           manageProcessing={manageShipmentOrder ? false : manageProcessingOrder}
-        />
+        /> */}
         <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
           {/*Bulk actions for Orders*/}
           <MonitorOrderDateRange />

@@ -88,6 +88,7 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
         const bg = `${backgroundColor(status.name)} text-white`;
         return (
           <Button
+            size={"sm"}
             key={status.name}
             onClick={() => {
               dispatch(setPage(1));

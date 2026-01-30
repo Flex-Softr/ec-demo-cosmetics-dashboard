@@ -57,7 +57,7 @@ const LoginPage = () => {
       <div className="w-[430px] border-none md:mx-auto">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+          className="bg-white rounded px-8 pt-6 pb-8 mb-4"
         >
           <div>
             <h4 className="text-center my-3 font-bold  text-2xl">Login Page</h4>

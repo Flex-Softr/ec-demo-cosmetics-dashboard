@@ -1,4 +1,5 @@
 "use client";
+import { formatImageSrc } from "@/lib/utils";
 import { TVideosAndImages } from "@/redux/features/warrantyClaimRequests/warrantyClaimInterface";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
@@ -9,8 +10,8 @@ const Gallery = ({
   videosAndImages: TVideosAndImages[];
 }) => {
   const galleryImages = videosAndImages?.map((file) => ({
-    original: `${file?.path}`,
-    thumbnail: `${file?.path}`,
+    original: `${formatImageSrc(file?.path)}`,
+    thumbnail: `${formatImageSrc(file?.path)}`,
     crossOrigin: "anonymous",
   }));
 

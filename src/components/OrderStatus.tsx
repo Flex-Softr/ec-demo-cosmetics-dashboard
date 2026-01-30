@@ -15,7 +15,7 @@ type TProps = {
 const OrderStatus = ({
   order,
   deliveryStatus,
-  disableStatus = [],
+  // disableStatus = [],
   permissions,
 }: TProps) => {
   const [open, setOpen] = useState(false);
@@ -34,7 +34,7 @@ const OrderStatus = ({
     <>
       <button
         onClick={handleOpen}
-        disabled={disableStatus.includes(status)}
+        // disabled={disableStatus.includes(status)}
         className={`capitalize px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(
           status
         )}`}
