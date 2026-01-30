@@ -35,7 +35,7 @@ const OrderStatus = ({
       <button
         onClick={handleOpen}
         // disabled={disableStatus.includes(status)}
-        className={`capitalize px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(
+        className={`capitalize whitespace-nowrap px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(
           status
         )}`}
         title={deliveryStatus ? deliveryStatus : ""}

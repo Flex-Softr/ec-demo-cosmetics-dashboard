@@ -45,7 +45,7 @@ export const columns: ColumnDef<TOrders>[] = [
   },
   {
     accessorKey: "orderId",
-    header: "Order Id & Date",
+    header: "Id & Date",
     cell: ({ row }) => (
       <OrderIdAndDate
         orderId={row.original.orderId}
@@ -76,7 +76,9 @@ export const columns: ColumnDef<TOrders>[] = [
   {
     accessorKey: "total",
     header: "Total",
-    cell: ({ row }) => <span>&#2547; {row.getValue("total")}</span>,
+    cell: ({ row }) => (
+      <span className="whitespace-nowrap">&#2547; {row.getValue("total")}</span>
+    ),
   },
   {
     accessorKey: "payment",

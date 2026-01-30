@@ -181,7 +181,7 @@ const ProductCode = ({
         <Button
           onClick={handleOpen}
           type="button"
-          className="bg-inherit text-inherit hover:bg-inherit"
+          className="bg-inherit text-inherit hover:bg-inherit w-24"
         >
           View code
         </Button>
@@ -189,7 +189,7 @@ const ProductCode = ({
         <Button
           onClick={handleOpen}
           type="button"
-          className="bg-inherit text-inherit hover:bg-inherit"
+          className="bg-inherit text-inherit hover:bg-inherit w-24"
         >
           Add code
         </Button>

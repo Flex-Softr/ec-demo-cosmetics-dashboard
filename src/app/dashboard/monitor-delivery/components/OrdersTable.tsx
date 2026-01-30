@@ -15,7 +15,7 @@ import {
 } from "@/redux/features/monitorDelivery/monitorDeliverySlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 // import { TOrders } from "@/types/order/order.interface";
-import OrderStatus from "@/components/OrderStatus";
+// import OrderStatus from "@/components/OrderStatus";
 import { TOrders } from "@/types/order.interface";
 import formattedOrderData from "@/utilities/formattedOrderData";
 import {
@@ -36,7 +36,7 @@ import { TPermission } from "@/utilities/isPermitted";
 
 export default function OrdersTable({
   editPermission,
-  permissions,
+  // permissions,
 }: {
   editPermission: boolean;
   permissions: TPermission[];
@@ -45,32 +45,44 @@ export default function OrdersTable({
 
   const newColumns: ColumnDef<TOrders>[] = [
     ...columns.slice(0, 8),
+    // {
+    //   accessorKey: "status",
+    //   header: "Delivery",
+    //   cell: ({ row }) => {
+    //     const status = row.original.deliveryStatus;
+    //     return (
+    //       <>
+    //         {editPermission ? (
+    //           <OrderStatus
+    //             order={row.original}
+    //             deliveryStatus={status}
+    //             disableStatus={[
+    //               status == "cancelled" ? "" : status,
+    //               "returned",
+    //             ]}
+    //             permissions={permissions}
+    //           />
+    //         ) : (
+    //           <OrderStatus
+    //             order={row.original}
+    //             deliveryStatus={status}
+    //             disableStatus={[status]}
+    //             permissions={permissions}
+    //           />
+    //         )}
+    //       </>
+    //     );
+    //   },
+    // },
     {
-      accessorKey: "status",
-      header: "Delivery",
+      accessorKey: "statusFromShippingProvider",
+      header: "Delivery status",
       cell: ({ row }) => {
-        const status = row.original.deliveryStatus;
+        const status = row.original.statusFromShippingProvider;
         return (
-          <>
-            {editPermission ? (
-              <OrderStatus
-                order={row.original}
-                deliveryStatus={status}
-                disableStatus={[
-                  status == "cancelled" ? "" : status,
-                  "returned",
-                ]}
-                permissions={permissions}
-              />
-            ) : (
-              <OrderStatus
-                order={row.original}
-                deliveryStatus={status}
-                disableStatus={[status]}
-                permissions={permissions}
-              />
-            )}
-          </>
+          <div className="capitalize whitespace-nowrap min-w-32">
+            {status?.replace("_", " ")?.replaceAll("-", " ")}
+          </div>
         );
       },
     },

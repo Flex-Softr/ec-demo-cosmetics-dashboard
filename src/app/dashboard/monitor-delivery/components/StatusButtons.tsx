@@ -96,7 +96,7 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
               dispatch(setSelectedStatus(status.name));
             }}
             disabled={isLoading}
-            className={`capitalize bg-white flex items-center gap-1 rounded-2xl ${borderColor(
+            className={`capitalize bg-white flex items-center gap-1 rounded-2xl whitespace-nowrap ${borderColor(
               status.name
             )
               .split(" ")

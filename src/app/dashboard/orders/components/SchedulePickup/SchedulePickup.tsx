@@ -48,13 +48,17 @@ const SchedulePickup = ({
   order: TOrders;
 }) => {
   /* ---------------------------------- DATA --------------------------------- */
-  const { data: shippingAreaRes } = useGetRedXShippingAreaQuery();
+  const { data: shippingMethodsRes } = useGetShippingMethodsForOrderQuery();
+
+  const [fetchRedxArea, setFetchRedxArea] = useState(false);
+
+  const { data: shippingAreaRes } = useGetRedXShippingAreaQuery(undefined, {
+    skip: !fetchRedxArea,
+  });
   const shippingArea = useMemo(
     () => shippingAreaRes?.data ?? [],
     [shippingAreaRes?.data]
   );
-
-  const { data: shippingMethodsRes } = useGetShippingMethodsForOrderQuery({});
 
   const shippingMethods = useMemo(
     () => (shippingMethodsRes as { data: TCourier[] })?.data ?? [],
@@ -66,6 +70,15 @@ const SchedulePickup = ({
   const [selectedProvider, setSelectedProvider] = useState<TCourier | null>(
     null
   );
+
+  useEffect(() => {
+    const isRedxActive = shippingMethods.find(
+      (item) => item.slug === "redx"
+    )?.isActive;
+    if (isRedxActive) {
+      setFetchRedxArea(isRedxActive);
+    }
+  }, [shippingMethods]);
 
   /* ---------------------------------- FORM --------------------------------- */
   const form = useForm<TSchedulePickupForm>({
