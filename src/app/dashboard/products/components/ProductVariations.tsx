@@ -55,7 +55,15 @@ const ProductVariations = ({ variations, type }: ProductVariationsProps) => {
               {formatStockStatus(v.inventory.stockStatus)}
             </span>
           )}
-          {type === "qty" && <span>{v.inventory.stockAvailable}</span>}
+          {type === "qty" && (
+            <>
+              {!v.inventory.manageStock && v.inventory.stockAvailable === 0 ? (
+                <Minus className="h-4 w-4" />
+              ) : (
+                <span>{v.inventory.stockAvailable}</span>
+              )}
+            </>
+          )}
         </div>
       ))}
     </div>

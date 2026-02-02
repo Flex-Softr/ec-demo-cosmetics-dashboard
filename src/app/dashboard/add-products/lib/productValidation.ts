@@ -53,15 +53,15 @@ const InventoryValidationSchema = Yup.object().shape({
     then: () =>
       Yup.number()
         .transform((value) => (Number.isNaN(value) ? undefined : value))
-        .min(1, "Low stock warning is required")
+        .min(0, "Low stock warning is required")
         .typeError("Low stock warning is required")
         .required("Low stock warning is required")
         .test(
-          "is-less-than-stock",
-          "Low stock warning cannot be equal or greater than stock quantity",
+          "is-less-than-equal-stock",
+          "Low stock warning cannot be greater than stock quantity",
           function (value) {
             const { stockQuantity } = this.parent;
-            return value < stockQuantity;
+            return value <= stockQuantity;
           }
         ),
     otherwise: () => Yup.number().notRequired(),

@@ -10,9 +10,9 @@ import {
 } from "@/lib/utils";
 import { Minus } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import Actions from "./Actions";
 import ProductVariations from "./ProductVariations";
-import Link from "next/link";
 
 export const ProductColumns: ColumnDef<IAdminProduct>[] = [
   {
@@ -175,7 +175,11 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     cell: ({ row: { original } }) =>
       original.type === PRODUCT_TYPE.SIMPLE ? (
         <div className="flex justify-center px-4 py-2 whitespace-nowrap w-[1%] mx-auto">
-          <span>{original.stockAvailable}</span>
+          {!original.manageStock && original.stockAvailable === 0 ? (
+            <Minus className="h-4 w-4" />
+          ) : (
+            <span>{original.stockAvailable}</span>
+          )}
         </div>
       ) : (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 w-[1%] mx-auto whitespace-nowrap">

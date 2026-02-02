@@ -151,9 +151,11 @@ export type IAdminProduct = {
       stockQuantity: number;
       stockStatus: (typeof STOCK_STATUS)[keyof typeof STOCK_STATUS];
       stockAvailable: number;
+      manageStock: boolean;
     };
   }[];
   regularPrice?: number; // Price Column
   salePrice?: number; // Show sale price if exists
+  manageStock: boolean;
   publishedStatus: string; // Date Column (ISO String)
 };

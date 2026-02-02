@@ -11,6 +11,7 @@ const productsApi = baseApi.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["productList", "publicProductList"],
     }),
     getAProduct: builder.query({
       query: (id: string) => ({
@@ -44,7 +45,7 @@ const productsApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: payload,
       }),
-      invalidatesTags: ["singleProduct", "products"],
+      invalidatesTags: ["singleProduct", "productList", "publicProductList"],
     }),
     getProducts: builder.query<IAdminProductResponse, TQuery>({
       query: (args: TQuery) => ({
@@ -56,7 +57,7 @@ const productsApi = baseApi.injectEndpoints({
       transformResponse: (response: IAdminProductResponse) => {
         return response;
       },
-      providesTags: ["products"],
+      providesTags: ["productList"],
     }),
     getCustomerProducts: builder.query({
       query: (args: TQuery) => ({
@@ -70,7 +71,7 @@ const productsApi = baseApi.injectEndpoints({
       //       meta: response.meta,
       //     };
       //   },
-      providesTags: ["allCustomerProducts"],
+      providesTags: ["publicProductList"],
     }),
     deleteProducts: builder.mutation({
       query: (productIds: string[]) => ({
@@ -78,7 +79,7 @@ const productsApi = baseApi.injectEndpoints({
         method: "DELETE",
         body: { productIds },
       }),
-      invalidatesTags: ["products", "allCustomerProducts"],
+      invalidatesTags: ["productList", "publicProductList", "singleProduct"],
     }),
   }),
 });
