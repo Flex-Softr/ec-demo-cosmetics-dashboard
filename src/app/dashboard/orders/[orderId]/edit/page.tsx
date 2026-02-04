@@ -68,6 +68,7 @@ const EditOrderPage = ({ params }: { params: { orderId: string } }) => {
         title={`Edit Order #${order?.orderId}`}
         isEdit={true}
         orderId={order?._id}
+        order={order}
       />
     </div>
   );

@@ -12,7 +12,6 @@ import { toast } from "@/components/ui/use-toast";
 import { useAddCategoryMutation } from "@/redux/features/category/categoryApi";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { refetchData } from "@/utilities/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -69,7 +68,6 @@ const AddCategoryForm = () => {
     data.image = thumbnail || undefined;
     const addedCategory = await addCategory(data).unwrap();
     if (addedCategory?.success) {
-      await refetchData("categories");
       form.reset();
       dispatch(setThumbnail(""));
       setOpen(false);

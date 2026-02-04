@@ -74,6 +74,7 @@ const tags = [
   "slider",
   "sliders",
   "homepage-sections",
+  "customerOrderHistory",
 ] as const;
 
 const baseApi = createApi({

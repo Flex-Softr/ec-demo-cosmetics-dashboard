@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import { useDeleteSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
-import { refetchData } from "@/utilities/fetchData";
 import { SquarePen, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { TSubCategories } from "./SubCategoryTable";
@@ -32,8 +31,6 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
     const res = await deleteSubCategory(categoryIds).unwrap();
 
     if (res?.success) {
-      await refetchData("categories");
-      await refetchData("subcategories");
       toast({
         className: "bg-success text-white ",
         title: "Sub category Successfully Deleted",

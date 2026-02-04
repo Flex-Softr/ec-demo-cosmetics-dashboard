@@ -1,25 +1,12 @@
 "use client";
+import { useGetCustomerOrderHistoryQuery } from "@/redux/features/orders/ordersApi";
 import backgroundColor from "@/utilities/backgroundColor";
-import { useEffect, useState } from "react";
-import fetchData from "@/utilities/fetchData";
 
 const CustomerOrderHistory = ({ phoneNumber }: { phoneNumber: string }) => {
-  const [orderHistory, setOrderHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { data: orderHistory, isLoading } =
+    useGetCustomerOrderHistoryQuery(phoneNumber);
 
-  useEffect(() => {
-    setLoading(true);
-    (async () => {
-      const { data } = await fetchData({
-        endPoint: `/orders/get-customer-order-count/${phoneNumber}`,
-        tags: ["customerOrderHistory"],
-      });
-      setOrderHistory(data);
-      setLoading(false);
-    })();
-  }, [phoneNumber]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div
         role="status"
@@ -46,9 +33,13 @@ const CustomerOrderHistory = ({ phoneNumber }: { phoneNumber: string }) => {
 
       {/* Table Body */}
       <tbody>
-        {orderHistory
+        {orderHistory?.data
           ?.reduce(
-            (rows, status, index) => {
+            (
+              rows: { name: string; total: number }[][],
+              status: { name: string; total: number },
+              index: number
+            ) => {
               // Group items into sets of 4 statuses per row
               if (index % 4 === 0) {
                 rows.push([]);
@@ -58,9 +49,9 @@ const CustomerOrderHistory = ({ phoneNumber }: { phoneNumber: string }) => {
             },
             [] as { name: string; total: number }[][]
           )
-          .map((row, rowIndex) => (
+          .map((row: { name: string; total: number }[], rowIndex: number) => (
             <tr key={rowIndex} className="border border-gray-300 ">
-              {row.map(({ name, total }) => {
+              {row.map(({ name, total }: { name: string; total: number }) => {
                 const bg =
                   total > 0 ? `${backgroundColor(name)} text-white` : "";
                 return (

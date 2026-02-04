@@ -11,7 +11,6 @@ import {
 } from "@/redux/features/warranty/warrantySlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { TOrders } from "@/types/order.interface";
-import { refetchData } from "@/utilities/fetchData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ClipboardCopy } from "lucide-react";
 import Image from "next/image";
@@ -89,7 +88,6 @@ const ProductCode = ({
 
       const res = await addWarrantyCode(payload).unwrap();
       if (res.success) {
-        await refetchData("processingOrders");
         dispatch(setIsOrderUpdate(!iSOrderUpdate));
         handleOpen();
         toast({

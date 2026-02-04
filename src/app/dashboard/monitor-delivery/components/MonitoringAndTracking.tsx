@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useUpdateOrderMutation } from "@/redux/features/orders/ordersApi";
 import { TOrders } from "@/types/order.interface";
-import { refetchData } from "@/utilities/fetchData";
 import { useState } from "react";
 
 const backgroundColor = (status: string) => {
@@ -62,9 +61,6 @@ const MonitoringAndTracking = ({
         const res = await updateOrder(updatePayload).unwrap();
 
         if (res.success) {
-          // await refetchData("allOrders");
-          await refetchData("customerOrderHistory");
-          // dispatch(setIsOrderUpdate(!iSOrderUpdate));
           toast({
             className: "bg-success text-white text-2xl",
             title: "Status updated successfully!",

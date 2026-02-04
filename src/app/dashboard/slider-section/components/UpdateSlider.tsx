@@ -29,7 +29,6 @@ import { toast } from "@/components/ui/use-toast";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useUpdateSliderMutation } from "@/redux/features/sliderBanner/sliderApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { refetchData } from "@/utilities/fetchData";
 import { revalidateTag } from "@/utilities/revalidate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SquarePen } from "lucide-react";
@@ -135,7 +134,6 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
       }).unwrap();
 
       if (res?.success) {
-        await refetchData("sliders");
         setOpen(false);
         dispatch(setThumbnail(""));
         toast({

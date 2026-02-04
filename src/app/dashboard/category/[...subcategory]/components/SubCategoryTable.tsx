@@ -25,7 +25,6 @@ import {
   useDeleteSubCategoryMutation,
   useGetSubCategoriesQuery,
 } from "@/redux/features/category/subCategoryApi";
-import { refetchData } from "@/utilities/fetchData";
 import {
   ColumnDef,
   VisibilityState,
@@ -142,8 +141,6 @@ export const CategoryTable = ({ categoryId }: { categoryId: string }) => {
     if (categoryIds.length) {
       const res = await deleteSubCategory(categoryIds).unwrap();
       if (res?.success) {
-        await refetchData("categories");
-        await refetchData("subcategories");
         toast({
           className: "bg-success text-white ",
           title: "Sub category deleted successfully!",

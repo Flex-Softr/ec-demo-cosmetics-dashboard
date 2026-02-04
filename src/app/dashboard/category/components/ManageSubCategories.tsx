@@ -25,7 +25,6 @@ import {
 } from "@/redux/features/category/subCategoryApi";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { refetchData } from "@/utilities/fetchData";
 import { revalidateTag } from "@/utilities/revalidate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Archive, Plus, Trash2 } from "lucide-react";
@@ -92,7 +91,6 @@ const ManageSubCategories = ({ category }: { category: TCategories }) => {
     };
     const res = await addSubCategory(payload).unwrap();
     if (res?.success) {
-      await refetchData("categories");
       form.reset();
       dispatch(setThumbnail(""));
       setIsAdding(false);

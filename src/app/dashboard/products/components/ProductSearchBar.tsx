@@ -38,10 +38,8 @@ const ProductSearchBar = ({ endPoint }: { endPoint: string }) => {
       dispatch(setIsLoading(true));
 
       const { data } = await fetchData({
-        // This line was modified to keep fetchData as useGetProductsQuery cannot be called here
-        endPoint, // Keep endPoint for fetchData
+        endPoint,
         searchParams: {
-          // Keep searchParams for fetchData
           status: selectedStatus,
           search: searchQuery,
           sort: "-createdAt",

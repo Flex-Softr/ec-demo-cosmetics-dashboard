@@ -12,19 +12,13 @@ const updateStatusApi = baseApi.injectEndpoints({
         method: "POST",
         body: orderData,
       }),
-      invalidatesTags: ["carts", "allOrders"],
+      invalidatesTags: ["carts", "allOrders", "customerOrderHistory"],
     }),
     getAllOrders: builder.query({
       query: (args: TQuery) => ({
         url: "/orders/admin/all-orders",
         params: searchParams(args),
       }),
-      // transformResponse: (response:unknown) => {
-      //   return {
-      //     data: response.data,
-      //     meta: response.meta,
-      //   };
-      // },
       providesTags: ["allOrders"],
     }),
     getSingleOrder: builder.query({
@@ -51,6 +45,7 @@ const updateStatusApi = baseApi.injectEndpoints({
         "processingOrders",
         "processingDoneAndCourierOrders",
         "monitorDelivery",
+        "customerOrderHistory",
       ],
     }),
     updateOrdersStatus: builder.mutation({
@@ -65,6 +60,7 @@ const updateStatusApi = baseApi.injectEndpoints({
         "processingOrders",
         "processingDoneAndCourierOrders",
         "monitorDelivery",
+        "customerOrderHistory",
       ],
     }),
     deleteOrders: builder.mutation({
@@ -79,6 +75,7 @@ const updateStatusApi = baseApi.injectEndpoints({
         "processingOrders",
         "processingDoneAndCourierOrders",
         "monitorDelivery",
+        "customerOrderHistory",
       ],
     }),
     getShippingMethodsForOrder: builder.query<
@@ -99,7 +96,14 @@ const updateStatusApi = baseApi.injectEndpoints({
         { type: "singleOrder", id: order_id },
         "allOrders",
         "processingDoneAndCourierOrders",
+        "customerOrderHistory",
       ],
+    }),
+    getCustomerOrderHistory: builder.query({
+      query: (phoneNumber: string) => ({
+        url: `/orders/get-customer-order-count/${phoneNumber}`,
+      }),
+      providesTags: ["customerOrderHistory"],
     }),
   }),
 });
@@ -113,4 +117,5 @@ export const {
   useDeleteOrdersMutation,
   useGetShippingMethodsForOrderQuery,
   useSchedulePickupMutation,
+  useGetCustomerOrderHistoryQuery,
 } = updateStatusApi;

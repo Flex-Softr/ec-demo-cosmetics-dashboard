@@ -13,7 +13,6 @@ import {
   setThumbnail,
 } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch } from "@/redux/hooks";
-// import fetchData from "@/utilities/fetchData";
 import getAttributes from "@/app/dashboard/add-products/lib/getAttributes";
 import {
   resetVariation,

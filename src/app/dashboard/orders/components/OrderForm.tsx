@@ -9,7 +9,6 @@ import {
 import { setIsOrderUpdate } from "@/redux/features/orders/ordersSlice";
 import { useGetPaymentMethodQuery } from "@/redux/features/paymentMethod/paymentMethodAPI";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { refetchData } from "@/utilities/fetchData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -26,6 +25,8 @@ import NameMobileAddress from "./NameMobileAddress";
 import Notes from "./Notes";
 import PaymentDiscountAdvance from "./PaymentDiscountAdvance";
 import SelectProduct from "./SelectProduct";
+import { TOrders } from "@/types/order.interface";
+import { revalidateTag, TTags } from "@/utilities/revalidate";
 
 const schema = yup.object().shape({
   shipping: yup.object().shape({
@@ -91,6 +92,7 @@ type OrderFormProps = {
   isEdit?: boolean;
   orderId?: string;
   deliveryStatus?: string;
+  order?: TOrders;
 };
 
 const OrderForm: React.FC<OrderFormProps> = ({
@@ -101,6 +103,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
   isEdit,
   orderId,
   deliveryStatus,
+  order,
 }) => {
   const { toast } = useToast();
   const dispatch = useAppDispatch();
@@ -131,6 +134,21 @@ const OrderForm: React.FC<OrderFormProps> = ({
   });
 
   const calculation = useOrderCalculation(control);
+
+  const handleRevalidation = async () => {
+    const productTags: TTags[] =
+      order?.products?.flatMap((product: TOrders["products"][0]) => [
+        `product-${product?.slug}` as TTags,
+        `relatedProducts-${product?.slug}` as TTags,
+        `collectionProducts-${product?.slug}` as TTags,
+      ]) || [];
+
+    await revalidateTag([
+      ...productTags,
+      "featuredProducts",
+      "homepageIndividualSection",
+    ]);
+  };
 
   const onSubmit: SubmitHandler<TFormInput> = async (data) => {
     // Manual validation for dynamic payment fields
@@ -251,6 +269,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
           className: "bg-success text-white text-2xl",
           title: "Order updated successfully!",
         });
+        handleRevalidation();
       } else {
         const payload = imageToOrderId ? { ...data, id: imageToOrderId } : data;
         await createOrder(payload).unwrap();
@@ -261,7 +280,6 @@ const OrderForm: React.FC<OrderFormProps> = ({
       }
 
       dispatch(setIsOrderUpdate(!iSOrderUpdate));
-      await refetchData("allOrders");
 
       if (onSubmitSuccess) {
         onSubmitSuccess();

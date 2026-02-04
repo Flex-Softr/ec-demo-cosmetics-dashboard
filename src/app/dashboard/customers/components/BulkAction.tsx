@@ -13,7 +13,6 @@ import { setIsOrderUpdate } from "@/redux/features/orders/ordersSlice";
 import { useUpdateProcessingOrderStatusMutation } from "@/redux/features/processingOrders/processingOrdersApi";
 import { setBulkOrder } from "@/redux/features/processingOrders/processingOrdersSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { refetchData } from "@/utilities/fetchData";
 import statusOptions from "@/utilities/statusOptions";
 import { useState } from "react";
 import PrintInvoiceButton from "../../orders/[orderId]/components/invoice/PrintInvoiceButton";
@@ -41,8 +40,6 @@ const BulkAction = () => {
         if (orderIds.length) {
           const res = await updateProcessingOrderStatus(updatePayload).unwrap();
           if (res.success) {
-            await refetchData("processingOrders");
-            await refetchData("customerOrderHistory");
             dispatch(setIsOrderUpdate(!iSOrderUpdate));
             dispatch(setBulkOrder({ orderIds: [] }));
             toast({

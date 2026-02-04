@@ -7,16 +7,10 @@ import objectToSearchParams from "./searchParams";
 type TTags =
   | "paymentMethod"
   | "shippingCharge"
-  | "orderStatusCount"
-  | "customerOrderHistory"
-  | "categories"
-  | "subcategories"
   | "attributes"
-  | "fraudCheck"
   | "brands"
   | "tags"
-  | "order-sms-notification"
-  | "sliders";
+  | "order-sms-notification";
 
 type TProps = {
   endPoint: string;

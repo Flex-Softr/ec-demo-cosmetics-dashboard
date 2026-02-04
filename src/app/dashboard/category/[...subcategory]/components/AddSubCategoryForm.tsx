@@ -21,7 +21,6 @@ import { toast } from "@/components/ui/use-toast";
 import { useAddSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { refetchData } from "@/utilities/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -70,8 +69,6 @@ const AddSubCategoryForm = ({ category }: { category: string }) => {
         const addedSubCategory = await addSubCategory(data).unwrap();
 
         if (addedSubCategory?.success) {
-          await refetchData("categories");
-          await refetchData("subcategories");
           form.reset();
           dispatch(setThumbnail(""));
           setOpen(false);

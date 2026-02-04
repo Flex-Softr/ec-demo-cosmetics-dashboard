@@ -12,7 +12,6 @@ import { toast } from "@/components/ui/use-toast";
 import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { refetchData } from "@/utilities/fetchData";
 import { revalidateTag } from "@/utilities/revalidate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -69,7 +68,6 @@ const UpdateCategoryForm = ({
     const updatedCategory = await updateCategory({ id, data }).unwrap();
     if (updatedCategory?.success) {
       form.reset();
-      await refetchData("categories");
       dispatch(setThumbnail(""));
       toast({
         className: "bg-success text-white text-2xl",

@@ -2,7 +2,6 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi";
 import { TErrorResponse, TSuccessResponse } from "@/types/response";
-import { refetchData } from "@/utilities/fetchData";
 import { revalidateTag } from "@/utilities/revalidate";
 import { useState } from "react";
 import { TCategories } from "./CategoryTable";
@@ -26,7 +25,6 @@ const UpdateCategoryActiveStatus = ({
         id: category._id,
       }).unwrap()) as TSuccessResponse;
       if (res.success) {
-        refetchData("categories");
         toast({
           className: "toast-success",
           title: res?.message,

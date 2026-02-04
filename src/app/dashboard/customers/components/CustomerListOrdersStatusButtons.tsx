@@ -7,7 +7,6 @@ import {
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-// import fetchData from "@/utilities/fetchData";
 import {
   setCustomerOrders,
   setSelectedStatus,

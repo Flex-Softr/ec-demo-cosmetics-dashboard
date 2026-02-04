@@ -11,12 +11,9 @@ import { toast } from "@/components/ui/use-toast";
 import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierShipment/courierShipmentApi";
 import { useCourierReturnedOrdersMutation } from "@/redux/features/monitorDelivery/monitorDeliveryApi";
 import { useUpdateOrdersStatusMutation } from "@/redux/features/orders/ordersApi";
-// import { setIsOrderUpdate } from "@/redux/features/orders/ordersSlice";
 import { useUpdateProcessingOrderStatusMutation } from "@/redux/features/processingOrders/processingOrdersApi";
-// import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { PERMISSIONS } from "@/const/permissions";
 import { TOrders } from "@/types/order.interface";
-import { refetchData } from "@/utilities/fetchData";
 import isPermitted, { TPermission } from "@/utilities/isPermitted";
 import { revalidateTag, TTags } from "@/utilities/revalidate";
 import statusOptions from "@/utilities/statusOptions";
@@ -103,10 +100,7 @@ const UpdateOrderStatus = ({
       if (action === "returned") {
         const res = await courierReturnedOrders(updatePayload).unwrap();
         if (res.success) {
-          // await refetchData("allOrders");
-          await refetchData("customerOrderHistory");
           await handleRevalidation(action);
-          // dispatch(setIsOrderUpdate(!iSOrderUpdate));
           toast({
             className: "bg-success text-white text-2xl",
             title: "Order status updated successfully!",
@@ -123,10 +117,7 @@ const UpdateOrderStatus = ({
       if (ordersRoute.includes(status)) {
         const res = await updateOrdersStatus(updatePayload).unwrap();
         if (res.success) {
-          // await refetchData("allOrders");
           await handleRevalidation(action);
-          await refetchData("customerOrderHistory");
-          // dispatch(setIsOrderUpdate(!iSOrderUpdate));
           toast({
             className: "bg-success text-white text-2xl",
             title: "Order status updated successfully!",
@@ -143,10 +134,7 @@ const UpdateOrderStatus = ({
       if (processingOrdersRoute.includes(status)) {
         const res = await updateProcessingOrdersStatus(updatePayload).unwrap();
         if (res.success) {
-          // await refetchData("processingOrders");
-          await refetchData("customerOrderHistory");
           await handleRevalidation(action);
-          // dispatch(setIsOrderUpdate(!iSOrderUpdate));
           toast({
             className: "bg-success text-white text-2xl",
             title: "Order status updated successfully!",
@@ -164,10 +152,7 @@ const UpdateOrderStatus = ({
         // const courier = await sendCourierAndUpdateStatus(orderData).unwrap();
         const res = await sendCourierAndUpdateStatus(updatePayload).unwrap();
         if (res.success) {
-          // await refetchData("processingDoneOrders");
-          await refetchData("customerOrderHistory");
           await handleRevalidation(action);
-          // dispatch(setIsOrderUpdate(!iSOrderUpdate));
           toast({
             className: "bg-success text-white text-2xl",
             title: "Order status updated successfully!",

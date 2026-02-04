@@ -6,7 +6,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateOrderMutation } from "@/redux/features/orders/ordersApi";
 import { TOrders } from "@/types/order.interface";
-import { refetchData } from "@/utilities/fetchData";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
@@ -39,7 +38,6 @@ const AddNotes = ({ order }: { order: TOrders }) => {
       }
 
       await updateOrder({ payload, _id: order._id }).unwrap();
-      await refetchData("allOrders");
       reset();
       handleOpen();
       toast({

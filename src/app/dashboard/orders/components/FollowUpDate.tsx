@@ -10,7 +10,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { useUpdateOrderMutation } from "@/redux/features/orders/ordersApi";
 import { TOrders } from "@/types/order.interface";
-import { refetchData } from "@/utilities/fetchData";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { SetStateAction, useEffect, useState } from "react";
 
@@ -48,7 +47,6 @@ const FollowUpDate = ({ order }: { order: TOrders }) => {
         };
         try {
           await updateOrder({ payload, _id: order._id }).unwrap();
-          await refetchData("allOrders");
           toast({
             className: "bg-success text-white text-2xl",
             title: "Follow up date added successfully!",

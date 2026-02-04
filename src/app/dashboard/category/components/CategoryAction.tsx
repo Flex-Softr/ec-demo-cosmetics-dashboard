@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import { useDeleteCategoryMutation } from "@/redux/features/category/categoryApi";
-import { refetchData } from "@/utilities/fetchData";
 import { revalidateTag } from "@/utilities/revalidate";
 import { SquarePen, Trash2Icon } from "lucide-react";
 import { useState } from "react";
@@ -31,7 +30,6 @@ const CategoryAction = ({ category }: { category: TCategories }) => {
     const res = await deleteCategory(categoryIds).unwrap();
 
     if (res?.success) {
-      await refetchData("categories");
       toast({
         className: "bg-success text-white ",
         title: "Category Successfully Deleted",

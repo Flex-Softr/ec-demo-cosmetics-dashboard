@@ -13,7 +13,6 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 // import { refetchData } from "@/utilities/fetchData";
 import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierShipment/courierShipmentApi";
 import { setBulkOrder } from "@/redux/features/courierShipment/courierShipmentSlice";
-import { refetchData } from "@/utilities/fetchData";
 import statusOptions from "@/utilities/statusOptions";
 import { useState } from "react";
 
@@ -39,8 +38,6 @@ const CourierBulkAction = () => {
       if (bulkAction !== "bulk") {
         const res = await sendCourierAndUpdateStatus(updatePayload).unwrap();
         if (res.success) {
-          await refetchData("processingDoneOrders");
-          await refetchData("customerOrderHistory");
           dispatch(setBulkOrder({ orderIds: [] }));
           // dispatch(setIsOrderUpdate(!iSOrderUpdate));
 

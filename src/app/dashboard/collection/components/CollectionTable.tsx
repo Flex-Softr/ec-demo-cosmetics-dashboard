@@ -13,6 +13,7 @@ import {
 import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import {
   setIsLoading,
+  setPage,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -58,6 +59,10 @@ const CollectionTable = () => {
     ? responseData.data
     : [];
   const meta = responseData?.meta;
+
+  if (!collections.length && page > 1) {
+    dispatch(setPage(1));
+  }
 
   useEffect(() => {
     if (meta) {

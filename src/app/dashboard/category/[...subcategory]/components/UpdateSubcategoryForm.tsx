@@ -12,7 +12,6 @@ import { toast } from "@/components/ui/use-toast";
 import { useUpdateSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { refetchData } from "@/utilities/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -70,7 +69,6 @@ const UpdateSubCategoryForm = ({
       const updatedCategory = await updateSubCategory({ id, data }).unwrap();
       if (updatedCategory?.success) {
         form.reset();
-        await refetchData("subcategories");
         dispatch(setThumbnail(""));
         handleOpen(false);
         handleClose();
