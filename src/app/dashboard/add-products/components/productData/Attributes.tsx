@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { TSelectedAttribute } from "@/redux/features/addProduct/variation/interface";
 import { Controller, useFormContext } from "react-hook-form";
@@ -19,6 +20,18 @@ const Attributes = ({
 
   // Watch currently selected attributes to render value selectors
   const selectedAttributes = watch("attributes") || [];
+
+  const handleSelectAll = (index: number, attr: TSelectedAttribute) => {
+    const allOptions =
+      attr.child?.map((item) => ({
+        label: item.label,
+        value: String(item.value),
+      })) || [];
+
+    setValue(`attributeValues.${index}`, allOptions, {
+      shouldValidate: true,
+    });
+  };
 
   return (
     <div className="space-y-2">
@@ -68,7 +81,18 @@ const Attributes = ({
       {selectedAttributes.length > 0 &&
         selectedAttributes.map((attr: TSelectedAttribute, index: number) => (
           <div className="space-y-1" key={attr.label}>
-            <Label>Select {attr.label}</Label>
+            <div className="flex items-center justify-between">
+              <Label>Select {attr.label}</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handleSelectAll(index, attr)}
+                className="h-7 text-xs"
+              >
+                Select All
+              </Button>
+            </div>
             <Controller
               control={control}
               name={`attributeValues.${index}`}
