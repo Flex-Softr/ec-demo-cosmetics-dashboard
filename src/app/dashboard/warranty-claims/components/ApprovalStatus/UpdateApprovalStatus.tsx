@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useCreateWarrantyClamOrderMutation } from "@/redux/features/warrantyClaimRequests/warrantyClaimApi";
 import { TErrorResponse } from "@/types/response";
-import fetchData, { refetchData } from "@/utilities/fetchData";
+import fetchData from "@/utilities/fetchData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -79,7 +79,6 @@ const UpdateApprovalStatus = ({
   const onSubmit: SubmitHandler<TFormInput> = async (data) => {
     try {
       await createWarrantyClaimOrder({ ...data, id: _id }).unwrap();
-      await refetchData("allOrders");
       reset();
       setOpen(false);
       toast({

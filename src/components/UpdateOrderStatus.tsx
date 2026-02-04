@@ -15,14 +15,17 @@ import { useUpdateOrdersStatusMutation } from "@/redux/features/orders/ordersApi
 import { useUpdateProcessingOrderStatusMutation } from "@/redux/features/processingOrders/processingOrdersApi";
 // import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { PERMISSIONS } from "@/const/permissions";
+import { TOrders } from "@/types/order.interface";
 import { refetchData } from "@/utilities/fetchData";
 import isPermitted, { TPermission } from "@/utilities/isPermitted";
+import { revalidateTag, TTags } from "@/utilities/revalidate";
 import statusOptions from "@/utilities/statusOptions";
 import { useState } from "react";
 
 type TProps = {
   _id: string;
   status: string;
+  order: TOrders;
   handleOpen?: () => void;
   permissions: TPermission[];
 };
@@ -30,6 +33,7 @@ type TProps = {
 const UpdateOrderStatus = ({
   _id,
   status,
+  order,
   handleOpen,
   permissions,
 }: TProps) => {
@@ -69,17 +73,30 @@ const UpdateOrderStatus = ({
   if (!hasPermission) return null;
 
   const handleSubmit = async () => {
-    // const orderData = {
-    //   invoice: order.orderId,
-    //   recipient_name: order.shipping.fullName,
-    //   recipient_phone: order.shipping.phoneNumber,
-    //   recipient_address: order.shipping.fullAddress,
-    //   cod_amount: order.total,
-    //   note: order.courierNotes,
-    // };
     const updatePayload = {
       orderIds: [_id],
       status: action,
+    };
+
+    const handleRevalidation = async (currentAction: string) => {
+      if (
+        currentAction === "canceled" ||
+        currentAction === "returned" ||
+        currentAction === "deleted"
+      ) {
+        const productTags: TTags[] =
+          order?.products?.flatMap((product: TOrders["products"][0]) => [
+            `product-${product?.slug}` as TTags,
+            `relatedProducts-${product?.slug}` as TTags,
+            `collectionProducts-${product?.slug}` as TTags,
+          ]) || [];
+
+        await revalidateTag([
+          ...productTags,
+          "featuredProducts",
+          "homepageIndividualSection",
+        ]);
+      }
     };
 
     try {
@@ -87,8 +104,8 @@ const UpdateOrderStatus = ({
         const res = await courierReturnedOrders(updatePayload).unwrap();
         if (res.success) {
           // await refetchData("allOrders");
-          await refetchData("singleOrder");
           await refetchData("customerOrderHistory");
+          await handleRevalidation(action);
           // dispatch(setIsOrderUpdate(!iSOrderUpdate));
           toast({
             className: "bg-success text-white text-2xl",
@@ -107,7 +124,7 @@ const UpdateOrderStatus = ({
         const res = await updateOrdersStatus(updatePayload).unwrap();
         if (res.success) {
           // await refetchData("allOrders");
-          await refetchData("singleOrder");
+          await handleRevalidation(action);
           await refetchData("customerOrderHistory");
           // dispatch(setIsOrderUpdate(!iSOrderUpdate));
           toast({
@@ -127,8 +144,8 @@ const UpdateOrderStatus = ({
         const res = await updateProcessingOrdersStatus(updatePayload).unwrap();
         if (res.success) {
           // await refetchData("processingOrders");
-          await refetchData("singleOrder");
           await refetchData("customerOrderHistory");
+          await handleRevalidation(action);
           // dispatch(setIsOrderUpdate(!iSOrderUpdate));
           toast({
             className: "bg-success text-white text-2xl",
@@ -148,8 +165,8 @@ const UpdateOrderStatus = ({
         const res = await sendCourierAndUpdateStatus(updatePayload).unwrap();
         if (res.success) {
           // await refetchData("processingDoneOrders");
-          await refetchData("singleOrder");
           await refetchData("customerOrderHistory");
+          await handleRevalidation(action);
           // dispatch(setIsOrderUpdate(!iSOrderUpdate));
           toast({
             className: "bg-success text-white text-2xl",

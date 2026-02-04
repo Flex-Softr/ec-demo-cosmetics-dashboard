@@ -65,10 +65,6 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
     setLoading(true);
 
     try {
-      // const response = await fetchData({
-      //   endPoint: `/check/fraud-customers/${phoneNumber || mobile}`,
-      //   cache: "no-store",
-      // });
       const response = await getFraudCheck(phoneNumber || mobile);
       setData(response.data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

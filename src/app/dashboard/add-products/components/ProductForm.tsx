@@ -330,10 +330,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         dispatch(setDeleteImage([]));
       }
       if (productId) {
-        await revalidateTag([
-          `product-${productData?.slug}`,
-          "homepageIndividualSection",
-        ]);
+        await revalidateTag([`product-${productData?.slug}`]);
       }
       await revalidateTag([
         `relatedProducts-${productData?.slug}`,

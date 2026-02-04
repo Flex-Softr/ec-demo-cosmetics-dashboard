@@ -14,17 +14,13 @@ import {
   UseFormWatch,
   useWatch,
 } from "react-hook-form";
-
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateOrderMutation } from "@/redux/features/orders/ordersApi";
 import { setIsOrderUpdate } from "@/redux/features/orders/ordersSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-
 import WarrantyCodes from "@/app/dashboard/monitor-delivery/components/WarrantyCodes";
 import AddProductToOrder from "./AddProductToOrder";
-
 import { TOrders } from "@/types/order.interface";
-import { refetchData } from "@/utilities/fetchData";
 import { TEditOrderFormInput } from "./EditOrder";
 
 type TEditOrderProps = {
@@ -77,7 +73,6 @@ const EditOrderTable = ({
         payload: { productDetails: [{ id, isDelete: true }] },
       }).unwrap();
       dispatch(setIsOrderUpdate(!iSOrderUpdate));
-      await Promise.all([refetchData("allOrders"), refetchData("singleOrder")]);
       reset?.();
       toast({
         className: "bg-success text-white text-2xl",

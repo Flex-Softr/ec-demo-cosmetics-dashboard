@@ -316,6 +316,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
               <UpdateOrderStatus
                 _id={_id as string}
                 status={status}
+                order={order}
                 permissions={permissions}
               />
             </div>

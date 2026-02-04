@@ -63,7 +63,6 @@ const MonitoringAndTracking = ({
 
         if (res.success) {
           // await refetchData("allOrders");
-          await refetchData("singleOrder");
           await refetchData("customerOrderHistory");
           // dispatch(setIsOrderUpdate(!iSOrderUpdate));
           toast({

@@ -34,7 +34,6 @@ const SetOrderHistoryData = ({
 
       const { data } = await fetchData({
         endPoint: "/orders/admin/all-orders",
-        // tags: ["allOrders"],
         cache: "no-store",
         searchParams,
       });

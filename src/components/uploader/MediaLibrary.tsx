@@ -1,5 +1,6 @@
 // import { setVariationThumbnail } from "@/redux/features/addProduct/variation/variationSlice";
 import { useToast } from "@/components/ui/use-toast";
+import { formatImageSrc } from "@/lib/utils";
 import {
   useDeleteImageMutation,
   useGetImagesQuery,
@@ -17,13 +18,13 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { EyeIcon } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import CommonModal from "../modal/CommonModal";
 import { PagePagination } from "../pagination/PagePagination";
 import { Button } from "../ui/button";
-import { formatImageSrc } from "@/lib/utils";
+import ImageDetails, { TMediaImage } from "./ImageDetails";
 
-type TImage = { _id: string; src: string; alt: string };
+// type TImage = { _id: string; src: string; alt: string };
 type TProps = {
   click?: string;
   index?: number;
@@ -34,7 +35,6 @@ type TProps = {
 const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
-  const router = useRouter();
 
   const [deleteImage, { isLoading: loading }] = useDeleteImageMutation();
 
@@ -142,81 +142,107 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
     }
   };
 
-  return (
-    <div className="flex flex-col h-full relative">
-      <div className="flex flex-wrap gap-4 p-2 h-full border border-gray-300">
-        {/* {click === "thumbnail" || click === "variation" */}
-        {click === "thumbnail"
-          ? data?.data?.map((image: TImage) => (
-              <div
-                key={image._id}
-                onClick={() => selectImage(image._id)}
-                className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${localThumbnail === image._id && "border-2 border-blue-600"}`}
-              >
-                <Image
-                  src={formatImageSrc(image.src)}
-                  alt={image.alt}
-                  fill={true}
-                  className="object-cover rounded-sm"
-                  sizes="(max-width: 208px) 100vw,"
-                />
-                {localThumbnail === image._id && (
-                  <button className="bg-white text-green-500 absolute right-1 bottom-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
-                    {/* <Cross2Icon className="h-5 w-5" /> */}
-                    <CheckIcon className="h-5 w-5" />
-                  </button>
-                )}
-              </div>
-            ))
-          : data?.data?.map((image: TImage) => (
-              <div
-                key={image._id}
-                onClick={() => selectImage(image._id)}
-                className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${
-                  (localGallery.includes(image._id) ||
-                    localDeleteImages.includes(image._id)) &&
-                  "border-2 border-blue-600"
-                }`}
-              >
-                <Image
-                  src={formatImageSrc(image.src)}
-                  alt={image.alt}
-                  fill={true}
-                  className="object-cover rounded-sm"
-                  sizes="(max-width: 208px) 100vw,"
-                />
-                <span title="View image">
-                  <EyeIcon
-                    className="h-6 w-6 bg-white text-green-500 absolute right-1 top-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10"
-                    onClick={(e) => {
-                      router.push(`/dashboard/media/${image._id}`);
-                      e.stopPropagation();
-                    }}
-                  />
-                </span>
+  // State for image details modal
+  const [selectedImage, setSelectedImage] = useState<TMediaImage | null>(null);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
 
-                {(localGallery.includes(image._id) ||
-                  localDeleteImages.includes(image._id)) && (
-                  <button className="bg-white text-green-500 absolute right-1 bottom-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
-                    {/* <Cross2Icon className="h-5 w-5" /> */}
-                    <CheckIcon className="h-5 w-5" />
-                  </button>
-                )}
-              </div>
-            ))}
-      </div>
-      <div className="flex items-center justify-end space-x-2 h-20">
-        {data?.meta?.totalPage > 1 && <PagePagination />}
-        <div className="flex justify-end">
-          <Button
-            onClick={() => (click === "delete" ? handleDelete() : handleDone())}
-            disabled={loading}
-          >
-            {click === "delete" ? "Delete" : "Done"}
-          </Button>
+  const showImageDetails = (image: TMediaImage) => {
+    setSelectedImage(image);
+    setDetailsModalOpen(true);
+  };
+
+  return (
+    <>
+      <div className="flex flex-col h-full relative">
+        <div className="flex flex-wrap gap-4 p-2 h-full border border-gray-300">
+          {/* {click === "thumbnail" || click === "variation" */}
+          {click === "thumbnail"
+            ? data?.data?.map((image: TMediaImage) => (
+                <div
+                  key={image._id}
+                  onClick={() => selectImage(image._id)}
+                  className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${localThumbnail === image._id && "border-2 border-blue-600"}`}
+                >
+                  <Image
+                    src={formatImageSrc(image.src)}
+                    alt={image.alt}
+                    fill={true}
+                    className="object-cover rounded-sm"
+                    sizes="(max-width: 208px) 100vw,"
+                  />
+                  {localThumbnail === image._id && (
+                    <button className="bg-white text-green-500 absolute right-1 bottom-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
+                      {/* <Cross2Icon className="h-5 w-5" /> */}
+                      <CheckIcon className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
+              ))
+            : data?.data?.map((image: TMediaImage) => (
+                <div
+                  key={image._id}
+                  onClick={() => selectImage(image._id)}
+                  className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${
+                    (localGallery.includes(image._id) ||
+                      localDeleteImages.includes(image._id)) &&
+                    "border-2 border-blue-600"
+                  }`}
+                >
+                  <Image
+                    src={formatImageSrc(image.src)}
+                    alt={image.alt}
+                    fill={true}
+                    className="object-cover rounded-sm"
+                    sizes="(max-width: 208px) 100vw,"
+                  />
+                  <span title="View image">
+                    <EyeIcon
+                      className="h-6 w-6 bg-white text-green-500 absolute right-1 top-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10"
+                      onClick={(e) => {
+                        showImageDetails(image);
+                        e.stopPropagation();
+                      }}
+                    />
+                  </span>
+
+                  {(localGallery.includes(image._id) ||
+                    localDeleteImages.includes(image._id)) && (
+                    <button className="bg-white text-green-500 absolute right-1 bottom-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
+                      {/* <Cross2Icon className="h-5 w-5" /> */}
+                      <CheckIcon className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
+              ))}
+        </div>
+        <div className="flex items-center justify-end space-x-2 h-20">
+          {data?.meta?.totalPage > 1 && <PagePagination />}
+          <div className="flex justify-end">
+            <Button
+              onClick={() =>
+                click === "delete" ? handleDelete() : handleDone()
+              }
+              disabled={loading}
+            >
+              {click === "delete" ? "Delete" : "Done"}
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+      <CommonModal
+        open={detailsModalOpen}
+        handleOpen={setDetailsModalOpen}
+        modalTitle="Image Details"
+        className="w-[1000px] h-[850px]"
+      >
+        {selectedImage && (
+          <ImageDetails
+            image={selectedImage}
+            onDeleteSuccess={() => setDetailsModalOpen(false)}
+          />
+        )}
+      </CommonModal>
+    </>
   );
 };
 

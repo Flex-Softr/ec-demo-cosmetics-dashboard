@@ -9,7 +9,6 @@ import { useUpdateOrderMutation } from "@/redux/features/orders/ordersApi";
 import { setIsOrderUpdate } from "@/redux/features/orders/ordersSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { TOrders } from "@/types/order.interface";
-import { refetchData } from "@/utilities/fetchData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -121,8 +120,6 @@ const EditOrder = ({
         await updateOrder({ payload, _id }).unwrap();
       }
       dispatch(setIsOrderUpdate(!iSOrderUpdate));
-      await refetchData("allOrders");
-      await refetchData("singleOrder");
       reset();
       handleOpen();
       toast({

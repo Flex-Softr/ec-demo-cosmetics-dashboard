@@ -63,6 +63,7 @@ const OrderStatus = ({
           _id={order._id}
           handleOpen={handleOpen}
           permissions={permissions}
+          order={order}
           // disableStatus={disableStatus}
         />
       </CommonModal>

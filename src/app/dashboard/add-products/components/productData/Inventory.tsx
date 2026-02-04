@@ -245,23 +245,6 @@ const Inventory = ({ prefix = "inventory" }: TProps) => {
       {/* Checkboxes: Hide Stock (Left) & Manage Stock (Right) */}
       {stockQuantity !== undefined && Number(stockQuantity) > 0 && (
         <>
-          {/* Hide Stock */}
-          <div className="flex items-center space-x-2 py-1">
-            <Input
-              type="checkbox"
-              {...register(`${prefix}.hideStock`)}
-              id={`${prefix}.hideStock`}
-              className="w-4 h-4 cursor-pointer"
-            />
-            <Label
-              className="cursor-help"
-              htmlFor={`${prefix}.hideStock`}
-              title="Enable this to hide the stock quantity from customers."
-            >
-              Hide stock on customer
-            </Label>
-          </div>
-
           {/* Manage Stock */}
           <div className="flex items-center space-x-2 py-1">
             <Input
@@ -278,6 +261,25 @@ const Inventory = ({ prefix = "inventory" }: TProps) => {
               Manage Stock
             </Label>
           </div>
+
+          {/* Hide Stock */}
+          {manageStock && (
+            <div className="flex items-center space-x-2 py-1">
+              <Input
+                type="checkbox"
+                {...register(`${prefix}.hideStock`)}
+                id={`${prefix}.hideStock`}
+                className="w-4 h-4 cursor-pointer"
+              />
+              <Label
+                className="cursor-help"
+                htmlFor={`${prefix}.hideStock`}
+                title="Enable this to hide the stock quantity from customers."
+              >
+                Hide stock on customer
+              </Label>
+            </div>
+          )}
         </>
       )}
 
