@@ -17,7 +17,9 @@ type TTags =
   | "tags"
   | "order-sms-notification"
   | "sliders"
-  | "processingDoneOrders";
+  | "processingDoneOrders"
+  | "processingOrders"
+  | "allOrders";
 
 type TProps = {
   endPoint: string;
