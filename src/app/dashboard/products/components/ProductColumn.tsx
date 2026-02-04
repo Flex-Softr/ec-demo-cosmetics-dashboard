@@ -1,18 +1,56 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { PRODUCT_STATUS, PRODUCT_TYPE } from "@/const/products";
-import { IAdminProduct } from "@/types/products";
-import { ColumnDef } from "@tanstack/react-table";
-// import { ChevronDown, ChevronRight } from "lucide-react";
+import { PRODUCT_STATUS, PRODUCT_TYPE, STOCK_STATUS } from "@/const/products";
 import {
   formatImageSrc,
   formatStockStatus,
   getStockStatusColor,
 } from "@/lib/utils";
-import { Minus } from "lucide-react";
+import { IAdminProduct } from "@/types/products";
+import { ColumnDef } from "@tanstack/react-table";
+import { ChevronDown, ChevronRight, Minus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Actions from "./Actions";
 import ProductVariations from "./ProductVariations";
+
+const getVariationPriceRange = (
+  variations: NonNullable<IAdminProduct["variations"]>
+) => {
+  if (!variations || variations.length === 0) return null;
+
+  const prices = variations.flatMap((v) => [
+    v.price.regularPrice,
+    v.price.salePrice || v.price.regularPrice,
+  ]);
+
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+
+  if (minPrice === maxPrice) return `৳ ${minPrice}`;
+  return `৳ ${minPrice} - ৳ ${maxPrice}`;
+};
+
+const getAggregateStockStatus = (
+  variations: NonNullable<IAdminProduct["variations"]>
+) => {
+  if (!variations || variations.length === 0) return STOCK_STATUS.OUT_OF_STOCK;
+
+  const statuses = variations.map((v) => v.inventory.stockStatus);
+
+  if (statuses.includes(STOCK_STATUS.IN_STOCK)) return STOCK_STATUS.IN_STOCK;
+  if (statuses.includes(STOCK_STATUS.LOW_STOCK)) return STOCK_STATUS.LOW_STOCK;
+  return STOCK_STATUS.OUT_OF_STOCK;
+};
+
+const getTotalStockQuantity = (
+  variations: NonNullable<IAdminProduct["variations"]>
+) => {
+  if (!variations || variations.length === 0) return 0;
+  return variations.reduce(
+    (acc, v) => acc + (v.inventory.stockAvailable || 0),
+    0
+  );
+};
 
 export const ProductColumns: ColumnDef<IAdminProduct>[] = [
   {
@@ -56,12 +94,13 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     cell: ({ row }) => {
       const { thumbnail } = row.original;
       return (
-        <div className="flex justify-start items-center gap-3 rounded py-2 px-4">
+        <div className="h-16 w-16 relative p-2 my-3 shrink-0">
           <Image
-            width={80}
-            height={80}
             src={formatImageSrc(thumbnail.src)}
             alt={thumbnail.alt}
+            fill
+            className="object-cover rounded shadow-sm border border-gray-100"
+            sizes="64px"
           />
         </div>
       );
@@ -73,6 +112,18 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     cell: ({ row }) => (
       <div className="flex flex-col items-start gap-1 py-2 px-4">
         <div className="flex items-center gap-2">
+          {row.original.type === PRODUCT_TYPE.VARIABLE && (
+            <button
+              onClick={() => row.toggleExpanded()}
+              className="p-1 hover:bg-gray-200 rounded transition-colors"
+            >
+              {row.getIsExpanded() ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </button>
+          )}
           <span title={row.original.title} className="font-semibold text-left">
             <Link
               href={`/dashboard/products/${row.original._id}`}
@@ -84,8 +135,8 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
             </Link>
           </span>
         </div>
-        {row.original.type === PRODUCT_TYPE.VARIABLE && (
-          <div className="mt-0.5">
+        {row.original.type === PRODUCT_TYPE.VARIABLE && row.getIsExpanded() && (
+          <div className="mt-0.5 ml-7">
             <ProductVariations
               variations={row.original.variations!}
               type="attributes"
@@ -105,22 +156,24 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
         </div>
       ) : (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 text-nowrap w-[1%] mx-auto whitespace-nowrap">
-          <p className="h-5 flex items-center shrink-0">
-            <Minus className="h-4 w-4" />
+          <p className="flex items-center shrink-0">
+            <span>{row.original.variations?.length} Variations</span>
           </p>
-          <div className="mt-0.5">
-            <ProductVariations
-              variations={row.original.variations!}
-              type="sku"
-            />
-          </div>
+          {row.getIsExpanded() && (
+            <div className="mt-0.5 w-full">
+              <ProductVariations
+                variations={row.original.variations!}
+                type="sku"
+              />
+            </div>
+          )}
         </div>
       ),
   },
   {
     accessorKey: "price",
     header: () => <div className="text-center">Price</div>,
-    cell: ({ row: { original } }) =>
+    cell: ({ row: { original, getIsExpanded } }) =>
       original.type === PRODUCT_TYPE.SIMPLE ? (
         <div className="flex gap-2 items-baseline justify-center px-4 py-2 text-nowrap w-[1%] mx-auto">
           <span
@@ -136,61 +189,74 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
         </div>
       ) : (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 text-nowrap w-[1%] mx-auto whitespace-nowrap">
-          <p className="h-5 flex items-center shrink-0">
-            <Minus className="h-4 w-4" />
+          <p className="h-5 flex items-center shrink-0 font-medium">
+            {getVariationPriceRange(original.variations!)}
           </p>
-          <div className="mt-0.5">
-            <ProductVariations variations={original.variations!} type="price" />
-          </div>
+          {getIsExpanded() && (
+            <div className="mt-0.5 w-full">
+              <ProductVariations
+                variations={original.variations!}
+                type="price"
+              />
+            </div>
+          )}
         </div>
       ),
   },
   {
     accessorKey: "stock",
     header: () => <div className="text-center">Stock</div>,
-    cell: ({ row }) =>
-      row.original.type === PRODUCT_TYPE.SIMPLE ? (
-        <div className="flex flex-col gap-1 justify-center items-center min-w-[90px] px-4 py-2 whitespace-nowrap w-[1%] mx-auto">
-          <span className={getStockStatusColor(row.original.stockStatus)}>
-            {formatStockStatus(row.original.stockStatus)}
-          </span>
-        </div>
-      ) : (
+    cell: ({ row }) => {
+      const isSimple = row.original.type === PRODUCT_TYPE.SIMPLE;
+      const status = isSimple
+        ? row.original.stockStatus
+        : getAggregateStockStatus(row.original.variations!);
+
+      return (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 w-[1%] mx-auto whitespace-nowrap">
-          <p className="h-5 flex items-center shrink-0">
-            <Minus className="h-4 w-4" />
-          </p>
-          <div className="mt-0.5">
-            <ProductVariations
-              variations={row.original.variations!}
-              type="stock"
-            />
+          <div className="h-5 flex items-center shrink-0">
+            <span className={getStockStatusColor(status)}>
+              {formatStockStatus(status)}
+            </span>
           </div>
+          {!isSimple && row.getIsExpanded() && (
+            <div className="mt-0.5 w-full">
+              <ProductVariations
+                variations={row.original.variations!}
+                type="stock"
+              />
+            </div>
+          )}
         </div>
-      ),
+      );
+    },
   },
   {
     accessorKey: "stockAvailable",
     header: () => <div className="text-center">Qty</div>,
-    cell: ({ row: { original } }) =>
-      original.type === PRODUCT_TYPE.SIMPLE ? (
-        <div className="flex justify-center px-4 py-2 whitespace-nowrap w-[1%] mx-auto">
-          {!original.manageStock && original.stockAvailable === 0 ? (
-            <Minus className="h-4 w-4" />
-          ) : (
-            <span>{original.stockAvailable}</span>
+    cell: ({ row: { original, getIsExpanded } }) => {
+      const isSimple = original.type === PRODUCT_TYPE.SIMPLE;
+      const qty = isSimple
+        ? original.stockAvailable
+        : getTotalStockQuantity(original.variations!);
+
+      return (
+        <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 w-[1%] mx-auto whitespace-nowrap">
+          <div className="h-5 flex items-center shrink-0">
+            {!original.manageStock && qty === 0 ? (
+              <Minus className="h-4 w-4" />
+            ) : (
+              <span className="font-semibold">{qty}</span>
+            )}
+          </div>
+          {!isSimple && getIsExpanded() && (
+            <div className="mt-0.5 w-full">
+              <ProductVariations variations={original.variations!} type="qty" />
+            </div>
           )}
         </div>
-      ) : (
-        <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 w-[1%] mx-auto whitespace-nowrap">
-          <p className="h-5 flex items-center shrink-0">
-            <Minus className="h-4 w-4" />
-          </p>
-          <div className="mt-0.5">
-            <ProductVariations variations={original.variations!} type="qty" />
-          </div>
-        </div>
-      ),
+      );
+    },
   },
   {
     accessorKey: "category",

@@ -15,9 +15,10 @@ import { IAdminProduct } from "@/types/products";
 import {
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ProductColumns } from "./ProductColumn";
 
 export default function ProductsTable() {
@@ -29,10 +30,17 @@ export default function ProductsTable() {
       : (products.products as unknown as IAdminProduct[]);
   });
   const search = useAppSelector(({ products }) => products.search);
+  const [expanded, setExpanded] = useState({});
+
   const table = useReactTable<IAdminProduct>({
     data: products,
     columns: ProductColumns,
+    state: {
+      expanded,
+    },
+    onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
   });
 
   const selectedRows = table?.getFilteredSelectedRowModel()?.rows;
