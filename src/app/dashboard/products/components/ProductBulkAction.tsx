@@ -72,6 +72,13 @@ const ProductBulkAction = () => {
   };
 
   const handleSubmit = async () => {
+    if (!action || action === "bulk") {
+      toast({
+        variant: "destructive",
+        title: "Please select an action!",
+      });
+      return;
+    }
     try {
       if (action === "delete") {
         setOpen(true);
