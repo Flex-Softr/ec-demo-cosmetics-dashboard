@@ -40,10 +40,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
-  title: z.string().optional(),
-  subtitle: z.string().min(1, {
-    message: "Subtitle is required.",
+  title: z.string().min(1, {
+    message: "Title is required.",
   }),
+  subtitle: z.string().optional(),
   collectionId: z.string().min(1, {
     message: "Collection is required.",
   }),
@@ -181,7 +181,7 @@ const HomepageSectionForm = ({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title (Optional)</FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <Input placeholder="Enter title" {...field} />
                   <FormMessage />
                 </FormItem>
@@ -193,7 +193,7 @@ const HomepageSectionForm = ({
               name="subtitle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Subtitle</FormLabel>
+                  <FormLabel>Subtitle (Optional)</FormLabel>
                   <Input placeholder="Enter subtitle" {...field} />
                   <FormMessage />
                 </FormItem>

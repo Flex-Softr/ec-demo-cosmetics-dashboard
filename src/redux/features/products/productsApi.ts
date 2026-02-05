@@ -15,7 +15,7 @@ const productsApi = baseApi.injectEndpoints({
     }),
     getAProduct: builder.query({
       query: (id: string) => ({
-        url: `/products/${id}/admin`,
+        url: `/products/admin/${id}`,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transformResponse: (response: any) => {
@@ -42,6 +42,14 @@ const productsApi = baseApi.injectEndpoints({
         payload: Partial<TProductPayload>;
       }) => ({
         url: `/products/${id}`,
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["singleProduct", "productList", "publicProductList"],
+    }),
+    updateProductStatus: builder.mutation({
+      query: (payload: { productIds: string[]; publishedStatus: string }) => ({
+        url: `/products/update-status`,
         method: "PATCH",
         body: payload,
       }),
@@ -91,5 +99,6 @@ export const {
   useGetProductsQuery,
   useGetCustomerProductsQuery,
   useUpdateProductMutation,
+  useUpdateProductStatusMutation,
   useDeleteProductsMutation,
 } = productsApi;

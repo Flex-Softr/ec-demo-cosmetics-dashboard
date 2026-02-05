@@ -5,7 +5,8 @@ const initialState: TProductsInitialState = {
   products: [],
   selectedStatus: "all",
   bulkProducts: {
-    productsIds: [],
+    productIds: [],
+    productSlugs: [],
   },
   search: false,
   searchQuery: "",
@@ -24,7 +25,10 @@ const productsSlice = createSlice({
       state.selectedStatus = action.payload;
     },
     setBulkProduct: (state, action) => {
-      state.bulkProducts = action.payload;
+      state.bulkProducts.productIds = action.payload;
+    },
+    setBulkProductSlugs: (state, action) => {
+      state.bulkProducts.productSlugs = action.payload;
     },
     setSearch: (state, action) => {
       state.search = action.payload;
@@ -45,6 +49,7 @@ export const {
   setProducts,
   setSelectedStatus,
   setBulkProduct,
+  setBulkProductSlugs,
   setSearch,
   setSearchQuery,
   setSearchedProducts,

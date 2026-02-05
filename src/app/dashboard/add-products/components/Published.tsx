@@ -26,11 +26,13 @@ const Published = ({
               id="status"
               className="capitalize border h-9 border-primary outline-primary rounded-md px-2 cursor-pointer w-full"
             >
-              {Object.values(PRODUCT_STATUS).map((status) => (
-                <option key={status} value={status} className="capitalize">
-                  {status}
-                </option>
-              ))}
+              {Object.values(PRODUCT_STATUS)
+                .filter((status) => status !== PRODUCT_STATUS.DRAFT)
+                .map((status) => (
+                  <option key={status} value={status} className="capitalize">
+                    {status}
+                  </option>
+                ))}
             </select>
             {errors.publishedStatus && (
               <p className="text-red-500 text-sm mt-1">

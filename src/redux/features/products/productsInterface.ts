@@ -48,7 +48,8 @@ export type TProductsInitialState = {
   products: TProduct[];
   selectedStatus: string;
   bulkProducts: {
-    productsIds: string[];
+    productIds: string[];
+    productSlugs: string[];
   };
   search: boolean;
   searchQuery: string;

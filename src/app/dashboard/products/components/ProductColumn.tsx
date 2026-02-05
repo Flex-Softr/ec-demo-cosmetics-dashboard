@@ -13,21 +13,48 @@ import Link from "next/link";
 import Actions from "./Actions";
 import ProductVariations from "./ProductVariations";
 
-const getVariationPriceRange = (
+const getVariablePriceDisplay = (
   variations: NonNullable<IAdminProduct["variations"]>
 ) => {
-  if (!variations || variations.length === 0) return null;
+  if (!variations || variations.length === 0) {
+    return {
+      minPrice: 0,
+      maxPrice: 0,
+      previousPrice: null,
+      hasMultiplePrices: false,
+    };
+  }
 
-  const prices = variations.flatMap((v) => [
-    v.price.regularPrice,
-    v.price.salePrice || v.price.regularPrice,
-  ]);
+  // Extract all sale and regular prices
+  const salePrices = variations
+    .map((v) => v.price.salePrice)
+    .filter((price): price is number => price != null && price > 0);
 
-  const minPrice = Math.min(...prices);
-  const maxPrice = Math.max(...prices);
+  const regularPrices = variations
+    .map((v) => v.price.regularPrice)
+    .filter((price) => price > 0);
 
-  if (minPrice === maxPrice) return `৳ ${minPrice}`;
-  return `৳ ${minPrice} - ৳ ${maxPrice}`;
+  // Calculate min/max for each type
+  const minSalePrice = salePrices.length > 0 ? Math.min(...salePrices) : null;
+  const maxSalePrice = salePrices.length > 0 ? Math.max(...salePrices) : null;
+  const minRegularPrice =
+    regularPrices.length > 0 ? Math.min(...regularPrices) : 0;
+  const maxRegularPrice =
+    regularPrices.length > 0 ? Math.max(...regularPrices) : 0;
+
+  // Determine display prices (prefer sale price)
+  const minPrice = minSalePrice || minRegularPrice || 0;
+  const maxPrice = maxSalePrice || maxRegularPrice || 0;
+  const hasMultiplePrices = minPrice !== maxPrice;
+
+  // Determine previous price for strikethrough
+  // Show strikethrough only if there's a sale AND prices are uniform
+  const previousPrice =
+    minSalePrice && minSalePrice < maxRegularPrice && !hasMultiplePrices
+      ? maxRegularPrice
+      : null;
+
+  return { minPrice, maxPrice, previousPrice, hasMultiplePrices };
 };
 
 const getAggregateStockStatus = (
@@ -55,18 +82,19 @@ const getTotalStockQuantity = (
 export const ProductColumns: ColumnDef<IAdminProduct>[] = [
   {
     id: "select",
-    // header: ({ table }) => (
-    //   <div className="flex justify-center items-center py-2 px-2">
-    //     <Checkbox
-    //       checked={
-    //         table.getIsAllPageRowsSelected() ||
-    //         (table.getIsSomePageRowsSelected() && "indeterminate")
-    //       }
-    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //       aria-label="Select all"
-    //     />
-    //   </div>
-    // ),
+    header: ({ table }) => (
+      <div className="flex justify-start items-center py-2 px-2 -ml-2">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+          className="border border-white px-0"
+        />
+      </div>
+    ),
     cell: ({ row }) => (
       <div className="flex justify-center items-center py-2 px-2">
         <Checkbox
@@ -189,9 +217,33 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
         </div>
       ) : (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 text-nowrap w-[1%] mx-auto whitespace-nowrap">
-          <p className="h-5 flex items-center shrink-0 font-medium">
-            {getVariationPriceRange(original.variations!)}
-          </p>
+          <div className="h-5 flex items-center gap-2 shrink-0">
+            {(() => {
+              const priceData = getVariablePriceDisplay(original.variations!);
+              if (priceData.minPrice > 0) {
+                return (
+                  <>
+                    {priceData.previousPrice &&
+                      !priceData.hasMultiplePrices && (
+                        <span className="text-muted-foreground text-xs">
+                          &#2547;
+                          <del>{priceData.previousPrice}</del>
+                        </span>
+                      )}
+                    <span className="font-medium">
+                      &#2547;{priceData.minPrice}
+                      {priceData.hasMultiplePrices &&
+                        ` - ${priceData.maxPrice}`}
+                    </span>
+                  </>
+                );
+              } else {
+                return (
+                  <span className="font-medium text-gray-400">Unavailable</span>
+                );
+              }
+            })()}
+          </div>
           {getIsExpanded() && (
             <div className="mt-0.5 w-full">
               <ProductVariations
@@ -304,7 +356,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     enableHiding: false,
     cell: ({ row }) => (
       <div className="flex justify-center w-[1%] mx-auto">
-        <Actions _id={row.original._id} />
+        <Actions _id={row.original._id} slug={row.original.slug} />
       </div>
     ),
   },

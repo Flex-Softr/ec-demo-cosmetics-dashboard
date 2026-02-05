@@ -8,13 +8,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/use-toast";
 import { useDeleteProductsMutation } from "@/redux/features/products/productsApi";
+import { revalidateTag } from "@/utilities/revalidate";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useState } from "react";
 
-const Actions = ({ _id }: { _id: string }) => {
+const Actions = ({ _id, slug }: { _id: string; slug: string }) => {
   const [open, setOpen] = useState(false);
   const [deleteProducts, { isLoading }] = useDeleteProductsMutation();
+
+  const handleRevalidate = async (slug: string) => {
+    await revalidateTag([
+      `product-${slug}`,
+      `relatedProducts-${slug}`,
+      `collectionProducts-${slug}`,
+      "featuredProducts",
+      "allCategories",
+      "homepageIndividualSection",
+    ]);
+  };
 
   const handleDelete = async () => {
     try {
@@ -23,6 +35,7 @@ const Actions = ({ _id }: { _id: string }) => {
         className: "bg-success text-white text-2xl",
         title: "Product deleted successfully!",
       });
+      handleRevalidate(slug);
     } catch (error) {
       toast({
         variant: "destructive",

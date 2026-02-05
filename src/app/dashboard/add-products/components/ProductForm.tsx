@@ -478,7 +478,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
               <RelatedProducts />
               {productId && (
                 <div className="h-full flex flex-col justify-end mt-auto bottom-4">
-                  <DeleteProductBtn id={productId} variant="destructive">
+                  <DeleteProductBtn
+                    id={productId}
+                    slug={productData?.slug}
+                    variant="destructive"
+                  >
                     Delete Product
                   </DeleteProductBtn>
                 </div>

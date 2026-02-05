@@ -9,7 +9,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { setBulkProduct } from "@/redux/features/products/productsSlice";
+import {
+  setBulkProduct,
+  setBulkProductSlugs,
+} from "@/redux/features/products/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { IAdminProduct } from "@/types/products";
 import {
@@ -44,12 +47,13 @@ export default function ProductsTable() {
   });
 
   const selectedRows = table?.getFilteredSelectedRowModel()?.rows;
-  // const selectedProducts = formattedOrderData(selectedRows);
   const productsIds = selectedRows.map(({ original }) => original._id);
+  const productsSlugs = selectedRows.map(({ original }) => original.slug);
 
   useEffect(() => {
-    dispatch(setBulkProduct({ productsIds }));
-  }, [productsIds, dispatch]);
+    dispatch(setBulkProduct(productsIds));
+    dispatch(setBulkProductSlugs(productsSlugs));
+  }, [productsIds, productsSlugs, dispatch]);
 
   return (
     <div className="w-full">

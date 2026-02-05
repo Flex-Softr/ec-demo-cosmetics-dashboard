@@ -13,30 +13,48 @@ import { toast } from "@/components/ui/use-toast";
 import { PRODUCT_STATUS } from "@/const/products";
 import {
   useDeleteProductsMutation,
-  useUpdateProductMutation,
+  useUpdateProductStatusMutation,
 } from "@/redux/features/products/productsApi";
 import { useAppSelector } from "@/redux/hooks";
-import { TProductPayload } from "@/types/products";
+import { revalidateTag, TTags } from "@/utilities/revalidate";
 import { useState } from "react";
 
 const ProductBulkAction = () => {
+  const [open, setOpen] = useState(false);
   const [action, setAction] = useState("");
+
   const [deleteProducts, { isLoading }] = useDeleteProductsMutation();
-  const [updateProduct, { isLoading: isUpdateLoading }] =
-    useUpdateProductMutation();
-  const { productsIds } = useAppSelector(
+  const [updateProductStatus, { isLoading: isUpdateLoading }] =
+    useUpdateProductStatusMutation();
+
+  const { productIds, productSlugs } = useAppSelector(
     ({ products }) => products.bulkProducts
   );
-  const [open, setOpen] = useState(false);
+
+  const handleRevalidate = async () => {
+    const productTags: TTags[] =
+      productSlugs?.flatMap((slug: string) => [
+        `product-${slug}` as TTags,
+        `relatedProducts-${slug}` as TTags,
+        `collectionProducts-${slug}` as TTags,
+      ]) || [];
+    await revalidateTag([
+      ...productTags,
+      "featuredProducts",
+      "allCategories",
+      "homepageIndividualSection",
+    ]);
+  };
 
   const handleDelete = async () => {
     try {
-      if (productsIds.length > 0) {
-        await deleteProducts(productsIds).unwrap();
+      if (productIds.length > 0) {
+        await deleteProducts(productIds).unwrap();
         toast({
           className: "bg-success text-white text-2xl",
           title: "Products successfully deleted!",
         });
+        handleRevalidate();
       } else {
         toast({
           variant: "destructive",
@@ -46,7 +64,7 @@ const ProductBulkAction = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Action failed!",
+        title: "Failed to delete products!",
       });
     } finally {
       setOpen(false);
@@ -57,31 +75,26 @@ const ProductBulkAction = () => {
     try {
       if (action === "delete") {
         setOpen(true);
-      } else if (
-        Object.values(PRODUCT_STATUS).includes(
-          action as (typeof PRODUCT_STATUS)[keyof typeof PRODUCT_STATUS]
-        )
-      ) {
-        const updatePromises = productsIds.map((id) => {
-          const payload: Partial<TProductPayload> = {
-            publishedStatus: action,
-          };
-          return updateProduct({
-            id,
-            payload,
-          }).unwrap();
-        });
-
-        await Promise.all(updatePromises);
+      } else if (productIds.length > 0) {
+        await updateProductStatus({
+          productIds,
+          publishedStatus: action,
+        }).unwrap();
         toast({
           className: "bg-success text-white text-2xl",
           title: "Products status updated successfully!",
+        });
+        handleRevalidate();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "No products selected!",
         });
       }
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Action failed!",
+        title: "Failed to update products status!",
       });
     }
   };
@@ -103,7 +116,7 @@ const ProductBulkAction = () => {
         <SelectContent>
           <SelectGroup className="capitalize">
             <SelectItem value="bulk">Bulk Actions</SelectItem>
-            <SelectItem value="delete">Delete</SelectItem>
+            {/* <SelectItem value="delete">Delete</SelectItem> */}
             <SelectItem value={PRODUCT_STATUS.PUBLISHED}>Published</SelectItem>
             <SelectItem value={PRODUCT_STATUS.PRIVATE}>Private</SelectItem>
             {/* <SelectItem value="On courier">Courier Entry</SelectItem> */}

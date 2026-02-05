@@ -15,8 +15,8 @@ export type THomePageSection = {
 
 // Input for Create/Update
 export type THomePageInput = {
-  title?: string;
-  subtitle: string;
+  title: string;
+  subtitle?: string;
   collectionId: string;
   sortOrder?: number;
   limit?: number;

@@ -2,18 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useDeleteProductsMutation } from "@/redux/features/products/productsApi";
+import { revalidateTag } from "@/utilities/revalidate";
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
-const DeleteProductBtn = ({
-  id,
-  children,
-  className,
-  title,
-  variant,
-  size,
-}: {
+type DeleteProductBtnProps = {
   id: string;
+  slug: string;
   children: ReactNode;
   className?: string;
   title?: string;
@@ -25,9 +20,30 @@ const DeleteProductBtn = ({
     | "secondary"
     | "ghost";
   size?: "default" | "sm" | "lg" | "icon";
-}) => {
+};
+
+const DeleteProductBtn = ({
+  id,
+  slug,
+  children,
+  className,
+  title,
+  variant,
+  size,
+}: DeleteProductBtnProps) => {
   const router = useRouter();
   const [deleteProducts, { isLoading }] = useDeleteProductsMutation();
+
+  const handleRevalidate = async (slug: string) => {
+    await revalidateTag([
+      `product-${slug}`,
+      `relatedProducts-${slug}`,
+      `collectionProducts-${slug}`,
+      "featuredProducts",
+      "allCategories",
+      "homepageIndividualSection",
+    ]);
+  };
 
   const handleDelete = async (productId: string) => {
     const confirmDelete = window.confirm(
@@ -40,6 +56,7 @@ const DeleteProductBtn = ({
           className: "bg-success text-white text-2xl",
           title: "The product deleted successfully!",
         });
+        handleRevalidate(slug);
         router.push("/dashboard/products");
       } catch (error) {
         toast({

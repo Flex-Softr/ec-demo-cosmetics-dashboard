@@ -121,6 +121,7 @@ export type IAdminProductResponse = {
 export type IAdminProduct = {
   _id: string; // Use for Key and Actions (Edit/Delete)
   title: string; // Product Name Column
+  slug: string; // Product Slug Column
   sku?: string; // SKU Column
   stockStatus: (typeof STOCK_STATUS)[keyof typeof STOCK_STATUS]; // Stock Status Badge
   stockAvailable: number; // Quantity Column
