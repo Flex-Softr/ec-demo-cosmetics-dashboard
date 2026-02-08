@@ -227,6 +227,18 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                       `+ ${shippingCostExceptFirst}`}
                   </span>
                 </p>
+                <p className="flex justify-between">
+                  <span className="text-muted-foreground">Status:</span>
+                  <span className="font-medium text-gray-900">
+                    {order?.statusFromShippingProvider}
+                  </span>
+                </p>
+                <p className="flex justify-between">
+                  <span className="text-muted-foreground">Message:</span>
+                  <span className="font-medium text-gray-900">
+                    {order?.messageFromShippingProvider}
+                  </span>
+                </p>
               </div>
             </div>
 
