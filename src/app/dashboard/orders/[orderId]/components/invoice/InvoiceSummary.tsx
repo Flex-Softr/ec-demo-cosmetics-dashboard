@@ -7,14 +7,14 @@ const InvoiceSummary = ({ order }: { order: TOrders }) => {
         {order.invoiceNotes && (
           <div className="bg-gray-50 p-4 rounded-md text-sm border border-gray-100">
             <p className="font-semibold text-gray-900 mb-1">Note:</p>
-            <p className="text-gray-600 italic">{order.invoiceNotes}</p>
+            <p className="text-gray-900 italic">{order.invoiceNotes}</p>
           </div>
         )}
       </div> */}
       <div className="w-full space-y-2 text-sm text-gray-700">
         {/* Subtotal */}
         <div className="flex justify-between items-center">
-          <span className="font-medium text-gray-600">Subtotal</span>
+          <span className="font-medium text-gray-900">Subtotal</span>
           <span className="font-semibold text-gray-900">
             {order?.subtotal ?? "0"}
           </span>
@@ -30,7 +30,7 @@ const InvoiceSummary = ({ order }: { order: TOrders }) => {
 
         {/* Shipping */}
         <div className="flex justify-between items-center">
-          <span className="font-medium text-gray-600">Shipping</span>
+          <span className="font-medium text-gray-900">Shipping</span>
           <span className="font-semibold text-gray-900 opacity-80 decoration-dashed underline underline-offset-4">
             {order?.shippingCharge?.amount ?? "0"}
           </span>
@@ -54,7 +54,7 @@ const InvoiceSummary = ({ order }: { order: TOrders }) => {
           </span>
         </div>
 
-        <div className="flex justify-between items-center pt-1 text-xs text-gray-500">
+        <div className="flex justify-between items-center pt-1 text-xs text-gray-900">
           <span>Payment Method:</span>
           <span className="font-medium capitalize">
             {order.payment?.paymentMethod?.name || "N/A"}
