@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,7 +17,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { useAddSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,23 +24,24 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import AddCategoryMedia from "../../components/AddCategoryMedia";
+import { useAddCategoryMutation } from "@/redux/features/category/categoryApi";
 
 const formSchema = z.object({
   name: z.string().min(2, {
-    message: "Subcategory Name must be at least 2 characters.",
+    message: "Sub Category Name must be at least 2 characters.",
   }),
   image: z.string().optional(),
-  category: z.string(),
+  parent: z.string(),
 });
 
 type TSubCategoryForm = {
   name: string;
-  category: string;
+  parent: string;
   image?: string;
 };
 
-const AddSubCategoryForm = ({ category }: { category: string }) => {
-  const [addSubCategory] = useAddSubCategoryMutation();
+const AddSubCategoryForm = ({ parent }: { parent: string }) => {
+  const [addCategory] = useAddCategoryMutation();
   const dispatch = useAppDispatch();
   const { thumbnail } = useAppSelector(({ imageSelector }) => imageSelector);
   const [open, setOpen] = useState(false);
@@ -52,7 +51,7 @@ const AddSubCategoryForm = ({ category }: { category: string }) => {
     defaultValues: {
       name: "",
       image: "",
-      category: "",
+      parent: "",
     },
   });
 
@@ -62,11 +61,11 @@ const AddSubCategoryForm = ({ category }: { category: string }) => {
 
   const onSubmit = async (data: TSubCategoryForm) => {
     try {
-      if (category) {
-        data.category = category;
+      if (parent) {
+        data.parent = parent;
         data.image = thumbnail || undefined;
 
-        const addedSubCategory = await addSubCategory(data).unwrap();
+        const addedSubCategory = await addCategory(data).unwrap();
 
         if (addedSubCategory?.success) {
           form.reset();

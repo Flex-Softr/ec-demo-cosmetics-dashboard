@@ -9,20 +9,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { useUpdateSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import UpdateSubCategoryMedia from "./UpdateSubCategoryMedia";
+import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi";
 
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Category Name must be at least 2 characters.",
   }),
   image: z.string().optional(),
-  category: z.string().optional(),
+  parent: z.string().optional(),
 });
 
 type TCategoryForm = {
@@ -37,17 +37,19 @@ const UpdateSubCategoryForm = ({
   id,
   name,
   image,
+  parent,
   handleOpen,
 }: {
   id: string;
   name: string;
   image: TCategoryImage;
+  parent: string;
   handleOpen: (open: boolean) => void;
 }) => {
   const { thumbnail } = useAppSelector(({ imageSelector }) => imageSelector);
   const dispatch = useAppDispatch();
 
-  const [updateSubCategory] = useUpdateSubCategoryMutation();
+  const [updateCategory] = useUpdateCategoryMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,6 +57,7 @@ const UpdateSubCategoryForm = ({
     defaultValues: {
       name: name,
       image: "",
+      parent: parent,
     },
   });
 
@@ -66,7 +69,7 @@ const UpdateSubCategoryForm = ({
     try {
       data.image = thumbnail || undefined;
 
-      const updatedCategory = await updateSubCategory({ id, data }).unwrap();
+      const updatedCategory = await updateCategory({ id, data }).unwrap();
       if (updatedCategory?.success) {
         form.reset();
         dispatch(setThumbnail(""));

@@ -1,6 +1,7 @@
 export type TBrand = {
   _id: string;
   name: string;
+  productCount: number;
   slug: string;
   logo: { src: string; alt: string };
   isActive: boolean;

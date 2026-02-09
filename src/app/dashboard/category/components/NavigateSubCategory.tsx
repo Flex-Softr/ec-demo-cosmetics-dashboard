@@ -5,12 +5,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useRouter } from "next/navigation";
 import { TCategories } from "./CategoryTable";
+import Link from "next/link";
 
 const NavigateSubCategory = ({ category }: { category: TCategories }) => {
-  const router = useRouter();
-
   return (
     <div className="flex items-center gap-3">
       <div className="lowercase ml-6">
@@ -27,14 +25,9 @@ const NavigateSubCategory = ({ category }: { category: TCategories }) => {
           </Tooltip>
         </TooltipProvider>
       </div>
-      <Settings
-        onClick={() =>
-          router.push(
-            `/dashboard/category/${category.name.replace(/ /g, "-")}/${category._id}`
-          )
-        }
-        className="w-5 h-5 text-primary cursor-pointer"
-      />
+      <Link href={`/dashboard/category/${category._id}`}>
+        <Settings className="w-5 h-5 text-primary cursor-pointer" />
+      </Link>
     </div>
   );
 };

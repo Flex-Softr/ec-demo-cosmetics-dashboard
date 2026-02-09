@@ -12,7 +12,6 @@ const categorySlice = createSlice({
     setThumbnail: (state, action: PayloadAction<string>) => {
       state.thumbnail = action.payload;
     },
-
     resetCategory: () => {
       return initialState;
     },

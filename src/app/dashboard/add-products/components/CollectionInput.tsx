@@ -1,5 +1,7 @@
 "use client";
 import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 import { ICollection } from "@/types/collection";
 import { useFormContext } from "react-hook-form";
 
@@ -15,20 +17,22 @@ const CollectionInput = ({
   const {
     watch,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useFormContext();
 
-  const selectedCollections = watch("productCollection");
+  const selectedCollections: string[] = watch("productCollection") || [];
 
-  const toggleCollection = (collectionId: string) => {
-    let newCollections = [...(selectedCollections || [])];
+  const toggleCollection = (collectionId: string, checked: boolean) => {
+    let newCollections = [...selectedCollections];
 
-    if (newCollections.includes(collectionId)) {
-      newCollections = newCollections.filter((id) => id !== collectionId);
-    } else {
+    if (checked) {
       newCollections.push(collectionId);
+    } else {
+      newCollections = newCollections.filter((id) => id !== collectionId);
     }
     setValue("productCollection", newCollections, { shouldValidate: true });
+    clearErrors("productCollection");
   };
 
   const getError = (path: string) => {
@@ -44,50 +48,43 @@ const CollectionInput = ({
   };
 
   return (
-    <SectionContentWrapper heading="Select Collection">
-      <div className="max-h-64 overflow-y-scroll">
-        {isLoading ? (
-          <p className="p-4 text-center text-gray-500 italic">
-            Loading collections...
-          </p>
-        ) : (
-          <ul className="list-none">
-            {collections?.map((collection: ICollection) => (
-              <li
-                className="p-2 flex items-center space-x-4"
-                key={collection._id}
-              >
-                <div
-                  onClick={() => toggleCollection(collection._id)}
-                  className="cursor-pointer"
-                ></div>
-                <input
-                  type="checkbox"
-                  id={`collection-${collection._id}`}
-                  checked={selectedCollections?.includes(collection._id)}
-                  onChange={() => toggleCollection(collection._id)}
-                  className="mr-1 size-4 cursor-pointer"
+    <SectionContentWrapper
+      heading="Select Collection"
+      height="max-h-[450px] overflow-y-auto"
+    >
+      {isLoading ? (
+        <div className="space-y-3">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-5 w-full animate-pulse rounded bg-gray-300"
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {collections?.map((collection: ICollection) => {
+            const isChecked = selectedCollections.includes(collection._id);
+
+            return (
+              <div key={collection._id} className="flex items-center gap-2">
+                <Checkbox
+                  checked={isChecked}
+                  onCheckedChange={(checked) => {
+                    toggleCollection(collection._id, Boolean(checked));
+                  }}
                 />
-                <label
-                  htmlFor={`collection-${collection._id}`}
-                  className={`text-gray-800 ${
-                    selectedCollections?.includes(collection._id)
-                      ? "font-bold"
-                      : ""
-                  }`}
-                >
+                <span className={cn("text-sm", isChecked && "font-medium")}>
                   {collection.title}
-                </label>
-              </li>
-            ))}
-            {collections.length === 0 && (
-              <li className="p-2 text-gray-500">
-                No active collections found.
-              </li>
-            )}
-          </ul>
-        )}
-      </div>
+                </span>
+              </div>
+            );
+          })}
+          {collections.length === 0 && (
+            <p className="p-2 text-gray-500">No active collections found.</p>
+          )}
+        </div>
+      )}
       {getError("productCollection") && (
         <p className="text-red-500 text-sm mt-2">
           {getError("productCollection")}

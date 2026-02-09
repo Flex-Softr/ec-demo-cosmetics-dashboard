@@ -1,9 +1,9 @@
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
-import { useUpdateSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
 import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { useState } from "react";
 import { TSubCategories } from "./SubCategoryTable";
+import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi";
 
 const UpdateSubCategoryActiveStatus = ({
   subcategory,
@@ -13,13 +13,13 @@ const UpdateSubCategoryActiveStatus = ({
   const { toast } = useToast();
   const [isChecked, setIsChecked] = useState(subcategory?.isActive);
 
-  const [updateSubCategory] = useUpdateSubCategoryMutation();
+  const [updateCategory] = useUpdateCategoryMutation();
 
   const handleChange = async () => {
     const updatedData = !isChecked;
     setIsChecked(updatedData);
     try {
-      const res = (await updateSubCategory({
+      const res = (await updateCategory({
         data: { isActive: updatedData },
         id: subcategory._id,
       }).unwrap()) as TSuccessResponse;

@@ -317,10 +317,10 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
       const { category } = row.original;
       return (
         <div className="flex justify-center w-[1%] mx-auto">
-          <span title={category.name} className="whitespace-nowrap">
-            {category.name.length > 10
-              ? category.name.slice(0, 10) + "..."
-              : category.name}
+          <span title={category?.[0]?.name} className="whitespace-nowrap">
+            {category?.[0]?.name.length > 10
+              ? category?.[0]?.name.slice(0, 10) + "..."
+              : category?.[0]?.name}
           </span>
         </div>
       );

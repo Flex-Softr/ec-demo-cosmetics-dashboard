@@ -1,17 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -20,14 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "@/components/ui/use-toast";
-import {
-  useDeleteSubCategoryMutation,
-  useGetSubCategoriesQuery,
-} from "@/redux/features/category/subCategoryApi";
 import {
   ColumnDef,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -40,6 +23,7 @@ import * as React from "react";
 import SubCategoryAction from "./SubCategoryAction";
 import UpdateSubCategoryActiveStatus from "./UpdateSubCategoryActiveStatus";
 import { formatImageSrc } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export type TSubCategories = {
   _id: string;
@@ -48,32 +32,33 @@ export type TSubCategories = {
     alt: string;
   };
   name: string;
+  parent: string;
   isActive: boolean;
 };
 
 export const columns: ColumnDef<TSubCategories>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "image",
     header: "Image",
@@ -107,76 +92,23 @@ export const columns: ColumnDef<TSubCategories>[] = [
   },
 ];
 
-export const CategoryTable = ({ categoryId }: { categoryId: string }) => {
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [deleteSubCategory] = useDeleteSubCategoryMutation();
-  const { data: categories, isLoading } = useGetSubCategoriesQuery(
-    {
-      category: categoryId,
-    },
-    { refetchOnMountOrArgChange: true }
-  );
-
+export const SubCategoryTable = ({
+  subcategories,
+}: {
+  subcategories: TSubCategories[];
+}) => {
   const table = useReactTable({
-    data: categories?.data || [],
+    data: subcategories,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      columnVisibility,
-      rowSelection,
-    },
   });
-
-  const selectedRows = table?.getFilteredSelectedRowModel()?.rows;
-  const categoryIds = selectedRows.map(({ original }) => original._id);
-
-  const handleDelete = async () => {
-    if (categoryIds.length) {
-      const res = await deleteSubCategory(categoryIds).unwrap();
-      if (res?.success) {
-        toast({
-          className: "bg-success text-white ",
-          title: "Sub category deleted successfully!",
-        });
-      } else {
-        toast({
-          className: "bg-danger text-whit",
-          title: "Something Went Wrong",
-        });
-      }
-    } else {
-      alert("Please select sub categories!");
-    }
-  };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="w-full">
       <div className="flex items-center gap-2 py-4">
-        <div className="flex justify-start  gap-2">
-          <Select>
-            <SelectTrigger className="w-[180px] border-primary focus:ring-primary focus:ring-1">
-              <SelectValue placeholder="Bulk Action" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Bulk Action</SelectLabel>
-                <SelectItem value="delete">Delete</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button onClick={handleDelete}>Apply</Button>
-        </div>
         <Input
           placeholder="Filter Name"
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -237,10 +169,6 @@ export const CategoryTable = ({ categoryId }: { categoryId: string }) => {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
         <div className="space-x-2">
           <Button
             variant="outline"

@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import config from "@/config/config";
-import { useGetProductsQuery } from "@/redux/features/products/productsApi";
+import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
 import { useGetShippingChargeQuery } from "@/redux/features/shippingCharge/shippingCharge";
 import { useMemo } from "react";
 import { Control, useWatch } from "react-hook-form";
 import { TFormInput } from "../components/OrderForm";
+import { PRODUCT_STATUS } from "@/const/products";
 
 export const useOrderCalculation = (control: Control<TFormInput>) => {
-  const { data: productsData } = useGetProductsQuery({ limit: 0 });
+  const { data: productsData } = useGetAdminProductsQuery({
+    status: PRODUCT_STATUS.PUBLISHED,
+    sort: "-createdAt",
+    limit: 0,
+  });
   const { data: shippingData } = useGetShippingChargeQuery({});
 
   const orderedProducts = useWatch({

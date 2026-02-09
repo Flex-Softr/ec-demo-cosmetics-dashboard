@@ -7,11 +7,13 @@ type TProps = {
   heading?: string;
   className?: string;
   collapse?: boolean;
+  height?: string;
 };
 const SectionContentWrapper = ({
   children,
   heading,
   className,
+  height,
   collapse,
 }: TProps) => {
   const [isCollapsed, setIsCollapsed] = useState(collapse || false);
@@ -24,7 +26,7 @@ const SectionContentWrapper = ({
     <Card className="space-y-5 relative">
       <div className="flex justify-between items-center">
         <h2
-          className={`scroll-m-20  text-sm font-semibold tracking-tight first:mt-0 ${className}`}
+          className={`scroll-m-20 text-sm font-semibold tracking-tight first:mt-0 ${className}`}
         >
           {heading}
         </h2>
@@ -63,7 +65,7 @@ const SectionContentWrapper = ({
         )}
       </div>
       {/* <hr className="my-2 border-primary"/> */}
-      {!isCollapsed && <>{children}</>}
+      {!isCollapsed && <div className={height}>{children}</div>}
     </Card>
   );
 };

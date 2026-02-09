@@ -55,7 +55,7 @@ const productsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["singleProduct", "productList", "publicProductList"],
     }),
-    getProducts: builder.query<IAdminProductResponse, TQuery>({
+    getAdminProducts: builder.query<IAdminProductResponse, TQuery>({
       query: (args: TQuery) => ({
         url: "/products/admin",
         method: "GET",
@@ -96,7 +96,7 @@ export const {
   useCreateProductMutation,
   useGetAProductQuery,
   useGetACustomerProductQuery,
-  useGetProductsQuery,
+  useGetAdminProductsQuery,
   useGetCustomerProductsQuery,
   useUpdateProductMutation,
   useUpdateProductStatusMutation,

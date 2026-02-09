@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { useGetProductsQuery } from "@/redux/features/products/productsApi";
+import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
 import { useGetMobilesForSMSQuery } from "@/redux/features/sms/smsApi";
 import { useAppSelector } from "@/redux/hooks";
 import { useEffect, useMemo, useState } from "react";
@@ -12,6 +12,7 @@ import SmsContentEditor from "./SmsContentEditor";
 // import FilterByTimes from "../../customers/components/FilterByTimes";
 import CustomerFilterClear from "../../customers/components/CustomerFilterClear";
 import FilterByDivisionDistrict from "../../customers/components/FilterByDivisionDistrict";
+import { PRODUCT_STATUS } from "@/const/products";
 
 type Option = {
   value: string;
@@ -46,11 +47,10 @@ export default function MultiSelectStatus() {
     data: productsData,
     isLoading: productsLoading,
     error: productsError,
-  } = useGetProductsQuery({
-    status: "all",
+  } = useGetAdminProductsQuery({
+    status: PRODUCT_STATUS.PUBLISHED,
     sort: "-createdAt",
-    page: 1,
-    limit: 1000,
+    limit: 0,
   });
 
   const productOptions: Option[] = useMemo(() => {

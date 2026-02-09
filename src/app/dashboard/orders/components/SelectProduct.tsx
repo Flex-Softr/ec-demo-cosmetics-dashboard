@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PRODUCT_STATUS } from "@/const/products";
-import { useGetProductsQuery } from "@/redux/features/products/productsApi";
+import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
 import { IAdminProduct } from "@/types/products";
 import { Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -65,9 +65,10 @@ const SelectProduct = ({
   setValue,
   clearErrors,
 }: TProps) => {
-  const { data: products, isLoading } = useGetProductsQuery({
-    limit: 0,
+  const { data: products, isLoading } = useGetAdminProductsQuery({
     status: PRODUCT_STATUS.PUBLISHED,
+    sort: "-createdAt",
+    limit: 0,
   });
 
   const { fields, append, remove } = useFieldArray({

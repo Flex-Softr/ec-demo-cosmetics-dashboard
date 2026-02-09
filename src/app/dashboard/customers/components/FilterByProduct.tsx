@@ -1,6 +1,7 @@
 "use client";
+import { PRODUCT_STATUS } from "@/const/products";
 import { setSelectedProduct } from "@/redux/features/customerOrders/customerOrdersSlice";
-import { useGetProductsQuery } from "@/redux/features/products/productsApi";
+import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const FilterByProduct = () => {
@@ -9,10 +10,10 @@ const FilterByProduct = () => {
     ({ customerOrders }) => customerOrders
   );
 
-  const { data, isLoading } = useGetProductsQuery({
-    limit: 1000,
+  const { data, isLoading } = useGetAdminProductsQuery({
+    status: PRODUCT_STATUS.PUBLISHED,
     sort: "-createdAt",
-    page: 1,
+    limit: 0,
   });
 
   return (

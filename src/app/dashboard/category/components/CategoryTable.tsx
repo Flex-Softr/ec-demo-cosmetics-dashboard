@@ -1,17 +1,5 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -20,21 +8,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "@/components/ui/use-toast";
 import { formatImageSrc } from "@/lib/utils";
-import {
-  useDeleteCategoryMutation,
-  useGetCategoriesQuery,
-} from "@/redux/features/category/categoryApi";
-import { revalidateTag } from "@/utilities/revalidate";
+import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
 import {
   ColumnDef,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import Image from "next/image";
@@ -42,6 +21,14 @@ import * as React from "react";
 import CategoryAction from "./CategoryAction";
 import NavigateSubCategory from "./NavigateSubCategory";
 import UpdateCategoryActiveStatus from "./UpdateCategoryActiveStatus";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  setIsLoading,
+  setPage,
+  setTotalPage,
+} from "@/redux/features/pagination/PaginationSlice";
+import { PagePagination } from "@/components/pagination/PagePagination";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export type TCategories = {
   _id: string;
@@ -55,28 +42,28 @@ export type TCategories = {
 };
 
 export const columns: ColumnDef<TCategories>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "image",
     header: "",
@@ -114,108 +101,76 @@ export const columns: ColumnDef<TCategories>[] = [
 ];
 
 export const CategoryTable = () => {
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [deleteCategory] = useDeleteCategoryMutation();
-  const { data: categories, isLoading } = useGetCategoriesQuery(undefined);
+  const dispatch = useAppDispatch();
+  const { page, limit } = useAppSelector(({ pagination }) => pagination);
+
+  const [globalFilter, setGlobalFilter] = React.useState("");
+  const debunce = useDebounce(globalFilter, 500);
+  const queryParams = debunce ? { search: debunce } : { page, limit };
+
+  const { data: response, isLoading } = useGetCategoriesQuery(queryParams);
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const responseData: any = response?.data;
+  const categories = Array.isArray(responseData?.data) ? responseData.data : [];
+  const meta = responseData?.meta;
+
+  if (!categories.length && page > 1) {
+    dispatch(setPage(1));
+  }
+
+  React.useEffect(() => {
+    if (meta) {
+      dispatch(setTotalPage({ total: meta.total, totalPage: meta.totalPage }));
+    }
+  }, [meta, dispatch]);
+
+  React.useEffect(() => {
+    dispatch(setIsLoading(isLoading));
+  }, [isLoading, dispatch]);
 
   const table = useReactTable({
-    data: categories?.data || [],
+    data: categories,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      columnVisibility,
-      rowSelection,
-    },
   });
-
-  const selectedRows = table?.getFilteredSelectedRowModel()?.rows;
-  const categoryIds = selectedRows.map(({ original }) => original._id);
-
-  const handleDelete = async () => {
-    if (categoryIds.length) {
-      const res = await deleteCategory(categoryIds).unwrap();
-      if (res?.success) {
-        // refetchData is handled by tags now
-        toast({
-          className: "bg-success text-white ",
-          title: "Category deleted successfully!",
-        });
-        await revalidateTag(["allCategories", "parentCategory"]);
-      } else {
-        toast({
-          className: "bg-danger text-whit",
-          title: "Something Went Wrong",
-        });
-      }
-    } else {
-      alert("Please select categories!");
-    }
-  };
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="w-full">
-      <div className="flex items-center gap-2 py-4">
-        <div className="flex justify-start  gap-2">
-          <Select>
-            <SelectTrigger className="w-[180px] border-primary focus:ring-primary focus:ring-1">
-              <SelectValue placeholder="Bulk Action" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Bulk Action</SelectLabel>
-                <SelectItem value="delete">Delete</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button onClick={handleDelete}>Apply</Button>
-        </div>
+    <div className="space-y-4">
+      <div className="flex justify-between">
         <Input
-          placeholder="Filter Name"
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
+          placeholder="Search categories..."
+          value={globalFilter ?? ""}
+          onChange={(e) => setGlobalFilter(e.target.value)}
           className="max-w-sm"
         />
       </div>
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-primary text-white hover:bg-primary/90">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+              <TableRow key={headerGroup.id} className="hover:bg-primary/90">
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -232,37 +187,18 @@ export const CategoryTable = () => {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No categories found.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+      {!globalFilter && (
+        <div className="flex items-center justify-end space-x-2 py-2">
+          <PagePagination />
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

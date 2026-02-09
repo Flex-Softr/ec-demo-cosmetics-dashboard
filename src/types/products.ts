@@ -131,7 +131,7 @@ export type IAdminProduct = {
   };
   category: {
     name: string; // Category Column
-  };
+  }[];
   productCollection?: {
     _id: string;
     title: string;

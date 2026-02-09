@@ -3,12 +3,34 @@ import searchParams from "@/utilities/searchParams";
 
 const categoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    addCategory: builder.mutation({
+      query: (data) => ({
+        url: `/categories`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["categories", "singleCategory"],
+    }),
     getCategories: builder.query({
       query: (args) => ({
         url: "/categories",
         params: searchParams(args),
       }),
       providesTags: ["categories"],
+    }),
+    getSingleCategory: builder.query({
+      query: (id) => ({
+        url: `/categories/${id}`,
+      }),
+      providesTags: ["singleCategory"],
+    }),
+    updateCategory: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/categories/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["categories", "singleCategory"],
     }),
     deleteCategory: builder.mutation({
       query: (data) => ({
@@ -20,22 +42,6 @@ const categoryApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["categories"],
     }),
-    addCategory: builder.mutation({
-      query: (data) => ({
-        url: `/categories`,
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["categories"],
-    }),
-    updateCategory: builder.mutation({
-      query: ({ id, data }) => ({
-        url: `/categories/${id}`,
-        method: "PATCH",
-        body: data,
-      }),
-      invalidatesTags: ["categories"],
-    }),
   }),
 });
 
@@ -44,4 +50,5 @@ export const {
   useDeleteCategoryMutation,
   useAddCategoryMutation,
   useUpdateCategoryMutation,
+  useGetSingleCategoryQuery,
 } = categoryApi;

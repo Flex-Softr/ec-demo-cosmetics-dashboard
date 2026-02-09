@@ -89,11 +89,6 @@ const VariationSchema = Yup.object().shape({
   isActive: Yup.boolean().optional(),
 });
 
-const CategorySchema = Yup.object().shape({
-  name: Yup.string().required("Category is required"),
-  subCategory: Yup.string().optional(),
-});
-
 const WarrantyInfoSchema = Yup.object().shape({
   duration: Yup.object()
     .shape({
@@ -154,7 +149,7 @@ const ProductSchema = Yup.object().shape({
     otherwise: () => Yup.array().of(VariationSchema).optional(),
   }),
   brand: Yup.string().optional(),
-  category: CategorySchema.required(),
+  category: Yup.array().of(Yup.string()).min(1, "Category is required"),
   productCollection: Yup.array().of(Yup.string()).optional(),
   featured: Yup.boolean().optional(),
   warranty: Yup.boolean().required(),

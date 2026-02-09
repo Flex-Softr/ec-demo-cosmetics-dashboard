@@ -38,7 +38,7 @@ const UpdateCategoryActiveStatus = ({
         className: "toast-error",
         title: err?.message || "Failed to update status",
       });
-      setIsChecked(!updatedData);
+      // setIsChecked(!updatedData);
     }
   };
 

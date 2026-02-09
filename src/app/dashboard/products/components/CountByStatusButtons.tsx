@@ -6,7 +6,7 @@ import {
   setPage,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
-import { useGetProductsQuery } from "@/redux/features/products/productsApi";
+import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
 import {
   setProducts,
   setSearch,
@@ -39,12 +39,9 @@ const CountByStatusButtons = () => {
     data,
     isLoading: loading,
     error,
-  } = useGetProductsQuery({
-    status: filter,
-    // price: selectedPriceRange && {
-    //   min: selectedPriceRange[0],
-    //   max: selectedPriceRange[1],
-    // },
+  } = useGetAdminProductsQuery({
+    status: filter === "all" ? "" : filter,
+    sort: "-createdAt",
     page,
     limit,
   });

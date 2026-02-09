@@ -1,4 +1,5 @@
 "use client";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -43,14 +44,17 @@ const Advanced = () => {
         >
           Warranty
         </Label>
-        <div>
-          <Input
-            type="checkbox"
-            {...register("warranty")}
-            id="warranty"
-            className="w-4 h-4 cursor-pointer"
-          />
-        </div>
+        <Controller
+          name="warranty"
+          control={control}
+          render={({ field }) => (
+            <Checkbox
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              id="warranty"
+            />
+          )}
+        />
       </div>
       {warranty && (
         <>

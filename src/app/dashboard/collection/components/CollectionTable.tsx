@@ -1,5 +1,4 @@
 "use client";
-
 import { PagePagination } from "@/components/pagination/PagePagination";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,35 +19,20 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { columns } from "./CollectionColumns";
+import { useDebounce } from "@/hooks/useDebounce";
+
 const CollectionTable = () => {
   const dispatch = useAppDispatch();
   const { page, limit } = useAppSelector(({ pagination }) => pagination);
 
-  // When searching (globalFilter is set), we might want to bypass pagination or query differently.
-  // For now, let's just pass page/limit for standard view.
-  // Ideally, if globalFilter is present, we might want to reset page to 1 or handle search params.
-  // But based on user request "implementation this pagination in collection {!search && ...}",
-  // they specifically want to HIDE pagination during search (client-side search?).
-
-  // However, existing code fetches ALL collections: useGetCollectionsQuery({}).
-  // This suggests client side pagination was used previously?
-  // "const collections = Array.isArray(responseData?.data) ? responseData.data : []"
-
-  // If we want server pagination, we pass page/limit.
-  // If we search, usually we assume client search on the fetched page? NO, that would be weird.
-  // If we want FULL collection search, we need backend search.
-  // But let's stick to the prompt: just adding pagination support.
-
   const [globalFilter, setGlobalFilter] = useState("");
-
-  const queryParams = globalFilter
-    ? { searchTerm: globalFilter }
+  const debouncedFilter = useDebounce(globalFilter, 500);
+  const queryParams = debouncedFilter
+    ? { searchTerm: debouncedFilter }
     : { page, limit };
 
   const { data: response, isLoading } = useGetCollectionsQuery(queryParams);
@@ -78,18 +62,6 @@ const CollectionTable = () => {
     data: collections,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(), // This might still limit strictly to page size if collections > limit, but server handles it.
-    initialState: {
-      pagination: {
-        pageSize: limit,
-      },
-    },
-    state: {
-      globalFilter,
-    },
-    onGlobalFilterChange: setGlobalFilter,
-    manualPagination: !globalFilter, // If not searching, we handle pagination manually (server side effectively)
   });
 
   if (isLoading) return <div>Loading...</div>;

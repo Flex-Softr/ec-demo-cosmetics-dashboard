@@ -26,7 +26,6 @@ import ProductSchema, { ProductFormValues } from "../lib/productValidation";
 import DeleteProductBtn from "@/components/DeleteProductBtn";
 import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import BrandInput from "./BrandInput";
-import CategoryInput from "./CategoryInput";
 import CollectionInput from "./CollectionInput";
 import DescriptionInput from "./DescriptionInput";
 import Featured from "./Featured";
@@ -36,12 +35,9 @@ import Published from "./Published";
 import RelatedProducts from "./RelatedProduct";
 import ShortDescriptionInput from "./ShortDescriptionInput";
 import TitleInput from "./TitleInput";
+import { CategoryField } from "./CategoryField";
 
 const ProductForm = ({ productId }: { productId?: string }) => {
-  const { data: collectionsResponse, isLoading: collectionLoading } =
-    useGetCollectionsQuery({
-      isActive: true,
-    });
   const dispatch = useAppDispatch();
 
   const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
@@ -52,6 +48,10 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     { skip: !productId }
   );
   const { data: attributesData } = useGetAttributesQuery({ isActive: true });
+  const { data: collectionsResponse, isLoading: collectionLoading } =
+    useGetCollectionsQuery({
+      isActive: true,
+    });
 
   const defaultValues = useMemo(() => {
     return {
@@ -60,6 +60,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       description: "",
       shortDescription: "",
       type: PRODUCT_TYPE.SIMPLE,
+      featured: false,
       image: {
         thumbnail: "",
         gallery: [],
@@ -83,13 +84,9 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       attributes: [],
       variations: [],
       brand: undefined,
-      category: {
-        name: "",
-        subCategory: undefined,
-      },
+      category: [],
       productCollection: [],
       relatedProducts: [],
-      featured: false,
       warranty: false,
       warrantyInfo: {
         duration: { quantity: "", unit: "" },
@@ -112,21 +109,17 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       const {
         thumbnail = {},
         gallery = [],
-        featured,
-        warranty,
         warrantyInfo = {},
-        category = {},
+        category = [],
         brand,
         attributes = [],
-        type,
         relatedProducts = [],
+        productCollection = [],
         ...restProductData
       } = productData;
 
       const galleryData = gallery?.map(({ _id }: { _id: string }) => _id);
-      const { _id: categoryId, subCategory } = category;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const brandId = (brand as any)?._id || brand;
+      // const { _id: categoryId, subCategory } = category;
 
       // Transform Attributes for Form State
       // 1. Map available attributes to the format used in dropdown
@@ -203,28 +196,14 @@ const ProductForm = ({ productId }: { productId?: string }) => {
           ...restProductData.inventory,
           sku: restProductData.inventory?.sku || undefined,
         },
-        category: {
-          name: categoryId,
-          subCategory: subCategory?._id || "",
-        },
-        productCollection: Array.isArray(productData.productCollection)
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            productData.productCollection.map((pc: any) =>
-              typeof pc === "object" ? pc._id : pc
-            )
-          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (productData.productCollection as any)?._id
-            ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              [(productData.productCollection as any)._id]
-            : productData.productCollection
-              ? [productData.productCollection]
-              : [],
-        brand: brandId,
+        category: category?.map((c: { _id: string }) => c._id),
+        productCollection: productCollection?.map(
+          (pc: { _id: string }) => pc._id
+        ),
+        brand: brand?._id,
         attributes: transformedAttributes,
         attributeValues: transformedAttributeValues,
         relatedProducts: relatedProducts,
-        featured,
-        warranty,
         warrantyInfo: {
           duration: {
             quantity: warrantyInfo?.duration?.quantity || "",
@@ -232,7 +211,6 @@ const ProductForm = ({ productId }: { productId?: string }) => {
           },
           terms: warrantyInfo?.terms || "",
         },
-        type: type || PRODUCT_TYPE.SIMPLE,
       };
 
       reset(formData);
@@ -468,7 +446,8 @@ const ProductForm = ({ productId }: { productId?: string }) => {
                 productId={productId as string}
                 isLoading={isCreating || isUpdating}
               />
-              <CategoryInput />
+              {/* <CategoryInput /> */}
+              <CategoryField />
               <CollectionInput
                 collectionsData={collectionsResponse?.data?.data}
                 isLoading={collectionLoading}

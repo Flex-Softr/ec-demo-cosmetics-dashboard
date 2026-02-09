@@ -9,15 +9,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
-import { useDeleteSubCategoryMutation } from "@/redux/features/category/subCategoryApi";
 import { SquarePen, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { TSubCategories } from "./SubCategoryTable";
 import UpdateSubCategoryForm from "./UpdateSubcategoryForm";
+import { useDeleteCategoryMutation } from "@/redux/features/category/categoryApi";
 
 const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
-  const { _id, name, image } = category;
-  const [deleteSubCategory] = useDeleteSubCategoryMutation();
+  const { _id, name, image, parent } = category;
+  const [deleteCategory] = useDeleteCategoryMutation();
 
   const [open, setOpen] = useState(false);
 
@@ -28,7 +28,7 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
   const handleDelete = async (id: string) => {
     const categoryIds = [id];
 
-    const res = await deleteSubCategory(categoryIds).unwrap();
+    const res = await deleteCategory(categoryIds).unwrap();
 
     if (res?.success) {
       toast({
@@ -58,6 +58,7 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
               id={_id}
               name={name}
               image={image}
+              parent={parent}
               handleOpen={handleOpen}
             />
           </div>

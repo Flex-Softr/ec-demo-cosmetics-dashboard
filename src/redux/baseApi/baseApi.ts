@@ -69,6 +69,7 @@ const tags = [
   "attributes",
   "brands",
   "categories",
+  "singleCategory",
   "subcategories",
   "collections",
   "slider",

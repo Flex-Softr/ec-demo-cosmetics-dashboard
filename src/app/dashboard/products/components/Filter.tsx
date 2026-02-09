@@ -8,7 +8,7 @@ import {
   setPage,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
-import { useGetProductsQuery } from "@/redux/features/products/productsApi";
+import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
 import {
   setProducts,
   setSearch,
@@ -30,15 +30,17 @@ import { useEffect, useState } from "react";
 type TCategory = {
   _id: string;
   name: string;
+  productCount: number;
   subcategories: {
     _id: string;
     name: string;
+    productCount: number;
   }[];
 };
 
 const Filter = () => {
   const { data: categoriesData } = useGetCategoriesQuery({});
-  const categories: TCategory[] = categoriesData?.data || [];
+  const categories: TCategory[] = categoriesData?.data?.data || [];
 
   const { data: collectionsData } = useGetCollectionsQuery({ isActive: true });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,8 +72,8 @@ const Filter = () => {
     data,
     isLoading: loading,
     error,
-  } = useGetProductsQuery({
-    status: filter,
+  } = useGetAdminProductsQuery({
+    status: filter === "all" ? "" : filter,
     category: category === "All Categories" ? "" : category,
     collection: collection === "All Collections" ? "" : collection,
     brand: brand === "All Brands" ? "" : brand,
@@ -110,15 +112,15 @@ const Filter = () => {
         <SelectContent>
           <SelectGroup>
             <SelectItem value="All Categories">All Categories</SelectItem>
-            {categories.map(({ _id, name, subcategories }) => (
+            {categories.map(({ _id, name, productCount, subcategories }) => (
               <div key={_id}>
                 <SelectItem value={_id} className="font-bold">
-                  {name}
+                  {name} {productCount > 0 && `(${productCount})`}
                 </SelectItem>
                 {subcategories.length > 0 &&
-                  subcategories.map(({ _id, name }) => (
+                  subcategories.map(({ _id, name, productCount }) => (
                     <SelectItem key={_id} value={_id} className="pl-4">
-                      {name}
+                      {name} {productCount > 0 && `(${productCount})`}
                     </SelectItem>
                   ))}
               </div>
@@ -136,7 +138,7 @@ const Filter = () => {
             <SelectItem value="All Collections">All Collections</SelectItem>
             {collections?.map((col) => (
               <SelectItem key={col._id} value={col._id} className="font-bold">
-                {col.title}
+                {col.title} {col.productCount > 0 && `(${col.productCount})`}
               </SelectItem>
             ))}
           </SelectGroup>
@@ -152,7 +154,7 @@ const Filter = () => {
             <SelectItem value="All Brands">All Brands</SelectItem>
             {brands?.map((b) => (
               <SelectItem key={b._id} value={b._id} className="font-bold">
-                {b.name}
+                {b.name} {b.productCount > 0 && `(${b.productCount})`}
               </SelectItem>
             ))}
           </SelectGroup>
