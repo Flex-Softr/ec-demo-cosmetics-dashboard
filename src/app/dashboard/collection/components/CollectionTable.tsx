@@ -21,7 +21,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import React from "react";
 import { columns } from "./CollectionColumns";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -29,11 +29,9 @@ const CollectionTable = () => {
   const dispatch = useAppDispatch();
   const { page, limit } = useAppSelector(({ pagination }) => pagination);
 
-  const [globalFilter, setGlobalFilter] = useState("");
-  const debouncedFilter = useDebounce(globalFilter, 500);
-  const queryParams = debouncedFilter
-    ? { searchTerm: debouncedFilter }
-    : { page, limit };
+  const [globalFilter, setGlobalFilter] = React.useState("");
+  const debunce = useDebounce(globalFilter, 500);
+  const queryParams = debunce ? { search: debunce } : { page, limit };
 
   const { data: response, isLoading } = useGetCollectionsQuery(queryParams);
 
@@ -48,13 +46,13 @@ const CollectionTable = () => {
     dispatch(setPage(1));
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (meta) {
       dispatch(setTotalPage({ total: meta.total, totalPage: meta.totalPage }));
     }
   }, [meta, dispatch]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     dispatch(setIsLoading(isLoading));
   }, [isLoading, dispatch]);
 
@@ -64,7 +62,9 @@ const CollectionTable = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-4">
