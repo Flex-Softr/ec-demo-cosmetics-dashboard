@@ -21,7 +21,7 @@ export const columns: ColumnDef<TOrderedProducts>[] = [
     accessorKey: "",
     header: "SL",
     cell: ({ row }) => (
-      <div className="capitalize flex flex-col justify-start">
+      <div className="capitalize flex flex-col justify-start text-black">
         <span>{row.index + 1}</span>
       </div>
     ),
@@ -32,19 +32,18 @@ export const columns: ColumnDef<TOrderedProducts>[] = [
     cell: ({ row }) => {
       const { title, attributes = {} } = row.original;
       const variationProps = Object.keys(attributes)
-        .map((key) => attributes[key])
-        .join(" ");
+        .map((key) => `${key}: ${attributes[key]}`)
+        .join(", ");
+
       return (
-        <p>
-          <span className="font-semibold">{title}</span>
+        <div>
+          <p className="font-semibold text-black">{title}</p>
           {variationProps && (
-            <span
-              style={{ fontStyle: "italic", color: "#555", fontWeight: 600 }}
-            >
+            <p className="italic font-bold text-black">
               {""} ({variationProps})
-            </span>
+            </p>
           )}
-        </p>
+        </div>
       );
     },
   },
@@ -52,18 +51,24 @@ export const columns: ColumnDef<TOrderedProducts>[] = [
     accessorKey: "unitPrice",
     header: "Price",
     cell: ({ row }) => (
-      <span className="lowercase text-center">{row.original.unitPrice}</span>
+      <span className="lowercase text-center text-black">
+        {row.original.unitPrice}
+      </span>
     ),
   },
   {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => <div className="lowercase">{row.original.quantity}</div>,
+    cell: ({ row }) => (
+      <div className="lowercase text-black">{row.original.quantity}</div>
+    ),
   },
   {
     accessorKey: "total",
     header: "Amount",
-    cell: ({ row }) => <div className="lowercase">{row.original.total}</div>,
+    cell: ({ row }) => (
+      <div className="lowercase text-black">{row.original.total}</div>
+    ),
   },
 ];
 
@@ -79,19 +84,16 @@ export function InvoiceItemsTable({
   });
 
   return (
-    <div className="rounded-lg border border-gray-200 overflow-hidden">
+    <div className="overflow-hidden">
       <Table>
-        <TableHeader className="bg-primary">
+        <TableHeader className="bg-transparent border-b-2 border-gray-900">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="hover:bg-primary/90 border-none"
-            >
+            <TableRow key={headerGroup.id} className="border-none">
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead
                     key={header.id}
-                    className="font-bold text-white h-9 text-xs uppercase px-2 first:pl-4 last:pr-4"
+                    className="font-bold text-black h-10 text-xs uppercase px-2 first:pl-4 last:pr-4"
                   >
                     {header.isPlaceholder
                       ? null
@@ -105,16 +107,19 @@ export function InvoiceItemsTable({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody className="[&_tr:last-child]:border-b">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="border-gray-100"
+                className="border-b border-gray-300"
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="py-3 px-4 text-sm">
+                  <TableCell
+                    key={cell.id}
+                    className="py-1.5 px-4 text-sm text-black"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

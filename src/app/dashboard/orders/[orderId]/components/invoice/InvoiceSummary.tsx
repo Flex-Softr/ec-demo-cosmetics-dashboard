@@ -6,23 +6,23 @@ const InvoiceSummary = ({ order }: { order: TOrders }) => {
       {/* <div className="flex-1">
         {order.invoiceNotes && (
           <div className="bg-gray-50 p-4 rounded-md text-sm border border-gray-100">
-            <p className="font-semibold text-gray-900 mb-1">Note:</p>
-            <p className="text-gray-900 italic">{order.invoiceNotes}</p>
+            <p className="font-semibold text-black mb-1">Note:</p>
+            <p className="text-black italic">{order.invoiceNotes}</p>
           </div>
         )}
       </div> */}
-      <div className="w-full space-y-2 text-sm text-gray-700">
+      <div className="w-full space-y-1 text-sm text-black">
         {/* Subtotal */}
         <div className="flex justify-between items-center">
-          <span className="font-medium text-gray-900">Subtotal</span>
-          <span className="font-semibold text-gray-900">
+          <span className="font-medium text-black">Subtotal</span>
+          <span className="font-semibold text-black">
             {order?.subtotal ?? "0"}
           </span>
         </div>
 
         {/* Discount */}
         {order?.discount > 0 && (
-          <div className="flex justify-between items-center text-red-600">
+          <div className="flex justify-between items-center text-black font-bold">
             <span className="font-medium">Discount</span>
             <span>- {order.discount}</span>
           </div>
@@ -30,40 +30,40 @@ const InvoiceSummary = ({ order }: { order: TOrders }) => {
 
         {/* Shipping */}
         <div className="flex justify-between items-center">
-          <span className="font-medium text-gray-900">Shipping</span>
-          <span className="font-semibold text-gray-900 opacity-80 decoration-dashed underline underline-offset-4">
+          <span className="font-medium text-black">Shipping</span>
+          <span className="font-semibold text-black">
             {order?.shippingCharge?.amount ?? "0"}
           </span>
         </div>
 
         {/* Advance */}
         {order?.advance > 0 && (
-          <div className="flex justify-between items-center text-green-600">
+          <div className="flex justify-between items-center text-black font-bold">
             <span className="font-medium">Advance</span>
             <span>- {order.advance}</span>
           </div>
         )}
 
-        <div className="border-t border-gray-200 my-2"></div>
-
         {/* Total */}
-        <div className="flex justify-between items-center bg-gray-50 p-3 rounded-md border border-gray-100">
-          <span className="font-bold text-gray-900 text-lg">Total</span>
-          <span className="font-bold text-primary text-lg">
+        <div className="flex justify-between items-center border-t-2 border-gray-900 mt-2 pt-2 px-1">
+          <span className="font-bold text-black text-lg uppercase tracking-tight">
+            Total
+          </span>
+          <span className="font-bold text-black text-xl">
             {order?.total ?? "0"}
           </span>
         </div>
 
-        <div className="flex justify-between items-center pt-1 text-xs text-gray-900">
+        <div className="flex justify-between items-center pt-1 text-xs text-black">
           <span>Payment Method:</span>
-          <span className="font-medium capitalize">
+          <span className="font-medium capitalize text-black">
             {order.payment?.paymentMethod?.name || "N/A"}
           </span>
         </div>
 
         <div className="flex justify-between items-center pt-1">
-          <span className="font-bold text-gray-800">Due Amount:</span>
-          <span className="font-bold text-gray-900">
+          <span className="font-bold text-black">Due Amount:</span>
+          <span className="font-bold text-black">
             {(order?.total || 0) - (order?.advance || 0)}
           </span>
         </div>

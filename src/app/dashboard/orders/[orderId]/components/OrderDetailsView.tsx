@@ -102,7 +102,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
       ? true
       : false;
 
-  const isInvoice = ["processing"].includes(status);
+  const isInvoice = ["processing", "processing done"].includes(status);
 
   const isDeleted = ["pending", "follow up"].includes(status);
 

@@ -11,7 +11,6 @@ import { ChevronDown, ChevronRight, Minus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Actions from "./Actions";
-import ProductVariations from "./ProductVariations";
 
 const getVariablePriceDisplay = (
   variations: NonNullable<IAdminProduct["variations"]>
@@ -163,14 +162,6 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
             </Link>
           </span>
         </div>
-        {row.original.type === PRODUCT_TYPE.VARIABLE && row.getIsExpanded() && (
-          <div className="mt-0.5 ml-7">
-            <ProductVariations
-              variations={row.original.variations!}
-              type="attributes"
-            />
-          </div>
-        )}
       </div>
     ),
   },
@@ -180,28 +171,28 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     cell: ({ row }) =>
       row.original.type === PRODUCT_TYPE.SIMPLE ? (
         <div className="flex justify-center px-4 py-2 text-nowrap w-[1%] mx-auto">
-          <span>{row.original.sku}</span>
+          <span>
+            {row.original.sku ? (
+              row.original.sku
+            ) : (
+              <Minus className="h-4 w-4 mx-auto text-gray-500" />
+            )}
+          </span>
         </div>
       ) : (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 text-nowrap w-[1%] mx-auto whitespace-nowrap">
           <p className="flex items-center shrink-0">
-            <span>{row.original.variations?.length} Variations</span>
+            <span className="font-bold">
+              {row.original.variations?.length} Variations
+            </span>
           </p>
-          {row.getIsExpanded() && (
-            <div className="mt-0.5 w-full">
-              <ProductVariations
-                variations={row.original.variations!}
-                type="sku"
-              />
-            </div>
-          )}
         </div>
       ),
   },
   {
     accessorKey: "price",
     header: () => <div className="text-center">Price</div>,
-    cell: ({ row: { original, getIsExpanded } }) =>
+    cell: ({ row: { original } }) =>
       original.type === PRODUCT_TYPE.SIMPLE ? (
         <div className="flex gap-2 items-baseline justify-center px-4 py-2 text-nowrap w-[1%] mx-auto">
           <span
@@ -244,14 +235,6 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
               }
             })()}
           </div>
-          {getIsExpanded() && (
-            <div className="mt-0.5 w-full">
-              <ProductVariations
-                variations={original.variations!}
-                type="price"
-              />
-            </div>
-          )}
         </div>
       ),
   },
@@ -271,14 +254,6 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
               {formatStockStatus(status)}
             </span>
           </div>
-          {!isSimple && row.getIsExpanded() && (
-            <div className="mt-0.5 w-full">
-              <ProductVariations
-                variations={row.original.variations!}
-                type="stock"
-              />
-            </div>
-          )}
         </div>
       );
     },
@@ -286,7 +261,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
   {
     accessorKey: "stockAvailable",
     header: () => <div className="text-center">Qty</div>,
-    cell: ({ row: { original, getIsExpanded } }) => {
+    cell: ({ row: { original } }) => {
       const isSimple = original.type === PRODUCT_TYPE.SIMPLE;
       const qty = isSimple
         ? original.stockAvailable
@@ -301,11 +276,6 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
               <span className="font-semibold">{qty}</span>
             )}
           </div>
-          {!isSimple && getIsExpanded() && (
-            <div className="mt-0.5 w-full">
-              <ProductVariations variations={original.variations!} type="qty" />
-            </div>
-          )}
         </div>
       );
     },

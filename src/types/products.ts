@@ -154,6 +154,7 @@ export type IAdminProduct = {
       stockAvailable: number;
       manageStock: boolean;
     };
+    isActive: boolean;
   }[];
   regularPrice?: number; // Price Column
   salePrice?: number; // Show sale price if exists
