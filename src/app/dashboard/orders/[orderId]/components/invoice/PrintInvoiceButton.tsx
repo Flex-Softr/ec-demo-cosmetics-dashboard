@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import config from "@/config/config";
 import { TOrders } from "@/types/order.interface";
 import { Printer, ScissorsLineDashedIcon, UserRound } from "lucide-react";
 import Image from "next/image";
@@ -9,7 +10,6 @@ import { useReactToPrint } from "react-to-print";
 import logo from "../../../../../../../public/logo.png";
 import { InvoiceItemsTable } from "./InvoiceItemsTable";
 import InvoiceSummary from "./InvoiceSummary";
-import config from "@/config/config";
 
 const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -97,7 +97,7 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
                     <h2 className="font-bold text-gray-900 border-b pb-2 flex items-center gap-2 text-base">
                       <UserRound className="w-4 h-4 text-primary" /> Bill To
                     </h2>
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm">
                       <p className="font-semibold text-gray-900 text-base">
                         {fullName}
                       </p>
@@ -111,11 +111,11 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
                     <h2 className="font-bold text-gray-900 border-b pb-2 flex items-center gap-2 text-base">
                       <Printer className="w-4 h-4 text-primary" /> From
                     </h2>
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm">
                       <p className="font-semibold text-gray-900 text-base">
                         {config.company_info.name || "Nora Life Style"}
                       </p>
-                      <p>{config.company_info.phone || "017100200300"}</p>
+                      <p>{"01973890872"}</p>
                       <p>
                         {config.company_info.address || "Dhaka, Bangladesh"}
                       </p>
@@ -141,9 +141,7 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
                     Thank you for your business!
                   </p>
                   <p className="text-[11px] text-gray-500 text-center leading-relaxed max-w-lg mx-auto">
-                    Please contact us at{" "}
-                    {config.company_info.phone || "017100200300"} for any
-                    queries.
+                    Please contact us at {"01973890872"} for any queries.
                     <br />
                     This is a computer generated invoice and does not require a
                     signature.
