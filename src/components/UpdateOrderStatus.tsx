@@ -51,6 +51,7 @@ const UpdateOrderStatus = ({
     "follow up",
     "canceled",
     "completed",
+    "On courier",
   ];
   const processingOrdersRoute = [
     "processing",

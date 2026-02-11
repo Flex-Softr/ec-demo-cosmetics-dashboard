@@ -46,52 +46,23 @@ export default function OrdersTable({
 
   const newColumns: ColumnDef<TOrders>[] = [
     ...columns.slice(0, 8),
-    // {
-    //   accessorKey: "status",
-    //   header: "Delivery",
-    //   cell: ({ row }) => {
-    //     const status = row.original.deliveryStatus;
-    //     return (
-    //       <>
-    //         {editPermission ? (
-    //           <OrderStatus
-    //             order={row.original}
-    //             deliveryStatus={status}
-    //             disableStatus={[
-    //               status == "cancelled" ? "" : status,
-    //               "returned",
-    //             ]}
-    //             permissions={permissions}
-    //           />
-    //         ) : (
-    //           <OrderStatus
-    //             order={row.original}
-    //             deliveryStatus={status}
-    //             disableStatus={[status]}
-    //             permissions={permissions}
-    //           />
-    //         )}
-    //       </>
-    //     );
-    //   },
-    // },
     {
       accessorKey: "statusFromShippingProvider",
-      header: "Delivery status",
+      header: "Delivery",
       cell: ({ row }) => {
         const status = row.original.statusFromShippingProvider;
-        // return (
-        //   <div className="capitalize whitespace-nowrap min-w-32">
-        //     {status?.replace("_", " ")?.replaceAll("-", " ")}
-        //   </div>
-        // );
         return (
-          <OrderStatus
-            order={row.original}
-            deliveryStatus={status}
-            permissions={permissions}
-          />
+          <div className="capitalize whitespace-nowrap min-w-32">
+            {status?.replace("_", " ")?.replaceAll("-", " ")}
+          </div>
         );
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        return <OrderStatus order={row.original} permissions={permissions} />;
       },
     },
     {
