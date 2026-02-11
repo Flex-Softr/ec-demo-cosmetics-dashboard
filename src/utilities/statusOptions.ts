@@ -8,6 +8,9 @@ const STATUS_OPTIONS_MAP: Record<string, string[]> = {
   "follow up": ["confirmed", "canceled", "deleted"],
   canceled: ["confirmed"],
   cancelled: ["returned"],
+  "On courier": ["completed", "canceled", "partial completed"],
+  delivered: ["completed"],
+  partial_delivered: ["partial completed"],
 };
 
 const statusOptions = (status: string) => {

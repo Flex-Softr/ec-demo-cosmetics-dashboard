@@ -31,13 +31,14 @@ const OrderActionDropDown = ({ order }: { order: TOrders }) => {
     // "processing done",
   ].includes(order.status);
 
-  const isEdit =
-    edit ||
-    (order.deliveryStatus === "partial_delivered" &&
-      order.status !== "partial completed" &&
-      editPermission)
-      ? true
-      : false;
+  // const isEdit =
+  //   edit ||
+  //   (order.deliveryStatus === "partial_delivered" &&
+  //     order.status !== "partial completed" &&
+  //     editPermission)
+  //     ? true
+  //     : false;
+  const isEdit = edit || editPermission;
 
   return (
     <div className="flex justify-center items-center gap-2 min-w-[90px]">

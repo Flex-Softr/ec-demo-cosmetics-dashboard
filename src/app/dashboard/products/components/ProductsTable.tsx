@@ -110,7 +110,7 @@ export default function ProductsTable() {
                           vIndex === row.original.variations!.length - 1
                             ? "border-b"
                             : "border-b border-border/20"
-                        } hover:bg-gray-200 hover:border-b hover:border-border/20 transition-colors`}
+                        } hover:bg-slate-200 hover:border-b hover:border-border/20 transition-colors`}
                       >
                         {table.getVisibleFlatColumns().map((column) => (
                           <TableCell key={column.id} className="px-4 py-2">

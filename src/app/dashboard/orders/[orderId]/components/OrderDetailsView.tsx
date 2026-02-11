@@ -94,15 +94,21 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
     "partial_delivered",
   ].includes(status);
 
-  const isEdit =
-    edit ||
-    (deliveryStatus === "partial_delivered" &&
-      status !== "partial completed" &&
-      editPermission)
-      ? true
-      : false;
+  // const isEdit =
+  //   edit ||
+  //   (deliveryStatus === "partial_delivered" &&
+  //     status !== "partial completed" &&
+  //     editPermission)
+  //     ? true
+  //     : false;
 
-  const isInvoice = ["processing", "processing done"].includes(status);
+  const isEdit = edit || editPermission;
+  const isInvoice = [
+    "processing",
+    "warranty processing",
+    "warranty added",
+    "processing done",
+  ].includes(status);
 
   const isDeleted = ["pending", "follow up"].includes(status);
 

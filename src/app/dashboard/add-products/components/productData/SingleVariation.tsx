@@ -3,6 +3,7 @@ import { useState } from "react";
 import Inventory from "./Inventory";
 // import Media from "./Media";
 // import Offer from "./Offer";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -28,16 +29,21 @@ const SingleVariation = ({ item, index }: TProps) => {
 
   return (
     <div className="relative w-full">
-      <div className="text-black flex items-center absolute top-2 z-10 gap-5 left-10">
+      <div className="flex items-center absolute top-3.5 left-5 z-10 gap-2 pointer-events-none">
         {item &&
           Object.keys(item).map((key) => (
-            <span className="py-2" key={key}>
+            <Badge
+              className="bg-slate-100 border border-slate-200 text-muted-foreground text-sm"
+              variant="outline"
+              key={key}
+            >
+              <span className="capitalize mr-1">{key}:</span>
               {item[key]}
-            </span>
+            </Badge>
           ))}
       </div>
       <SectionContentWrapper collapse={true}>
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div className="flex gap-3">
             <Button
               type="button"

@@ -13,7 +13,7 @@ export const VariationAttributes = ({
     {Object.entries(attributes).map(([key, value]) => (
       <span
         key={key}
-        className="text-muted-foreground whitespace-nowrap px-1.5 py-0.5 rounded-sm bg-gray-50"
+        className="text-muted-foreground whitespace-nowrap px-1.5 py-0.5 rounded-sm bg-slate-100 border border-slate-200"
       >
         {key}: {value}
       </span>
