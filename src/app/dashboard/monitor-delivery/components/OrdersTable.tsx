@@ -33,10 +33,11 @@ import { columns } from "./OrdersColumn";
 // import { useCallback,useState ,useRef } from "react";
 
 import { TPermission } from "@/utilities/isPermitted";
+import OrderStatus from "@/components/OrderStatus";
 
 export default function OrdersTable({
   editPermission,
-  // permissions,
+  permissions,
 }: {
   editPermission: boolean;
   permissions: TPermission[];
@@ -79,10 +80,17 @@ export default function OrdersTable({
       header: "Delivery status",
       cell: ({ row }) => {
         const status = row.original.statusFromShippingProvider;
+        // return (
+        //   <div className="capitalize whitespace-nowrap min-w-32">
+        //     {status?.replace("_", " ")?.replaceAll("-", " ")}
+        //   </div>
+        // );
         return (
-          <div className="capitalize whitespace-nowrap min-w-32">
-            {status?.replace("_", " ")?.replaceAll("-", " ")}
-          </div>
+          <OrderStatus
+            order={row.original}
+            deliveryStatus={status}
+            permissions={permissions}
+          />
         );
       },
     },
