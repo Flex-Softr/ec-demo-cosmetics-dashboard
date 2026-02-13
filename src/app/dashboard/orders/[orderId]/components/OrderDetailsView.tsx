@@ -239,6 +239,25 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                     {order?.messageFromShippingProvider}
                   </span>
                 </p>
+                {order?.courierDetails && (
+                  <>
+                    <Separator className="my-2" />
+                    <p className="flex justify-between">
+                      <span className="text-muted-foreground">Courier:</span>
+                      <span className="font-medium text-gray-900">
+                        {order.courierDetails.courierProvider.name}
+                      </span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Tracking ID:
+                      </span>
+                      <span className="font-medium text-gray-900">
+                        {order.courierDetails.trackingId}
+                      </span>
+                    </p>
+                  </>
+                )}
               </div>
             </div>
 
