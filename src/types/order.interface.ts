@@ -79,7 +79,15 @@ export type TOrders = {
   monitoringNotes?: string;
   reasonNotes?: string;
   orderSource: { name: string; url: string; lpNo: number };
-  courierDetails: { trackingId: string };
+  courierDetails?: {
+    courierProvider: {
+      _id: string;
+      name: string;
+      slug: string;
+      thumb?: string;
+    };
+    trackingId: string;
+  };
   eventId?: string;
   messageFromShippingProvider?: string;
   statusFromShippingProvider?: string;
