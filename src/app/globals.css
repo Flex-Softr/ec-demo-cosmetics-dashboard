@@ -30,10 +30,10 @@
     /* hsl(158 62% 24%) → #186447 */
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted – Soft peach */
-    --muted: 18 39% 82%;
-    /* hsl(18 39% 82%) → #DEBAB1 */
-    --muted-foreground: 197 30% 30%;
+    /* Muted – Cool Grey (Slate-100) */
+    --muted: 210 40% 96.1%;
+    /* hsl(210 40% 96.1%) → #F1F5F9 */
+    --muted-foreground: 215 16% 47%;
 
     /* Accent – Light Teal (for hover/selection) */
     --accent: 179 70% 95%;
@@ -76,10 +76,10 @@
     /* hsl(158 62% 24%) → #186447 */
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted – Soft peach */
-    --muted: 18 39% 82%;
-    /* hsl(18 39% 82%) → #DEBAB1 */
-    --muted-foreground: 197 30% 30%;
+    /* Muted – Cool Grey (Slate-100) */
+    --muted: 210 40% 96.1%;
+    /* hsl(210 40% 96.1%) → #F1F5F9 */
+    --muted-foreground: 215 16% 47%;
 
     /* Accent – Light Teal (for hover/selection) */
     --accent: 179 70% 95%;

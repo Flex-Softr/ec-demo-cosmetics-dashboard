@@ -65,7 +65,7 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
               style={{ pageBreakAfter: "always" }}
             >
               {/* Header */}
-              <div className="flex justify-between items-center border-b border-gray-300 px-8 py-4 mb-3">
+              <div className="flex justify-between items-center px-8 py-4 mb-3">
                 <div>
                   <h1 className="text-4xl font-extrabold text-black tracking-tight uppercase">
                     Invoice
@@ -93,7 +93,7 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
                 <div className="grid grid-cols-2 gap-12 mb-4 items-start">
                   {/* Customer Info */}
                   <div className="space-y-1">
-                    <h2 className="font-bold text-black border-b border-black pb-1 flex items-center gap-2 text-base">
+                    <h2 className="font-bold text-black border-b border-black/20 pb-1 flex items-center gap-2 text-base">
                       <UserRound className="w-4 h-4" /> Bill To
                     </h2>
                     <div className="space-y-1 text-sm">
@@ -109,7 +109,7 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
 
                   {/* Invoice Info */}
                   <div className="space-y-1">
-                    <h2 className="font-bold text-black border-b border-black pb-1 flex items-center gap-2 text-base">
+                    <h2 className="font-bold text-black border-b border-black/20 pb-1 flex items-center gap-2 text-base">
                       <Printer className="w-4 h-4" /> From
                     </h2>
                     <div className="space-y-1 text-sm">

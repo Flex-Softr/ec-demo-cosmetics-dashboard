@@ -86,7 +86,7 @@ export function InvoiceItemsTable({
   return (
     <div className="overflow-hidden">
       <Table>
-        <TableHeader className="bg-transparent border-b-2 border-gray-900">
+        <TableHeader className="bg-transparent border-b-2 border-black">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-none">
               {headerGroup.headers.map((header) => {
@@ -113,7 +113,7 @@ export function InvoiceItemsTable({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="border-b border-gray-300"
+                className="border-b border-black/20"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell

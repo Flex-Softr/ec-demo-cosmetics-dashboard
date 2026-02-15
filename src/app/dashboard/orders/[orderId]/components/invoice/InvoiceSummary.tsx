@@ -45,7 +45,7 @@ const InvoiceSummary = ({ order }: { order: TOrders }) => {
         )}
 
         {/* Total */}
-        <div className="flex justify-between items-center border-t-2 border-gray-900 mt-2 pt-2 px-1">
+        <div className="flex justify-between items-center border-t border-black mt-2 pt-2 px-1">
           <span className="font-bold text-black text-lg uppercase tracking-tight">
             Total
           </span>

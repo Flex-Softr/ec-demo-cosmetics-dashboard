@@ -51,14 +51,13 @@ const UpdateOrderStatus = ({
     "follow up",
     "canceled",
     "completed",
-    "On courier",
   ];
   const processingOrdersRoute = [
     "processing",
     "warranty processing",
     "warranty added",
   ];
-  const courierRoute = ["processing done", "cancelled"];
+  const courierRoute = ["processing done", "cancelled", "On courier"];
 
   const hasPermission =
     (ordersRoute.includes(status) &&
