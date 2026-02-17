@@ -138,7 +138,7 @@ const SchedulePickup = ({
     } catch (error: any) {
       const fieldErrors = error?.data?.errors || {};
       toast({
-        title: "Failed to schedule pickup",
+        title: error?.data?.message || "Failed to schedule pickup",
         variant: "destructive",
       });
 
