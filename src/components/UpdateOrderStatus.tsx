@@ -34,7 +34,6 @@ const UpdateOrderStatus = ({
   handleOpen,
   permissions,
 }: TProps) => {
-  // const dispatch = useAppDispatch();
   const [action, setAction] = useState("");
   const [updateOrdersStatus, { isLoading }] = useUpdateOrdersStatusMutation();
   const [updateProcessingOrdersStatus, { isLoading: loading }] =
@@ -43,7 +42,6 @@ const UpdateOrderStatus = ({
     useSendCourierAndUpdateStatusMutation();
   const [courierReturnedOrders, { isLoading: isReturnLoading }] =
     useCourierReturnedOrdersMutation();
-  // const iSOrderUpdate = useAppSelector(({ orders }) => orders.iSOrderUpdate);
 
   const ordersRoute = [
     "pending",
@@ -57,7 +55,10 @@ const UpdateOrderStatus = ({
     "warranty processing",
     "warranty added",
   ];
-  const courierRoute = ["processing done", "cancelled", "On courier"];
+
+  const courierRoute = ["processing done", "cancelled"];
+
+  const courierReturnedRoute = ["On courier"];
 
   const hasPermission =
     (ordersRoute.includes(status) &&
@@ -79,7 +80,8 @@ const UpdateOrderStatus = ({
       if (
         currentAction === "canceled" ||
         currentAction === "returned" ||
-        currentAction === "deleted"
+        currentAction === "deleted" ||
+        currentAction === "partial completed"
       ) {
         const productTags: TTags[] =
           order?.products?.flatMap((product: TOrders["products"][0]) => [
@@ -97,23 +99,6 @@ const UpdateOrderStatus = ({
     };
 
     try {
-      if (action === "returned") {
-        const res = await courierReturnedOrders(updatePayload).unwrap();
-        if (res.success) {
-          await handleRevalidation(action);
-          toast({
-            className: "bg-success text-white text-2xl",
-            title: "Order status updated successfully!",
-          });
-          if (handleOpen) {
-            handleOpen();
-          }
-          return;
-        } else {
-          throw new Error(res.message);
-        }
-      }
-
       if (ordersRoute.includes(status)) {
         const res = await updateOrdersStatus(updatePayload).unwrap();
         if (res.success) {
@@ -149,7 +134,6 @@ const UpdateOrderStatus = ({
       }
 
       if (courierRoute.includes(status)) {
-        // const courier = await sendCourierAndUpdateStatus(orderData).unwrap();
         const res = await sendCourierAndUpdateStatus(updatePayload).unwrap();
         if (res.success) {
           await handleRevalidation(action);
@@ -165,6 +149,24 @@ const UpdateOrderStatus = ({
           throw new Error(res.message);
         }
       }
+
+      if (courierReturnedRoute.includes(status)) {
+        const res = await courierReturnedOrders(updatePayload).unwrap();
+        if (res.success) {
+          await handleRevalidation(action);
+          toast({
+            className: "bg-success text-white text-2xl",
+            title: "Order status updated successfully!",
+          });
+          if (handleOpen) {
+            handleOpen();
+          }
+          return;
+        } else {
+          throw new Error(res.message);
+        }
+      }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
