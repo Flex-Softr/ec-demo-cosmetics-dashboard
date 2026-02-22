@@ -4,7 +4,7 @@ const sliderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getSliders: builder.query({
       query: () => ({
-        url: `/slider-banner/`,
+        url: `/slider-banner`,
         method: "GET",
       }),
       providesTags: ["slider"],
@@ -14,7 +14,7 @@ const sliderApi = baseApi.injectEndpoints({
         url: `/slider-banner`,
         method: "DELETE",
         body: {
-          sliderSectionIds: [data],
+          bannerSliderIds: [data],
         },
       }),
       invalidatesTags: ["slider"],
