@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLazyGetAllCustomersQuery } from "@/redux/features/customer/customerApi";
@@ -17,7 +18,8 @@ const CouponForFixedCustomers = ({
   const [triggerGetCustomers, { data: customersRes, isLoading }] =
     useLazyGetAllCustomersQuery();
 
-  const customers = (customersRes?.data as TCustomer[]) || null;
+  const responseData: any = customersRes?.data;
+  const customers = (responseData?.data as TCustomer[]) || null;
 
   const addOrRemoveCustomerFromList = (customer: TFixedCustomersInfo) => {
     const isAlreadyExist = fixedCustomers.find(

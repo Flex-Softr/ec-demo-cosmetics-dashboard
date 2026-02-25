@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import EcButton from "@/components/EcButton/EcButton";
@@ -69,7 +70,8 @@ const CreateCouponForm = () => {
   );
 
   const { data: allTagsRes } = useGetAllCouponTagsQuery({});
-  const allTags = (allTagsRes?.data?.tags as string[]) || [];
+  const responseData: any = allTagsRes?.data;
+  const allTags = (responseData?.data?.tags as string[]) || [];
 
   const [selectedTags, setSelectedTags] = useState<TSelectOption>([]);
 
