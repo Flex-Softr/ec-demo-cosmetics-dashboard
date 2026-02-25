@@ -84,6 +84,8 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
     reasonNotes,
   } = order;
 
+  // const deliveryStatus = order?.statusFromShippingProvider;
+
   const edit = [
     "pending",
     "confirmed",
@@ -124,14 +126,15 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
       <div className="flex flex-col lg:flex-row gap-6">
         <Card className="flex-1 p-6 border-none shadow-sm">
           {/* Header Section */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+            {/* Left Side: Order Info */}
             <div className="space-y-1">
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold text-gray-800">
+                <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
                   Order #{displayOrderId}
                 </h1>
                 <span
-                  className={`capitalize px-3 py-1 text-xs font-semibold text-white rounded-full shadow-sm ${backgroundColor(
+                  className={`capitalize px-2.5 py-0.5 text-sm font-medium text-white rounded ${backgroundColor(
                     deliveryStatus &&
                       status !== "partial completed" &&
                       status !== "returned"
@@ -146,7 +149,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                     : status}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
                 <span className="font-medium">Placed on:</span>
                 <OrderIdAndDate
                   timestamp={createdAt}
@@ -155,42 +158,81 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <Button
-                onClick={() => setOpenSchedulePickup(true)}
-                variant="outline"
-                className="flex items-center gap-2 border-gray-300 dark:border-gray-800 px-3 py-1 rounded-md text-sm"
-              >
-                Schedule Pickup
-              </Button>
-              {isEdit && (
-                <Link
-                  href={`/dashboard/orders/${order._id}/edit`}
-                  className="flex items-center gap-2 bg-primary text-white hover:bg-primary/95 border border-gray-300 dark:border-gray-800 px-3 py-1 rounded-md text-sm"
+            {/* Right Side: Actions */}
+            <div className="flex flex-col items-start">
+              <div className="flex flex-col md:flex-row justify-between gap-2 md:gap-4 items-center">
+                <Button
+                  onClick={() => setOpenSchedulePickup(true)}
+                  variant="outline"
+                  className="flex items-center gap-2 border-gray-300 px-3 py-1.5 rounded-md text-xs md:text-sm"
                 >
-                  <Edit className="w-4 h-4" />
-                  <span>Edit Order</span>
-                </Link>
-              )}
+                  Schedule Pickup
+                </Button>
+                {isEdit && (
+                  <Link
+                    href={`/dashboard/orders/${order._id}/edit`}
+                    className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90 px-3 py-1.5 rounded-md text-xs md:text-sm"
+                  >
+                    <Edit className="w-4 h-4" />
+                    <span>Edit</span>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
 
           <Separator className="my-1" />
-
           {/* Info Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Customer Info */}
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900 border-b pb-2 mb-2 flex items-center gap-2">
-                <UserRound className="w-4 h-4" /> Customer Details
-              </h3>
-              <div className="space-y-2 text-sm text-gray-600">
-                <p className="font-medium text-gray-900">
-                  {shipping?.fullName}
-                </p>
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+              {/* Customer Info */}
+              <div className="space-y-3">
+                <h3 className="font-semibold text-gray-900 border-b pb-2 mb-2 flex items-center gap-2">
+                  <UserRound className="w-4 h-4" /> Customer Info
+                </h3>
+                <div className="space-y-2 text-sm font-medium text-gray-900">
+                  <p>{shipping?.fullName}</p>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    <Link
+                      href={`https://wa.me/88${shipping.phoneNumber}`}
+                      target="_blank"
+                      className="hover:text-primary transition-colors hover:underline"
+                    >
+                      {shipping?.phoneNumber}
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Shipping Info */}
+              <div className="space-y-3">
+                <h3 className="font-semibold text-gray-900 border-b pb-2 mb-2 flex items-center gap-2">
+                  <MapPin className="w-4 h-4" /> Shipping Area
+                </h3>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <p className="flex justify-between gap-1">
+                    <span className="text-muted-foreground">Method:</span>
+                    <span className="font-medium text-gray-900">
+                      {shippingCharge?.name}
+                    </span>
+                  </p>
+                  <p className="flex justify-between gap-1">
+                    <span className="text-muted-foreground">Charge:</span>
+                    <span className="font-medium text-gray-900">
+                      &#2547; {shippingCharge?.amount}
+                      {shippingCostExceptFirst > 0 &&
+                        ` + ${shippingCostExceptFirst}`}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Address - Full width of the first two columns */}
+              <div className="md:col-span-2 text-sm font-medium text-gray-900">
                 <div className="flex items-start gap-2">
-                  <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
-                  <span>
+                  <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
+                  <span className="break-words">
                     {shipping?.fullAddress}
                     {shipping?.upazila &&
                       `, ${BdAddress.upazilaNameById(shipping?.upazila).name}`}
@@ -200,77 +242,13 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                       `, ${BdAddress.divisionNameById(shipping?.division).name}`}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-muted-foreground" />
-                  <Link
-                    href={`https://wa.me/88${shipping.phoneNumber}`}
-                    target="_blank"
-                    className="hover:text-primary transition-colors hover:underline"
-                  >
-                    {shipping?.phoneNumber}
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Shipping Info */}
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900 border-b pb-2 mb-2 flex items-center gap-2">
-                <MapPin className="w-4 h-4" /> Shipping Info
-              </h3>
-              <div className="space-y-2 text-sm text-gray-600">
-                <p className="flex justify-between">
-                  <span className="text-muted-foreground">Method:</span>
-                  <span className="font-medium text-gray-900">
-                    {shippingCharge?.name}
-                  </span>
-                </p>
-                <p className="flex justify-between">
-                  <span className="text-muted-foreground">Cost:</span>
-                  <span className="font-medium text-gray-900">
-                    &#2547; {shippingCharge?.amount}{" "}
-                    {shippingCostExceptFirst > 0 &&
-                      `+ ${shippingCostExceptFirst}`}
-                  </span>
-                </p>
-                <p className="flex justify-between">
-                  <span className="text-muted-foreground">Status:</span>
-                  <span className="font-medium text-gray-900">
-                    {order?.statusFromShippingProvider}
-                  </span>
-                </p>
-                <p className="flex justify-between">
-                  <span className="text-muted-foreground">Message:</span>
-                  <span className="font-medium text-gray-900">
-                    {order?.messageFromShippingProvider}
-                  </span>
-                </p>
-                {order?.courierDetails && (
-                  <>
-                    <Separator className="my-2" />
-                    <p className="flex justify-between">
-                      <span className="text-muted-foreground">Courier:</span>
-                      <span className="font-medium text-gray-900">
-                        {order.courierDetails.courierProvider.name}
-                      </span>
-                    </p>
-                    <p className="flex justify-between">
-                      <span className="text-muted-foreground">
-                        Tracking ID:
-                      </span>
-                      <span className="font-medium text-gray-900">
-                        {order.courierDetails.trackingId}
-                      </span>
-                    </p>
-                  </>
-                )}
               </div>
             </div>
 
             {/* Payment Info */}
             <div className="space-y-3">
               <h3 className="font-semibold text-gray-900 border-b pb-2 mb-2 flex items-center gap-2">
-                <CreditCard className="w-4 h-4" /> Payment Details
+                <CreditCard className="w-4 h-4" /> Payment Info
               </h3>
               <div className="space-y-2 text-sm">
                 <p className="flex justify-between">
@@ -280,10 +258,13 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                   </span>
                 </p>
                 {payment?.paymentDetails && (
-                  <div className="pt-2 mt-2 border-t border-dashed space-y-1.5">
+                  <>
                     {Object.entries(payment.paymentDetails).map(
                       ([key, value]) => (
-                        <div key={key} className="flex justify-between text-sm">
+                        <div
+                          key={key}
+                          className="flex justify-between items-center text-sm gap-1"
+                        >
                           <span className="capitalize text-muted-foreground">
                             {key}:
                           </span>
@@ -293,19 +274,65 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                         </div>
                       )
                     )}
-                  </div>
+                  </>
                 )}
               </div>
             </div>
           </div>
 
-          <Separator className="mt-3 mb-6" />
+          {/* Courier Info */}
+          {status === "On courier" && (
+            <div className="pt-4 mt-2 border-t border-dashed">
+              <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">
+                    Delivery Status:
+                  </span>
+                  <span
+                    className={`capitalize px-2 rounded text-[11px] font-medium text-white ${backgroundColor(order?.statusFromShippingProvider || "")}`}
+                  >
+                    {order?.statusFromShippingProvider
+                      ?.replace("_", " ")
+                      ?.replaceAll("-", " ")}
+                  </span>
+                </div>
 
+                {order?.courierDetails && (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">Provider:</span>
+                      <span className="font-medium text-gray-900">
+                        {order.courierDetails?.courierProvider?.name}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">
+                        Tracking ID:
+                      </span>
+                      <span className="font-medium text-gray-900">
+                        {order.courierDetails?.trackingId}
+                      </span>
+                    </div>
+                  </>
+                )}
+
+                {order?.messageFromShippingProvider && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">Message:</span>
+                    <span className="text-gray-600 italic">
+                      {order.messageFromShippingProvider}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          <Separator className="mt-3 mb-6" />
           {/* Product Table */}
           <div className="rounded-lg border overflow-hidden">
             <OrderedProductTable products={products ? products : []} />
           </div>
-
           {/* Order Summary */}
           <div className="flex justify-end mt-3 gap-10">
             <div className="flex flex-col gap-2 justify-end">
@@ -325,9 +352,9 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
                 <span className="font-medium">
-                  &#2547; {shippingCharge?.amount}{" "}
+                  &#2547; {shippingCharge?.amount}
                   {shippingCostExceptFirst > 0 &&
-                    `+ ${shippingCostExceptFirst}`}
+                    ` + ${shippingCostExceptFirst}`}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -389,7 +416,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
 
       <div>
         <h2 className="text-xl font-bold text-center mb-2">Order History</h2>
-        <Card className="p-6 border-none shadow-sm">
+        <Card className="p-6 pt-0 border-none shadow-sm">
           <SetOrderHistoryData searchQuery={shipping?.phoneNumber} />
           <div className="mt-4">
             <OrderHistoryTable permissions={permissions} />

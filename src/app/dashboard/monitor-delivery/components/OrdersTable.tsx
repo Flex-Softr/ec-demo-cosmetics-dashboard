@@ -34,6 +34,7 @@ import { columns } from "./OrdersColumn";
 
 import { TPermission } from "@/utilities/isPermitted";
 import OrderStatus from "@/components/OrderStatus";
+import backgroundColor from "@/utilities/backgroundColor";
 
 export default function OrdersTable({
   editPermission,
@@ -50,9 +51,13 @@ export default function OrdersTable({
       accessorKey: "statusFromShippingProvider",
       header: "Delivery",
       cell: ({ row }) => {
-        const status = row.original.statusFromShippingProvider;
+        const status = row.original.statusFromShippingProvider || "";
         return (
-          <div className="capitalize whitespace-nowrap min-w-32">
+          <div
+            className={`capitalize whitespace-nowrap min-w-32 rounded text-white ${backgroundColor(
+              status
+            )}`}
+          >
             {status?.replace("_", " ")?.replaceAll("-", " ")}
           </div>
         );
