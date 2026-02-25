@@ -47,8 +47,8 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
     isLoading: loading,
     error,
   } = useGetMonitorDeliveryOrdersQuery({
-    deliveryStatus:
-      manageProcessing && filter == "in_review" ? "cancelled" : filter,
+    // deliveryStatus:
+    //   manageProcessing && filter == "in_review" ? "cancelled" : filter,
     startFrom,
     endAt,
     sort: "-createdAt",
