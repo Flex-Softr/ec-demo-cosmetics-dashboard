@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { TCategories } from "@/app/dashboard/category/components/CategoryTable";
@@ -40,7 +41,8 @@ const CouponCategoryProductCondition = ({
     label: item?.title || "",
   }));
 
-  const categories = (categoryRes?.data as TCategories[]) || [];
+  const responseData: any = categoryRes?.data;
+  const categories = (responseData?.data as TCategories[]) || [];
   const categoryOptions = categories.map((item) => ({
     value: item?._id || "",
     label: item?.name || "",
