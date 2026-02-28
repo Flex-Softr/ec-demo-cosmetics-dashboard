@@ -1,6 +1,14 @@
 import { TOrders } from "@/types/order.interface";
 
 const InvoiceSummary = ({ order }: { order: TOrders }) => {
+  const totalQuantity =
+    order?.products?.reduce(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (acc: number, item: any) => acc + (item?.quantity || 0),
+      0
+    ) || 0;
+  const extraDeliveryCharge = totalQuantity > 1 ? (totalQuantity - 1) * 50 : 0;
+
   return (
     <div className="flex justify-between gap-12 w-full max-w-[60%] ml-auto">
       {/* <div className="flex-1">
@@ -28,6 +36,14 @@ const InvoiceSummary = ({ order }: { order: TOrders }) => {
           </div>
         )}
 
+        {/* Coupon Discount */}
+        {order?.couponDiscount > 0 && (
+          <div className="flex justify-between items-center text-black font-bold">
+            <span className="font-medium">Coupon Discount</span>
+            <span>- {order.couponDiscount}</span>
+          </div>
+        )}
+
         {/* Shipping */}
         <div className="flex justify-between items-center">
           <span className="font-medium text-black">Shipping</span>
@@ -35,6 +51,18 @@ const InvoiceSummary = ({ order }: { order: TOrders }) => {
             {order?.shippingCharge?.amount ?? "0"}
           </span>
         </div>
+
+        {/* Extra Delivery Charge */}
+        {extraDeliveryCharge > 0 && (
+          <div className="flex justify-between items-center">
+            <span className="font-medium text-black">
+              Extra Delivery Charge ({totalQuantity - 1} × 50)
+            </span>
+            <span className="font-semibold text-black">
+              {extraDeliveryCharge}
+            </span>
+          </div>
+        )}
 
         {/* Advance */}
         {order?.advance > 0 && (

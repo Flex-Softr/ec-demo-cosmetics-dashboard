@@ -101,6 +101,9 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
                         {fullName}
                       </p>
                       <p className="text-black">{phoneNumber}</p>
+                      {shipping?.email && (
+                        <p className="text-black">{shipping.email}</p>
+                      )}
                       <p className="leading-relaxed text-black">
                         {formattedAddress}
                       </p>

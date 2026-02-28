@@ -64,6 +64,24 @@ const NameMobileAddress = (props: TProps) => {
         </div>
       </div>
       <div className="flex flex-col gap-2">
+        <Label htmlFor="email">Email</Label>
+        <div className="space-y-2 w-full">
+          <Input
+            type="email"
+            {...register("shipping.email")}
+            id="email"
+            placeholder="Enter customer email"
+            className="w-full"
+            defaultValue={shipping?.email}
+          />
+          {errors.shipping?.email?.message && (
+            <p className="text-red-600">
+              {errors.shipping?.email?.message as string}
+            </p>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
         <Label htmlFor="fullAddress">
           Full address <span className="text-red-600">*</span>
         </Label>
