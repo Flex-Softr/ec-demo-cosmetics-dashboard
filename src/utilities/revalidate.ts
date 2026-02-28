@@ -7,6 +7,7 @@ export type TTags =
   | `collectionProducts-${string}`
   | "bestSellingProducts"
   | "featuredProducts"
+  | "priceRange"
   | "allCategories"
   | "parentCategory"
   | "paymentMethod"

@@ -182,9 +182,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
       ) : (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 text-nowrap w-[1%] mx-auto whitespace-nowrap">
           <p className="flex items-center shrink-0">
-            <span className="font-bold">
-              {row.original.variations?.length} Variations
-            </span>
+            <span>{row.original.variations?.length} Variations</span>
           </p>
         </div>
       ),

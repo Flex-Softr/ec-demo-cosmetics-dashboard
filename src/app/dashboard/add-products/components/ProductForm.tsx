@@ -316,6 +316,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         "featuredProducts",
         "allCategories",
         "homepageIndividualSection",
+        "priceRange",
       ]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
