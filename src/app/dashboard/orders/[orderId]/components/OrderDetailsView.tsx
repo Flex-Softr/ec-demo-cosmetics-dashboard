@@ -72,6 +72,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
     total,
     payment,
     discount,
+    couponDiscount = 0,
     status,
     deliveryStatus,
     shipping,
@@ -242,6 +243,90 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                       `, ${BdAddress.divisionNameById(shipping?.division).name}`}
                   </span>
                 </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-muted-foreground" />
+                  <Link
+                    href={`https://wa.me/88${shipping.phoneNumber}`}
+                    target="_blank"
+                    className="hover:text-primary transition-colors hover:underline"
+                  >
+                    {shipping?.phoneNumber}
+                  </Link>
+                </div>
+                {shipping?.email && (
+                  <div className="flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-muted-foreground w-4 h-4"
+                    >
+                      <rect width="20" height="16" x="2" y="4" rx="2" />
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                    </svg>
+                    <span>{shipping.email}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Shipping Info */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-gray-900 border-b pb-2 mb-2 flex items-center gap-2">
+                <MapPin className="w-4 h-4" /> Shipping Info
+              </h3>
+              <div className="space-y-2 text-sm text-gray-600">
+                <p className="flex justify-between">
+                  <span className="text-muted-foreground">Method:</span>
+                  <span className="font-medium text-gray-900">
+                    {shippingCharge?.name}
+                  </span>
+                </p>
+                <p className="flex justify-between">
+                  <span className="text-muted-foreground">Cost:</span>
+                  <span className="font-medium text-gray-900">
+                    &#2547; {shippingCharge?.amount}{" "}
+                    {shippingCostExceptFirst > 0 &&
+                      `+ ${shippingCostExceptFirst}`}
+                  </span>
+                </p>
+                <p className="flex justify-between">
+                  <span className="text-muted-foreground">Status:</span>
+                  <span className="font-medium text-gray-900">
+                    {order?.statusFromShippingProvider}
+                  </span>
+                </p>
+                <p className="flex justify-between">
+                  <span className="text-muted-foreground">Message:</span>
+                  <span className="font-medium text-gray-900">
+                    {order?.messageFromShippingProvider}
+                  </span>
+                </p>
+                {order?.courierDetails && (
+                  <>
+                    <Separator className="my-2" />
+                    <p className="flex justify-between">
+                      <span className="text-muted-foreground">Courier:</span>
+                      <span className="font-medium text-gray-900">
+                        {order.courierDetails.courierProvider.name}
+                      </span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Tracking ID:
+                      </span>
+                      <span className="font-medium text-gray-900">
+                        {order.courierDetails.trackingId}
+                      </span>
+                    </p>
+                  </>
+                )}
               </div>
             </div>
 
@@ -349,6 +434,14 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                   - &#2547; {discount}
                 </span>
               </div>
+              {couponDiscount > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Coupon Discount</span>
+                  <span className="font-medium text-red-600">
+                    - &#2547; {couponDiscount}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
                 <span className="font-medium">

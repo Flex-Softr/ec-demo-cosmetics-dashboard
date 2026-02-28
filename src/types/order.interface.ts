@@ -20,6 +20,7 @@ type StatusHistory = {
 export type Shipping = {
   fullName: string;
   phoneNumber: string;
+  email?: string;
   fullAddress: string;
   upazila: string;
   district: string;

@@ -37,13 +37,13 @@ const CouponCategoryProductCondition = ({
 
   const product = (productRes?.data?.data as IAdminProduct[]) || [];
 
-  const productOptions = product.map((item) => ({
+  const productOptions = product?.map((item) => ({
     value: item?._id || "",
     label: item?.title || "",
   }));
 
-  const categories = (categoryRes?.data as TCategories[]) || [];
-  const categoryOptions = categories.map((item) => ({
+  const categories = (categoryRes?.data?.data as TCategories[]) || [];
+  const categoryOptions = categories?.map((item) => ({
     value: item?._id || "",
     label: item?.name || "",
   }));

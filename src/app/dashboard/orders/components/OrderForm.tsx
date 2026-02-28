@@ -19,14 +19,14 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { PRODUCT_TYPE } from "@/const/products";
+import { TOrders } from "@/types/order.interface";
+import { revalidateTag, TTags } from "@/utilities/revalidate";
 import { useOrderCalculation } from "../hooks/useOrderCalculation";
 import DivisionDistrictSelector from "./DivisionDistrictSelector";
 import NameMobileAddress from "./NameMobileAddress";
 import Notes from "./Notes";
 import PaymentDiscountAdvance from "./PaymentDiscountAdvance";
 import SelectProduct from "./SelectProduct";
-import { TOrders } from "@/types/order.interface";
-import { revalidateTag, TTags } from "@/utilities/revalidate";
 
 const schema = yup.object().shape({
   shipping: yup.object().shape({
@@ -37,6 +37,7 @@ const schema = yup.object().shape({
         value ? /^01[0-9]{9}$/.test(value.trim()) : true
       )
       .required("Phone number is required!"),
+    email: yup.string().email("Invalid email format!").optional(),
     fullAddress: yup.string().required("Customer address is required!"),
     upazila: yup.string(),
     district: yup.string(),
