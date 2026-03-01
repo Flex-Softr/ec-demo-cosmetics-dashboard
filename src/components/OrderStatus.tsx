@@ -1,3 +1,4 @@
+"use client";
 import CommonModal from "@/components/modal/CommonModal";
 import { TOrders } from "@/types/order.interface";
 import backgroundColor from "@/utilities/backgroundColor";

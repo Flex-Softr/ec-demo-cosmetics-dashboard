@@ -59,6 +59,11 @@ const schema = yup.object().shape({
     .transform((value, originalValue) => (originalValue === "" ? 0 : value))
     .min(0, "Discount must be a positive number")
     .optional(),
+  couponDiscount: yup
+    .number()
+    .transform((value, originalValue) => (originalValue === "" ? 0 : value))
+    .min(0, "Coupon discount must be a positive number")
+    .optional(),
   orderedProducts: yup.array(
     yup.object().shape({
       _id: yup.string().optional(),
@@ -382,6 +387,21 @@ const OrderForm: React.FC<OrderFormProps> = ({
                       {...register("discount")}
                       className="h-full w-20 border-none text-right focus-visible:ring-0 p-0 shadow-none bg-transparent"
                       placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Coupon Discount</span>
+                  <div className="flex items-center gap-1 bg-white border rounded px-2 h-8">
+                    <span>&#2547;</span>
+                    <Input
+                      type="number"
+                      min={0}
+                      {...register("couponDiscount")}
+                      className="h-full w-20 border-none text-right focus-visible:ring-0 p-0 shadow-none bg-transparent"
+                      placeholder="0"
+                      readOnly
                     />
                   </div>
                 </div>
