@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import config from "@/config/config";
+import { PRODUCT_STATUS } from "@/const/products";
 import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
 import { useGetShippingChargeQuery } from "@/redux/features/shippingCharge/shippingCharge";
 import { useMemo } from "react";
 import { Control, useWatch } from "react-hook-form";
 import { TFormInput } from "../components/OrderForm";
-import { PRODUCT_STATUS } from "@/const/products";
 
 export const useOrderCalculation = (control: Control<TFormInput>) => {
   const { data: productsData } = useGetAdminProductsQuery({
@@ -46,6 +46,12 @@ export const useOrderCalculation = (control: Control<TFormInput>) => {
       name: "discount",
     }) || 0;
 
+  const couponDiscount =
+    useWatch({
+      control,
+      name: "couponDiscount",
+    }) || 0;
+
   const advance =
     useWatch({
       control,
@@ -58,6 +64,7 @@ export const useOrderCalculation = (control: Control<TFormInput>) => {
         subtotal: 0,
         shippingCost: 0,
         discount,
+        couponDiscount,
         advance,
         total: 0,
         orderedProducts: [],
@@ -114,12 +121,14 @@ export const useOrderCalculation = (control: Control<TFormInput>) => {
       subtotal +
       Number(shippingCost + Number(shippingCostExceptFirst)) -
       Number(discount) -
+      Number(couponDiscount) -
       Number(advance);
 
     return {
       subtotal,
       shippingCost,
       discount,
+      couponDiscount,
       advance,
       total,
       orderedProducts: orderedProductsDetails,
@@ -131,6 +140,7 @@ export const useOrderCalculation = (control: Control<TFormInput>) => {
     orderedProducts,
     selectedShippingChargeId,
     discount,
+    couponDiscount,
     advance,
     shippingCostExceptFirst,
   ]);

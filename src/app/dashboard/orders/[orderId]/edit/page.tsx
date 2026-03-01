@@ -44,6 +44,7 @@ const EditOrderPage = ({ params }: { params: { orderId: string } }) => {
     },
     advance: order?.advance || 0,
     discount: order?.discount || 0,
+    couponDiscount: order?.couponDiscount || 0,
     orderedProducts: order?.products?.map((prod: any) => ({
       _id: prod._id,
       product: prod.productId,

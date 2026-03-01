@@ -48,21 +48,26 @@ const InvoiceSummary = ({ order }: { order: TOrders }) => {
         <div className="flex justify-between items-center">
           <span className="font-medium text-black">Shipping</span>
           <span className="font-semibold text-black">
-            {order?.shippingCharge?.amount ?? "0"}
+            {Number(order?.shippingCharge?.amount ?? "0") + extraDeliveryCharge}
           </span>
         </div>
 
-        {/* Extra Delivery Charge */}
-        {extraDeliveryCharge > 0 && (
-          <div className="flex justify-between items-center">
-            <span className="font-medium text-black">
-              Extra Delivery Charge ({totalQuantity - 1} × 50)
-            </span>
-            <span className="font-semibold text-black">
-              {extraDeliveryCharge}
-            </span>
-          </div>
-        )}
+        {/* Total */}
+        <div className="flex justify-between items-center border-t border-black mt-2 pt-2 px-1">
+          <span className="font-bold text-black text-lg uppercase tracking-tight">
+            Total
+          </span>
+          <span className="font-bold text-black text-xl">
+            {Number(order?.total ?? "0") + Number(order.advance ?? 0)}
+          </span>
+        </div>
+        {/* 
+        <div className="flex justify-between items-center pt-1 text-xs text-black">
+          <span>Payment Method:</span>
+          <span className="font-medium capitalize text-black">
+            {order.payment?.paymentMethod?.name || "N/A"}
+          </span>
+        </div> */}
 
         {/* Advance */}
         {order?.advance > 0 && (
@@ -72,28 +77,9 @@ const InvoiceSummary = ({ order }: { order: TOrders }) => {
           </div>
         )}
 
-        {/* Total */}
-        <div className="flex justify-between items-center border-t border-black mt-2 pt-2 px-1">
-          <span className="font-bold text-black text-lg uppercase tracking-tight">
-            Total
-          </span>
-          <span className="font-bold text-black text-xl">
-            {order?.total ?? "0"}
-          </span>
-        </div>
-
-        <div className="flex justify-between items-center pt-1 text-xs text-black">
-          <span>Payment Method:</span>
-          <span className="font-medium capitalize text-black">
-            {order.payment?.paymentMethod?.name || "N/A"}
-          </span>
-        </div>
-
         <div className="flex justify-between items-center pt-1">
           <span className="font-bold text-black">Due Amount:</span>
-          <span className="font-bold text-black">
-            {(order?.total || 0) - (order?.advance || 0)}
-          </span>
+          <span className="font-bold text-black">{order?.total || 0}</span>
         </div>
       </div>
     </div>
