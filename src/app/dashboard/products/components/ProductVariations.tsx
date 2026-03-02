@@ -13,7 +13,7 @@ export const VariationAttributes = ({
     {Object.entries(attributes).map(([key, value]) => (
       <span
         key={key}
-        className="text-muted-foreground whitespace-nowrap px-1.5 py-0.5 rounded-sm bg-slate-100 border border-slate-200"
+        className="text-gray-700 whitespace-nowrap px-1.5 py-0.5 rounded-sm bg-slate-100 border border-slate-200"
       >
         {key}: {value}
       </span>
@@ -33,13 +33,13 @@ export const VariationPrice = ({ price }: { price: Variation["price"] }) => (
       className={
         price.salePrice
           ? "line-through text-muted-foreground text-xs whitespace-nowrap"
-          : "text-xs whitespace-nowrap"
+          : "whitespace-nowrap"
       }
     >
-      &#2547; {price.regularPrice}
+      &#2547;{price.regularPrice}
     </span>
     {price.salePrice && (
-      <span className="whitespace-nowrap">&#2547; {price.salePrice}</span>
+      <span className="whitespace-nowrap">&#2547;{price.salePrice}</span>
     )}
   </div>
 );

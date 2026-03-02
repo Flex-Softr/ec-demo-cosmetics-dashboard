@@ -197,38 +197,46 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
             className={
               original.salePrice
                 ? "line-through text-muted-foreground text-xs"
-                : ""
+                : "text-sm font-medium"
             }
           >
-            &#2547; {original.regularPrice}
+            &#2547;{original.regularPrice}
           </span>
-          {original.salePrice && <span>&#2547; {original.salePrice}</span>}
+
+          {original.salePrice && (
+            <span className="text-sm font-medium">
+              &#2547;{original.salePrice}
+            </span>
+          )}
         </div>
       ) : (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 text-nowrap w-[1%] mx-auto whitespace-nowrap">
-          <div className="h-5 flex items-center gap-2 shrink-0">
+          <div className="h-5 flex items-baseline gap-2 shrink-0">
             {(() => {
               const priceData = getVariablePriceDisplay(original.variations!);
+
               if (priceData.minPrice > 0) {
                 return (
                   <>
                     {priceData.previousPrice &&
                       !priceData.hasMultiplePrices && (
-                        <span className="text-muted-foreground text-xs">
-                          &#2547;
-                          <del>{priceData.previousPrice}</del>
+                        <span className="text-xs text-muted-foreground line-through">
+                          &#2547;{priceData.previousPrice}
                         </span>
                       )}
-                    <span className="font-medium">
+
+                    <span className="text-sm font-medium">
                       &#2547;{priceData.minPrice}
                       {priceData.hasMultiplePrices &&
-                        ` - ${priceData.maxPrice}`}
+                        ` - &#2547;${priceData.maxPrice}`}
                     </span>
                   </>
                 );
               } else {
                 return (
-                  <span className="font-medium text-gray-400">Unavailable</span>
+                  <span className="text-sm font-medium text-gray-400">
+                    Unavailable
+                  </span>
                 );
               }
             })()}

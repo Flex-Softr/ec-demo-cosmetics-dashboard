@@ -54,7 +54,7 @@ export default function OrdersTable({
         const status = row.original.statusFromShippingProvider || "";
         return (
           <div
-            className={`capitalize whitespace-nowrap min-w-32 rounded text-white ${backgroundColor(
+            className={`capitalize whitespace-nowrap rounded text-white px-1.5 ${backgroundColor(
               status
             )}`}
           >

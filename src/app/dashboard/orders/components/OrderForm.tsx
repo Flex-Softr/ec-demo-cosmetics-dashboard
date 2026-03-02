@@ -317,7 +317,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
             Customer Information
           </h2>
           <div className="space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr_1.5fr_2fr] gap-4 items-start">
               <NameMobileAddress
                 register={register}
                 reset={reset}
@@ -367,7 +367,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span>&#2547; {Number(calculation.subtotal).toFixed(2)}</span>
+                  <span className="font-bold">
+                    &#2547; {Number(calculation.subtotal).toFixed(2)}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Shipping</span>

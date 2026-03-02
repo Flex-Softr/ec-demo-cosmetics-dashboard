@@ -33,7 +33,7 @@ const SingleVariation = ({ item, index }: TProps) => {
         {item &&
           Object.keys(item).map((key) => (
             <Badge
-              className="bg-slate-100 border border-slate-200 text-muted-foreground text-sm"
+              className="bg-slate-100 border border-slate-200 text-sm"
               variant="outline"
               key={key}
             >
@@ -50,8 +50,8 @@ const SingleVariation = ({ item, index }: TProps) => {
               onClick={() => handleTabClick("price")}
               className={`${
                 activeTab === "price"
-                  ? "bg-primary text-white  hover:bg-secondary"
-                  : "border border-primary bg-inherit text-inherit hover:bg-inherit"
+                  ? "bg-primary text-white hover:bg-secondary"
+                  : "border border-primary bg-inherit text-muted-foreground hover:bg-inherit"
               }`}
             >
               Price
@@ -61,8 +61,8 @@ const SingleVariation = ({ item, index }: TProps) => {
               onClick={() => handleTabClick("inventory")}
               className={`${
                 activeTab === "inventory"
-                  ? "bg-primary text-white  hover:bg-secondary"
-                  : "border border-primary bg-inherit text-inherit hover:bg-inherit"
+                  ? "bg-primary text-white hover:bg-secondary"
+                  : "border border-primary bg-inherit text-muted-foreground hover:bg-inherit"
               }`}
             >
               Inventory
