@@ -83,7 +83,7 @@ export const columns: ColumnDef<TOrders>[] = [
   {
     accessorKey: "payment",
     header: "Payment",
-    cell: () => <p>Case on delivery</p>,
+    cell: ({ row }) => <p>{row.original.payment?.paymentMethod?.name}</p>,
   },
   {
     accessorKey: "notes",

@@ -8,11 +8,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
+import { PERMISSIONS } from "@/const/permissions";
 import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierShipment/courierShipmentApi";
 import { useCourierReturnedOrdersMutation } from "@/redux/features/monitorDelivery/monitorDeliveryApi";
 import { useUpdateOrdersStatusMutation } from "@/redux/features/orders/ordersApi";
 import { useUpdateProcessingOrderStatusMutation } from "@/redux/features/processingOrders/processingOrdersApi";
-import { PERMISSIONS } from "@/const/permissions";
 import { TOrders } from "@/types/order.interface";
 import isPermitted, { TPermission } from "@/utilities/isPermitted";
 import { revalidateTag, TTags } from "@/utilities/revalidate";
@@ -65,12 +65,19 @@ const UpdateOrderStatus = ({
       isPermitted(permissions, PERMISSIONS.MANAGE_ORDER)) ||
     (processingOrdersRoute.includes(status) &&
       isPermitted(permissions, PERMISSIONS.MANAGE_PROCESSING_ORDER)) ||
-    (courierRoute.includes(status) &&
+    ((courierRoute.includes(status) || courierReturnedRoute.includes(status)) &&
       isPermitted(permissions, PERMISSIONS.MANAGE_SHIPMENT_ORDER));
 
   if (!hasPermission) return null;
 
   const handleSubmit = async () => {
+    if (!action) {
+      toast({
+        variant: "destructive",
+        title: "Please select a status",
+      });
+      return;
+    }
     const updatePayload = {
       orderIds: [_id],
       status: action,

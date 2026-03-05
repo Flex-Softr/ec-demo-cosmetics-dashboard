@@ -5,7 +5,7 @@ import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
-import OrdersTable from "./components/OrdersTable";
+import OrdersTable from "./components/MonitorOrdersTable";
 import StatusButtons from "./components/StatusButtons";
 // import RefreshCourier from "./components/RefreshCourier";
 // import StatusButtons from "./components/StatusButtons";

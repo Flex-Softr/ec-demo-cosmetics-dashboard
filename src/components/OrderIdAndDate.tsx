@@ -62,9 +62,11 @@ function OrderIdAndDate({ orderId, timestamp, className }: TProps) {
 
   return (
     <div className={`${className}`}>
-      <span className="text-primary font-semibold whitespace-nowrap">
-        # {orderId}
-      </span>
+      {orderId && (
+        <span className="text-primary font-semibold whitespace-nowrap">
+          # {orderId}
+        </span>
+      )}
       <span className="whitespace-nowrap text-xs font-semibold text-muted-foreground">
         {formattedTime}
       </span>

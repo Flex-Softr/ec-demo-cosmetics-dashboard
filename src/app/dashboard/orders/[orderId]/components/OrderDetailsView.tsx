@@ -151,11 +151,14 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                 </span>
               </div>
               <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
-                <span className="font-medium">Placed on:</span>
+                <span className="font-medium whitespace-nowrap">
+                  Placed on:
+                </span>
                 <OrderIdAndDate
                   timestamp={createdAt}
                   className="inline-block space-x-4"
                 />
+                <span className="truncate">{order?.orderSource?.name}</span>
               </div>
             </div>
 
@@ -282,7 +285,8 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
           </div>
 
           {/* Courier Info */}
-          {status === "On courier" && (
+          {(order?.statusFromShippingProvider ||
+            order.courierDetails?.courierProvider?.name) && (
             <div className="pt-4 mt-2 border-t border-dashed">
               <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-sm">
                 <div className="flex items-center gap-2">
