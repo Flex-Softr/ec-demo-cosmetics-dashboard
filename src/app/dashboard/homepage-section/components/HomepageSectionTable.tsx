@@ -1,6 +1,5 @@
 "use client";
 
-import { PagePagination } from "@/components/pagination/PagePagination";
 import {
   Table,
   TableBody,
@@ -119,12 +118,6 @@ const HomepageSectionTable = () => {
           </TableBody>
         </Table>
       </div>
-
-      {!globalFilter && (
-        <div className="flex items-center justify-end space-x-2 py-2">
-          <PagePagination />
-        </div>
-      )}
     </div>
   );
 };

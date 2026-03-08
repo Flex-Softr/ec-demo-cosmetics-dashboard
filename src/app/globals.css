@@ -20,9 +20,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 197 67% 15%;
 
-    /* Primary – Deep teal */
-    --primary: 179.46 73.68% 29.8%;
-    /* hsl(197 98% 23%) → #015B76 */
+    /* Primary – Logo Green */
+    --primary: 152 78% 23%;
+    /* hsl(152 78% 23%) → #0D693A */
     --primary-foreground: 0 0% 100%;
 
     /* Secondary – Deep green */
@@ -35,11 +35,11 @@
     /* hsl(210 40% 96.1%) → #F1F5F9 */
     --muted-foreground: 215 16% 47%;
 
-    /* Accent – Light Teal (for hover/selection) */
-    --accent: 179 70% 95%;
-    /* hsl(179 70% 95%) → #E6F7F6 */
-    --accent-foreground: 179 73% 25%;
-    /* hsl(179 73% 25%) → #116E6B */
+    /* Accent – Light Green (for hover/selection) */
+    --accent: 152 70% 95%;
+    /* hsl(152 70% 95%) → #E6F7ED */
+    --accent-foreground: 152 73% 25%;
+    /* hsl(152 73% 25%) → #116E3D */
 
     /* Destructive */
     --destructive: 0 72% 55%;
@@ -48,12 +48,12 @@
     /* UI */
     --border: 197 20% 85%;
     --input: 197 20% 85%;
-    --ring: 197 98% 23%;
+    --ring: 152 78% 23%;
 
     --radius: 0.5rem;
   }
 
-  .dart {
+  .dark {
     /* Base */
     --background: 180 20% 98%;
     /* hsl(180 20% 98%) → Very subtle teal-white */
@@ -66,9 +66,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 197 67% 15%;
 
-    /* Primary – Deep teal */
-    --primary: 179.46 73.68% 29.8%;
-    /* hsl(197 98% 23%) → #015B76 */
+    /* Primary – Logo Green */
+    --primary: 152 78% 23%;
+    /* hsl(152 78% 23%) → #0D693A */
     --primary-foreground: 0 0% 100%;
 
     /* Secondary – Deep green */
@@ -81,11 +81,11 @@
     /* hsl(210 40% 96.1%) → #F1F5F9 */
     --muted-foreground: 215 16% 47%;
 
-    /* Accent – Light Teal (for hover/selection) */
-    --accent: 179 70% 95%;
-    /* hsl(179 70% 95%) → #E6F7F6 */
-    --accent-foreground: 179 73% 25%;
-    /* hsl(179 73% 25%) → #116E6B */
+    /* Accent – Light Green (for hover/selection) */
+    --accent: 152 70% 95%;
+    /* hsl(152 70% 95%) → #E6F7ED */
+    --accent-foreground: 152 73% 25%;
+    /* hsl(152 73% 25%) → #116E3D */
 
     /* Destructive */
     --destructive: 0 72% 55%;
@@ -94,7 +94,7 @@
     /* UI */
     --border: 197 20% 85%;
     --input: 197 20% 85%;
-    --ring: 197 98% 23%;
+    --ring: 152 78% 23%;
 
     --radius: 0.5rem;
   }
@@ -107,8 +107,15 @@
 
   body {
     @apply bg-background text-foreground;
-    background-image:
-      radial-gradient(at 0% 0%, hsla(179, 73%, 30%, 0.03) 0px, transparent 50%),
+    font-family: var(--font-bengali), ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+      "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji";
+    background-image: radial-gradient(
+        at 0% 0%,
+        hsla(179, 73%, 30%, 0.03) 0px,
+        transparent 50%
+      ),
       radial-gradient(
         at 100% 0%,
         hsla(179, 73%, 30%, 0.02) 0px,

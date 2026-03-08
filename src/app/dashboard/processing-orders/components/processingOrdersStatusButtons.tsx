@@ -39,7 +39,7 @@ const ProcessingOrdersStatusButtons = () => {
   const [orderStatusCount, setOrderStatusCount] = useState([]);
   const {
     data,
-    isLoading: loading,
+    isFetching: loading,
     error,
   } = useGetProcessingOrdersQuery({
     status: filter,
@@ -54,7 +54,7 @@ const ProcessingOrdersStatusButtons = () => {
     if (loading) {
       dispatch(setIsLoading(true));
     }
-    if (data) {
+    if (!loading && data) {
       const { meta, data: orders } = data;
       dispatch(setTotalPage(meta));
       setOrderStatusCount(orders?.countsByStatus);

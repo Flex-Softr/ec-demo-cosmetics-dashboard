@@ -14,6 +14,7 @@ import { useState } from "react";
 import { TSubCategories } from "./SubCategoryTable";
 import UpdateSubCategoryForm from "./UpdateSubcategoryForm";
 import { useDeleteCategoryMutation } from "@/redux/features/category/categoryApi";
+import { revalidateTag } from "@/utilities/revalidate";
 
 const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
   const { _id, name, image, parent } = category;
@@ -35,6 +36,7 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
         className: "bg-success text-white ",
         title: "Sub category Successfully Deleted",
       });
+      await revalidateTag(["allCategories", "parentCategory"]);
     } else {
       toast({
         className: " bg-danger text-whit",

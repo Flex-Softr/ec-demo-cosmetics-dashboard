@@ -1,5 +1,4 @@
 "use client";
-
 import { useSidebar } from "@/providers/SidebarProvider";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,11 +12,12 @@ export default function NavbarLogo() {
   return (
     <Link href="/dashboard">
       <Image
-        className="w-24"
+        className="w-24 h-16 object-contain"
         src={logo}
-        alt="Nora Life Style"
+        alt="Logo"
         priority={true}
-        placeholder="blur"
+        width={100}
+        height={100}
       />
     </Link>
   );

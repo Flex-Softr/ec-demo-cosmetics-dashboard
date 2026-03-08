@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
 import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import {
@@ -47,8 +48,23 @@ const formSchema = z.object({
   collectionId: z.string().min(1, {
     message: "Collection is required.",
   }),
-  sortOrder: z.coerce.number().default(0),
-  limit: z.coerce.number().default(10),
+  sortOrder: z
+    .union([z.number(), z.string(), z.undefined()])
+    .refine((val) => val !== "" && val !== undefined, {
+      message: "Sort order is required.",
+    })
+    .pipe(
+      z.coerce.number().min(1, {
+        message: "Sort order must be at least 1.",
+      })
+    ),
+  limit: z.coerce
+    .number()
+    .min(1, {
+      message: "Limit must be at least 1.",
+    })
+    .default(4),
+  isActive: z.boolean().default(true),
   ctaText: z.string().optional(),
   ctaLink: z.string().optional(),
 });
@@ -87,8 +103,10 @@ const HomepageSectionForm = ({
         typeof initialData?.collectionId === "string"
           ? initialData.collectionId
           : initialData?.collectionId?._id || "",
-      sortOrder: initialData?.sortOrder || 0,
-      limit: initialData?.limit || 10,
+      sortOrder: (initialData?.sortOrder ?? "") as unknown as number,
+      limit: initialData?.limit || 4,
+      isActive:
+        initialData?.isActive !== undefined ? initialData.isActive : true,
       ctaText: initialData?.ctaText || "",
       ctaLink: initialData?.ctaLink || "",
     },
@@ -104,8 +122,10 @@ const HomepageSectionForm = ({
             typeof initialData.collectionId === "string"
               ? initialData.collectionId
               : initialData.collectionId._id,
-          sortOrder: initialData.sortOrder || 0,
-          limit: initialData.limit || 10,
+          sortOrder: (initialData.sortOrder ?? "") as unknown as number,
+          limit: initialData.limit || 4,
+          isActive:
+            initialData.isActive !== undefined ? initialData.isActive : true,
           ctaText: initialData.ctaText || "",
           ctaLink: initialData.ctaLink || "",
         });
@@ -114,8 +134,9 @@ const HomepageSectionForm = ({
           title: "",
           subtitle: "",
           collectionId: "",
-          sortOrder: 0,
-          limit: 10,
+          sortOrder: undefined as unknown as number,
+          limit: 4,
+          isActive: true,
           ctaText: "",
           ctaLink: "",
         });
@@ -162,7 +183,7 @@ const HomepageSectionForm = ({
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
           <DialogTitle>
             {initialData ? "Edit Homepage Section" : "Add Homepage Section"}
@@ -181,7 +202,7 @@ const HomepageSectionForm = ({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel className="!text-foreground">Title</FormLabel>
                   <Input placeholder="Enter title" {...field} />
                   <FormMessage />
                 </FormItem>
@@ -193,7 +214,9 @@ const HomepageSectionForm = ({
               name="subtitle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Subtitle (Optional)</FormLabel>
+                  <FormLabel className="!text-foreground">
+                    Subtitle (Optional)
+                  </FormLabel>
                   <Input placeholder="Enter subtitle" {...field} />
                   <FormMessage />
                 </FormItem>
@@ -205,7 +228,7 @@ const HomepageSectionForm = ({
               name="collectionId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Collection</FormLabel>
+                  <FormLabel className="!text-foreground">Collection</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -229,13 +252,15 @@ const HomepageSectionForm = ({
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4 items-start">
               <FormField
                 control={form.control}
                 name="sortOrder"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Sort Order</FormLabel>
+                    <FormLabel className="!text-foreground">
+                      Sort Order
+                    </FormLabel>
                     <Input type="number" {...field} />
                     <FormMessage />
                   </FormItem>
@@ -247,9 +272,32 @@ const HomepageSectionForm = ({
                 name="limit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Product Limit</FormLabel>
+                    <FormLabel className="!text-foreground">
+                      Product Quantity
+                    </FormLabel>
                     <Input type="number" {...field} />
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isActive"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="invisible">Active Status</FormLabel>
+                    <div className="flex flex-row items-center justify-between rounded-lg border px-3 h-10 space-y-0">
+                      <FormLabel className="text-sm font-medium cursor-pointer !text-foreground">
+                        Active Status
+                      </FormLabel>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </div>
                   </FormItem>
                 )}
               />
@@ -261,7 +309,9 @@ const HomepageSectionForm = ({
                 name="ctaText"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>CTA Text (Optional)</FormLabel>
+                    <FormLabel className="!text-foreground">
+                      CTA Text (Optional)
+                    </FormLabel>
                     <Input placeholder="e.g., Shop Now" {...field} />
                     <FormMessage />
                   </FormItem>
@@ -273,7 +323,9 @@ const HomepageSectionForm = ({
                 name="ctaLink"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>CTA Link (Optional)</FormLabel>
+                    <FormLabel className="!text-foreground">
+                      CTA Link (Optional)
+                    </FormLabel>
                     <Input placeholder="e.g., /shop/new-arrivals" {...field} />
                     <FormMessage />
                   </FormItem>
@@ -281,10 +333,10 @@ const HomepageSectionForm = ({
               />
             </div>
 
-            <div className="flex justify-end gap-2 pt-4">
+            <div className="flex justify-end gap-5 pt-4">
               <Button
                 type="button"
-                variant="outline"
+                variant="destructive"
                 onClick={() => setOpen(false)}
               >
                 Cancel

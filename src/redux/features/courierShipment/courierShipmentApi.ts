@@ -17,7 +17,11 @@ const updateStatusApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: payload,
       }),
-      invalidatesTags: ["processingDoneAndCourierOrders"],
+      invalidatesTags: [
+        "processingDoneAndCourierOrders",
+        "processingOrders",
+        "allOrders",
+      ],
     }),
   }),
 });

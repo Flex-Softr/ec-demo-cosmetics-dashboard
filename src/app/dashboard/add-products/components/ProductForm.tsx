@@ -314,6 +314,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         `relatedProducts-${productData?.slug}`,
         `collectionProducts-${productData?.slug}`,
         "featuredProducts",
+        "bestSellingProducts",
         "allCategories",
         "homepageIndividualSection",
         "priceRange",

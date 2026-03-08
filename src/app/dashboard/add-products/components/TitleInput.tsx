@@ -24,7 +24,7 @@ const TitleInput = () => {
     return text
       .toLowerCase()
       .trim()
-      .replace(/[^a-z0-9\s-]/g, "") // remove special chars
+      .replace(/[^\u0980-\u09FFa-z0-9\s-]/g, "") // remove special chars but keep Bangla (\u0980-\u09FF)
       .replace(/\s+/g, "-") // replace spaces with hyphens
       .replace(/-+/g, "-"); // remove multiple hyphens
   };

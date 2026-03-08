@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import UpdateSubCategoryMedia from "./UpdateSubCategoryMedia";
 import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi";
+import { revalidateTag } from "@/utilities/revalidate";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -79,6 +80,7 @@ const UpdateSubCategoryForm = ({
           className: "bg-success text-white text-2xl",
           title: updatedCategory?.message,
         });
+        await revalidateTag(["allCategories", "parentCategory"]);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

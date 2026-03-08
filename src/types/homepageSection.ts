@@ -5,10 +5,11 @@ export type THomePageSection = {
   title?: string;
   subtitle: string;
   collectionId: string | ICollection; // Foreign key to Collection
-  sortOrder: number;
+  sortOrder: number | undefined;
   limit: number;
   ctaText?: string;
   ctaLink?: string;
+  isActive: boolean;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -22,4 +23,5 @@ export type THomePageInput = {
   limit?: number;
   ctaText?: string;
   ctaLink?: string;
+  isActive?: boolean;
 };

@@ -1,17 +1,22 @@
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Hind_Siliguri, Inter } from "next/font/google"; // Added Hind_Siliguri
 import AllProvider from "../providers/AllProvider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+const hindSiliguri = Hind_Siliguri({
+  subsets: ["bengali"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-bengali",
+});
 
 export const metadata: Metadata = {
   title: {
-    default: "Nora Life Style",
-    template: "%s | Nora Life Style",
+    default: "সিদ্দীকিয়া প্রকাশনী",
+    template: "%s | সিদ্দীকিয়া প্রকাশনী",
   },
-  description: "Nora Life Style",
+  description: "সিদ্দীকিয়া প্রকাশনী",
 };
 
 export default function RootLayout({
@@ -21,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} ${hindSiliguri.variable}`}>
         <AllProvider>
           <main className="max-w-[1920px] mx-auto relative text-gray-900">
             {children}

@@ -88,6 +88,7 @@ const UpdateOrderStatus = ({
         currentAction === "canceled" ||
         currentAction === "returned" ||
         currentAction === "deleted" ||
+        currentAction === "completed" ||
         currentAction === "partial completed"
       ) {
         const productTags: TTags[] =
@@ -100,6 +101,7 @@ const UpdateOrderStatus = ({
         await revalidateTag([
           ...productTags,
           "featuredProducts",
+          "bestSellingProducts",
           "homepageIndividualSection",
         ]);
       }

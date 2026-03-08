@@ -4,8 +4,13 @@ import { ICollection } from "@/types/collection";
 import { THomePageSection } from "@/types/homepageSection";
 import { ColumnDef } from "@tanstack/react-table";
 import HomepageSectionAction from "./HomepageSectionAction";
+import UpdateHomepageSectionActiveStatus from "./UpdateHomepageSectionActiveStatus";
 
 export const columns: ColumnDef<THomePageSection>[] = [
+  {
+    accessorKey: "sortOrder",
+    header: "SL",
+  },
   {
     accessorKey: "title",
     header: "Title",
@@ -24,12 +29,15 @@ export const columns: ColumnDef<THomePageSection>[] = [
     },
   },
   {
-    accessorKey: "sortOrder",
-    header: "Sort Order",
+    accessorKey: "limit",
+    header: "Product Qty",
   },
   {
-    accessorKey: "limit",
-    header: "Limit",
+    accessorKey: "isActive",
+    header: "Status",
+    cell: ({ row }) => (
+      <UpdateHomepageSectionActiveStatus homepageSection={row.original} />
+    ),
   },
   {
     accessorKey: "actions",

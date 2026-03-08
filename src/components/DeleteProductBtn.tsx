@@ -40,6 +40,7 @@ const DeleteProductBtn = ({
       `relatedProducts-${slug}`,
       `collectionProducts-${slug}`,
       "featuredProducts",
+      "bestSellingProducts",
       "allCategories",
       "homepageIndividualSection",
     ]);
@@ -70,7 +71,11 @@ const DeleteProductBtn = ({
   return (
     <div className="flex justify-end">
       <Button
-        onClick={() => handleDelete(id)}
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleDelete(id);
+        }}
         disabled={isLoading}
         variant={variant}
         className={className}

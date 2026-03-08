@@ -152,6 +152,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
     await revalidateTag([
       ...productTags,
       "featuredProducts",
+      "bestSellingProducts",
       "homepageIndividualSection",
     ]);
   };

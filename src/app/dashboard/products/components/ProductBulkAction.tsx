@@ -41,6 +41,7 @@ const ProductBulkAction = () => {
     await revalidateTag([
       ...productTags,
       "featuredProducts",
+      "bestSellingProducts",
       "allCategories",
       "homepageIndividualSection",
     ]);

@@ -117,7 +117,7 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
                     </h2>
                     <div className="space-y-1 text-sm">
                       <p className="font-semibold text-black text-base">
-                        {config.company_info.name || "Nora Life Style"}
+                        {config.company_info.name}
                       </p>
                       <p className="text-black">{config.company_info.phone}</p>
                       <p className="text-black">

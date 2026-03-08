@@ -25,6 +25,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import AddCategoryMedia from "../../components/AddCategoryMedia";
 import { useAddCategoryMutation } from "@/redux/features/category/categoryApi";
+import { revalidateTag } from "@/utilities/revalidate";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -75,6 +76,7 @@ const AddSubCategoryForm = ({ parent }: { parent: string }) => {
             className: "bg-success text-white text-2xl",
             title: addedSubCategory?.message,
           });
+          await revalidateTag(["allCategories", "parentCategory"]);
         }
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

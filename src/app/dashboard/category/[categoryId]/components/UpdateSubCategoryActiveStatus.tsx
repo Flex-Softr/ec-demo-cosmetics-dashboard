@@ -4,6 +4,7 @@ import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { useState } from "react";
 import { TSubCategories } from "./SubCategoryTable";
 import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi";
+import { revalidateTag } from "@/utilities/revalidate";
 
 const UpdateSubCategoryActiveStatus = ({
   subcategory,
@@ -28,6 +29,7 @@ const UpdateSubCategoryActiveStatus = ({
           className: "toast-success",
           title: res?.message,
         });
+        await revalidateTag(["allCategories", "parentCategory"]);
       }
     } catch (error) {
       const err = (error as { data: TErrorResponse })?.data;
