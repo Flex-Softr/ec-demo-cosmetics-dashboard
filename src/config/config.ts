@@ -16,7 +16,7 @@ const config = {
     phone: process.env.NEXT_PUBLIC_COMPANY_PHONE,
     address: process.env.NEXT_PUBLIC_COMPANY_ADDRESS,
   },
-  per_item_shipping_cost: 50,
+  per_item_shipping_cost: 0,
 };
 
 export default config;
