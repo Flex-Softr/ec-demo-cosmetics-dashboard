@@ -10,7 +10,7 @@ export const columns: ColumnDef<ICollection>[] = [
   {
     id: "sl",
     header: "SL",
-    cell: ({ row }) => row.original.sortOrder || "N/A",
+    cell: ({ row }) => row.original.sortOrder,
   },
   {
     accessorKey: "image",

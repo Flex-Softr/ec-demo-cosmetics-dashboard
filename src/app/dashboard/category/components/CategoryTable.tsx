@@ -50,12 +50,12 @@ export const CategoryTable = () => {
 
   return (
     <div className="space-y-1">
-      <div className="bg-white py-3 px-4 rounded-lg shadow-sm space-y-2">
+      <div className="bg-white px-4 rounded-lg shadow-sm space-y-2">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold text-dark">Category Management</h1>
-          <CategoryForm trigger={<Button size="sm">Add Category</Button>} />
+          <CategoryForm trigger={<Button>Add Category</Button>} />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pb-4">
           <Input
             placeholder="Search categories..."
             value={globalFilter ?? ""}

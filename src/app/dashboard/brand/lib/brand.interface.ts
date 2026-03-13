@@ -6,6 +6,7 @@ export type TBrand = {
   logo: { _id?: string; src: string; alt: string };
   isActive: boolean;
   description: string;
+  sortOrder?: number;
 };
 
 export type TBrandForm = {

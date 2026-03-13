@@ -8,6 +8,11 @@ import BrandAction from "./BrandAction";
 
 export const columns: ColumnDef<TBrand>[] = [
   {
+    id: "sl",
+    header: "SL",
+    cell: ({ row }) => row.original.sortOrder,
+  },
+  {
     accessorKey: "logo",
     header: "Logo",
     cell: ({ row }) => {

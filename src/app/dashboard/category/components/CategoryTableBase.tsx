@@ -42,6 +42,11 @@ export const CategoryTableBase = ({
   const columns = React.useMemo<ColumnDef<TCategories>[]>(() => {
     const baseColumns: ColumnDef<TCategories>[] = [
       {
+        id: "sl",
+        header: "SL",
+        cell: ({ row }) => row.original.sortOrder,
+      },
+      {
         accessorKey: "image",
         header: "",
         cell: ({ row }) => (

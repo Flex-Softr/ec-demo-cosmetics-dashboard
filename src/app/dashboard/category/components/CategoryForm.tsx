@@ -43,6 +43,7 @@ const formSchema = z.object({
   image: z.string().optional(),
   isActive: z.boolean().default(true),
   parent: z.string().optional(),
+  sortOrder: z.coerce.number().optional().default(0),
 });
 
 type CategoryFormProps = {
@@ -81,6 +82,7 @@ const CategoryForm = ({
       image: initialData?.image?.src || "",
       isActive: initialData?.isActive ?? true,
       parent: parent || initialData?.parent || undefined,
+      sortOrder: initialData?.sortOrder || 0,
     },
   });
 
@@ -93,6 +95,7 @@ const CategoryForm = ({
           image: initialData.image?.src || "",
           isActive: initialData.isActive,
           parent: initialData.parent || parent || undefined,
+          sortOrder: initialData.sortOrder || 0,
         });
         if (initialData.image?._id) {
           dispatch(setThumbnail(initialData.image._id));
@@ -104,6 +107,7 @@ const CategoryForm = ({
           image: "",
           isActive: true,
           parent: parent || undefined,
+          sortOrder: 0,
         });
         dispatch(setThumbnail(""));
       }
@@ -136,7 +140,6 @@ const CategoryForm = ({
       }
 
       if (res?.success) {
-        await revalidateTag(["categories"]);
         toast({
           className: "bg-success text-white",
           title:
@@ -146,6 +149,7 @@ const CategoryForm = ({
         setOpen(false);
         form.reset();
         dispatch(setThumbnail(""));
+        await revalidateTag(["categories"]);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -210,23 +214,39 @@ const CategoryForm = ({
               </div>
             </div>
 
-            <FormField
-              control={form.control}
-              name="isActive"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                  <div className="space-y-0.5">
-                    <FormLabel>Active Status</FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+              <FormField
+                control={form.control}
+                name="sortOrder"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sort Order</FormLabel>
+                    <Input type="number" placeholder="0" {...field} />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isActive"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm h-10">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-sm font-medium">
+                        Active Status
+                      </FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="flex justify-end gap-5 pt-4">
               <Button

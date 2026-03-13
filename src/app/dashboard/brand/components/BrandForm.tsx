@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,6 +41,7 @@ const formSchema = z.object({
   description: z.string().optional(),
   logo: z.string().optional(),
   isActive: z.boolean().default(true),
+  sortOrder: z.coerce.number().optional().default(0),
 });
 
 type BrandFormProps = {
@@ -74,6 +74,7 @@ const BrandForm = ({
       description: initialData?.description || "",
       logo: initialData?.logo?.src || "",
       isActive: initialData?.isActive ?? true,
+      sortOrder: initialData?.sortOrder || 0,
     },
   });
 
@@ -85,6 +86,7 @@ const BrandForm = ({
           description: initialData.description || "",
           logo: initialData.logo?.src || "",
           isActive: initialData.isActive,
+          sortOrder: initialData.sortOrder || 0,
         });
         if (initialData.logo?._id) {
           dispatch(setThumbnail(initialData.logo._id));
@@ -95,6 +97,7 @@ const BrandForm = ({
           description: "",
           logo: "",
           isActive: true,
+          sortOrder: 0,
         });
         dispatch(setThumbnail(""));
       }
@@ -127,7 +130,6 @@ const BrandForm = ({
       }
 
       if (res?.success) {
-        await revalidateTag(["brands"]);
         toast({
           className: "bg-success text-white",
           title:
@@ -137,6 +139,7 @@ const BrandForm = ({
         setOpen(false);
         form.reset();
         dispatch(setThumbnail(""));
+        await revalidateTag(["brands"]);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -196,23 +199,39 @@ const BrandForm = ({
               </div>
             </div>
 
-            <FormField
-              control={form.control}
-              name="isActive"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                  <div className="space-y-0.5">
-                    <FormLabel>Active Status</FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+              <FormField
+                control={form.control}
+                name="sortOrder"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sort Order</FormLabel>
+                    <Input type="number" placeholder="0" {...field} />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isActive"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm h-10">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-sm font-medium">
+                        Active Status
+                      </FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="flex justify-end gap-5 pt-4">
               <Button

@@ -13,4 +13,5 @@ export type TCategories = {
   productCount?: number;
   subcategories?: TCategories[];
   parent?: string;
+  sortOrder?: number;
 };

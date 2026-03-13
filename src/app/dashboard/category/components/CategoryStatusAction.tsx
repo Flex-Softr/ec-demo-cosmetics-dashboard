@@ -38,7 +38,6 @@ const CategoryStatusAction = ({ category }: { category: TCategories }) => {
         className: "toast-error",
         title: err?.message || "Failed to update status",
       });
-      setIsChecked(!updatedData);
     }
   };
 

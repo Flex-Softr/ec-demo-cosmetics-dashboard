@@ -23,9 +23,9 @@ const SubCategoryContent = ({ categoryId }: { categoryId: string }) => {
             variant="ghost"
             size="icon"
             onClick={() => router.back()}
-            className="rounded-full h-8 w-8"
+            className="rounded-full h-8 w-8 hover:bg-primary"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5 text-white" />
           </Button>
           <div>
             <h1 className="text-xl font-bold">
