@@ -19,9 +19,18 @@ const CategoryAction = ({ category }: { category: TCategories }) => {
   const [deleteCategory] = useDeleteCategoryMutation();
 
   const [open, setOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const handleOpen = () => {
-    setOpen(!open);
+  const handleOpen = (value?: boolean) => {
+    if (typeof value === "boolean") {
+      setOpen(value);
+    } else {
+      setOpen(!open);
+    }
+  };
+
+  const handleDeleteOpen = () => {
+    setDeleteOpen(!deleteOpen);
   };
 
   const handleDelete = async (id: string) => {
@@ -35,6 +44,7 @@ const CategoryAction = ({ category }: { category: TCategories }) => {
         title: "Category Successfully Deleted",
       });
 
+      setDeleteOpen(false);
       await revalidateTag(["allCategories", "parentCategory"]);
     } else {
       toast({
@@ -62,9 +72,12 @@ const CategoryAction = ({ category }: { category: TCategories }) => {
           </div>
         </DialogContent>
       </Dialog>
-      <Dialog>
-        <DialogTrigger>
-          <Trash2Icon className="text-red-500" />
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogTrigger asChild>
+          <Trash2Icon
+            className="text-red-500 cursor-pointer"
+            onClick={handleDeleteOpen}
+          />
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <h1 className="text-3xl">Are you sure?</h1>

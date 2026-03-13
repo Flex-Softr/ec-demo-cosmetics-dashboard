@@ -1,5 +1,5 @@
 "use client";
-
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -13,17 +13,15 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  useReactTable,
   getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
 } from "@tanstack/react-table";
 import Image from "next/image";
 import * as React from "react";
 import SubCategoryAction from "./SubCategoryAction";
 import UpdateSubCategoryActiveStatus from "./UpdateSubCategoryActiveStatus";
 import { formatImageSrc } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 export type TSubCategories = {
   _id: string;
@@ -97,24 +95,29 @@ export const SubCategoryTable = ({
 }: {
   subcategories: TSubCategories[];
 }) => {
+  const [globalFilter, setGlobalFilter] = React.useState("");
+
   const table = useReactTable({
     data: subcategories,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getRowId: (row) => row._id,
+    state: {
+      globalFilter,
+    },
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: "includesString",
   });
 
   return (
     <div className="w-full">
       <div className="flex items-center gap-2 py-4">
         <Input
-          placeholder="Filter Name"
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
+          placeholder="Filter Name..."
+          value={globalFilter ?? ""}
+          onChange={(e) => setGlobalFilter(e.target.value)}
           className="max-w-sm"
         />
       </div>
@@ -169,24 +172,22 @@ export const SubCategoryTable = ({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
       </div>
     </div>
   );

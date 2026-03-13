@@ -133,6 +133,7 @@ export const CategoryTable = () => {
     data: categories,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getRowId: (row) => row._id,
   });
 
   if (isLoading) {

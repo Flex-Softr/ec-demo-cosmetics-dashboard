@@ -17,6 +17,7 @@ import CollectionForm from "./CollectionForm";
 const CollectionAction = ({ collection }: { collection: ICollection }) => {
   const [deleteCollection] = useDeleteCollectionMutation();
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -26,6 +27,7 @@ const CollectionAction = ({ collection }: { collection: ICollection }) => {
           className: "bg-success text-white",
           title: "Collection deleted successfully",
         });
+        setDeleteOpen(false);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -56,12 +58,13 @@ const CollectionAction = ({ collection }: { collection: ICollection }) => {
       />
 
       {/* Delete Action */}
-      <Dialog>
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogTrigger asChild>
           <Button
             variant="ghost"
             size="icon"
             className="!bg-white hover:!bg-gray-100"
+            onClick={() => setDeleteOpen(true)}
           >
             <Trash2Icon className="h-4 w-4 text-red-600" />
           </Button>

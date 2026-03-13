@@ -60,6 +60,7 @@ const CollectionTable = () => {
     data: collections,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getRowId: (row) => row._id,
   });
 
   if (isLoading) {

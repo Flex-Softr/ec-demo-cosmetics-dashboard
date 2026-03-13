@@ -3,7 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi";
 import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { revalidateTag } from "@/utilities/revalidate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TCategories } from "./CategoryTable";
 
 const UpdateCategoryActiveStatus = ({
@@ -13,6 +13,10 @@ const UpdateCategoryActiveStatus = ({
 }) => {
   const { toast } = useToast();
   const [isChecked, setIsChecked] = useState(category?.isActive);
+
+  useEffect(() => {
+    setIsChecked(category?.isActive);
+  }, [category?.isActive]);
 
   const [updateCategoryFN] = useUpdateCategoryMutation();
 

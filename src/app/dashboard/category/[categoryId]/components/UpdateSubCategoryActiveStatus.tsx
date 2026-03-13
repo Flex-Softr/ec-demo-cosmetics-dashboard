@@ -1,7 +1,7 @@
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { TErrorResponse, TSuccessResponse } from "@/types/response";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TSubCategories } from "./SubCategoryTable";
 import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi";
 import { revalidateTag } from "@/utilities/revalidate";
@@ -13,6 +13,10 @@ const UpdateSubCategoryActiveStatus = ({
 }) => {
   const { toast } = useToast();
   const [isChecked, setIsChecked] = useState(subcategory?.isActive);
+
+  useEffect(() => {
+    setIsChecked(subcategory?.isActive);
+  }, [subcategory?.isActive]);
 
   const [updateCategory] = useUpdateCategoryMutation();
 

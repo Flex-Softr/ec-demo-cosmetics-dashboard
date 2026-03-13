@@ -21,9 +21,18 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
   const [deleteCategory] = useDeleteCategoryMutation();
 
   const [open, setOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const handleOpen = () => {
-    setOpen(!open);
+  const handleOpen = (value?: boolean) => {
+    if (typeof value === "boolean") {
+      setOpen(value);
+    } else {
+      setOpen(!open);
+    }
+  };
+
+  const handleDeleteOpen = () => {
+    setDeleteOpen(!deleteOpen);
   };
 
   const handleDelete = async (id: string) => {
@@ -36,6 +45,7 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
         className: "bg-success text-white ",
         title: "Sub category Successfully Deleted",
       });
+      setDeleteOpen(false);
       await revalidateTag(["allCategories", "parentCategory"]);
     } else {
       toast({
@@ -66,9 +76,12 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
           </div>
         </DialogContent>
       </Dialog>
-      <Dialog>
-        <DialogTrigger>
-          <Trash2Icon className="text-red-500" />
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogTrigger asChild>
+          <Trash2Icon
+            className="text-red-500 cursor-pointer"
+            onClick={handleDeleteOpen}
+          />
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogTitle className="text-3xl">Are you sure?</DialogTitle>
