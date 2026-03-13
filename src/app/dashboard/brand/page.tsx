@@ -1,33 +1,35 @@
-import { Card } from "@/components/ui/card";
-import { Pagination } from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
 import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
-import AddBrandForm from "./components/AddBrandForm";
-import { BrandTable } from "./components/BrandsTable";
+import BrandForm from "./components/BrandForm";
+import BrandTable from "./components/BrandsTable";
 
 const Brand = async () => {
   const { permissions = [] } = await getPermission();
-
   const manageProduct = isPermitted(permissions, PERMISSIONS.MANAGE_PRODUCT);
 
   if (!manageProduct) {
     redirect("/error");
   }
+
   return (
-    <div className="flex gap-4 justify-between items-start h-screen px-4 pt-4">
-      <Card className="space-y-5 flex-1">
-        <h2 className="text-xl font-bold"> Add New Brand</h2>
-        <AddBrandForm />
-      </Card>
-      <Card className="space-y-5 flex-1 h-full">
-        <h2 className="text-xl font-bold"> All Brands</h2>
-        <div>
-          <BrandTable />
-          <Pagination />
-        </div>
-      </Card>
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold tracking-tight">Brands</h1>
+        <BrandForm
+          trigger={
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Brand
+            </Button>
+          }
+        />
+      </div>
+
+      <BrandTable />
     </div>
   );
 };

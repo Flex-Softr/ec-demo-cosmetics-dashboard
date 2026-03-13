@@ -3,7 +3,7 @@ export type TBrand = {
   name: string;
   productCount: number;
   slug: string;
-  logo: { src: string; alt: string };
+  logo: { _id?: string; src: string; alt: string };
   isActive: boolean;
   description: string;
 };

@@ -3,14 +3,11 @@ import {
   TBrandPayload,
 } from "@/app/dashboard/brand/lib/brand.interface";
 import baseApi from "@/redux/baseApi/baseApi";
-import { TSuccessResponse } from "@/types/response";
+import { TListResponse, TSuccessResponse } from "@/types/response";
 
 const brandApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getBrands: builder.query<
-      TSuccessResponse<TBrand[]>,
-      Record<string, unknown>
-    >({
+    getBrands: builder.query<TListResponse<TBrand>, Record<string, unknown>>({
       query: (args) => ({
         url: "/brands",
         params: args,

@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useDebounce } from "@/hooks/useDebounce";
 import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import {
   setIsLoading,
@@ -23,7 +24,6 @@ import {
 } from "@tanstack/react-table";
 import React from "react";
 import { columns } from "./CollectionColumns";
-import { useDebounce } from "@/hooks/useDebounce";
 
 const CollectionTable = () => {
   const dispatch = useAppDispatch();
@@ -35,12 +35,8 @@ const CollectionTable = () => {
 
   const { data: response, isLoading } = useGetCollectionsQuery(queryParams);
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  const responseData: any = response?.data;
-  const collections = Array.isArray(responseData?.data)
-    ? responseData.data
-    : [];
-  const meta = responseData?.meta;
+  const collections = response?.data?.data || [];
+  const meta = response?.data?.meta;
 
   if (!collections.length && page > 1) {
     dispatch(setPage(1));

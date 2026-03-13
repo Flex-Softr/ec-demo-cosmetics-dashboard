@@ -3,7 +3,7 @@ import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
-import AddCategoryForm from "./components/AddCategoryForm";
+// Removed broken AddCategoryForm import
 import { CategoryTable } from "./components/CategoryTable";
 
 const AddCategory = async () => {
@@ -15,12 +15,7 @@ const AddCategory = async () => {
     redirect("/error");
   }
   return (
-    <Card className="m-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Category Set Up</h1>
-        <AddCategoryForm />
-      </div>
-      <hr className="my-4" />
+    <Card className="m-4 p-4">
       <div className="w-full">
         <CategoryTable />
       </div>

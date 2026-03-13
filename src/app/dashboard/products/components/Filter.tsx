@@ -27,20 +27,11 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 
-type TCategory = {
-  _id: string;
-  name: string;
-  productCount: number;
-  subcategories: {
-    _id: string;
-    name: string;
-    productCount: number;
-  }[];
-};
+import { TCategories } from "@/app/dashboard/category/lib/category.interface";
 
 const Filter = () => {
   const { data: categoriesData } = useGetCategoriesQuery({});
-  const categories: TCategory[] = categoriesData?.data?.data || [];
+  const categories: TCategories[] = categoriesData?.data?.data || [];
 
   const { data: collectionsData } = useGetCollectionsQuery({ isActive: true });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,7 +42,7 @@ const Filter = () => {
     : [];
 
   const { data: brandsData } = useGetBrandsQuery({});
-  const brands = brandsData?.data || [];
+  const brands = brandsData?.data?.data || [];
 
   // const router = useRouter();
   const [category, setCategory] = useState("");
@@ -112,19 +103,21 @@ const Filter = () => {
         <SelectContent>
           <SelectGroup>
             <SelectItem value="All Categories">All Categories</SelectItem>
-            {categories.map(({ _id, name, productCount, subcategories }) => (
-              <div key={_id}>
-                <SelectItem value={_id} className="font-bold">
-                  {name} {productCount > 0 && `(${productCount})`}
-                </SelectItem>
-                {subcategories.length > 0 &&
-                  subcategories.map(({ _id, name, productCount }) => (
-                    <SelectItem key={_id} value={_id} className="pl-4">
-                      {name} {productCount > 0 && `(${productCount})`}
-                    </SelectItem>
-                  ))}
-              </div>
-            ))}
+            {categories.map(
+              ({ _id, name, productCount = 0, subcategories = [] }) => (
+                <div key={_id}>
+                  <SelectItem value={_id} className="font-bold">
+                    {name} {productCount > 0 && `(${productCount})`}
+                  </SelectItem>
+                  {subcategories.length > 0 &&
+                    subcategories.map(({ _id, name, productCount = 0 }) => (
+                      <SelectItem key={_id} value={_id} className="pl-4">
+                        {name} {productCount > 0 && `(${productCount})`}
+                      </SelectItem>
+                    ))}
+                </div>
+              )
+            )}
           </SelectGroup>
         </SelectContent>
       </Select>

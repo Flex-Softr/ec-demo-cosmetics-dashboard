@@ -1,16 +1,13 @@
+"use client";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateCategoryMutation } from "@/redux/features/category/categoryApi";
 import { TErrorResponse, TSuccessResponse } from "@/types/response";
 import { revalidateTag } from "@/utilities/revalidate";
 import { useEffect, useState } from "react";
-import { TCategories } from "./CategoryTable";
+import { TCategories } from "../lib/category.interface";
 
-const UpdateCategoryActiveStatus = ({
-  category,
-}: {
-  category: TCategories;
-}) => {
+const CategoryStatusAction = ({ category }: { category: TCategories }) => {
   const { toast } = useToast();
   const [isChecked, setIsChecked] = useState(category?.isActive);
 
@@ -18,13 +15,13 @@ const UpdateCategoryActiveStatus = ({
     setIsChecked(category?.isActive);
   }, [category?.isActive]);
 
-  const [updateCategoryFN] = useUpdateCategoryMutation();
+  const [updateCategory] = useUpdateCategoryMutation();
 
   const handleChange = async () => {
     const updatedData = !isChecked;
     setIsChecked(updatedData);
     try {
-      const res = (await updateCategoryFN({
+      const res = (await updateCategory({
         data: { isActive: updatedData },
         id: category._id,
       }).unwrap()) as TSuccessResponse;
@@ -33,8 +30,7 @@ const UpdateCategoryActiveStatus = ({
           className: "toast-success",
           title: res?.message,
         });
-
-        await revalidateTag(["allCategories", "parentCategory"]);
+        await revalidateTag(["categories"]);
       }
     } catch (error) {
       const err = (error as { data: TErrorResponse })?.data;
@@ -42,15 +38,15 @@ const UpdateCategoryActiveStatus = ({
         className: "toast-error",
         title: err?.message || "Failed to update status",
       });
-      // setIsChecked(!updatedData);
+      setIsChecked(!updatedData);
     }
   };
 
   return (
     <div className="flex items-center space-x-2">
-      <Switch checked={isChecked} onClick={handleChange} />
+      <Switch checked={isChecked} onCheckedChange={handleChange} />
     </div>
   );
 };
 
-export default UpdateCategoryActiveStatus;
+export default CategoryStatusAction;

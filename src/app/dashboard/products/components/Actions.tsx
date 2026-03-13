@@ -24,7 +24,7 @@ const Actions = ({ _id, slug }: { _id: string; slug: string }) => {
       `collectionProducts-${slug}`,
       "featuredProducts",
       "bestSellingProducts",
-      "allCategories",
+      "categories",
       "homepageIndividualSection",
     ]);
   };

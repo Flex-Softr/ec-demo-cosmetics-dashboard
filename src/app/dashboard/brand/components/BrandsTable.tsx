@@ -1,18 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { PagePagination } from "@/components/pagination/PagePagination";
 import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -21,122 +11,56 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "@/components/ui/use-toast";
-import { formatImageSrc } from "@/lib/utils";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useGetBrandsQuery } from "@/redux/features/brand/brandApi";
 import {
-  useDeleteBrandMutation,
-  useGetBrandsQuery,
-} from "@/redux/features/brand/brandApi";
-import { refetchData } from "@/utilities/fetchData";
+  setIsLoading,
+  setPage,
+  setTotalPage,
+} from "@/redux/features/pagination/PaginationSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
-  ColumnDef,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import Image from "next/image";
-import * as React from "react";
-import { TBrand } from "../lib/brand.interface";
-import BrandActions from "./BrandActions";
-import UpdateBrandActiveStatus from "./UpdateBrandActiveStatus";
+import React from "react";
+import { columns } from "./BrandColumns";
 
-export const columns: ColumnDef<TBrand>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value: boolean | "indeterminate") =>
-          table.toggleAllPageRowsSelected(!!value)
-        }
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value: boolean | "indeterminate") =>
-          row.toggleSelected(!!value)
-        }
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "image",
-    header: "",
-    cell: ({ row }) => (
-      <Image
-        width={50}
-        height={50}
-        src={formatImageSrc(row.original.logo?.src)}
-        alt={row?.original?.name}
-      />
-    ),
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => (
-      <span className="capitalize">{row.getValue("name")}</span>
-    ),
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => {
-      const description = row.original.description;
-      return (
-        <span title={row.original.description}>
-          {description ? description.slice(0, 20) + "..." : null}
-        </span>
-      );
-    },
-  },
-  {
-    accessorKey: "isActive",
-    header: "Status",
-    cell: ({ row }) => <UpdateBrandActiveStatus brand={row.original} />,
-  },
-  {
-    id: "_id",
-    accessorKey: "_id",
-    header: () => <div className="text-center">Action</div>,
-    enableHiding: true,
-    cell: ({ row }) => <BrandActions brand={row.original} />,
-  },
-];
+const BrandTable = () => {
+  const dispatch = useAppDispatch();
+  const { page, limit } = useAppSelector(({ pagination }) => pagination);
 
-export const BrandTable = () => {
-  const { data, isLoading } = useGetBrandsQuery({});
-  const brands = data?.data || [];
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [deleteBrand] = useDeleteBrandMutation();
+  const [globalFilter, setGlobalFilter] = React.useState("");
+  const debouncedSearch = useDebounce(globalFilter, 500);
+  const queryParams = debouncedSearch
+    ? { search: debouncedSearch }
+    : { page, limit };
+
+  const { data: response, isLoading } = useGetBrandsQuery(queryParams);
+
+  const brands = response?.data?.data || [];
+  const meta = response?.data?.meta;
+
+  if (!brands.length && page > 1) {
+    dispatch(setPage(1));
+  }
+
+  React.useEffect(() => {
+    if (meta) {
+      dispatch(setTotalPage({ total: meta.total, totalPage: meta.totalPage }));
+    }
+  }, [meta, dispatch]);
+
+  React.useEffect(() => {
+    dispatch(setIsLoading(isLoading));
+  }, [isLoading, dispatch]);
 
   const table = useReactTable({
     data: brands,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      columnVisibility,
-      rowSelection,
-    },
+    getRowId: (row) => row._id,
   });
 
   if (isLoading) {
@@ -147,82 +71,39 @@ export const BrandTable = () => {
     );
   }
 
-  const selectedRows = table?.getFilteredSelectedRowModel()?.rows;
-  const brandIds = selectedRows.map(({ original }) => original._id);
-
-  const handleDelete = async () => {
-    if (brandIds.length) {
-      const res = await deleteBrand(brandIds).unwrap();
-      if (res?.success) {
-        await refetchData("brands");
-        toast({
-          className: "bg-success text-white ",
-          title: "Brand deleted successfully!",
-        });
-      } else {
-        toast({
-          className: "bg-danger text-whit",
-          title: "Something Went Wrong",
-        });
-      }
-    } else {
-      alert("Please select brands!");
-    }
-  };
-
   return (
-    <div className="w-full">
-      <div className="flex items-center gap-2 py-4">
-        <div className="flex justify-start  gap-2">
-          <Select>
-            <SelectTrigger className="w-[180px] border-primary focus:ring-primary focus:ring-1">
-              <SelectValue placeholder="Bulk Action" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Bulk Action</SelectLabel>
-                <SelectItem value="delete">Delete</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button onClick={handleDelete}>Apply</Button>
-        </div>
+    <div className="space-y-4">
+      <div className="flex justify-between">
         <Input
-          placeholder="Filter Name"
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
+          placeholder="Search brands..."
+          value={globalFilter ?? ""}
+          onChange={(e) => setGlobalFilter(e.target.value)}
           className="max-w-sm"
         />
       </div>
+
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-primary text-white hover:bg-primary/90">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+              <TableRow key={headerGroup.id} className="hover:bg-primary/90">
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -239,37 +120,21 @@ export const BrandTable = () => {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No brands found.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+
+      {!globalFilter && (
+        <div className="flex items-center justify-end space-x-2 py-2">
+          <PagePagination />
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
+
+export default BrandTable;

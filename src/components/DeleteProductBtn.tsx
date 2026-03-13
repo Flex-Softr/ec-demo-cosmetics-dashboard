@@ -41,7 +41,7 @@ const DeleteProductBtn = ({
       `collectionProducts-${slug}`,
       "featuredProducts",
       "bestSellingProducts",
-      "allCategories",
+      "categories",
       "homepageIndividualSection",
     ]);
   };

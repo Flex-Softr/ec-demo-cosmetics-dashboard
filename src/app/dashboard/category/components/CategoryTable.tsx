@@ -1,26 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { formatImageSrc } from "@/lib/utils";
 import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import Image from "next/image";
 import * as React from "react";
-import CategoryAction from "./CategoryAction";
-import NavigateSubCategory from "./NavigateSubCategory";
-import UpdateCategoryActiveStatus from "./UpdateCategoryActiveStatus";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   setIsLoading,
@@ -29,76 +10,12 @@ import {
 } from "@/redux/features/pagination/PaginationSlice";
 import { PagePagination } from "@/components/pagination/PagePagination";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Button } from "@/components/ui/button";
 
-export type TCategories = {
-  _id: string;
-  image: {
-    src: string;
-    alt: string;
-  };
-  name: string;
-  isActive: boolean;
-  subcategories: [];
-};
-
-export const columns: ColumnDef<TCategories>[] = [
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
-  {
-    accessorKey: "image",
-    header: "",
-    cell: ({ row }) => (
-      <Image
-        width={50}
-        height={50}
-        src={formatImageSrc(row.original.image?.src)}
-        alt={row?.original?.name}
-      />
-    ),
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "items",
-    header: "Sub Categories",
-    cell: ({ row }) => <NavigateSubCategory category={row.original} />,
-  },
-  {
-    accessorKey: "isActive",
-    header: "Status",
-    cell: ({ row }) => <UpdateCategoryActiveStatus category={row.original} />,
-  },
-  {
-    id: "_id",
-    accessorKey: "_id",
-    header: () => <div className="text-center">Action</div>,
-    enableHiding: true,
-    cell: ({ row }) => <CategoryAction category={row.original} />,
-  },
-];
+import { TCategories } from "../lib/category.interface";
+export type { TCategories };
+import CategoryForm from "./CategoryForm";
+import { CategoryTableBase } from "./CategoryTableBase";
 
 export const CategoryTable = () => {
   const dispatch = useAppDispatch();
@@ -110,10 +27,8 @@ export const CategoryTable = () => {
 
   const { data: response, isLoading } = useGetCategoriesQuery(queryParams);
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  const responseData: any = response?.data;
-  const categories = Array.isArray(responseData?.data) ? responseData.data : [];
-  const meta = responseData?.meta;
+  const categories = response?.data?.data || [];
+  const meta = response?.data?.meta;
 
   if (!categories.length && page > 1) {
     dispatch(setPage(1));
@@ -129,72 +44,34 @@ export const CategoryTable = () => {
     dispatch(setIsLoading(isLoading));
   }, [isLoading, dispatch]);
 
-  const table = useReactTable({
-    data: categories,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getRowId: (row) => row._id,
-  });
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between">
-        <Input
-          placeholder="Search categories..."
-          value={globalFilter ?? ""}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="max-w-sm"
-        />
+    <div className="space-y-1">
+      <div className="bg-white py-3 px-4 rounded-lg shadow-sm space-y-2">
+        <div className="flex justify-between items-center">
+          <h1 className="text-xl font-bold text-dark">Category Management</h1>
+          <CategoryForm trigger={<Button size="sm">Add Category</Button>} />
+        </div>
+        <div className="flex items-center gap-2">
+          <Input
+            placeholder="Search categories..."
+            value={globalFilter ?? ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="max-w-xs h-8 text-sm focus-visible:ring-primary"
+          />
+        </div>
       </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader className="bg-primary text-white hover:bg-primary/90">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-primary/90">
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No categories found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+
+      <CategoryTableBase
+        data={categories}
+        globalFilter={globalFilter}
+        setGlobalFilter={setGlobalFilter}
+        isLoading={isLoading}
+      />
+
       {!globalFilter && (
         <div className="flex items-center justify-end space-x-2 py-2">
           <PagePagination />

@@ -31,33 +31,37 @@ import { TAttribute } from "../lib/attribute.interface";
 import AttributeValueUpdateModal from "./AttributeValueUpdateModal";
 import UpdateAttributeActiveStatus from "./UpdateAttributeActiveStatus";
 
-const AddedAttributes = () => {
-  const { data, isLoading } = useGetAttributesQuery({});
-  const attributes = data?.data || [];
-  const [attributeName, setAttributeName] = useState("");
-  //handle delete an attributes
+const AttributeRow = ({ singleAttribute }: { singleAttribute: TAttribute }) => {
+  const [attributeName, setAttributeName] = useState(
+    singleAttribute?.name || ""
+  );
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+
   const [deleteAttribute] = useDeleteAttributeMutation();
   const [updateAttribute] = useUpdateAttributeMutation();
 
-  const handleDeleteAttributes = async (attributeId: string) => {
-    const res = await deleteAttribute({ attributeIds: [attributeId] }).unwrap();
+  const handleDeleteAttributes = async () => {
+    const res = await deleteAttribute({
+      attributeIds: [singleAttribute._id],
+    }).unwrap();
     if (res?.success) {
       toast({
         className: "bg-success text-white text-2xl",
         title: res?.message,
       });
+      setDeleteOpen(false);
     } else {
       toast({
-        className: "bg-success text-white text-2xl",
-        title: res?.message,
+        className: "bg-danger text-white text-2xl",
+        title: res?.message || "Failed to delete attribute",
       });
     }
   };
 
-  // update Attribute Name
-  const handleUpdateAttributes = async (attributeId: string) => {
+  const handleUpdateAttributes = async () => {
     const res = await updateAttribute({
-      id: attributeId,
+      id: singleAttribute._id,
       data: { name: attributeName },
     }).unwrap();
 
@@ -66,13 +70,96 @@ const AddedAttributes = () => {
         className: "bg-success text-white text-2xl",
         title: res?.message,
       });
+      setEditOpen(false);
     } else {
       toast({
-        className: "bg-success text-white text-2xl",
-        title: res?.message,
+        className: "bg-danger text-white text-2xl",
+        title: res?.message || "Failed to update attribute",
       });
     }
   };
+
+  return (
+    <TableRow>
+      <TableCell className="font-medium">
+        <div>{singleAttribute?.name}</div>
+        <div className="flex gap-3">
+          <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+            <DialogTrigger asChild>
+              <TrashIcon className="text-red-500 w-4 cursor-pointer" />
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] h-fit">
+              <h1 className="text-3xl">Are you sure?</h1>
+              <div className="flex gap-4 items-center ">
+                <DialogClose asChild>
+                  <Button className="bg-red-500 hover:bg-red-500">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button onClick={handleDeleteAttributes}>
+                  Yes, Delete it!
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={editOpen} onOpenChange={setEditOpen}>
+            <DialogTrigger asChild>
+              <PencilIcon className="text-red-500 w-4 cursor-pointer" />
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] h-fit">
+              <DialogHeader>
+                <DialogTitle>Edit Attribute Name</DialogTitle>
+              </DialogHeader>
+              <div>
+                <Input
+                  defaultValue={singleAttribute?.name}
+                  onChange={(e) => setAttributeName(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <DialogFooter>
+                <Button onClick={handleUpdateAttributes}>Save changes</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </TableCell>
+
+      <TableCell>
+        <div className="flex flex-wrap gap-2 py-2">
+          {singleAttribute.values?.map((item) => (
+            <span
+              key={item?._id}
+              className="px-2 py-1 text-xs font-medium rounded-md bg-secondary text-secondary-foreground border border-border"
+            >
+              {item?.name}
+            </span>
+          ))}
+        </div>
+      </TableCell>
+      <TableCell className="w-[100px]">
+        <div className="flex justify-center">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Settings className="cursor-pointer text-muted-foreground hover:text-primary transition-colors h-5 w-5" />
+            </DialogTrigger>
+            <DialogContent className="h-fit">
+              <AttributeValueUpdateModal attribute={singleAttribute} />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </TableCell>
+      <TableCell>
+        <UpdateAttributeActiveStatus attribute={singleAttribute} />
+      </TableCell>
+    </TableRow>
+  );
+};
+
+const AddedAttributes = () => {
+  const { data, isLoading } = useGetAttributesQuery({});
+  const attributes = data?.data || [];
 
   if (isLoading) {
     return (
@@ -89,106 +176,19 @@ const AddedAttributes = () => {
       <Card className="space-y-5">
         <h2 className="text-xl font-bold">Configure Attribute Value</h2>
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Name</TableHead>
-              <TableHead>Terms</TableHead>
-              <TableHead>Status</TableHead>
+          <TableHeader className="bg-primary text-white hover:bg-primary/90">
+            <TableRow className="hover:bg-primary/90">
+              <TableHead className="w-[100px] text-white">Name</TableHead>
+              <TableHead className="text-white">Terms</TableHead>
+              <TableHead className="text-white">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {attributes?.map((singleAttribute: TAttribute) => (
-              <TableRow key={singleAttribute?._id}>
-                <TableCell className="font-medium">
-                  <div>{singleAttribute?.name}</div>
-                  <div className="flex gap-3">
-                    {" "}
-                    <Dialog>
-                      <DialogTrigger>
-                        {" "}
-                        <TrashIcon
-                          // onClick={() => handleAttributes(singleAttribute?._id)}
-                          className="text-red-500 w-4 cursor-pointer"
-                        />
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px] h-fit">
-                        <h1 className="text-3xl">Are you sure?</h1>
-                        <div className="flex gap-4 items-center ">
-                          <DialogClose asChild>
-                            <Button className="bg-red-500 hover:bg-red-500">
-                              Cancel
-                            </Button>
-                          </DialogClose>{" "}
-                          <Button
-                            onClick={() =>
-                              handleDeleteAttributes(singleAttribute?._id)
-                            }
-                            className=""
-                          >
-                            Yes, Delete it!
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                    {/* update the attribute modal  */}
-                    <Dialog>
-                      <DialogTrigger>
-                        {" "}
-                        <PencilIcon className="text-red-500 w-4 cursor-pointer" />
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px] h-fit">
-                        <DialogHeader>
-                          <DialogTitle>Edit Attribute Name </DialogTitle>
-                        </DialogHeader>
-                        <div className="">
-                          <Input
-                            defaultValue={singleAttribute?.name}
-                            onChange={(e) => setAttributeName(e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-                        <DialogFooter>
-                          <DialogClose>
-                            <Button
-                              onClick={() =>
-                                handleUpdateAttributes(singleAttribute?._id)
-                              }
-                            >
-                              Save changes
-                            </Button>
-                          </DialogClose>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </TableCell>
-
-                <TableCell className="flex items-center ">
-                  <div className="flex flex-grow  items-center w-full gap-2 border rounded-md p-2">
-                    {singleAttribute.values?.map((item) => (
-                      <p key={item?._id}>{item?.name},</p>
-                    ))}
-                  </div>
-
-                  <div className="p-1">
-                    {/* configure the attribute items  */}
-                    <Dialog>
-                      <DialogTrigger>
-                        {" "}
-                        <Settings className="cursor-pointer" />
-                      </DialogTrigger>
-                      <DialogContent className="  h-fit">
-                        <AttributeValueUpdateModal
-                          attribute={singleAttribute}
-                        />
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <UpdateAttributeActiveStatus attribute={singleAttribute} />
-                </TableCell>
-              </TableRow>
+              <AttributeRow
+                key={singleAttribute?._id}
+                singleAttribute={singleAttribute}
+              />
             ))}
           </TableBody>
         </Table>

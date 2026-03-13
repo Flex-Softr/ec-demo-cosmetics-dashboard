@@ -16,6 +16,13 @@ export type TSuccessResponse<T = any> = {
   data?: TResponseData<T>;
 };
 
+export type TListResponseData<T> = {
+  meta: TResponseMeta;
+  data: T[];
+};
+
+export type TListResponse<T> = TSuccessResponse<TListResponseData<T>>;
+
 export type TErrorMessages = {
   message: string;
   path: string;

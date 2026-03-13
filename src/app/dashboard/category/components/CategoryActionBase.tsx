@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,15 +8,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
-import { SquarePen, Trash2Icon } from "lucide-react";
-import { useState } from "react";
-import { TSubCategories } from "./SubCategoryTable";
-import UpdateSubCategoryForm from "./UpdateSubcategoryForm";
 import { useDeleteCategoryMutation } from "@/redux/features/category/categoryApi";
 import { revalidateTag } from "@/utilities/revalidate";
+import { SquarePen, Trash2Icon } from "lucide-react";
+import { useState } from "react";
+import { TCategories } from "../lib/category.interface";
+import CategoryForm from "./CategoryForm";
 
-const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
-  const { _id, name, image, parent } = category;
+type CategoryActionBaseProps = {
+  category: TCategories;
+  isSubCategory?: boolean;
+};
+
+const CategoryActionBase = ({
+  category,
+  isSubCategory = false,
+}: CategoryActionBaseProps) => {
+  const { _id } = category;
   const [deleteCategory] = useDeleteCategoryMutation();
 
   const [open, setOpen] = useState(false);
@@ -38,18 +45,23 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
   const handleDelete = async (id: string) => {
     const categoryIds = [id];
 
-    const res = await deleteCategory(categoryIds).unwrap();
+    try {
+      const res = await deleteCategory(categoryIds).unwrap();
 
-    if (res?.success) {
+      if (res?.success) {
+        toast({
+          className: "bg-success text-white",
+          title: isSubCategory
+            ? "Sub category Successfully Deleted"
+            : "Category Successfully Deleted",
+        });
+
+        setDeleteOpen(false);
+        await revalidateTag(["categories"]);
+      }
+    } catch (error) {
       toast({
-        className: "bg-success text-white ",
-        title: "Sub category Successfully Deleted",
-      });
-      setDeleteOpen(false);
-      await revalidateTag(["allCategories", "parentCategory"]);
-    } else {
-      toast({
-        className: " bg-danger text-whit",
+        className: "bg-danger text-white",
         title: "Something Went Wrong",
       });
     }
@@ -57,25 +69,14 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
 
   return (
     <span className="flex items-center gap-3 justify-center">
-      <Dialog onOpenChange={handleOpen} open={open}>
-        <DialogTrigger>
-          <SquarePen className="text-green-500" />
-        </DialogTrigger>
-        <DialogContent className=" h-fit">
-          <DialogTitle className="text-2xl font-semibold">
-            Update sub category
-          </DialogTitle>
-          <div>
-            <UpdateSubCategoryForm
-              id={_id}
-              name={name}
-              image={image}
-              parent={parent}
-              handleOpen={handleOpen}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CategoryForm
+        initialData={category}
+        open={open}
+        setOpen={handleOpen}
+        isSubCategory={isSubCategory}
+        trigger={<SquarePen className="text-green-500 cursor-pointer" />}
+      />
+
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogTrigger asChild>
           <Trash2Icon
@@ -97,4 +98,4 @@ const SubCategoryAction = ({ category }: { category: TSubCategories }) => {
   );
 };
 
-export default SubCategoryAction;
+export default CategoryActionBase;

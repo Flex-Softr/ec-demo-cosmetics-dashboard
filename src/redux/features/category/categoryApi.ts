@@ -1,5 +1,7 @@
 import baseApi from "@/redux/baseApi/baseApi";
 import searchParams from "@/utilities/searchParams";
+import { TListResponse } from "@/types/response";
+import { TCategories } from "@/app/dashboard/category/components/CategoryTable";
 
 const categoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -11,7 +13,10 @@ const categoryApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["categories", "singleCategory"],
     }),
-    getCategories: builder.query({
+    getCategories: builder.query<
+      TListResponse<TCategories>,
+      Record<string, unknown>
+    >({
       query: (args) => ({
         url: "/categories",
         params: searchParams(args),

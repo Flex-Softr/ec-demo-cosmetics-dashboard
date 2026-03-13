@@ -26,6 +26,7 @@ import ProductSchema, { ProductFormValues } from "../lib/productValidation";
 import DeleteProductBtn from "@/components/DeleteProductBtn";
 import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import BrandInput from "./BrandInput";
+import { CategoryField } from "./CategoryField";
 import CollectionInput from "./CollectionInput";
 import DescriptionInput from "./DescriptionInput";
 import Featured from "./Featured";
@@ -35,7 +36,6 @@ import Published from "./Published";
 import RelatedProducts from "./RelatedProduct";
 import ShortDescriptionInput from "./ShortDescriptionInput";
 import TitleInput from "./TitleInput";
-import { CategoryField } from "./CategoryField";
 
 const ProductForm = ({ productId }: { productId?: string }) => {
   const dispatch = useAppDispatch();
@@ -315,7 +315,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         `collectionProducts-${productData?.slug}`,
         "featuredProducts",
         "bestSellingProducts",
-        "allCategories",
+        "categories",
         "homepageIndividualSection",
         "priceRange",
       ]);

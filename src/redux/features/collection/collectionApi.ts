@@ -4,7 +4,7 @@ import {
   ICreateCollectionPayload,
   IUpdateCollectionPayload,
 } from "@/types/collection";
-import { TResponseMeta } from "@/types/response";
+import { TListResponse } from "@/types/response";
 import searchParams from "@/utilities/searchParams";
 
 const collectionApi = baseApi.injectEndpoints({
@@ -12,7 +12,7 @@ const collectionApi = baseApi.injectEndpoints({
     // ...
 
     getCollections: builder.query<
-      { success: boolean; data: { meta: TResponseMeta; data: ICollection[] } },
+      TListResponse<ICollection>,
       Record<string, unknown>
     >({
       query: (args) => ({

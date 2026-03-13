@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 
 const BrandInput = () => {
   const { data, isLoading } = useGetBrandsQuery({ isActive: true });
-  const brands = data?.data || [];
+  const brands = data?.data?.data || [];
   const {
     register,
     formState: { errors },

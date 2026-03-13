@@ -42,7 +42,7 @@ const ProductBulkAction = () => {
       ...productTags,
       "featuredProducts",
       "bestSellingProducts",
-      "allCategories",
+      "categories",
       "homepageIndividualSection",
     ]);
   };
