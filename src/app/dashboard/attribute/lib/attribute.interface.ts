@@ -7,6 +7,7 @@ export type TAttribute = {
 
 export type TAttributeForm = {
   name: string;
+  isActive: boolean;
   values: string[];
 };
 

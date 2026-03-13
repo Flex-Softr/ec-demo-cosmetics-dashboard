@@ -2,8 +2,10 @@ import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
-import AddAttribute from "./components/AddAttributes";
-import AddedAttributes from "./components/AddedAttributes";
+import AttributeTable from "./components/AttributeTable";
+import AttributeForm from "./components/AttributeForm";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 const Attributes = async () => {
   const { permissions = [] } = await getPermission();
@@ -15,14 +17,26 @@ const Attributes = async () => {
   }
 
   return (
-    <div className="h-screen text-gray-900">
-      <div className="flex justify-between gap-5 px-4 pt-4">
-        <div className="flex-1">
-          <AddAttribute />
+    <div className="p-6 space-y-6 text-gray-900 min-h-screen">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Attributes</h1>
+          <p className="text-muted-foreground mt-2">
+            Manage your product attributes and their values globally.
+          </p>
         </div>
-        <div className="flex-1">
-          <AddedAttributes />
-        </div>
+        <AttributeForm
+          trigger={
+            <Button className="flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              Add Attribute
+            </Button>
+          }
+        />
+      </div>
+
+      <div className="w-full">
+        <AttributeTable />
       </div>
     </div>
   );
