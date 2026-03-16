@@ -24,12 +24,12 @@ const BrandAction = ({ brand }: { brand: TBrand }) => {
     try {
       const res = await deleteBrand([brand._id]).unwrap();
       if (res?.success) {
-        await revalidateTag(["brands"]);
         toast({
           className: "bg-success text-white",
           title: "Brand deleted successfully",
         });
         setDeleteOpen(false);
+        await revalidateTag(["brands"]);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

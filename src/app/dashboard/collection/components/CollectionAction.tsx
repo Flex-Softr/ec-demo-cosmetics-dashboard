@@ -13,6 +13,7 @@ import { ICollection } from "@/types/collection";
 import { SquarePen, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import CollectionForm from "./CollectionForm";
+import { revalidateTag } from "@/utilities/revalidate";
 
 const CollectionAction = ({ collection }: { collection: ICollection }) => {
   const [deleteCollection] = useDeleteCollectionMutation();
@@ -28,6 +29,7 @@ const CollectionAction = ({ collection }: { collection: ICollection }) => {
           title: "Collection deleted successfully",
         });
         setDeleteOpen(false);
+        await revalidateTag(["collections"]);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

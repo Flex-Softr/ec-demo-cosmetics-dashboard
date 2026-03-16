@@ -32,6 +32,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import CollectionImage from "./CollectionImage";
+import { revalidateTag } from "@/utilities/revalidate";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -154,6 +155,7 @@ const CollectionForm = ({
         setOpen(false);
         form.reset();
         dispatch(setThumbnail(""));
+        await revalidateTag(["collections"]);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
