@@ -25,7 +25,7 @@ export const columns: ColumnDef<THomePageSection>[] = [
     header: "Collection",
     cell: ({ row }) => {
       const collection = row.original.collectionId as ICollection;
-      return collection?.title || "N/A";
+      return collection?.name || "N/A";
     },
   },
   {

@@ -242,7 +242,7 @@ const HomepageSectionForm = ({
                     <SelectContent>
                       {collections.map((collection) => (
                         <SelectItem key={collection._id} value={collection._id}>
-                          {collection.title}
+                          {collection.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

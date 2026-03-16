@@ -75,7 +75,7 @@ const CollectionInput = ({
                   }}
                 />
                 <span className={cn("text-sm", isChecked && "font-medium")}>
-                  {collection.title}
+                  {collection.name}
                 </span>
               </div>
             );
