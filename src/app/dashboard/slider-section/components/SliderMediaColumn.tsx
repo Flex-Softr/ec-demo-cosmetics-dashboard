@@ -40,7 +40,11 @@ const columns: ColumnDef<TSlider>[] = [
   {
     accessorKey: "bannerLink",
     header: "Banner Link",
-    cell: ({ row }) => <p className="text-center">{row.original.bannerLink}</p>,
+    cell: ({ row }) => (
+      <p className="text-center max-w-96 break-all">
+        {row.original.bannerLink}
+      </p>
+    ),
   },
   {
     accessorKey: "isActive",

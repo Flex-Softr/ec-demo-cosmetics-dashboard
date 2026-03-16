@@ -23,7 +23,7 @@ export const columns: ColumnDef<ICollection>[] = [
         <div className="relative h-10 w-10 overflow-hidden rounded">
           <Image
             src={src}
-            alt={row.original.title}
+            alt={row.original.name}
             fill
             className="object-cover"
           />
@@ -32,8 +32,8 @@ export const columns: ColumnDef<ICollection>[] = [
     },
   },
   {
-    accessorKey: "title",
-    header: "Title",
+    accessorKey: "name",
+    header: "Name",
   },
   {
     accessorKey: "isActive",

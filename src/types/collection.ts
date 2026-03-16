@@ -2,7 +2,7 @@ import { IAdminProduct } from "./products";
 
 export type ICollection = {
   _id: string;
-  title: string;
+  name: string;
   slug: string;
   image?: string | { _id: string; src: string; alt: string }; // ObjectId of the Image
   isActive: boolean;
@@ -15,7 +15,7 @@ export type ICollection = {
 };
 
 export type ICreateCollectionPayload = {
-  title: string;
+  name: string;
   slug?: string; // Auto-generated if omitted
   image?: string; // ObjectId from Image Upload
   isActive?: boolean; // Defaults to true
@@ -23,7 +23,7 @@ export type ICreateCollectionPayload = {
 };
 
 export type IUpdateCollectionPayload = {
-  title?: string;
+  name?: string;
   slug?: string;
   image?: string;
   isActive?: boolean;

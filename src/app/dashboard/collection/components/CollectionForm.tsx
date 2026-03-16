@@ -34,8 +34,8 @@ import { z } from "zod";
 import CollectionImage from "./CollectionImage";
 
 const formSchema = z.object({
-  title: z.string().min(2, {
-    message: "Title must be at least 2 characters.",
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
   }),
   slug: z.string().optional(),
   image: z.string().optional(),
@@ -77,7 +77,7 @@ const CollectionForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: initialData?.title || "",
+      name: initialData?.name || "",
       slug: initialData?.slug || "",
       image: getImageId(initialData?.image),
       isActive: initialData?.isActive ?? true,
@@ -90,7 +90,7 @@ const CollectionForm = ({
       if (initialData) {
         const imgId = getImageId(initialData.image);
         form.reset({
-          title: initialData.title,
+          name: initialData.name,
           slug: initialData.slug,
           image: imgId,
           isActive: initialData.isActive,
@@ -101,7 +101,7 @@ const CollectionForm = ({
         }
       } else {
         form.reset({
-          title: "",
+          name: "",
           slug: "",
           image: "",
           isActive: true,
@@ -191,10 +191,10 @@ const CollectionForm = ({
               <div className="flex-1 flex flex-col gap-2">
                 <FormField
                   control={form.control}
-                  name="title"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Title</FormLabel>
+                      <FormLabel>Name</FormLabel>
                       <Input placeholder="Summer Sale" {...field} />
                       <FormMessage />
                     </FormItem>

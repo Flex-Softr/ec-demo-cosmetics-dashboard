@@ -73,7 +73,7 @@ const CollectionAction = ({ collection }: { collection: ICollection }) => {
           <h1 className="text-xl font-bold">Delete Collection?</h1>
           <p className="text-gray-500">
             Are you sure you want to delete{" "}
-            <span className="font-semibold">{collection.title}</span>? This
+            <span className="font-semibold">{collection.name}</span>? This
             action cannot be undone.
           </p>
           <div className="flex justify-end gap-2 mt-4">
