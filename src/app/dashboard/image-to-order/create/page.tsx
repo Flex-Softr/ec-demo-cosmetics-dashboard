@@ -34,11 +34,7 @@ export default function CreateImageToOrderPage() {
 
   return (
     <div className="p-4">
-      <OrderForm
-        initialValues={initialValues}
-        title="Create Order from Image"
-        imageToOrderId={data._id}
-      />
+      <OrderForm initialValues={initialValues} imageToOrderId={data._id} />
     </div>
   );
 }
