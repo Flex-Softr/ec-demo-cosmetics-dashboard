@@ -1,11 +1,11 @@
 "use client";
+import { useGetAllOrdersQuery } from "@/redux/features/orders/ordersApi";
 import { setIsLoading } from "@/redux/features/pagination/PaginationSlice";
 import {
   setSearch,
   setSearchedOrders,
 } from "@/redux/features/search/searchSlice";
 import { useAppDispatch } from "@/redux/hooks";
-import fetchData from "@/utilities/fetchData";
 import { useEffect } from "react";
 
 const SetOrderHistoryData = ({
@@ -16,33 +16,30 @@ const SetOrderHistoryData = ({
   userId?: string;
 }) => {
   const dispatch = useAppDispatch();
+
+  const searchParams: Record<string, unknown> = {
+    sort: "-createdAt",
+  };
+
+  if (searchQuery) {
+    searchParams.search = searchQuery;
+  }
+
+  if (userId) {
+    searchParams.userId = userId;
+  }
+
+  const { data, isLoading, isFetching } = useGetAllOrdersQuery(searchParams);
+
   useEffect(() => {
-    dispatch(setIsLoading(true));
+    dispatch(setIsLoading(isLoading || isFetching));
     dispatch(setSearch(true));
-    const fetchOrders = async () => {
-      const searchParams: Record<string, unknown> = {
-        sort: "-createdAt",
-      };
+    if (data?.data) {
+      dispatch(setSearchedOrders(data?.data?.data));
+    }
+  }, [dispatch, data, isLoading, isFetching]);
 
-      if (searchQuery) {
-        searchParams.search = searchQuery;
-      }
-
-      if (userId) {
-        searchParams.userId = userId;
-      }
-
-      const { data } = await fetchData({
-        endPoint: "/orders/admin/all-orders",
-        cache: "no-store",
-        searchParams,
-      });
-      dispatch(setSearchedOrders(data?.data));
-      dispatch(setIsLoading(false));
-    };
-    fetchOrders();
-  }, [dispatch, searchQuery, userId]);
-  return <></>;
+  return null;
 };
 
 export default SetOrderHistoryData;

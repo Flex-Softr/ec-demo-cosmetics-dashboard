@@ -222,7 +222,9 @@ const PermissionTable = ({
             ))}
           </div>
         </div>
-        <Button type="submit">Update permission</Button>
+        <div className="flex justify-end mb-6">
+          <Button type="submit">Update permission</Button>
+        </div>
       </form>
     </Form>
   );

@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
@@ -38,10 +37,6 @@ const CategoryActionBase = ({
     }
   };
 
-  const handleDeleteOpen = () => {
-    setDeleteOpen(!deleteOpen);
-  };
-
   const handleDelete = async (id: string) => {
     const categoryIds = [id];
 
@@ -68,33 +63,55 @@ const CategoryActionBase = ({
   };
 
   return (
-    <span className="flex items-center gap-3 justify-center">
+    <div className="flex items-center gap-2 justify-center">
       <CategoryForm
         initialData={category}
         open={open}
         setOpen={handleOpen}
         isSubCategory={isSubCategory}
-        trigger={<SquarePen className="text-green-500 cursor-pointer" />}
+        trigger={
+          <Button
+            variant="ghost"
+            size="icon"
+            className="!bg-white hover:!bg-gray-100"
+            onClick={() => handleOpen(true)}
+          >
+            <SquarePen className="h-4 w-4 text-green-600" />
+          </Button>
+        }
       />
 
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogTrigger asChild>
-          <Trash2Icon
-            className="text-red-500 cursor-pointer"
-            onClick={handleDeleteOpen}
-          />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="!bg-white hover:!bg-gray-100"
+            onClick={() => setDeleteOpen(true)}
+          >
+            <Trash2Icon className="h-4 w-4 text-red-600" />
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          <DialogTitle className="text-3xl">Are you sure?</DialogTitle>
-          <div className="flex gap-4 items-center ">
+          <h1 className="text-xl font-bold">
+            Delete {isSubCategory ? "Sub Category" : "Category"}?
+          </h1>
+          <p className="text-gray-500">
+            Are you sure you want to delete{" "}
+            <span className="font-semibold">{category.name}</span>? This action
+            cannot be undone.
+          </p>
+          <div className="flex justify-end gap-5 mt-4">
             <DialogClose asChild>
-              <Button className="bg-red-500 hover:bg-red-500">Cancel</Button>
+              <Button>Cancel</Button>
             </DialogClose>
-            <Button onClick={() => handleDelete(_id)}>Yes, Delete it!</Button>
+            <Button variant="destructive" onClick={() => handleDelete(_id)}>
+              Delete
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
-    </span>
+    </div>
   );
 };
 

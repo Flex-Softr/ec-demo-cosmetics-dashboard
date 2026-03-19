@@ -78,9 +78,9 @@ const CollectionAction = ({ collection }: { collection: ICollection }) => {
             <span className="font-semibold">{collection.name}</span>? This
             action cannot be undone.
           </p>
-          <div className="flex justify-end gap-2 mt-4">
+          <div className="flex justify-end gap-5 mt-4">
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button>Cancel</Button>
             </DialogClose>
             <Button variant="destructive" onClick={handleDelete}>
               Delete

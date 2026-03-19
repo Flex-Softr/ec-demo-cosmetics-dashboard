@@ -27,7 +27,7 @@ const ManageUser = async () => {
         <h2 className="text-2xl font-bold">Manage employs</h2>
         <hr className="mt-4 mb-6" />
         <div className="space-y-3">
-          <div className="flex justify-between px-3">
+          <div className="flex flex-col sm:flex-row justify-between px-3 gap-4">
             <CreateUser />
             <SearchEmployee />
           </div>

@@ -49,11 +49,24 @@ const CouponCategoryProductCondition = ({
   }));
 
   return (
-    <Tabs defaultValue="Fixed category" className="">
-      <TabsList className="grid w-full grid-cols-3 justify-center">
-        <TabsTrigger value="Fixed category">Fixed category</TabsTrigger>
-        <TabsTrigger value="Fixed products">Fixed products</TabsTrigger>
-        <TabsTrigger value="Restricted category">
+    <Tabs defaultValue="Fixed category">
+      <TabsList className="flex w-full overflow-x-auto justify-between gap-2 lg:gap-10 p-1">
+        <TabsTrigger
+          className="border border-gray-300 w-full"
+          value="Fixed category"
+        >
+          Fixed category
+        </TabsTrigger>
+        <TabsTrigger
+          className="border border-gray-300 w-full"
+          value="Fixed products"
+        >
+          Fixed products
+        </TabsTrigger>
+        <TabsTrigger
+          className="border border-gray-300 w-full"
+          value="Restricted category"
+        >
           Restricted category
         </TabsTrigger>
       </TabsList>

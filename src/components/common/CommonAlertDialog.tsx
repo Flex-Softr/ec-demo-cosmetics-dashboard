@@ -37,9 +37,15 @@ const CommonAlertDialog = ({
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{cancelText}</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} disabled={loading}>
+        <AlertDialogFooter className="sm:space-x-4">
+          <AlertDialogCancel className="border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors px-6">
+            {cancelText}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={onConfirm}
+            disabled={loading}
+            className="px-6 shadow-sm"
+          >
             {loading ? "Processing..." : confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>

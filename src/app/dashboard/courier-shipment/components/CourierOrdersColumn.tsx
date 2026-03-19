@@ -6,9 +6,11 @@ import OrderStatus from "@/components/OrderStatus";
 import ProductInfo from "@/components/ProductInfo";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TOrders } from "@/types/order.interface";
-import { ColumnDef } from "@tanstack/react-table";
-
 import { TPermission } from "@/utilities/isPermitted";
+import { ColumnDef } from "@tanstack/react-table";
+import ProductCode from "../../processing-orders/components/ProductCode";
+import SchedulePickupCell from "./SchedulePickupCell";
+
 export const getColumns = (
   permissions: TPermission[]
 ): ColumnDef<TOrders>[] => [
@@ -51,6 +53,7 @@ export const getColumns = (
     cell: ({ row }) => (
       <OrderIdAndDate
         orderId={row.original.orderId}
+        _id={row.original._id}
         timestamp={row.original.createdAt}
         className="flex flex-col"
       />
@@ -71,6 +74,11 @@ export const getColumns = (
     },
   },
   {
+    accessorKey: "productCode",
+    header: "Product Code",
+    cell: ({ row }) => <ProductCode order={row.original} disable={true} />,
+  },
+  {
     accessorKey: "total",
     header: "Total",
     cell: ({ row }) => <span>&#2547; {row.getValue("total")}</span>,
@@ -86,10 +94,16 @@ export const getColumns = (
     cell: ({ row }) => (
       <OrderStatus
         order={row.original}
-        disableStatus={["processing", "deleted"]}
+        disableStatus={["On courier"]}
         permissions={permissions}
+        currentRoute="courier"
       />
     ),
+  },
+  {
+    id: "schedulePickup",
+    header: "Pickup",
+    cell: ({ row }) => <SchedulePickupCell order={row.original} />,
   },
   {
     accessorKey: "notes",

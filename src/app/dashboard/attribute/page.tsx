@@ -17,25 +17,29 @@ const Attributes = async () => {
   }
 
   return (
-    <div className="p-6 space-y-6 text-gray-900 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-4 sm:p-6 space-y-6 text-gray-900 min-h-screen">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Attributes</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            Attributes
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">
             Manage your product attributes and their values globally.
           </p>
         </div>
-        <AttributeForm
-          trigger={
-            <Button className="flex items-center gap-2">
-              <Plus className="w-4 h-4" />
-              Add Attribute
-            </Button>
-          }
-        />
+        <div className="w-full sm:w-auto">
+          <AttributeForm
+            trigger={
+              <Button className="flex items-center justify-center gap-2">
+                <Plus className="w-4 h-4" />
+                Add Attribute
+              </Button>
+            }
+          />
+        </div>
       </div>
 
-      <div className="w-full">
+      <div className="w-full overflow-hidden">
         <AttributeTable />
       </div>
     </div>

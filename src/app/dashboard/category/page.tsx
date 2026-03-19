@@ -15,9 +15,7 @@ const AddCategory = async () => {
   }
   return (
     <Card className="m-4">
-      <div className="w-full">
-        <CategoryTable />
-      </div>
+      <CategoryTable />
     </Card>
   );
 };

@@ -7,10 +7,8 @@ import ProductInfo from "@/components/ProductInfo";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TOrders } from "@/types/order.interface";
 import { ColumnDef } from "@tanstack/react-table";
-import ProductCode from "./ProductCode";
 
 import { TPermission } from "@/utilities/isPermitted";
-
 export const getColumns = (
   permissions: TPermission[]
 ): ColumnDef<TOrders>[] => [
@@ -53,6 +51,7 @@ export const getColumns = (
     cell: ({ row }) => (
       <OrderIdAndDate
         orderId={row.original.orderId}
+        _id={row.original._id}
         timestamp={row.original.createdAt}
         className="flex flex-col"
       />
@@ -73,16 +72,6 @@ export const getColumns = (
     },
   },
   {
-    accessorKey: "productCode",
-    header: "Product Code",
-    cell: ({ row }) => {
-      const status = row.original.status;
-      const isDisable =
-        status === "partial completed" || status === "returned" ? true : false;
-      return <ProductCode order={row.original} disable={isDisable} />;
-    },
-  },
-  {
     accessorKey: "total",
     header: "Total",
     cell: ({ row }) => <span>&#2547; {row.getValue("total")}</span>,
@@ -90,7 +79,7 @@ export const getColumns = (
   {
     accessorKey: "payment",
     header: "Payment",
-    cell: () => <p>Case on delivery</p>,
+    cell: ({ row }) => <p>{row.original.payment?.paymentMethod?.name}</p>,
   },
   {
     accessorKey: "status",
@@ -98,8 +87,9 @@ export const getColumns = (
     cell: ({ row }) => (
       <OrderStatus
         order={row.original}
-        disableStatus={["processing done", "partial completed", "returned"]}
+        disableStatus={["processing", "deleted"]}
         permissions={permissions}
+        currentRoute="orders"
       />
     ),
   },
@@ -112,7 +102,7 @@ export const getColumns = (
     accessorKey: "orderSource",
     header: "Origin",
     cell: ({ row }) => (
-      <div className="capitalized ">{row.original.orderSource?.name}</div>
+      <div className="capitalized">{row.original.orderSource?.name}</div>
     ),
   },
   {

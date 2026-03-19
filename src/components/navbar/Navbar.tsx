@@ -9,12 +9,10 @@ const Navbar = async () => {
   const accessToken = await accessTokenFromCookies();
 
   return (
-    <div className="w-full h-[60px] flex justify-between items-center bg-white  border-b py-2 px-4 top-0 sticky z-10">
-      {/* <div className="px-2 flex items-center justify-between w-64"> */}
-      <div className="px-2 flex items-center justify-between w-64">
+    <div className="w-full h-[56px] flex justify-between items-center bg-white/80 backdrop-blur-md border-b border-gray-100 py-2 px-6 top-0 sticky z-50 shadow-sm transition-all duration-300">
+      <div className="flex items-center gap-4 lg:gap-x-20">
         <NavbarLogo />
         <SidebarToggle />
-        {/* <HideOrShowButton /> */}
       </div>
       <div>
         <UserMenu user={user} accessToken={accessToken} />

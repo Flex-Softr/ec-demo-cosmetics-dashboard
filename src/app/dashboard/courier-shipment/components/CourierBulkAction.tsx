@@ -15,6 +15,7 @@ import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierS
 import { setBulkOrder } from "@/redux/features/courierShipment/courierShipmentSlice";
 import statusOptions from "@/utilities/statusOptions";
 import { useState } from "react";
+import BulkSchedulePickup from "./BulkSchedulePickup";
 
 const CourierBulkAction = () => {
   const dispatch = useAppDispatch();
@@ -27,6 +28,7 @@ const CourierBulkAction = () => {
     ({ courierShipment }) => courierShipment.selectedStatus
   );
   const [bulkAction, setBulkAction] = useState("bulk");
+  const [openBulkPickup, setOpenBulkPickup] = useState(false);
 
   const updatePayload = {
     orderIds,
@@ -34,6 +36,18 @@ const CourierBulkAction = () => {
   };
 
   const handleBulkAction = async () => {
+    if (bulkAction === "schedule pickup") {
+      if (orderIds.length === 0) {
+        toast({
+          title: "Please select at least one order",
+          variant: "destructive",
+        });
+        return;
+      }
+      setOpenBulkPickup(true);
+      return;
+    }
+
     try {
       if (bulkAction !== "bulk") {
         const res = await sendCourierAndUpdateStatus(updatePayload).unwrap();
@@ -57,11 +71,11 @@ const CourierBulkAction = () => {
   };
 
   return (
-    <div className={"flex gap-10 items-center"}>
-      {statusOptions(filter).length ? (
-        <div className="flex items-center gap-2">
+    <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 items-start sm:items-center">
+      {statusOptions(filter).length && filter !== "On courier" ? (
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Select onValueChange={(value) => setBulkAction(value)}>
-            <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
+            <SelectTrigger className="border-primary focus:ring-primary focus:ring-1 capitalize">
               <SelectValue placeholder="Bulk Actions" />
             </SelectTrigger>
             <SelectContent>
@@ -80,6 +94,12 @@ const CourierBulkAction = () => {
           </Button>
         </div>
       ) : null}
+
+      <BulkSchedulePickup
+        open={openBulkPickup}
+        handleOpen={() => setOpenBulkPickup(!openBulkPickup)}
+        orderIds={orderIds}
+      />
     </div>
   );
 };

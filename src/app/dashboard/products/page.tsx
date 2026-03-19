@@ -23,16 +23,18 @@ const AllProducts = async () => {
   }
 
   return (
-    <Card className="m-4">
+    <Card className="m-2 sm:m-4 p-4 sm:p-6">
       {/* header section, search bar  */}
-      <div className="grid grid-cols-2 justify-between items-center">
-        <h1 className="text-2xl font-bold">All Products</h1>
-        <ProductSearchBar endPoint="/products/admin" />
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-xl md:text-2xl font-bold">All Products</h1>
+        <div className="w-full sm:w-auto">
+          <ProductSearchBar endPoint="/products/admin" />
+        </div>
       </div>
       <hr className="my-4" />
       <div className="space-y-3">
         {/* product status list*/}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-wrap md:justify-between items-center gap-5">
           <CountByStatusButtons />{" "}
           <Link href={"/dashboard/add-products"} passHref>
             <Button className="rounded-2xl">
@@ -51,7 +53,9 @@ const AllProducts = async () => {
           <Show />
         </div>
         {/* All products Table  */}
-        <ProductsTable></ProductsTable>
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <ProductsTable />
+        </div>
       </div>
     </Card>
   );

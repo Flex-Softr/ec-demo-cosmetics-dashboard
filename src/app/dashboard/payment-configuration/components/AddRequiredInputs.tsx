@@ -71,7 +71,7 @@ export default function AddRequiredInputs({
             className="grid grid-cols-1 sm:grid-cols-8 gap-6 items-center border rounded-lg p-3"
           >
             {/* Type */}
-            <div className="space-y-2 col-span-2">
+            <div className="space-y-2 sm:col-span-2">
               <Label htmlFor={`required_inputs.${index}.type`}>Type</Label>
               <Controller
                 name={`required_inputs.${index}.type`}

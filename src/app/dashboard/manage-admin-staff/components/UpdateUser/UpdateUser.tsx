@@ -19,7 +19,7 @@ const UpdateUser = ({
         open={editUserModal}
         handleOpen={handleEditUserModal}
         modalTitle="Update user"
-        className="min-h-[550px] w-[950px]"
+        className="min-h-[550px] w-[95vw] max-w-[950px]"
       >
         <UpdateUserForm setEditUserModal={setEditUserModal} user={user} />
       </CommonModal>

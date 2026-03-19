@@ -50,7 +50,7 @@ const CouponCategoryProductCondition = ({
 
   return (
     <Tabs defaultValue="Fixed category" className="">
-      <TabsList className="grid w-full grid-cols-3 justify-center">
+      <TabsList className="flex w-full overflow-x-auto justify-start border border-gray-200 p-1">
         <TabsTrigger value="Fixed category">Fixed category</TabsTrigger>
         <TabsTrigger value="Fixed products">Fixed products</TabsTrigger>
         <TabsTrigger value="Restricted category">

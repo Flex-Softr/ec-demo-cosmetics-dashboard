@@ -99,6 +99,21 @@ const updateStatusApi = baseApi.injectEndpoints({
         "customerOrderHistory",
       ],
     }),
+    bulkSchedulePickup: builder.mutation({
+      query: (payload) => ({
+        url: "/orders/admin/bulk-schedule-pickup",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: (result, error, { order_ids }) => [
+        ...(order_ids || []).map(
+          (id: string) => ({ type: "singleOrder", id }) as const
+        ),
+        "allOrders",
+        "processingDoneAndCourierOrders",
+        "customerOrderHistory",
+      ],
+    }),
     getCustomerOrderHistory: builder.query({
       query: (phoneNumber: string) => ({
         url: `/orders/get-customer-order-count/${phoneNumber}`,
@@ -117,5 +132,6 @@ export const {
   useDeleteOrdersMutation,
   useGetShippingMethodsForOrderQuery,
   useSchedulePickupMutation,
+  useBulkSchedulePickupMutation,
   useGetCustomerOrderHistoryQuery,
 } = updateStatusApi;

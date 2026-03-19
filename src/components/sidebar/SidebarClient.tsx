@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import logo from "../../../public/logo.png";
 // import config from "@/config/config";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "@/providers/SidebarProvider";
@@ -24,7 +26,9 @@ import {
   UserCheck,
   UserCog,
   UsersRound,
+  X,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 import NavLink from "../NavLink/NavLink";
 import {
   Accordion,
@@ -67,7 +71,8 @@ type SidebarGroup = {
 };
 
 export function SidebarClient({ permissions }: TProps) {
-  const { isCollapsed } = useSidebar();
+  const { isCollapsed, toggleSidebar } = useSidebar();
+  const pathname = usePathname();
 
   const {
     isSuperAdmin,
@@ -206,6 +211,10 @@ export function SidebarClient({ permissions }: TProps) {
     },
   ];
 
+  const activeGroup = sidebarGroups.find((group) =>
+    group.items.some((item) => item.href === pathname)
+  )?.key;
+
   const getCollapsedItems = () => {
     const items: SidebarItem[] = [];
 
@@ -322,84 +331,155 @@ export function SidebarClient({ permissions }: TProps) {
   };
 
   return (
-    <div
-      className={cn(
-        "bg-white text-gray-900 shadow-lg h-[calc(100vh-60px)] border-r overflow-y-auto transition-all duration-300 relative flex flex-col",
-        isCollapsed ? "w-[60px]" : "min-w-64 w-64"
+    <>
+      {/* Mobile Backdrop */}
+      {!isCollapsed && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={toggleSidebar}
+        />
       )}
-    >
       <div
         className={cn(
-          "space-y-6 p-2 mb-4",
-          isCollapsed ? "items-center flex flex-col space-y-2 p-1 w-full" : ""
+          "bg-white text-gray-900 shadow-lg h-screen md:h-[calc(100vh-60px)] top-0 md:top-auto border-r overflow-y-auto no-scrollbar transition-all duration-300 fixed md:relative z-50 flex flex-col",
+          isCollapsed
+            ? "-translate-x-full md:translate-x-0 md:w-[60px]"
+            : "translate-x-0 w-64 box-border px-4"
         )}
       >
-        <NavLink
-          href="/dashboard"
-          name={isCollapsed ? "" : "Home"}
-          icon={<Home size={20} />}
-          className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-        />
-        {isSuperAdmin && (
-          <NavLink
-            href="/dashboard/reports"
-            name={isCollapsed ? "" : "Reports"}
-            icon={<BarChart size={20} />}
-            className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-          />
-        )}
-
-        {isCollapsed ? (
-          <div className="flex flex-col gap-2 w-full items-center">
-            {getCollapsedItems().map((item, idx) => (
-              <NavLink
-                key={idx}
-                href={item.href || "#"}
-                name=""
-                icon={item.icon ? <item.icon size={20} /> : undefined}
-                className="justify-center w-full px-0 pl-2"
+        <div
+          className={cn(
+            "space-y-4",
+            isCollapsed ? "items-center flex flex-col space-y-2 p-1 w-full" : ""
+          )}
+        >
+          {/* Mobile-only: header with logo + close button (covers full screen incl. navbar) */}
+          {!isCollapsed && (
+            <div className="flex items-center justify-between pl-3 py-2 mb-1 border-b bg-white md:hidden">
+              <Image
+                src={logo}
+                alt="Logo"
+                width={80}
+                height={40}
+                className="object-contain h-10 w-auto"
+                priority
               />
-            ))}
-          </div>
-        ) : (
-          <Accordion type="single" collapsible className="!mt-0 w-full">
-            {sidebarGroups
-              .filter((group) => group.visible && group.items.length > 0)
-              .map((group) => (
-                <AccordionItem
-                  key={group.key}
-                  value={group.key}
-                  className="border-none"
-                >
-                  <AccordionTrigger className="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground hover:no-underline">
-                    <div className="flex items-center gap-2">
-                      <group.icon size={20} /> <span>{group.label}</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="ml-8 pb-0 space-y-1">
-                    {group.items.map((item, idx) => (
-                      <NavLink
-                        key={idx}
-                        href={item.href || "#"}
-                        name={item.name}
-                        icon={item.icon ? <item.icon size={20} /> : undefined}
-                        className={
-                          item.icon ? "justify-start w-full px-3" : "text-sm"
-                        }
-                      />
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
+              <button
+                onClick={toggleSidebar}
+                className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors"
+                aria-label="Close sidebar"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          )}
+          <NavLink
+            href="/dashboard"
+            name={isCollapsed ? "" : "Home"}
+            icon={<Home size={20} />}
+            className={cn(
+              "m-0 mt-5",
+              isCollapsed &&
+                "justify-center gap-0 mx-auto p-2 border border-gray-300"
+            )}
+          />
+          {isSuperAdmin && (
+            <NavLink
+              href="/dashboard/reports"
+              name={isCollapsed ? "" : "Reports"}
+              icon={<BarChart size={20} />}
+              className={cn(
+                "m-0",
+                isCollapsed &&
+                  "justify-center gap-0 mx-auto p-2 border border-gray-300"
+              )}
+            />
+          )}
+
+          {isCollapsed ? (
+            <div className="flex flex-col gap-2 w-full items-center">
+              {getCollapsedItems().map((item, idx) => (
+                <NavLink
+                  key={idx}
+                  href={item.href || "#"}
+                  name=""
+                  icon={item.icon ? <item.icon size={20} /> : undefined}
+                  className="justify-center gap-0 mx-auto p-2 border border-gray-300"
+                />
               ))}
-          </Accordion>
-        )}
-        <NavLink
-          href="/dashboard/accounts"
-          name={isCollapsed ? "" : "Profile"}
-          icon={<User size={20} />}
-          className={cn(isCollapsed && "justify-center w-full px-0 pl-2")}
-        />
+            </div>
+          ) : (
+            <Accordion
+              type="single"
+              collapsible
+              className="!mt-0 w-full"
+              defaultValue={activeGroup}
+            >
+              {sidebarGroups
+                .filter((group) => group.visible && group.items.length > 0)
+                .map((group) => {
+                  const isGroupActive = group.key === activeGroup;
+                  return (
+                    <AccordionItem
+                      key={group.key}
+                      value={group.key}
+                      className="border-none mt-1"
+                    >
+                      <AccordionTrigger
+                        className={cn(
+                          "px-2 py-2 text-sm font-semibold transition-all duration-300 group border-b-0 hover:no-underline rounded-lg",
+                          isGroupActive
+                            ? "text-primary bg-primary/5 shadow-sm font-bold"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-primary"
+                        )}
+                      >
+                        <div className="flex items-center gap-3">
+                          <group.icon
+                            size={20}
+                            className={cn(
+                              "transition-colors",
+                              isGroupActive
+                                ? "text-primary"
+                                : "text-gray-500 group-hover:text-primary"
+                            )}
+                          />
+                          <span className="tracking-wide">{group.label}</span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="ml-4 mt-1">
+                        {group.items.map((item, idx) => (
+                          <NavLink
+                            key={idx}
+                            href={item.href || "#"}
+                            name={item.name}
+                            icon={
+                              item.icon ? <item.icon size={20} /> : undefined
+                            }
+                            className={
+                              item.icon
+                                ? "justify-start w-full"
+                                : "text-sm m-0 px-0"
+                            }
+                          />
+                        ))}
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+            </Accordion>
+          )}
+          <NavLink
+            href="/dashboard/accounts"
+            name={isCollapsed ? "" : "Profile"}
+            icon={<User size={20} />}
+            className={cn(
+              "m-0 mb-5",
+              isCollapsed &&
+                "justify-center gap-0 mx-auto p-2 border border-gray-300"
+            )}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

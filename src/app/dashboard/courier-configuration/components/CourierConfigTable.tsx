@@ -87,7 +87,7 @@ export default function CourierConfigTable({
                     onClick={() => handleEdit(courier)}
                     className="!bg-white hover:!bg-white rounded-full"
                   >
-                    <PencilLine className="h-4 w-4" />
+                    <PencilLine className="h-4 w-4 text-green-600" />
                   </Button>
                 </TableCell>
               </TableRow>

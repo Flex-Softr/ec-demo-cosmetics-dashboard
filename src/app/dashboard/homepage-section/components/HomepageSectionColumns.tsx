@@ -14,18 +14,25 @@ export const columns: ColumnDef<THomePageSection>[] = [
   {
     accessorKey: "title",
     header: "Title",
-    cell: ({ row }) => row.original.title || "N/A",
+    cell: ({ row }) => (
+      <span className="whitespace-nowrap">{row.original.title}</span>
+    ),
   },
   {
     accessorKey: "subtitle",
     header: "Subtitle",
+    cell: ({ row }) => (
+      <span className="block w-20 sm:w-auto truncate sm:whitespace-normal">
+        {row.original.subtitle}
+      </span>
+    ),
   },
   {
     accessorKey: "collectionId",
     header: "Collection",
     cell: ({ row }) => {
       const collection = row.original.collectionId as ICollection;
-      return collection?.name || "N/A";
+      return <span className="whitespace-nowrap">{collection?.name}</span>;
     },
   },
   {

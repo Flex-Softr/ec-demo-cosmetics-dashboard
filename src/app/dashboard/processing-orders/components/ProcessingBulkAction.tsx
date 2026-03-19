@@ -66,31 +66,35 @@ const ProcessingBulkAction = () => {
   const isBulkAction = selectedStatus !== "processing done";
 
   return (
-    <div className={"flex gap-10 items-center"}>
+    <>
       {isBulkAction && (
-        <div className="flex items-center gap-2">
-          <Select onValueChange={(value) => setBulkAction(value)}>
-            <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
-              <SelectValue placeholder="Bulk Actions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup className="capitalize">
-                <SelectItem value="bulk">Bulk Actions</SelectItem>
-                {statusOptions(selectedStatus).map((status) => (
-                  <SelectItem value={status} key={status}>
-                    {status}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button onClick={handleBulkAction} disabled={isLoading}>
-            Apply
-          </Button>
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 items-start sm:items-center">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Select onValueChange={(value) => setBulkAction(value)}>
+              <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
+                <SelectValue placeholder="Bulk Actions" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="capitalize">
+                  <SelectItem value="bulk">Bulk Actions</SelectItem>
+                  {statusOptions(selectedStatus).map((status) => (
+                    <SelectItem value={status} key={status}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Button onClick={handleBulkAction} disabled={isLoading}>
+              Apply
+            </Button>
+          </div>
+          <div className="w-full sm:w-auto">
+            <PrintInvoiceButton orders={invoices} />
+          </div>
         </div>
       )}
-      <PrintInvoiceButton orders={invoices} />
-    </div>
+    </>
   );
 };
 

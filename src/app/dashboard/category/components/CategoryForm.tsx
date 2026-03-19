@@ -166,7 +166,7 @@ const CategoryForm = ({
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
             {initialData ? `Edit ${titlePrefix}` : `Add ${titlePrefix}`}

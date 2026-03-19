@@ -19,7 +19,7 @@ const CreateUser = () => {
         open={modalOpen}
         handleOpen={handleModal}
         modalTitle="Create user"
-        className="min-h-[550px] w-[950px]"
+        className="min-h-[550px] w-[95vw] max-w-[950px]"
       >
         <UserDataForm setModalOpen={setModalOpen} />
       </CommonModal>

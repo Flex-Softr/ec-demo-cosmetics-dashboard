@@ -2,7 +2,7 @@ import NavLink from "@/components/NavLink/NavLink";
 
 const Sidebar = () => {
   return (
-    <div className="w-[17rem] p-2 h-[calc(100vh-60px)] overflow-y-auto flex flex-col gap-2">
+    <div className="w-full md:w-[17rem] p-2 md:h-[calc(100vh-60px)] flex flex-col gap-2 overflow-y-auto">
       <NavLink
         href="/dashboard/accounts"
         name="My profile"

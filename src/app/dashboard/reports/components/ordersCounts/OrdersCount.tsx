@@ -36,7 +36,7 @@ const OrdersCount = () => {
   };
 
   return (
-    <div className="col-span-2">
+    <div className="col-span-1 lg:col-span-2">
       <Card>
         <h2 className="text-xl font-bold mb-2">Orders</h2>
         <hr />

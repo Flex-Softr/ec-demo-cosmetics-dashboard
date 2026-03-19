@@ -103,7 +103,7 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
         open={open}
         handleOpen={handleOpen}
         modalTitle="Customer Order History"
-        className="h-[90%] !w-[1100px]"
+        className="h-[95%] sm:h-[90%] w-[100%] xl:!w-[1100px] overflow-y-auto"
       >
         <FraudCheck phoneNumber={customer.phoneNumber} />
         <CustomerOrderHistory phoneNumber={customer.phoneNumber} />

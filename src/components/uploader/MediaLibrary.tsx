@@ -19,6 +19,7 @@ import { CheckIcon } from "@radix-ui/react-icons";
 import { EyeIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import CommonAlertDialog from "../common/CommonAlertDialog";
 import CommonModal from "../modal/CommonModal";
 import { PagePagination } from "../pagination/PagePagination";
 import { Button } from "../ui/button";
@@ -47,6 +48,11 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
   const [localGallery, setLocalGallery] = useState<string[]>(gallery);
   const [localDeleteImages, setLocalDeleteImages] =
     useState<string[]>(deleteImages);
+
+  // Sync local delete selection when Redux state is cleared externally (e.g. Clear button)
+  useEffect(() => {
+    setLocalDeleteImages(deleteImages);
+  }, [deleteImages]);
 
   const selectImage = (imageId: string) => {
     if (click === "thumbnail") {
@@ -116,18 +122,26 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
     }
   }, [data, error, isLoading, dispatch]);
 
-  const handleDelete = async () => {
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
+
+  const handleDelete = () => {
+    if (!localDeleteImages.length) {
+      toast({
+        variant: "destructive",
+        title: "No images selected",
+        description: "Please select at least one image to delete.",
+      });
+      return;
+    }
+    setDeleteAlertOpen(true);
+  };
+
+  const confirmDelete = async () => {
     try {
-      if (!localDeleteImages.length) {
-        alert("Please select images.");
-        return;
-      } else {
-        alert("Are you sure to delete the images?");
-      }
       const res = await deleteImage(localDeleteImages).unwrap();
       if (!res.error) {
         setLocalDeleteImages([]);
-        dispatch(setDeleteImage([])); // Clean global state as well if needed
+        dispatch(setDeleteImage([]));
       }
       toast({
         className: "bg-success text-white text-2xl",
@@ -136,9 +150,11 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Images delete is failed!",
+        title: "Images delete failed!",
         description: "Something went wrong.",
       });
+    } finally {
+      setDeleteAlertOpen(false);
     }
   };
 
@@ -154,20 +170,20 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
   return (
     <>
       <div className="flex flex-col h-full relative">
-        <div className="flex flex-wrap gap-4 p-2 h-full border border-gray-300">
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2 p-2 h-full border border-gray-300 overflow-y-auto">
           {/* {click === "thumbnail" || click === "variation" */}
           {click === "thumbnail"
             ? data?.data?.map((image: TMediaImage) => (
                 <div
                   key={image._id}
                   onClick={() => selectImage(image._id)}
-                  className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${localThumbnail === image._id && "border-2 border-blue-600"}`}
+                  className={`border w-full aspect-square relative cursor-pointer rounded-sm ${localThumbnail === image._id && "border-2 border-blue-600"}`}
                 >
                   <Image
                     src={formatImageSrc(image.src)}
                     alt={image.alt}
                     fill={true}
-                    className="object-cover rounded-sm"
+                    className="object-contain rounded-sm"
                     sizes="(max-width: 208px) 100vw,"
                   />
                   {localThumbnail === image._id && (
@@ -182,7 +198,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                 <div
                   key={image._id}
                   onClick={() => selectImage(image._id)}
-                  className={`w-[140px] h-[140px] relative cursor-pointer rounded-sm ${
+                  className={`w-full border aspect-square relative cursor-pointer rounded-sm ${
                     (localGallery.includes(image._id) ||
                       localDeleteImages.includes(image._id)) &&
                     "border-2 border-blue-600"
@@ -192,7 +208,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                     src={formatImageSrc(image.src)}
                     alt={image.alt}
                     fill={true}
-                    className="object-cover rounded-sm"
+                    className="object-contain rounded-sm"
                     sizes="(max-width: 208px) 100vw,"
                   />
                   <span title="View image">
@@ -222,7 +238,9 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
               onClick={() =>
                 click === "delete" ? handleDelete() : handleDone()
               }
+              size="sm"
               disabled={loading}
+              variant={click === "delete" ? "destructive" : "default"}
             >
               {click === "delete" ? "Delete" : "Done"}
             </Button>
@@ -233,7 +251,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
         open={detailsModalOpen}
         handleOpen={setDetailsModalOpen}
         modalTitle="Image Details"
-        className="w-[1000px] h-[850px]"
+        className="w-full max-w-4xl max-h-screen"
       >
         {selectedImage && (
           <ImageDetails
@@ -242,6 +260,16 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
           />
         )}
       </CommonModal>
+      <CommonAlertDialog
+        open={deleteAlertOpen}
+        onOpenChange={setDeleteAlertOpen}
+        title="Delete Images"
+        description={`Are you sure you want to delete ${localDeleteImages.length} selected image${localDeleteImages.length > 1 ? "s" : ""}? This action cannot be undone.`}
+        onConfirm={confirmDelete}
+        loading={loading}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </>
   );
 };

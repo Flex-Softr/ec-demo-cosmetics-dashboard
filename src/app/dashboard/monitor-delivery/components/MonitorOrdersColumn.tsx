@@ -49,6 +49,7 @@ export const columns: ColumnDef<TOrders>[] = [
     cell: ({ row }) => (
       <OrderIdAndDate
         orderId={row.original.orderId}
+        _id={row.original._id}
         timestamp={row.original.createdAt}
         className="flex flex-col"
       />

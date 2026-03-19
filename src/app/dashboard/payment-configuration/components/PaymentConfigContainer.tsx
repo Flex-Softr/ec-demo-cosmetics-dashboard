@@ -12,7 +12,7 @@ export default function PaymentConfigContainer() {
 
   return (
     <Card className="space-y-6 m-4 p-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
             Payment Configuration
@@ -21,7 +21,10 @@ export default function PaymentConfigContainer() {
             Manage your store&apos;s payment methods and required user inputs.
           </p>
         </div>
-        <Button onClick={() => setIsOpen(true)} className="rounded-full">
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="rounded-full sm:w-auto w-full"
+        >
           <Plus className="mr-2 h-4 w-4" /> Add Payment Method
         </Button>
       </div>

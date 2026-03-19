@@ -95,9 +95,9 @@ const Filter = () => {
   }, [data, loading, error, dispatch]);
 
   return (
-    <div className="flex items-center gap-10">
+    <div className="flex items-center gap-5 justify-between w-auto">
       <Select onValueChange={(value) => setCategory(value)}>
-        <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
+        <SelectTrigger className="border-primary focus:ring-primary focus:ring-1 w-auto">
           <SelectValue placeholder="All Categories" />
         </SelectTrigger>
         <SelectContent>
@@ -123,7 +123,7 @@ const Filter = () => {
       </Select>
 
       <Select onValueChange={(value) => setCollection(value)}>
-        <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
+        <SelectTrigger className="border-primary focus:ring-primary focus:ring-1 w-auto">
           <SelectValue placeholder="All Collections" />
         </SelectTrigger>
         <SelectContent>
@@ -139,7 +139,7 @@ const Filter = () => {
       </Select>
 
       <Select onValueChange={(value) => setBrand(value)}>
-        <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
+        <SelectTrigger className="border-primary focus:ring-primary focus:ring-1 w-auto">
           <SelectValue placeholder="All Brands" />
         </SelectTrigger>
         <SelectContent>
@@ -155,7 +155,7 @@ const Filter = () => {
       </Select>
 
       <Select onValueChange={(value) => setStatus(value)}>
-        <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
+        <SelectTrigger className="border-primary focus:ring-primary focus:ring-1 w-auto">
           <SelectValue placeholder="All Product Stock" />
         </SelectTrigger>
         <SelectContent>

@@ -63,8 +63,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white text-slate-900">
-      <div className="w-full max-w-[400px] px-8 py-6">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 text-slate-900 p-4">
+      <div className="w-full max-w-[400px] bg-white rounded-2xl shadow-xl border border-slate-100 px-6 sm:px-8 py-8 sm:py-10">
         <div className="text-center mb-6 space-y-2">
           <div className="flex justify-center mb-2">
             <Image
@@ -77,10 +77,12 @@ const LoginPage = () => {
             />
           </div>
 
-          <h1 className="text-3xl font-black tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">
             সিদ্দীকিয়া প্রকাশনী
           </h1>
-          <p className="text-slate-500 font-medium text-sm">Admin Dashboard</p>
+          <p className="text-slate-500 font-semibold text-xs sm:text-sm uppercase tracking-wider">
+            Admin Dashboard
+          </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

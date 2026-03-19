@@ -176,7 +176,7 @@ const ViewAndUpdateCouponForm = ({
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div className="space-y-2">
             <Label htmlFor="name">
               Coupon name <span className="text-red-600">*</span>
@@ -214,7 +214,7 @@ const ViewAndUpdateCouponForm = ({
             )}
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div className="space-y-2">
             <Label htmlFor="discountType">
               Select discount type <span className="text-red-600">*</span>
@@ -249,7 +249,7 @@ const ViewAndUpdateCouponForm = ({
             )}
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div className="space-y-2">
             <Label htmlFor="maxDiscount">Coupon max discount</Label>
             <Input
@@ -283,7 +283,7 @@ const ViewAndUpdateCouponForm = ({
             )}
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div className="space-y-2">
             <Label htmlFor="usageLimit">Max claim time</Label>
             <Input
@@ -368,7 +368,7 @@ const ViewAndUpdateCouponForm = ({
         </div>
 
         <hr />
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div className="flex flex-col gap-2">
             <Label htmlFor="fullName" className="col-span-2">
               Select start time<span className="text-red-600">*</span>

@@ -84,7 +84,7 @@ const AttributeAction = ({ attribute }: { attribute: TAttribute }) => {
           </p>
           <div className="flex justify-end gap-5 mt-4">
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button>Cancel</Button>
             </DialogClose>
             <Button variant="destructive" onClick={handleDelete}>
               Delete

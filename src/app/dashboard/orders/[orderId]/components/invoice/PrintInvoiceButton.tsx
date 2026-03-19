@@ -34,10 +34,11 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
     <>
       <Button
         size="sm"
+        variant="outline"
         onClick={() => reactToPrintFn()}
-        className="flex items-center gap-2 bg-primary text-white hover:bg-primary/95 border border-gray-300 dark:border-gray-800 px-3 py-1 rounded-md text-sm"
+        className="flex items-center gap-2 border-primary px-3 py-1.5 rounded-md text-xs md:text-sm"
       >
-        <Printer className="w-4 h-4" />
+        <Printer className="w-4 h-4 text-primary" />
         <span>Print Invoice</span>
       </Button>
 

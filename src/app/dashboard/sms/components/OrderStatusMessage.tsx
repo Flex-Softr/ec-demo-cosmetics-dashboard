@@ -195,7 +195,7 @@ export default function OrderStatusMessage({
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-6 p-6 bg-white rounded-xl shadow-sm border">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 p-4 md:p-6 bg-white rounded-xl shadow-sm border">
       {/* Left Panel - Status Selector */}
       <div className="space-y-4">
         {statusList.map(({ slug, status }: any) => (
@@ -224,7 +224,7 @@ export default function OrderStatusMessage({
             animate={{ rotateY: 0, opacity: 1 }}
             exit={{ rotateY: -90, opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-purple-50 rounded-xl h-full col-span-2 p-6 shadow-sm space-y-6"
+            className="bg-purple-50 rounded-xl h-full md:col-span-2 p-4 md:p-6 shadow-sm space-y-6"
           >
             <div className="flex flex-col gap-3">
               <Label className="text-sm font-semibold text-gray-700 uppercase tracking-wide">

@@ -7,10 +7,11 @@ import logo from "../../../public/logo.png";
 export default function NavbarLogo() {
   const { isCollapsed } = useSidebar();
 
-  if (isCollapsed) return null;
-
   return (
-    <Link href="/dashboard">
+    <Link
+      href="/dashboard"
+      className={isCollapsed ? "block md:hidden" : "block"}
+    >
       <Image
         className="w-24 h-16 object-contain"
         src={logo}

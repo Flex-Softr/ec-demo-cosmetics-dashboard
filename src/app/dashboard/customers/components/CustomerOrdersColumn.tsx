@@ -52,6 +52,7 @@ export const getColumns = (
     cell: ({ row }) => (
       <OrderIdAndDate
         orderId={row.original.orderId}
+        _id={row.original._id}
         timestamp={row.original.createdAt}
         className="flex flex-col"
       />
@@ -89,7 +90,7 @@ export const getColumns = (
   {
     accessorKey: "payment",
     header: "Payment",
-    cell: () => <p>Case on delivery</p>,
+    cell: ({ row }) => <p>{row.original.payment?.paymentMethod?.name}</p>,
   },
   {
     accessorKey: "status",
@@ -104,6 +105,7 @@ export const getColumns = (
           "canceled",
         ]}
         permissions={permissions}
+        currentRoute="customers"
       />
     ),
   },

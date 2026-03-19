@@ -5,7 +5,7 @@ import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
-import OrdersTable from "./components/MonitorOrdersTable";
+import MonitorOrdersTable from "./components/MonitorOrdersTable";
 import StatusButtons from "./components/StatusButtons";
 // import RefreshCourier from "./components/RefreshCourier";
 // import StatusButtons from "./components/StatusButtons";
@@ -30,7 +30,7 @@ const MonitorDelivery = async () => {
   return (
     <Card className="m-4">
       {/* header section , button , search bar  */}
-      <div className="grid grid-cols-2 justify-between items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 justify-between items-center">
         <h1 className="text-2xl font-bold">Monitor Delivery</h1>
         <OrderSearchBar endPoint="/orders/admin/order-deliver-status" />
       </div>
@@ -51,7 +51,7 @@ const MonitorDelivery = async () => {
           <Show />
         </div>
         {/*Monitor delivery orders table */}
-        <OrdersTable
+        <MonitorOrdersTable
           editPermission={manageProcessingOrder}
           permissions={permissions}
         />

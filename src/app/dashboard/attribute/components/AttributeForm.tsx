@@ -151,10 +151,7 @@ const AttributeForm = ({
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 pt-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -205,10 +202,10 @@ const AttributeForm = ({
               )}
             />
 
-            <div className="flex justify-end gap-3 pt-4">
+            <div className="flex justify-end gap-5 pt-4">
               <Button
                 type="button"
-                variant="outline"
+                variant="destructive"
                 onClick={() => setOpen(false)}
               >
                 Cancel

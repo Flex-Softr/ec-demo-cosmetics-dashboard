@@ -23,8 +23,8 @@ const UsersTable = () => {
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <div className="rounded-lg overflow-hidden">
-      <Table className="min-w-[1100px]">
+    <div className="rounded-lg overflow-x-auto">
+      <Table className="min-w-[1100px] whitespace-nowrap">
         <TableHeader className="bg-primary text-white">
           {table?.getHeaderGroups()?.map((headerGroup) => (
             <TableRow key={headerGroup?.id} className="hover:bg-muted/0">

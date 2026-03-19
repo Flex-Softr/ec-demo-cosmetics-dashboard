@@ -17,14 +17,15 @@ const Page = () => {
   };
 
   return (
-    <Card className="flex flex-col gap-5 h-[90%] m-4">
-      <div className="flex items-center justify-between">
-        <div className="space-x-4">
+    <Card className="flex flex-col gap-4 m-2 sm:m-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Button
             onClick={() => handleTabClick("uploadFile")}
+            size="sm"
             className={`${
               activeTab === "uploadFile"
-                ? "bg-primary text-white  hover:bg-secondary"
+                ? "bg-primary text-white hover:bg-secondary"
                 : "border border-primary bg-inherit text-inherit hover:bg-inherit"
             }`}
           >
@@ -32,9 +33,10 @@ const Page = () => {
           </Button>
           <Button
             onClick={() => handleTabClick("mediaLibrary")}
+            size="sm"
             className={`${
               activeTab === "mediaLibrary"
-                ? "bg-primary text-white  hover:bg-secondary"
+                ? "bg-primary text-white hover:bg-secondary"
                 : "border border-primary bg-inherit text-inherit hover:bg-inherit"
             }`}
           >
@@ -42,7 +44,7 @@ const Page = () => {
           </Button>
         </div>
         {activeTab === "mediaLibrary" && (
-          <div className="flex items-center gap-20">
+          <div className="flex items-center gap-3">
             <Button
               onClick={() => dispatch(setDeleteImage([]))}
               className="py-1 bg-gray-400 hover:bg-gray-500"
@@ -54,7 +56,7 @@ const Page = () => {
           </div>
         )}
       </div>
-      <div className={`flex-1`}>
+      <div>
         {activeTab === "uploadFile" && <UploadFile />}
         {activeTab === "mediaLibrary" && <MediaLibrary click="delete" />}
       </div>

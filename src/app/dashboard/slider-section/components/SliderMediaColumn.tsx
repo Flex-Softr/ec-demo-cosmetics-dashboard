@@ -1,11 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import Image from "next/image";
-import DeleteSlider from "./DeleteSlider";
-import { TSlider } from "./SliderMediaTable";
-import UpdateSlider from "./UpdateSlider";
-import UpdateSliderActiveStatus from "./UpdateSliderActiveStatus";
 import { formatImageSrc } from "@/lib/utils";
+import Image from "next/image";
+import SliderAction from "./SliderAction";
+import { TSlider } from "./SliderMediaTable";
+import UpdateSliderActiveStatus from "./UpdateSliderActiveStatus";
 
 const columns: ColumnDef<TSlider>[] = [
   {
@@ -39,9 +38,11 @@ const columns: ColumnDef<TSlider>[] = [
   },
   {
     accessorKey: "bannerLink",
-    header: "Banner Link",
+    header: () => (
+      <span className="text-white whitespace-nowrap">Banner Link</span>
+    ),
     cell: ({ row }) => (
-      <p className="text-center max-w-96 break-all">
+      <p className="w-24 sm:w-auto sm:max-w-96 break-all text-center">
         {row.original.bannerLink}
       </p>
     ),
@@ -57,13 +58,8 @@ const columns: ColumnDef<TSlider>[] = [
   },
   {
     accessorKey: "action",
-    header: () => <h2 className="text-end"> Action</h2>,
-    cell: ({ row }) => (
-      <div className="flex justify-between items-center">
-        <UpdateSlider slider={row.original} />
-        <DeleteSlider slider={row.original} />
-      </div>
-    ),
+    header: () => <div className="text-center">Action</div>,
+    cell: ({ row }) => <SliderAction slider={row.original} />,
   },
 ];
 export default columns;

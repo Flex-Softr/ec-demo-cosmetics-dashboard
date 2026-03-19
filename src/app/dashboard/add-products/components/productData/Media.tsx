@@ -2,9 +2,10 @@
 import { TypographyH4 } from "@/components/ui/Typography";
 import { SectionTitle } from "@/components/ui/sectionTitle";
 import ImageSelectPopup from "@/components/uploader/ImageSelectPopup";
-import { formatImageSrc } from "@/lib/utils";
+import { cn, formatImageSrc } from "@/lib/utils";
 import { useGetSingleImageQuery } from "@/redux/features/addProduct/media/mediaApi";
 import { useAppSelector } from "@/redux/hooks";
+import { UploadCloud } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
@@ -86,7 +87,17 @@ const Media = ({ isVariation }: TProps) => {
               handleOpen();
               setClick(isVariation ? "variation" : "thumbnail");
             }}
-            className={`flex flex-col items-center justify-center mx-auto mt-5 bg-gray-200 w-48 h-48 border border-dotted cursor-pointer relative rounded-sm ${submitCount > 0 && getError("image.thumbnail") ? "border-red-500" : "border-blue-gray-200"}`}
+            className={cn(
+              "relative flex flex-col items-center justify-center mx-auto mt-5 w-48 h-48 aspect-[3.2/1] rounded-lg border-2 border-dashed cursor-pointer transition-all duration-300 group overflow-hidden bg-background",
+              // default / hover state
+              !getError("image.thumbnail") &&
+                "border-muted-foreground/25 hover:border-primary/30 hover:bg-muted/10",
+              // error state
+              // getError("image.thumbnail") &&
+              //   "border-primary/50 hover:border-primary",
+              // submit error override (highest priority)
+              submitCount > 0 && getError("image.thumbnail") && "border-red-500"
+            )}
           >
             {thumbnailImage?.data?.src && thumbnail ? (
               <Image
@@ -97,25 +108,19 @@ const Media = ({ isVariation }: TProps) => {
                 sizes="(max-width: 208px) 100vw,"
               />
             ) : (
-              <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
-                  />
-                </svg>
-                <TypographyH4 className="text-center">
-                  Recommended: 800 * 800
-                </TypographyH4>
-              </>
+              <div className="flex flex-col items-center justify-center p-4 text-center space-y-3">
+                <div className="p-3 rounded-full bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
+                  <UploadCloud className="w-6 h-6 text-emerald-500 group-hover:text-emerald-600 transition-colors" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-foreground">
+                    Click to upload image
+                  </p>
+                  <TypographyH4 className="!text-[10px] text-muted-foreground font-normal">
+                    Recommended: 800 × 800 px
+                  </TypographyH4>
+                </div>
+              </div>
             )}
           </div>
           {submitCount > 0 && getError("image.thumbnail") && (
@@ -136,7 +141,20 @@ const Media = ({ isVariation }: TProps) => {
               handleOpen();
               setClick("gallery");
             }}
-            className={`flex flex-col items-center justify-center mx-auto mt-5 bg-gray-200 w-48 h-48 border border-dotted border-blue-gray-200 cursor-pointer relative rounded-sm group ${submitCount > 0 && getError("image.gallery") ? "border-red-500" : "border-blue-gray-200"}`}
+            className={cn(
+              "relative flex flex-col items-center justify-center mx-auto mt-5 w-48 h-48 aspect-[3.2/1] rounded-lg border-2 border-dashed cursor-pointer transition-all duration-300 group overflow-hidden bg-background",
+
+              // default / hover state
+              !getError("image.gallery") &&
+                "border-muted-foreground/25 hover:border-primary/30 hover:bg-muted/10",
+
+              // error state
+              // getError("image.gallery") &&
+              //   "border-primary/50 hover:border-primary",
+
+              // submit error override (highest priority)
+              submitCount > 0 && getError("image.gallery") && "border-red-500"
+            )}
           >
             {galleryImage?.data?.src && gallery.length ? (
               <>
@@ -152,25 +170,19 @@ const Media = ({ isVariation }: TProps) => {
                 </span>
               </>
             ) : (
-              <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
-                  />
-                </svg>
-                <TypographyH4 className="text-center">
-                  Recommended: 800 * 800
-                </TypographyH4>
-              </>
+              <div className="flex flex-col items-center justify-center p-4 text-center space-y-3">
+                <div className="p-3 rounded-full bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
+                  <UploadCloud className="w-6 h-6 text-emerald-500 group-hover:text-emerald-600 transition-colors" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-foreground">
+                    Click to upload image
+                  </p>
+                  <TypographyH4 className="!text-[10px] text-muted-foreground font-normal">
+                    Recommended: 800 × 800 px
+                  </TypographyH4>
+                </div>
+              </div>
             )}
           </div>
           {submitCount > 0 && getError("image.gallery") && (

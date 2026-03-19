@@ -21,11 +21,11 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useMemo } from "react";
-import { getColumns } from "./OrdersColumn";
+import { getColumns } from "./CourierOrdersColumn";
 // import ReasonNotes from "./ReasonNotes";
 
 import { TPermission } from "@/utilities/isPermitted";
-export default function OrdersTable({
+export default function CourierOrdersTable({
   permissions,
 }: {
   permissions: TPermission[];

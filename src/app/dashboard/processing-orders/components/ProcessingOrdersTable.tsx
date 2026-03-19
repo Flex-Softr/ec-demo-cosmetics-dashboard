@@ -19,7 +19,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useMemo } from "react";
-import { getColumns } from "./OrderColumn";
+import { getColumns } from "./ProcessingOrdersColumn";
 
 import { TPermission } from "@/utilities/isPermitted";
 

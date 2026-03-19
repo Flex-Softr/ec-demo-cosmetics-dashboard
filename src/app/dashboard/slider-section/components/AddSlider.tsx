@@ -148,7 +148,7 @@ const AddSlider = () => {
                   control={form.control}
                   name="sortOrder"
                   render={({ field }) => (
-                    <FormItem className="w-48">
+                    <FormItem className="w-auto">
                       <FormLabel>Sort Order</FormLabel>
                       <Select
                         onValueChange={field.onChange}

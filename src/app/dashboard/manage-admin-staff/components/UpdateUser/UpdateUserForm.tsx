@@ -165,7 +165,7 @@ const UpdateUserForm = ({
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div className="flex flex-col gap-2">
             <Label htmlFor="fullName">Full ame</Label>
             <div className="space-y-2 w-full">
@@ -414,7 +414,9 @@ const UpdateUserForm = ({
             </div>
           </div>
         </div>
-        <EcButton type="submit">Update profile</EcButton>
+        <div className="flex justify-end mb-6 mt-4">
+          <EcButton type="submit">Update profile</EcButton>
+        </div>
       </form>
 
       {canMangePermission && !permissionDataLoading ? (

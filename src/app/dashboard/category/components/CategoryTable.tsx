@@ -50,18 +50,22 @@ export const CategoryTable = () => {
 
   return (
     <div className="space-y-1">
-      <div className="bg-white px-4 rounded-lg shadow-sm space-y-2">
-        <div className="flex justify-between items-center">
+      <div className="bg-white px-4 rounded-lg shadow-sm space-y-4 py-2">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <h1 className="text-xl font-bold text-dark">Category Management</h1>
-          <CategoryForm trigger={<Button>Add Category</Button>} />
+          <div>
+            <CategoryForm trigger={<Button>Add Category</Button>} />
+          </div>
         </div>
-        <div className="flex items-center gap-2 pb-4">
-          <Input
-            placeholder="Search categories..."
-            value={globalFilter ?? ""}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            className="max-w-xs h-8 text-sm focus-visible:ring-primary"
-          />
+        <div className="flex items-center gap-2 pb-2">
+          <div className="w-full sm:max-w-xs">
+            <Input
+              placeholder="Search categories..."
+              value={globalFilter ?? ""}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              className="h-8 text-sm focus-visible:ring-primary"
+            />
+          </div>
         </div>
       </div>
 

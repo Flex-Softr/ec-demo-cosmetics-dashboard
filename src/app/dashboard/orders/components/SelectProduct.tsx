@@ -12,7 +12,7 @@ import {
 import { PRODUCT_STATUS } from "@/const/products";
 import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
 import { IAdminProduct } from "@/types/products";
-import { Trash2 } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
 import {
@@ -109,10 +109,10 @@ const SelectProduct = ({
         <Select
           options={productOptions}
           onChange={handleProductSelect}
-          value={null} // Keep it empty after selection
+          value={null}
           placeholder="Search and Select Product..."
           isLoading={isLoading}
-          components={{ Option: CustomOption }} // Use Custom Option
+          components={{ Option: CustomOption }}
           className="basic-single"
           classNamePrefix="select"
           isClearable
@@ -132,113 +132,114 @@ const SelectProduct = ({
 
       {/* Selected Products Table */}
       {fields.length > 0 && (
-        <Table>
-          <TableHeader>
-            <TableRow className="border-t bg-blue-50/50">
-              <TableHead className="w-[40%]">Product Name</TableHead>
-              <TableHead className="w-[15%] text-center">Unit Price</TableHead>
-              <TableHead className="w-[15%] text-center">Quantity</TableHead>
-              <TableHead className="w-[15%] text-center">Amount</TableHead>
-              <TableHead className="w-[15%] text-center">Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {fields.map((field, index) => {
-              // Find the product details for the current row
-              const currentProductId = watchedOrderedProducts?.[index]?.product;
-              const currentProduct = products?.data?.data?.find(
-                (p: IAdminProduct) => p._id === currentProductId
-              );
+        <div className="-mx-4 sm:mx-0 min-w-0">
+          <Table className="min-w-[800px]">
+            <TableHeader>
+              <TableRow className="border-t bg-blue-50/50">
+                <TableHead className="w-[40%]">Product Name</TableHead>
+                <TableHead className="w-[15%] text-center">
+                  Unit Price
+                </TableHead>
+                <TableHead className="w-[15%] text-center">Quantity</TableHead>
+                <TableHead className="w-[15%] text-center">Amount</TableHead>
+                <TableHead className="w-[15%] text-center">Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {fields.map((field, index) => {
+                const currentProductId =
+                  watchedOrderedProducts?.[index]?.product;
+                const currentProduct = products?.data?.data?.find(
+                  (p: IAdminProduct) => p._id === currentProductId
+                );
 
-              return (
-                <TableRow key={field.id} className="hover:bg-muted/10">
-                  <TableCell className="align-middle py-4">
-                    <div className="flex items-center gap-4">
-                      {/* Product Image in Table */}
-                      <div className="relative h-14 w-14 min-w-[56px] rounded-md border border-gray-200 overflow-hidden shadow-sm">
-                        <Image
-                          src={
-                            currentProduct?.thumbnail?.src || "/placeholder.png"
-                          }
-                          alt={currentProduct?.title || "Product"}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="space-y-1 w-full">
-                        <div className="font-semibold text-sm leading-tight text-gray-800">
-                          {currentProduct?.title || "Product not found"}
+                return (
+                  <TableRow key={field.id} className="hover:bg-muted/10">
+                    <TableCell className="align-middle py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="relative h-14 w-14 min-w-[56px] rounded-md border border-gray-200 overflow-hidden shadow-sm">
+                          <Image
+                            src={
+                              currentProduct?.thumbnail?.src ||
+                              "/placeholder.png"
+                            }
+                            alt={currentProduct?.title || "Product"}
+                            fill
+                            className="object-cover"
+                          />
                         </div>
-
-                        <VariationOptions<TFormInput>
-                          index={index}
-                          control={control}
-                          register={register}
-                          setValue={setValue}
-                          clearErrors={clearErrors}
-                          product="product"
-                          orderedProducts="orderedProducts"
-                          selectedProduct={currentProduct}
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          initialAttributes={(field as any).attributes}
-                          availableVariations={currentProduct?.variations}
-                        />
-                        {errors.orderedProducts?.[index]?.product && (
-                          <p className="text-red-500 text-xs mt-1">
-                            {errors.orderedProducts[index]?.product?.message}
-                          </p>
-                        )}
+                        <div className="space-y-1 w-full">
+                          <div className="font-semibold text-sm leading-tight text-gray-800">
+                            {currentProduct?.title || "Product not found"}
+                          </div>
+                          <VariationOptions<TFormInput>
+                            index={index}
+                            control={control}
+                            register={register}
+                            setValue={setValue}
+                            clearErrors={clearErrors}
+                            product="product"
+                            orderedProducts="orderedProducts"
+                            selectedProduct={currentProduct}
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            initialAttributes={(field as any).attributes}
+                            availableVariations={currentProduct?.variations}
+                          />
+                          {errors.orderedProducts?.[index]?.product && (
+                            <p className="text-red-500 text-xs mt-1">
+                              {errors.orderedProducts[index]?.product?.message}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="align-middle text-center py-4">
-                    <UnitPriceDisplay
-                      control={control}
-                      index={index}
-                      products={products?.data?.data}
-                    />
-                  </TableCell>
-                  <TableCell className="align-middle py-4">
-                    <div className="flex justify-center">
-                      <Input
-                        type="number"
-                        min={1}
-                        {...register(`orderedProducts.${index}.quantity`)}
-                        placeholder="1"
-                        className="w-20 h-9 text-center border border-input bg-background px-2 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 rounded-md"
+                    </TableCell>
+                    <TableCell className="align-middle text-center py-4">
+                      <UnitPriceDisplay
+                        control={control}
+                        index={index}
+                        products={products?.data?.data}
                       />
-                    </div>
-                    {errors.orderedProducts?.[index]?.quantity && (
-                      <p className="text-red-500 text-xs mt-1 text-center">
-                        {errors.orderedProducts[index]?.quantity?.message}
-                      </p>
-                    )}
-                  </TableCell>
-
-                  <TableCell className="align-middle text-center py-4">
-                    <AmountDisplay
-                      control={control}
-                      index={index}
-                      products={products?.data?.data}
-                    />
-                  </TableCell>
-
-                  <TableCell className="align-middle text-center py-4">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => remove(index)}
-                      className="text-red-500 hover:text-red-700 bg-transparent hover:bg-transparent h-9 w-9 rounded-full transition-colors"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                    </TableCell>
+                    <TableCell className="align-middle py-4">
+                      <div className="flex justify-center">
+                        <Input
+                          type="number"
+                          min={1}
+                          {...register(`orderedProducts.${index}.quantity`)}
+                          placeholder="1"
+                          className="w-20 h-9 text-center border border-input bg-background px-2 py-1 text-sm rounded-md"
+                        />
+                      </div>
+                      {errors.orderedProducts?.[index]?.quantity && (
+                        <p className="text-red-500 text-xs mt-1 text-center">
+                          {errors.orderedProducts[index]?.quantity?.message}
+                        </p>
+                      )}
+                    </TableCell>
+                    <TableCell className="align-middle text-center py-4">
+                      <AmountDisplay
+                        control={control}
+                        index={index}
+                        products={products?.data?.data}
+                      />
+                    </TableCell>
+                    <TableCell className="align-middle text-center py-4">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="!bg-white hover:!bg-gray-100"
+                        onClick={() => remove(index)}
+                      >
+                        <Trash2Icon className="h-4 w-4 text-red-600" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
       )}
     </div>
   );

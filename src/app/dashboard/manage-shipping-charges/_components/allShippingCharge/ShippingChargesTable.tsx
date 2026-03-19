@@ -32,7 +32,10 @@ const ShippingChargesTable = () => {
             <TableRow key={headerGroup?.id} className="hover:bg-muted/0">
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header?.id} className="text-center">
+                  <TableHead
+                    key={header?.id}
+                    className="text-center whitespace-nowrap"
+                  >
                     {header?.isPlaceholder
                       ? null
                       : flexRender(
@@ -54,7 +57,10 @@ const ShippingChargesTable = () => {
                 className="border-b"
               >
                 {row?.getVisibleCells()?.map((cell) => (
-                  <TableCell key={cell?.id} className="text-center">
+                  <TableCell
+                    key={cell?.id}
+                    className="text-center whitespace-nowrap"
+                  >
                     {flexRender(
                       cell?.column?.columnDef?.cell,
                       cell?.getContext()

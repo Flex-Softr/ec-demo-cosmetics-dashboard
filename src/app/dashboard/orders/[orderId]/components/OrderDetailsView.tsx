@@ -15,20 +15,23 @@ import { TOrders } from "@/types/order.interface";
 import backgroundColor from "@/utilities/backgroundColor";
 import isPermitted, { TPermission } from "@/utilities/isPermitted";
 import {
+  ArrowLeft,
   CreditCard,
   Edit,
   Loader2,
   MapPin,
   Phone,
+  Truck,
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
 import { ReactNode, useState } from "react";
-import OrderHistoryTable from "../../components/OrderHistoryTable";
 import SchedulePickup from "../../components/SchedulePickup/SchedulePickup";
 import { OrderedProductTable } from "./OrderedProductTable";
 import SetOrderHistoryData from "./SetOrderHistoryData";
 import PrintInvoiceButton from "./invoice/PrintInvoiceButton";
+import AllOrdersTable from "../../components/AllOrdersTable";
+import { useRouter } from "next/navigation";
 
 type OrderDetailsViewProps = {
   orderId: string;
@@ -36,6 +39,7 @@ type OrderDetailsViewProps = {
 };
 
 const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
+  const router = useRouter();
   const { data: response, isLoading } = useGetSingleOrderQuery(orderId);
   const order: TOrders = response?.data;
   const [openSchedulePickup, setOpenSchedulePickup] = useState(false);
@@ -125,17 +129,28 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
   return (
     <div className="mb-8 space-y-6">
       <div className="flex flex-col lg:flex-row gap-6">
-        <Card className="flex-1 p-6 border-none shadow-sm">
+        <Card className="flex-1 min-w-0 lg:w-[70%] p-4 md:p-6 border-none shadow-sm">
           {/* Header Section */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-2">
             {/* Left Side: Order Info */}
-            <div className="space-y-1">
-              <div className="flex items-center gap-3">
-                <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
-                  Order #{displayOrderId}
-                </h1>
+            <div className="space-y-1 w-full">
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => router.back()}
+                    className="rounded-full h-8 w-8 sm:h-9 sm:w-9 border bg-white text-primary hover:text-primary shadow-sm border-primary"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </Button>
+                  <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">
+                    Order #{displayOrderId}
+                  </h1>
+                </div>
+
                 <span
-                  className={`capitalize px-2.5 py-0.5 text-sm font-medium text-white rounded ${backgroundColor(
+                  className={`capitalize px-2 py-0.5 text-xs sm:text-sm font-medium text-white rounded ${backgroundColor(
                     deliveryStatus &&
                       status !== "partial completed" &&
                       status !== "returned"
@@ -150,38 +165,40 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                     : status}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] sm:text-xs md:text-sm text-muted-foreground ml-1">
                 <span className="font-medium whitespace-nowrap">
                   Placed on:
                 </span>
                 <OrderIdAndDate
                   timestamp={createdAt}
-                  className="inline-block space-x-4"
+                  className="inline-block"
                 />
                 <span className="truncate">{order?.orderSource?.name}</span>
               </div>
             </div>
 
             {/* Right Side: Actions */}
-            <div className="flex flex-col items-start">
-              <div className="flex flex-col md:flex-row justify-between gap-2 md:gap-4 items-center">
+            <div className="flex flex-row items-center gap-2 sm:gap-4 shrink-0 w-full sm:w-auto">
+              {status === "processing done" && (
                 <Button
                   onClick={() => setOpenSchedulePickup(true)}
                   variant="outline"
-                  className="flex items-center gap-2 border-gray-300 px-3 py-1.5 rounded-md text-xs md:text-sm"
+                  size="sm"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 border-primary h-8 sm:h-9 px-3 py-1.5 rounded-md text-xs w-auto"
                 >
-                  Schedule Pickup
+                  <Truck className="w-4 h-4 text-primary" />
+                  <span>Pickup</span>
                 </Button>
-                {isEdit && (
-                  <Link
-                    href={`/dashboard/orders/${order._id}/edit`}
-                    className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90 px-3 py-1.5 rounded-md text-xs md:text-sm"
-                  >
-                    <Edit className="w-4 h-4" />
-                    <span>Edit</span>
-                  </Link>
-                )}
-              </div>
+              )}
+              {isEdit && (
+                <Link
+                  href={`/dashboard/orders/${order._id}/edit`}
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 border border-primary h-8 sm:h-9 px-3 py-1.5 rounded-md text-xs w-auto"
+                >
+                  <Edit className="w-4 h-4 text-primary" />
+                  <span>Edit</span>
+                </Link>
+              )}
             </div>
           </div>
 
@@ -335,15 +352,19 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
 
           <Separator className="mt-3 mb-6" />
           {/* Product Table */}
-          <div className="rounded-lg border overflow-hidden">
+          <div className="rounded-lg border overflow-x-auto -mx-4 sm:mx-0">
             <OrderedProductTable products={products ? products : []} />
           </div>
           {/* Order Summary */}
-          <div className="flex justify-end mt-3 gap-10">
-            <div className="flex flex-col gap-2 justify-end">
-              {isInvoice && <PrintInvoiceButton orders={[order]} />}
+          <div className="flex flex-col sm:flex-row justify-between mt-6 gap-6">
+            <div className="flex flex-col gap-2 justify-end w-full sm:w-auto order-2 sm:order-1">
+              {isInvoice && (
+                <div className="w-full sm:w-auto">
+                  <PrintInvoiceButton orders={[order]} />
+                </div>
+              )}
             </div>
-            <div className="w-full md:w-1/2 lg:w-1/3 space-y-3 bg-gray-50/50 p-4 rounded-lg border">
+            <div className="w-full sm:w-1/2 lg:w-1/3 space-y-3 bg-gray-50/50 p-4 rounded-lg border order-1 sm:order-2">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-medium">&#2547; {subtotal}</span>
@@ -386,7 +407,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
         </Card>
 
         {/* Sidebar */}
-        <div className="w-full lg:w-[350px] space-y-6">
+        <div className="w-full lg:w-[30%] space-y-6">
           <Card className="p-5 border-none shadow-sm space-y-6 sticky top-4">
             <div className="space-y-3">
               <SectionTitle className="text-lg">Update Status</SectionTitle>
@@ -432,7 +453,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
         <Card className="p-6 pt-0 border-none shadow-sm">
           <SetOrderHistoryData searchQuery={shipping?.phoneNumber} />
           <div className="mt-4">
-            <OrderHistoryTable permissions={permissions} />
+            <AllOrdersTable permissions={permissions} />
           </div>
         </Card>
       </div>

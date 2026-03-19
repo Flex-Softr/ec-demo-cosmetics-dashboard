@@ -54,7 +54,10 @@ const ChangePassword = () => {
   return (
     <div>
       <div>
-        <form onSubmit={handleSubmit(onSubmit)} className="w-[450px]">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full sm:max-w-[450px]"
+        >
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"

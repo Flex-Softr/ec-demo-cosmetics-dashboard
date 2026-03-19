@@ -16,7 +16,9 @@ const AttributeValueUpdate = ({ attribute }: { attribute: TAttribute }) => {
       <DialogHeader>
         <DialogTitle>
           Add Attribute Value for{" "}
-          <span className="text-primary font-semibold">{attribute?.name}</span>{" "}
+          <span className="text-primary font-semibold">
+            {attribute?.name}
+          </span>{" "}
         </DialogTitle>
       </DialogHeader>
       <div className="py-4 space-y-3">
@@ -35,7 +37,7 @@ const AttributeValueUpdate = ({ attribute }: { attribute: TAttribute }) => {
       </div>
       <DialogFooter>
         <DialogClose>
-          <Button>Done</Button>
+          <Button>Close</Button>
         </DialogClose>
       </DialogFooter>
     </div>

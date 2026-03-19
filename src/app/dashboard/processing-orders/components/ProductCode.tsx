@@ -239,9 +239,7 @@ const ProductCode = ({
                 <div
                   key={productIndex}
                   className={`rounded border shadow-sm ${
-                    !isProductWarrantyAvailable
-                      ? "bg-muted/10 opacity-70"
-                      : "bg-card"
+                    !isProductWarrantyAvailable ? "" : "bg-card"
                   }`}
                 >
                   <div className="flex items-start gap-3 p-3 border-b bg-muted/20">

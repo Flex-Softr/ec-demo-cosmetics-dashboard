@@ -6,7 +6,7 @@ const AllShippingCharges = () => {
   return (
     <>
       <FetchShippingCharges />
-      <div className="col-span-3">
+      <div className="md:col-span-3 overflow-hidden">
         <Card className="space-y-5">
           <h2 className="text-xl font-bold">All shipping charges</h2>
           <hr className="!mt-2" />

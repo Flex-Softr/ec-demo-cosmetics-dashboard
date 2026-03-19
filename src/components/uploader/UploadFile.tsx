@@ -57,18 +57,21 @@ const UploadFile = () => {
   };
 
   return (
-    <div className="h-full relative">
+    <div className="relative">
       {images.length > 0 ? (
-        <div className="h-full flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <div
-            className="h-full border-2 border-dashed border-gray-300 cursor-pointer p-2"
+            className="min-h-[200px] border-2 border-dashed border-gray-300 cursor-pointer p-2"
             onClick={() => document.getElementById("fileInput")?.click()}
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
           >
-            <div className="flex flex-wrap gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2 p-2 h-full overflow-y-auto">
               {images.map((image, index) => (
-                <div key={index} className="w-[150px] h-[150px] relative">
+                <div
+                  key={index}
+                  className="aspect-square relative w-full rounded-sm border border-gray-300"
+                >
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent event bubbling
@@ -82,7 +85,7 @@ const UploadFile = () => {
                     src={URL.createObjectURL(image)}
                     alt={`Image ${index}`}
                     fill={true}
-                    className="object-cover rounded-sm"
+                    className="object-contain rounded-sm"
                     sizes="(max-width: 208px) 100vw,"
                   />
                 </div>
@@ -96,26 +99,16 @@ const UploadFile = () => {
               id="fileInput"
               multiple
             />
-            {/* <Button
-              className={`absolute top-2 ${hover ? "block" : "hidden"}`} // Show/hide based on hover state
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent event bubbling
-                document.getElementById("fileInput")?.click();
-              }}
-            >
-              Select Files
-            </Button> */}
           </div>
-          <div className="flex justify-end">
-            <Button onClick={handleUpload} disabled={isLoading}>
+          <div className="flex justify-end ">
+            <Button size="sm" onClick={handleUpload} disabled={isLoading}>
               Upload Files
             </Button>
           </div>
         </div>
       ) : (
         <div
-          className={`flex flex-col justify-center items-center h-full w-full border-2 border-dashed border-gray-300
-         rounded-md cursor-pointer`}
+          className="flex flex-col justify-center items-center min-h-[60vh] w-full border-2 border-dashed border-gray-300 rounded-md cursor-pointer"
           onClick={() => document.getElementById("fileInput")?.click()}
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}

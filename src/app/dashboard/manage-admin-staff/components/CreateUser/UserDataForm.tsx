@@ -147,7 +147,7 @@ const UserDataForm = ({
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div className="flex flex-col gap-2">
             <Label htmlFor="fullName">
               Enter Name <span className="text-red-600">*</span>
@@ -409,9 +409,11 @@ const UserDataForm = ({
             </div>
           </div>
         </div>
-        <EcButton disabled={isLoading} loading={isLoading} type="submit">
-          Create
-        </EcButton>
+        <div className="flex justify-end mb-6">
+          <EcButton disabled={isLoading} loading={isLoading} type="submit">
+            Create
+          </EcButton>
+        </div>
       </form>
     </div>
   );

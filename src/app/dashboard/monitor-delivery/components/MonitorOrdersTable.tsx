@@ -36,7 +36,7 @@ import { TPermission } from "@/utilities/isPermitted";
 import OrderStatus from "@/components/OrderStatus";
 import backgroundColor from "@/utilities/backgroundColor";
 
-export default function OrdersTable({
+export default function MonitorOrdersTable({
   editPermission,
   permissions,
 }: {
@@ -67,7 +67,13 @@ export default function OrdersTable({
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => {
-        return <OrderStatus order={row.original} permissions={permissions} />;
+        return (
+          <OrderStatus
+            order={row.original}
+            permissions={permissions}
+            currentRoute="monitor"
+          />
+        );
       },
     },
     {

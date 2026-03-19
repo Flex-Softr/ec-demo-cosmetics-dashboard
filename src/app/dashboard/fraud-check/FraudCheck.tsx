@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { useToast } from "@/components/ui/use-toast";
-import { useEffect, useState } from "react";
 import CommonModal from "@/components/modal/CommonModal";
-import { Search, X } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 import { formatDate, formatTime } from "@/lib/formatDate";
-import getFraudCheck from "./getFraudCheck";
+import { useLazyGetFraudCheckQuery } from "@/redux/features/fraudCheck/fraudCheckApi";
+import { Search, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type Report = {
   reportFrom: string;
@@ -43,7 +43,8 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
   const { toast } = useToast();
   const [data, setData] = useState<Data | null>(null);
   const [mobile, setMobile] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [triggerFraudCheck, { isFetching: loading }] =
+    useLazyGetFraudCheckQuery();
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -62,19 +63,18 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
       return;
     }
 
-    setLoading(true);
-
     try {
-      const response = await getFraudCheck(phoneNumber || mobile);
+      const response = await triggerFraudCheck(phone).unwrap();
       setData(response.data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: error.message || `Failed to fetch the customer fraud check data`,
+        title:
+          error.data?.message ||
+          error.message ||
+          `Failed to fetch the customer fraud check data`,
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -98,12 +98,14 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
 
   return (
     <>
-      <div className={`max-w-full ${!phoneNumber && "p-4 mx-4 my-4"}`}>
+      <div
+        className={`max-w-full ${!phoneNumber && "p-2 mx-2 my-2 sm:p-4 sm:mx-4 sm:my-4"}`}
+      >
         {/* Header Search Section */}
         {phoneNumber ? (
           <h1 className="text-xl font-bold text-center">Fraud Check</h1>
         ) : (
-          <div className="flex items-center space-x-2 mb-4 max-w-xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4 max-w-xl mx-auto">
             <div className="relative flex items-center w-full">
               <input
                 type="text"
@@ -111,23 +113,23 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
                 onChange={(e) => setMobile(e.target.value)}
                 // onKeyDown={handleKeyPress}
                 placeholder="Enter a mobile number"
-                className="bg-gray-100 focus:outline-primary text-gray-800 px-6 py-3 rounded border border-gray-300 w-full"
+                className="bg-gray-100 focus:outline-primary text-gray-800 px-4 pr-12 py-3 rounded border border-gray-300 w-full"
               />
               {mobile ? (
                 <button
                   onClick={handleClearSearch}
-                  className="absolute right-8 text-primary"
+                  className="absolute right-3 text-primary"
                 >
                   <X className="w-6 h-6" />
                 </button>
               ) : (
-                <Search className="w-6 h-6 absolute right-8 text-primary" />
+                <Search className="w-6 h-6 absolute right-3 text-primary" />
               )}
             </div>
             <button
               onClick={handleSearch}
               disabled={loading}
-              className="bg-primary text-white px-6 py-3 rounded hover:bg-secondary"
+              className="bg-primary text-white px-6 py-3 rounded hover:bg-secondary shrink-0"
             >
               {loading ? "Loading..." : "Check"}
             </button>
@@ -135,9 +137,9 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
         )}
 
         {data ? (
-          <div className="flex gap-5 items-center justify-evenly">
+          <div className="flex flex-col-reverse justify-center lg:flex-row gap-4 sm:gap-8 items-center lg:items-start w-full">
             {/* Delivery Success Ratio */}
-            <div className="text-center mb-4">
+            <div className="text-center w-full lg:w-1/3 mb-4 lg:mb-0 shrink-0">
               <h2 className="text-lg font-bold">Delivery Success Ratio</h2>
               {/* <div className="relative w-32 h-32 mx-auto mt-4">
               <div className="rounded-full border-8 border-green-500 w-full h-full flex items-center justify-center">
@@ -172,7 +174,7 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
                 {data.message}
               </p>
             </div>
-            <div>
+            <div className="w-full lg:w-2/3 overflow-hidden">
               {/* User Info */}
               <div>
                 {data?.reports && data.reports.length > 0 && (
@@ -193,76 +195,81 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
               </div>
 
               {/* Stats Section */}
-              <div className="grid grid-cols-3 gap-4 text-center mb-4">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center mb-4 whitespace-nowrap">
                 <div>
                   <h4 className="text-xl font-bold">{data.totalOrders}</h4>
-                  <p className="text-sm">মোট অর্ডার</p>
+                  <p className="text-xs sm:text-sm">মোট অর্ডার</p>
                 </div>
                 <div>
                   <h4 className="text-xl font-bold text-green-500">
                     {data.totalDeliveries}
                   </h4>
-                  <p className="text-sm">মোট ডেলিভারি</p>
+                  <p className="text-xs sm:text-sm">মোট ডেলিভারি</p>
                 </div>
                 <div>
                   <h4 className="text-xl font-bold text-red-500">
                     {data.totalCancellations}
                   </h4>
-                  <p className="text-sm">মোট বাতিল</p>
+                  <p className="text-xs sm:text-sm">মোট বাতিল</p>
                 </div>
               </div>
 
               {/* Courier Stats Table */}
-              <table className="w-full border border-gray-200 text-center text-sm">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border border-gray-200 px-7 py-4">
-                      কুরিয়ার
-                    </th>
-                    <th className="border border-gray-200 px-7 py-4">অর্ডার</th>
-                    <th className="border border-gray-200 px-7 py-4">
-                      ডেলিভারি
-                    </th>
-                    <th className="border border-gray-200 px-7 py-4">বাতিল</th>
-                    <th className="border border-gray-200 px-7 py-4">
-                      ডেলিভারি হার
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data?.couriers?.map((courier, index) => (
-                    <tr key={index}>
-                      <td className="border border-gray-200 px-7 py-4 flex items-center justify-center">
-                        <img
-                          src={courier.logo}
-                          alt={courier.name}
-                          className="h-5 mr-2"
-                        />
-                        {/* {courier.name} */}
-                      </td>
-                      <td className="border border-gray-200 px-7 py-4">
-                        {courier.orders}
-                      </td>
-                      <td className="border border-gray-200 px-7 py-4">
-                        {courier.deliveries}
-                      </td>
-                      <td className="border border-gray-200 px-7 py-4">
-                        {courier.cancellations}
-                      </td>
-                      <td className="border border-gray-200 px-4 py-2 font-semibold">
-                        {courier.deliveryRate}%
-                        <div className="w-full bg-gray-300 rounded-full h-2.5 dark:bg-gray-700 mt-[2px]">
-                          <div
-                            className="bg-green-500 h-2.5 rounded-full"
-                            style={{ width: `${courier.deliveryRate}%` }}
-                            title={`Delivery success rate ${courier.deliveryRate}%`}
-                          ></div>
-                        </div>
-                      </td>
+              <div className="overflow-x-auto w-full rounded-md">
+                <table className="w-full border border-gray-200 text-center text-sm min-w-[500px] whitespace-nowrap">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border border-gray-200 px-4 py-4">
+                        কুরিয়ার
+                      </th>
+                      <th className="border border-gray-200 px-4 py-4">
+                        অর্ডার
+                      </th>
+                      <th className="border border-gray-200 px-4 py-4">
+                        ডেলিভারি
+                      </th>
+                      <th className="border border-gray-200 px-4 py-4">
+                        বাতিল
+                      </th>
+                      <th className="border border-gray-200 px-4 py-4">
+                        ডেলিভারি হার
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {data?.couriers?.map((courier, index) => (
+                      <tr key={index}>
+                        <td className="border border-gray-200 px-4 py-4 flex items-center justify-center">
+                          <img
+                            src={courier.logo}
+                            alt={courier.name}
+                            className="h-5 mr-2"
+                          />
+                        </td>
+                        <td className="border border-gray-200 px-4 py-4">
+                          {courier.orders}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-4">
+                          {courier.deliveries}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-4">
+                          {courier.cancellations}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-4 font-semibold min-w-[150px]">
+                          {courier.deliveryRate}%
+                          <div className="w-full bg-gray-300 rounded-full h-2.5 dark:bg-gray-700 mt-[2px]">
+                            <div
+                              className="bg-green-500 h-2.5 rounded-full"
+                              style={{ width: `${courier.deliveryRate}%` }}
+                              title={`Delivery success rate ${courier.deliveryRate}%`}
+                            ></div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         ) : (

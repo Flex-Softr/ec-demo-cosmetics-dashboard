@@ -19,7 +19,7 @@ const ManageShippingCharges = async () => {
   }
 
   return (
-    <Card className="grid grid-cols-5 gap-5 m-4">
+    <Card className="grid grid-cols-1 md:grid-cols-5 gap-5 m-4">
       <CreateShippingCharge />
       <AllShippingCharges />
     </Card>

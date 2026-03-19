@@ -79,22 +79,27 @@ const AttributeTable = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between">
-        <Input
-          placeholder="Search attributes..."
-          value={globalFilter ?? ""}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="max-w-sm"
-        />
+      <div className="flex flex-col sm:flex-row justify-between gap-4">
+        <div className="w-full sm:max-w-sm">
+          <Input
+            placeholder="Search attributes..."
+            value={globalFilter ?? ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="w-full"
+          />
+        </div>
       </div>
 
-      <div className="rounded-md border bg-white shadow-sm overflow-hidden">
+      <div className="rounded-md border bg-white shadow-sm overflow-x-auto -mx-2 sm:mx-0">
         <Table>
           <TableHeader className="bg-primary hover:bg-primary/95 transition-colors">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-white">
+                  <TableHead
+                    key={header.id}
+                    className="text-white whitespace-nowrap"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(

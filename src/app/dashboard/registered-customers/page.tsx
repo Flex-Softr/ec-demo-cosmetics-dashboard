@@ -22,16 +22,20 @@ const page = async () => {
   return (
     <>
       <RegisteredCustomerData />
-      <Card className="m-4">
-        <h2 className="text-2xl font-bold">Registered customers</h2>
-        <hr className="my-4" />
-        <div className="flex justify-end">
-          <SearchRegisteredUser />
+      <Card className="m-2 sm:m-4 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
+          <h2 className="text-xl md:text-2xl font-bold">
+            Registered customers
+          </h2>
+          <div className="w-full sm:w-auto">
+            <SearchRegisteredUser />
+          </div>
         </div>
+        <hr className="my-4" />
         <div className="flex justify-end mt-5">
           <Show />
         </div>
-        <div className="mt-4">
+        <div className="mt-4 overflow-x-auto -mx-4 sm:mx-0">
           <RegisteredCustomerTable />
         </div>
       </Card>

@@ -5,7 +5,7 @@ import dummyUser from "../../../public/user.jpg";
 
 export const metadata: Metadata = {
   title: "Dashboard",
-  description: "সিদ্দীকিয়া প্রকাশনী",
+  description: "Nora Life Style",
 };
 
 const Dashboard = async () => {

@@ -11,7 +11,7 @@ const AccountsPage = async () => {
   return (
     <div className="flex-1 space-y-6">
       <Card>
-        <div className="flex gap-5">
+        <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start text-center sm:text-left">
           <div>
             <Avatar className="rounded-full w-20 h-20">
               <AvatarImage src={profilePicUrl} />
@@ -27,7 +27,7 @@ const AccountsPage = async () => {
       </Card>
       <Card>
         <h2 className="font-semibold text-lg">Personal information</h2>
-        <div className="grid grid-cols-2 mt-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 mt-5 gap-4">
           <div>
             <p className="text-gray-500">Full name:</p>
             <p className="text-gray-600 font-semibold capitalize">

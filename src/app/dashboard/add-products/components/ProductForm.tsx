@@ -375,8 +375,8 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
           {!productId && <ProductResetter />}
-          <Card className="flex gap-3 justify-between items-center m-4">
-            <h1 className="text-2xl font-bold">
+          <Card className="flex flex-wrap gap-3 justify-between items-center mx-2 sm:mx-4 my-4 px-4 py-3">
+            <h1 className="text-lg sm:text-2xl font-bold">
               {productId ? "Edit Product" : "Add Product"}
             </h1>
             <Link href={"/dashboard/products"} passHref>
@@ -384,37 +384,26 @@ const ProductForm = ({ productId }: { productId?: string }) => {
             </Link>
           </Card>
 
-          {/* product data section started */}
-          <div className="flex justify-between gap-4 w-full px-4">
-            <div className="w-[65%] space-y-3">
-              {/* products title */}
+          {/* product data section */}
+          <div className="flex flex-col lg:flex-row justify-between gap-4 w-full px-2 sm:px-4">
+            {/* Main content column */}
+            <div className="w-full lg:w-[65%] space-y-3">
               <TitleInput />
               <ShortDescriptionInput />
-              {/* product data */}
               <ProductDataTabs />
-              {/* products description */}
               <DescriptionInput />
-              {/* <AdditionalInfo /> */}
               {productData?.createdAt && (
-                <div className="text-xs text-muted-foreground flex gap-4">
+                <div className="text-xs text-muted-foreground flex flex-wrap gap-2 sm:gap-4">
                   <p>
                     <span className="font-semibold">Created At:</span>{" "}
                     {new Date(productData.createdAt).toLocaleDateString(
                       "en-GB",
-                      {
-                        day: "numeric",
-                        month: "short",
-                        year: "2-digit",
-                      }
+                      { day: "numeric", month: "short", year: "2-digit" }
                     )}
                     ,{" "}
                     {new Date(productData.createdAt).toLocaleTimeString(
                       "en-US",
-                      {
-                        hour: "numeric",
-                        minute: "numeric",
-                        hour12: true,
-                      }
+                      { hour: "numeric", minute: "numeric", hour12: true }
                     )}
                   </p>
                   {productData.updatedAt && (
@@ -422,33 +411,25 @@ const ProductForm = ({ productId }: { productId?: string }) => {
                       <span className="font-semibold">Updated At:</span>{" "}
                       {new Date(productData.updatedAt).toLocaleDateString(
                         "en-GB",
-                        {
-                          day: "numeric",
-                          month: "short",
-                          year: "2-digit",
-                        }
+                        { day: "numeric", month: "short", year: "2-digit" }
                       )}
                       ,{" "}
                       {new Date(productData.updatedAt).toLocaleTimeString(
                         "en-US",
-                        {
-                          hour: "numeric",
-                          minute: "numeric",
-                          hour12: true,
-                        }
+                        { hour: "numeric", minute: "numeric", hour12: true }
                       )}
                     </p>
                   )}
                 </div>
               )}
             </div>
-            {/* right Sidebar of add products */}
-            <div className="w-2/6 space-y-3 flex flex-col">
+
+            {/* Right Sidebar */}
+            <div className="w-full lg:w-2/6 space-y-3 flex flex-col">
               <Published
                 productId={productId as string}
                 isLoading={isCreating || isUpdating}
               />
-              {/* <CategoryInput /> */}
               <CategoryField />
               <CollectionInput
                 collectionsData={collectionsResponse?.data?.data}
@@ -458,7 +439,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
               <BrandInput />
               <RelatedProducts />
               {productId && (
-                <div className="h-full flex flex-col justify-end mt-auto bottom-4">
+                <div className="mt-4">
                   <DeleteProductBtn
                     id={productId}
                     slug={productData?.slug}

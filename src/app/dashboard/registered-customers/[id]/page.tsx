@@ -4,7 +4,7 @@ import { TCustomer } from "@/redux/features/customer/customerInterface";
 import backgroundColor from "@/utilities/backgroundColor";
 import fetchData from "@/utilities/fetchData";
 import OrderHistoryTable from "../../orders/[orderId]/components/SetOrderHistoryData";
-import OrdersTable from "../../orders/components/OrderHistoryTable";
+import AllOrdersTable from "../../orders/components/AllOrdersTable";
 
 const page = async ({ params }: { params: { id: string } }) => {
   const { permissions = [] } = await getPermission();
@@ -39,7 +39,7 @@ const page = async ({ params }: { params: { id: string } }) => {
       <div className="mt-4">
         <h4 className="py-3 font-semibold">Orders</h4>
         <OrderHistoryTable userId={customer._id} />
-        <OrdersTable permissions={permissions} />
+        <AllOrdersTable permissions={permissions} />
       </div>
     </Card>
   );

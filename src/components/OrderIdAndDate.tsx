@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 type TProps = {
   orderId?: string;
+  _id?: string;
   timestamp: string | Date;
   className?: string;
 };
@@ -23,7 +24,9 @@ function formatDate(timestamp: string | Date) {
   return { formattedTime, formattedDate };
 }
 
-function OrderIdAndDate({ orderId, timestamp, className }: TProps) {
+import Link from "next/link";
+
+function OrderIdAndDate({ orderId, _id, timestamp, className }: TProps) {
   const { formattedTime, formattedDate } = formatDate(timestamp);
   const [currentTime, setCurrentTime] = useState(new Date());
   useEffect(() => {
@@ -63,9 +66,20 @@ function OrderIdAndDate({ orderId, timestamp, className }: TProps) {
   return (
     <div className={`${className}`}>
       {orderId && (
-        <span className="text-primary font-semibold whitespace-nowrap">
-          # {orderId}
-        </span>
+        <>
+          {_id ? (
+            <Link
+              href={`/dashboard/orders/${_id}`}
+              className="text-primary font-semibold whitespace-nowrap hover:underline cursor-pointer transition-all duration-200"
+            >
+              # {orderId}
+            </Link>
+          ) : (
+            <span className="text-primary font-semibold whitespace-nowrap">
+              # {orderId}
+            </span>
+          )}
+        </>
       )}
       <span className="whitespace-nowrap text-xs font-semibold text-muted-foreground">
         {formattedTime}

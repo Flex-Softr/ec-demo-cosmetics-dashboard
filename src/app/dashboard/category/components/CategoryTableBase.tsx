@@ -48,7 +48,7 @@ export const CategoryTableBase = ({
       },
       {
         accessorKey: "image",
-        header: "",
+        header: "Image",
         cell: ({ row }) => (
           <Image
             width={50}
@@ -62,7 +62,9 @@ export const CategoryTableBase = ({
         accessorKey: "name",
         header: "Name",
         cell: ({ row }) => (
-          <div className="capitalize font-medium">{row.getValue("name")}</div>
+          <div className="capitalize font-medium whitespace-nowrap">
+            {row.getValue("name")}
+          </div>
         ),
       },
       {
@@ -70,7 +72,7 @@ export const CategoryTableBase = ({
         header: "Description",
         cell: ({ row }) => (
           <div className="max-w-[300px] truncate text-muted-foreground whitespace-pre-wrap">
-            {row.getValue("description") || "No description"}
+            {row.getValue("description")}
           </div>
         ),
       },
@@ -127,7 +129,7 @@ export const CategoryTableBase = ({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-y-auto">
         <Table>
           <TableHeader
             className={
@@ -140,7 +142,7 @@ export const CategoryTableBase = ({
                 className={!isSubCategory ? "hover:bg-primary/90" : ""}
               >
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="whitespace-nowrap">
                     {header.isPlaceholder
                       ? null
                       : flexRender(

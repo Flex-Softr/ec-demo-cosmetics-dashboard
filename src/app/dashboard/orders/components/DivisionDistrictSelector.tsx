@@ -73,7 +73,7 @@ const DivisionDistrictUpazilaSelector = <T extends FieldValues>({
 
   return (
     <div
-      className={`grid ${showDivision ? "grid-cols-4" : "grid-cols-3"} gap-5 mt-4`}
+      className={`grid ${showDivision ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"} gap-x-5 gap-y-3 mt-4`}
     >
       {showDivision && (
         <div className="flex flex-col gap-2">

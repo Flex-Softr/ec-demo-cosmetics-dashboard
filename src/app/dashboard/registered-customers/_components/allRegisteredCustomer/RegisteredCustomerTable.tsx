@@ -26,8 +26,8 @@ const RegisteredCustomerTable = () => {
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <div className="rounded-lg overflow-hidden">
-      <Table className="w-full">
+    <div className="rounded-lg border overflow-x-auto">
+      <Table className="w-full whitespace-nowrap">
         <TableHeader className="bg-primary text-white">
           {table?.getHeaderGroups()?.map((headerGroup) => (
             <TableRow key={headerGroup?.id} className="hover:bg-muted/0">

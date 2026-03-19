@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import BulkAction from "./components/OrderBulkAction";
 import CreateOrder from "./components/CreateOrder";
 import OrderDateRange from "./components/OrderDateRange";
-import OrdersTable from "./components/OrderHistoryTable";
+import AllOrdersTable from "./components/AllOrdersTable";
 import OrdersStatusButtons from "./components/OrdersStatusButtons";
 const Orders = async () => {
   const { permissions = [] } = await getPermission();
@@ -22,7 +22,7 @@ const Orders = async () => {
   return (
     <Card className="m-4">
       {/* header section, search bar  */}
-      <div className="grid grid-cols-2 justify-between items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-3">
         <h1 className="text-2xl font-bold">All Orders</h1>
         <OrderSearchBar endPoint="/orders/admin/all-orders" />
       </div>
@@ -40,7 +40,7 @@ const Orders = async () => {
           <Show />
         </div>
         {/*All orders table */}
-        <OrdersTable permissions={permissions} />
+        <AllOrdersTable permissions={permissions} />
       </div>
     </Card>
   );

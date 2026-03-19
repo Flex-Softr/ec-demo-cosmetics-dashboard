@@ -65,12 +65,12 @@ export default async function SMS() {
       </div> */}
 
       {/* Order Status Configuration Section */}
-      <div className="grid grid-cols-3 gap-6 m-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 m-4">
         {/* Toggle Switch Panel */}
         <OrderStatusToggle data={data} />
 
         {/* Right: Message Editor */}
-        <div className="col-span-2">
+        <div className="lg:col-span-2">
           <OrderStatusMessage savedMessages={data} />
         </div>
       </div>

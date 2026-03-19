@@ -1,6 +1,9 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import ActiveLink from "../activeLink/ActiveLink";
+import { useSidebar } from "@/providers/SidebarProvider";
 
 type TProps = {
   name: string;
@@ -8,19 +11,36 @@ type TProps = {
   icon?: ReactNode;
   className?: string;
   activeClassName?: string;
+  onClick?: () => void;
 };
 
-const NavLink = ({ name, href, icon, className, activeClassName }: TProps) => {
+const NavLink = ({
+  name,
+  href,
+  icon,
+  className,
+  activeClassName,
+  onClick,
+}: TProps) => {
+  const { isCollapsed, toggleSidebar } = useSidebar();
+
+  const handleClick = () => {
+    // Call explicit onClick if provided
+    if (onClick) onClick();
+    // Auto collapse on mobile view
+    if (window.innerWidth < 768 && !isCollapsed) {
+      toggleSidebar();
+    }
+  };
+
   return (
     <ActiveLink
       name={name}
       href={href}
       icon={icon}
-      className={cn(
-        "px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent",
-        className
-      )}
+      className={cn("w-full", className)}
       activeClassName={activeClassName}
+      onClick={handleClick}
     />
   );
 };

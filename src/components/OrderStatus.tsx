@@ -1,5 +1,6 @@
 "use client";
 import CommonModal from "@/components/modal/CommonModal";
+import { useAppSelector } from "@/redux/hooks";
 import { TOrders } from "@/types/order.interface";
 import backgroundColor from "@/utilities/backgroundColor";
 import { TPermission } from "@/utilities/isPermitted";
@@ -11,15 +12,20 @@ type TProps = {
   deliveryStatus?: string;
   disableStatus?: string[];
   permissions: TPermission[];
+  currentRoute?: string;
 };
 
 const OrderStatus = ({
   order,
   deliveryStatus,
-  // disableStatus = [],
+  disableStatus = [],
   permissions,
+  currentRoute,
 }: TProps) => {
   const [open, setOpen] = useState(false);
+  const editPermission = useAppSelector(
+    ({ monitorDelivery }) => monitorDelivery.editPermission
+  );
   const handleOpen = () => {
     setOpen(!open);
   };
@@ -35,7 +41,7 @@ const OrderStatus = ({
     <>
       <button
         onClick={handleOpen}
-        // disabled={disableStatus.includes(status)}
+        disabled={disableStatus.includes(status) && !editPermission}
         className={`capitalize whitespace-nowrap px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(
           status
         )}`}
@@ -65,7 +71,8 @@ const OrderStatus = ({
           handleOpen={handleOpen}
           permissions={permissions}
           order={order}
-          // disableStatus={disableStatus}
+          disableStatus={disableStatus}
+          currentRoute={currentRoute}
         />
       </CommonModal>
     </>

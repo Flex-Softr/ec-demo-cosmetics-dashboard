@@ -3,7 +3,7 @@ import CreateShippingForm from "./CreateShippingForm";
 
 const CreateShippingCharge = () => {
   return (
-    <div className="col-span-2">
+    <div className="md:col-span-2">
       <Card className="space-y-5">
         <h2 className="text-xl font-bold">Create shipping charge</h2>
         <hr className="!mt-2" />

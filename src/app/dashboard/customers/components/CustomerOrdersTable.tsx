@@ -19,10 +19,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useMemo } from "react";
-import { getColumns } from "./OrderColumn";
+import { getColumns } from "./CustomerOrdersColumn";
 
 import { TPermission } from "@/utilities/isPermitted";
-export default function CustomerListOrdersTable({
+export default function CustomerOrdersTable({
   permissions,
 }: {
   permissions: TPermission[];
@@ -58,8 +58,8 @@ export default function CustomerListOrdersTable({
 
   return (
     <div className="w-full">
-      <div className="rounded-lg border overflow-hidden">
-        <Table className="min-w-[1100px]">
+      <div className="rounded-lg border overflow-x-auto">
+        <Table className="min-w-[1100px] whitespace-nowrap">
           <TableHeader className="bg-primary text-white">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-muted/0">

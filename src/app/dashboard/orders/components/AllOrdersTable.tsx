@@ -22,10 +22,10 @@ import {
 } from "@tanstack/react-table";
 import { useEffect, useMemo } from "react";
 import FollowUpDate from "./FollowUpDate";
-import { getColumns } from "./OrdersColumn";
+import { getColumns } from "./AllOrdersColumn";
 
 import { TPermission } from "@/utilities/isPermitted";
-export default function OrderHistoryTable({
+export default function AllOrdersTable({
   permissions,
 }: {
   permissions: TPermission[];

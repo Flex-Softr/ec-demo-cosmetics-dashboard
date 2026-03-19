@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import CustomerFilterClear from "./components/CustomerFilterClear";
 import CustomerListOrderDateRange from "./components/CustomerListOrderDateRange";
 import CustomerListOrdersStatusButtons from "./components/CustomerListOrdersStatusButtons";
-import CustomerListOrdersTable from "./components/CustomerListOrdersTable";
+import CustomerOrdersTable from "./components/CustomerOrdersTable";
 import FilterByDivisionDistrict from "./components/FilterByDivisionDistrict";
 import FilterByProduct from "./components/FilterByProduct";
 import FilterBySource from "./components/FilterBySource";
@@ -29,9 +29,11 @@ const Orders = async () => {
   return (
     <Card className="m-4">
       {/* header section , search bar  */}
-      <div className="grid grid-cols-2 justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <h1 className="text-2xl font-bold">Customer List</h1>
-        <OrderSearchBar endPoint="/orders/admin/processing-orders" />
+        <div className="w-full sm:w-auto">
+          <OrderSearchBar endPoint="/orders/admin/processing-orders" />
+        </div>
       </div>
       <hr className="my-4" />
       <div className="space-y-3">
@@ -47,7 +49,7 @@ const Orders = async () => {
           <Show />
         </div>
         {/* Processing orders table */}
-        <CustomerListOrdersTable permissions={permissions} />
+        <CustomerOrdersTable permissions={permissions} />
       </div>
     </Card>
   );

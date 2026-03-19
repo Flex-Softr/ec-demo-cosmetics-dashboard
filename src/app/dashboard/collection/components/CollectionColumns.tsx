@@ -34,6 +34,9 @@ export const columns: ColumnDef<ICollection>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    cell: ({ row }) => (
+      <span className="whitespace-nowrap">{row.original.name}</span>
+    ),
   },
   {
     accessorKey: "isActive",

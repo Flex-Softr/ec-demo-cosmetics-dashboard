@@ -33,7 +33,9 @@ export const columns: ColumnDef<TBrand>[] = [
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => (
-      <span className="capitalize font-medium">{row.getValue("name")}</span>
+      <span className="capitalize font-medium whitespace-nowrap">
+        {row.getValue("name")}
+      </span>
     ),
   },
   {

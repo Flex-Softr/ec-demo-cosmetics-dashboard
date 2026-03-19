@@ -8,7 +8,7 @@ import HomepageSectionTable from "./components/HomepageSectionTable";
 export default function HomepageSectionPage() {
   return (
     <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row gap-3 justify-between items-center">
         <h1 className="text-3xl font-bold tracking-tight">Homepage Sections</h1>
         <HomepageSectionForm
           trigger={

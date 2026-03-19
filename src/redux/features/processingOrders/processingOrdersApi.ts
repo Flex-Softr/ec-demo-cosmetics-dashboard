@@ -17,7 +17,11 @@ const processingOrdersApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: payload,
       }),
-      invalidatesTags: ["processingOrders"],
+      invalidatesTags: [
+        "processingOrders",
+        "allOrders",
+        "customerOrderHistory",
+      ],
     }),
   }),
 });

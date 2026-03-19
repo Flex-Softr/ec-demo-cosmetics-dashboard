@@ -7,7 +7,7 @@ import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
 import CourierBulkAction from "./components/CourierBulkAction";
 import ProcessingOrderDateRange from "./components/CourierDateRange";
-import OrdersTable from "./components/OrdersTable";
+import CourierOrdersTable from "./components/CourierOrdersTable";
 import StatusButtons from "./components/StatusButtons";
 
 const CourierShipmentOrder = async () => {
@@ -23,24 +23,23 @@ const CourierShipmentOrder = async () => {
   }
 
   return (
-    <Card className="m-4">
-      {/* header section , button , search bar  */}
-      <div className="grid grid-cols-2 justify-between items-center">
-        <h1 className="text-2xl font-bold">Shipment Order</h1>
-        <OrderSearchBar endPoint="/orders/admin/processing-done-on-courier-orders" />
+    <Card className="m-4 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 justify-between items-center">
+        <h1 className="text-2xl font-bold">Courier Shipment Order</h1>
+        <OrderSearchBar endPoint="/orders/admin/order-deliver-status" />
       </div>
+
       <hr className="my-4" />
       <div className="space-y-3">
-        {/* All, Processing done, on courier etc status*/}
         <StatusButtons />
         <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
-          {/*Bulk actions and invoice print for Orders*/}
-          <CourierBulkAction />
-          <ProcessingOrderDateRange />
+          <div className="flex items-center gap-2">
+            <CourierBulkAction />
+          </div>
           <Show />
+          <ProcessingOrderDateRange />
         </div>
-        {/* Courier orders table */}
-        <OrdersTable permissions={permissions} />
+        <CourierOrdersTable permissions={permissions} />
       </div>
     </Card>
   );

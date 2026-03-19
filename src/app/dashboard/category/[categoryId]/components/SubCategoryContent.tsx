@@ -17,7 +17,7 @@ const SubCategoryContent = ({ categoryId }: { categoryId: string }) => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-2">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
@@ -29,8 +29,10 @@ const SubCategoryContent = ({ categoryId }: { categoryId: string }) => {
           </Button>
           <div>
             <h1 className="text-xl font-bold">
-              Sub Category of{" "}
-              <span className="text-primary">{category?.name}</span>
+              <span className="whitespace-nowrap">Sub Category of </span>
+              <span className="text-primary whitespace-nowrap">
+                {category?.name}
+              </span>
             </h1>
             <p className="text-xs text-muted-foreground line-clamp-1">
               {category?.description}
@@ -43,9 +45,7 @@ const SubCategoryContent = ({ categoryId }: { categoryId: string }) => {
           trigger={<Button size="sm">Add Sub Category</Button>}
         />
       </div>
-      <div className="w-full">
-        <SubCategoryTable subcategories={category?.subcategories || []} />
-      </div>
+      <SubCategoryTable subcategories={category?.subcategories || []} />
     </>
   );
 };

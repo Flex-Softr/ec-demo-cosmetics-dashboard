@@ -14,7 +14,7 @@ const CreateCoupons = () => {
       <CommonModal
         open={open}
         handleOpen={handleOpen}
-        className="min-h-[600px] w-full"
+        className="w-full"
         modalTitle="Create new coupon"
       >
         <CreateCouponForm />

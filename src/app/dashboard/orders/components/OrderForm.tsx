@@ -27,6 +27,7 @@ import NameMobileAddress from "./NameMobileAddress";
 import Notes from "./Notes";
 import PaymentDiscountAdvance from "./PaymentDiscountAdvance";
 import SelectProduct from "./SelectProduct";
+import { ArrowLeft } from "lucide-react";
 
 const schema = yup.object().shape({
   shipping: yup.object().shape({
@@ -93,7 +94,6 @@ export type TFormInput = yup.InferType<typeof schema>;
 type OrderFormProps = {
   initialValues?: any;
   onSubmitSuccess?: () => void;
-  title?: string;
   imageToOrderId?: string;
   isEdit?: boolean;
   orderId?: string;
@@ -104,7 +104,6 @@ type OrderFormProps = {
 const OrderForm: React.FC<OrderFormProps> = ({
   initialValues,
   onSubmitSuccess,
-  title = "Create New Order",
   imageToOrderId,
   isEdit,
   orderId,
@@ -220,6 +219,15 @@ const OrderForm: React.FC<OrderFormProps> = ({
         /* eslint-disable @typescript-eslint/no-explicit-any */
         const payload: any = { ...data };
 
+        // Sanitize warranty codes
+        data?.orderedProducts?.forEach((product: any) => {
+          if (product.warrantyCodes) {
+            product.warrantyCodes = product.warrantyCodes.filter(
+              (warranty: any) => warranty.code !== ""
+            );
+          }
+        });
+
         // Construct orderedProducts payload according to API guide
         const currentProducts = data.orderedProducts || [];
         const originalProducts = initialValues?.orderedProducts || [];
@@ -232,6 +240,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
             payloadProducts.push({
               id: p._id,
               quantity: p.quantity,
+              variation: p.variation,
+              warrantyCodes: p.warrantyCodes,
             });
           } else {
             // New item: Add
@@ -239,6 +249,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
               product: p.product,
               variation: p.variation,
               quantity: p.quantity,
+              warrantyCodes: p.warrantyCodes,
             });
           }
         });
@@ -260,16 +271,6 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
         if (deliveryStatus === "partial_delivered") {
           payload.status = "partial completed";
-          // We preserve warrantyCodes by passing them through, assuming they are in 'data'
-          // (which comes from initialValues).
-          // If we needed to filter empty codes like EditOrder.tsx did:
-          data?.orderedProducts?.forEach((product: any) => {
-            if (product.warrantyCodes) {
-              product.warrantyCodes = product.warrantyCodes.filter(
-                (warranty: any) => warranty.code !== ""
-              );
-            }
-          });
         }
         await updateOrder({ _id: orderId, payload }).unwrap();
         toast({
@@ -293,11 +294,6 @@ const OrderForm: React.FC<OrderFormProps> = ({
       } else {
         router.push("/dashboard/orders");
       }
-      if (onSubmitSuccess) {
-        onSubmitSuccess();
-      } else {
-        router.push("/dashboard/orders");
-      }
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -307,14 +303,32 @@ const OrderForm: React.FC<OrderFormProps> = ({
   };
 
   return (
-    <div className="w-full p-4">
-      <div className="flex items-center justify-between mb-2 px-1">
-        <h1 className="text-2xl font-bold">{title}</h1>
+    <div className="w-full p-2 sm:px-4 sm:pt-4 sm:pb-10">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 px-1">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => router.back()}
+            className="rounded-full h-8 w-8 sm:h-9 sm:w-9 border bg-white text-primary hover:text-primary shadow-sm border-primary"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 capitalize">
+            {orderId ? `Edit Order #${order?.orderId}` : "Create Order"}
+          </h1>
+        </div>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+      <form
+        id="order-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         {/* Customer Info Section - More compact grid */}
-        <Card className="border-none shadow-sm">
-          <h2 className="text-base font-semibold mb-3 pb-1 border-b">
+        <Card className="border-none shadow-sm py-2">
+          <h2 className="text-base font-semibold mb-2 pb-1 border-b">
             Customer Information
           </h2>
           <div className="space-y-3">
@@ -339,7 +353,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
         </Card>
 
         {/* Product & Order Details Section - Combined Card */}
-        <Card className="border-none shadow-sm space-y-5">
+        <Card className="border-none shadow-sm space-y-3 py-2">
           <div>
             <h2 className="text-base font-semibold mb-1">Product Selection</h2>
             <SelectProduct
@@ -443,8 +457,10 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 />
               </div>
 
+              {/* Bottom Submit Button for Mobile UX (Optional but top is primary now) */}
               <Button
                 type="submit"
+                form="order-form"
                 disabled={isLoading}
                 className="w-full mt-2 bg-primary text-white"
                 size="default"
@@ -452,7 +468,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 {isLoading
                   ? isEdit
                     ? "Updating..."
-                    : "Creating..."
+                    : "Placing..."
                   : isEdit
                     ? "Update Order"
                     : "Place Order"}
