@@ -13,7 +13,7 @@ import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useState } from "react";
 
-const Actions = ({ _id, slug }: { _id: string; slug: string }) => {
+const ProductActions = ({ _id, slug }: { _id: string; slug: string }) => {
   const [open, setOpen] = useState(false);
   const [deleteProducts, { isLoading }] = useDeleteProductsMutation();
 
@@ -56,6 +56,7 @@ const Actions = ({ _id, slug }: { _id: string; slug: string }) => {
         description="This action cannot be undone. This will permanently delete the product from the server."
         onConfirm={handleDelete}
         loading={isLoading}
+        confirmVariant="destructive"
       />
 
       <DropdownMenu>
@@ -123,4 +124,4 @@ const Actions = ({ _id, slug }: { _id: string; slug: string }) => {
   );
 };
 
-export default Actions;
+export default ProductActions;

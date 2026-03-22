@@ -5,7 +5,6 @@ import OrderIdAndDate from "@/components/OrderIdAndDate";
 import UpdateOrderStatus from "@/components/UpdateOrderStatus";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { SectionTitle } from "@/components/ui/sectionTitle";
 import { Separator } from "@/components/ui/separator";
 import config from "@/config/config";
 import { PERMISSIONS } from "@/const/permissions";
@@ -127,9 +126,9 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
   );
 
   return (
-    <div className="mb-8 space-y-6">
-      <div className="flex flex-col lg:flex-row gap-6">
-        <Card className="flex-1 min-w-0 lg:w-[70%] p-4 md:p-6 border-none shadow-sm">
+    <div className="mb-8 space-y-8">
+      <div className="flex flex-col lg:flex-row gap-4">
+        <Card className="flex-1 min-w-0 lg:w-[70%] p-4 border-none shadow-sm mt-4 ml-4">
           {/* Header Section */}
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-2">
             {/* Left Side: Order Info */}
@@ -171,7 +170,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                 </span>
                 <OrderIdAndDate
                   timestamp={createdAt}
-                  className="inline-block"
+                  className="inline-block space-x-2"
                 />
                 <span className="truncate">{order?.orderSource?.name}</span>
               </div>
@@ -408,15 +407,19 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
 
         {/* Sidebar */}
         <div className="w-full lg:w-[30%] space-y-6">
-          <Card className="p-5 border-none shadow-sm space-y-6 sticky top-4">
-            <div className="space-y-3">
-              <SectionTitle className="text-lg">Update Status</SectionTitle>
-              <UpdateOrderStatus
-                _id={_id as string}
-                status={status}
-                order={order}
-                permissions={permissions}
-              />
+          <Card className="p-4 border-none shadow-sm space-y-6 sticky top-4">
+            <div>
+              {/* <SectionTitle className="font-semibold text-base">Update Status</SectionTitle> */}
+              <h3 className="font-semibold text-base">Update Status</h3>
+              <hr className="mb-2 mt-1" />
+              <div>
+                <UpdateOrderStatus
+                  _id={_id as string}
+                  status={status}
+                  order={order}
+                  permissions={permissions}
+                />
+              </div>
             </div>
 
             <div className="space-y-4">

@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import CountByStatusButtons from "./components/CountByStatusButtons";
-import Filter from "./components/Filter";
+import ProductFilter from "./components/ProductFilter";
 import ProductBulkAction from "./components/ProductBulkAction";
 import ProductSearchBar from "./components/ProductSearchBar";
 import ProductsTable from "./components/ProductsTable";
@@ -48,7 +48,7 @@ const AllProducts = async () => {
           <ProductBulkAction />
 
           {/* Filter options by category and stock status*/}
-          <Filter />
+          <ProductFilter />
           {/* </div> */}
           <Show />
         </div>

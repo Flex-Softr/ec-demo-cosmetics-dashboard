@@ -10,7 +10,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, ChevronRight, Minus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import Actions from "./Actions";
+import ProductActions from "./ProductActions";
 
 const getVariablePriceDisplay = (
   variations: NonNullable<IAdminProduct["variations"]>
@@ -332,7 +332,7 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     enableHiding: false,
     cell: ({ row }) => (
       <div className="flex justify-center w-[1%] mx-auto">
-        <Actions _id={row.original._id} slug={row.original.slug} />
+        <ProductActions _id={row.original._id} slug={row.original.slug} />
       </div>
     ),
   },

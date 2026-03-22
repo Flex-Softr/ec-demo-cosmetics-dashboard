@@ -4,7 +4,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useDeleteProductsMutation } from "@/redux/features/products/productsApi";
 import { revalidateTag } from "@/utilities/revalidate";
 import { useRouter } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
 type DeleteProductBtnProps = {
   id: string;
@@ -22,6 +22,8 @@ type DeleteProductBtnProps = {
   size?: "default" | "sm" | "lg" | "icon";
 };
 
+import CommonAlertDialog from "./common/CommonAlertDialog";
+
 const DeleteProductBtn = ({
   id,
   slug,
@@ -32,6 +34,7 @@ const DeleteProductBtn = ({
   size,
 }: DeleteProductBtnProps) => {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [deleteProducts, { isLoading }] = useDeleteProductsMutation();
 
   const handleRevalidate = async (slug: string) => {
@@ -46,35 +49,41 @@ const DeleteProductBtn = ({
     ]);
   };
 
-  const handleDelete = async (productId: string) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
-    if (confirmDelete) {
-      try {
-        await deleteProducts([productId]).unwrap();
-        toast({
-          className: "bg-success text-white text-2xl",
-          title: "The product deleted successfully!",
-        });
-        handleRevalidate(slug);
-        router.push("/dashboard/products");
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Failed to delete the product!",
-        });
-      }
+  const handleDelete = async () => {
+    try {
+      await deleteProducts([id]).unwrap();
+      toast({
+        className: "bg-success text-white text-2xl",
+        title: "The product deleted successfully!",
+      });
+      handleRevalidate(slug);
+      router.push("/dashboard/products");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Failed to delete the product!",
+      });
+    } finally {
+      setOpen(false);
     }
   };
 
   return (
-    <div className="flex justify-end">
+    <div className="flex justify-end mt-5">
+      <CommonAlertDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Are you absolutely sure?"
+        description="This action cannot be undone. This will permanently delete the product from the server."
+        onConfirm={handleDelete}
+        loading={isLoading}
+        confirmVariant="destructive"
+      />
       <Button
         type="button"
         onClick={(e) => {
           e.stopPropagation();
-          handleDelete(id);
+          setOpen(true);
         }}
         disabled={isLoading}
         variant={variant}

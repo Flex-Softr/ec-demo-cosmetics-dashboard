@@ -25,8 +25,11 @@ const EditProductWrapper = ({
 
   if (isLoading) {
     return (
-      <div className="p-8 space-y-4">
-        <div className="h-10 w-48 bg-gray-300 animate-pulse rounded mb-8" />
+      <div className="p-4 space-y-4">
+        <div className="flex justify-between items-center mb-6 p-4 border border-gray-200 rounded">
+          <div className="h-6 w-40 bg-gray-300 animate-pulse rounded" />
+          <div className="h-6 w-16 bg-gray-300 animate-pulse rounded" />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-4">
             <TableSkeleton />

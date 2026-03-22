@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +19,13 @@ type TCommonAlertDialogProps = {
   loading?: boolean;
   confirmText?: string;
   cancelText?: string;
+  confirmVariant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
 };
 
 const CommonAlertDialog = ({
@@ -29,6 +37,7 @@ const CommonAlertDialog = ({
   loading = false,
   confirmText = "Confirm",
   cancelText = "Cancel",
+  confirmVariant = "default",
 }: TCommonAlertDialogProps) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -44,7 +53,10 @@ const CommonAlertDialog = ({
           <AlertDialogAction
             onClick={onConfirm}
             disabled={loading}
-            className="px-6 shadow-sm"
+            className={cn(
+              "px-6 shadow-sm",
+              confirmVariant === "destructive" && "bg-red-500 hover:bg-red-600"
+            )}
           >
             {loading ? "Processing..." : confirmText}
           </AlertDialogAction>
