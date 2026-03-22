@@ -63,7 +63,7 @@ const ProductFilter = () => {
   const collectionOptions = [
     { label: "All Collections", value: "All Collections" },
     ...collections.map((col) => ({
-      label: col.title,
+      label: col.name,
       value: col._id,
       count: col.productCount,
     })),
@@ -96,7 +96,7 @@ const ProductFilter = () => {
     collection: collection === "All Collections" ? "" : collection,
     brand: brand === "All Brands" ? "" : brand,
     stock: stock === "All Product Stock" ? "" : stock,
-    sort: "-createdAt",
+    sort: "-updatedAt",
     page,
     limit,
   });
