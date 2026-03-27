@@ -4,10 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
-import {
-  useBulkSchedulePickupMutation,
-  useGetShippingMethodsForOrderQuery,
-} from "@/redux/features/orders/ordersApi";
+import { useBulkSchedulePickupMutation } from "@/redux/features/courierShipment/courierShipmentApi";
+import { useGetShippingMethodsForOrderQuery } from "@/redux/features/shippingMethod/shippingMethodApi";
 import { TCourier } from "@/types/shippingMethod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronRight, Package, Truck } from "lucide-react";

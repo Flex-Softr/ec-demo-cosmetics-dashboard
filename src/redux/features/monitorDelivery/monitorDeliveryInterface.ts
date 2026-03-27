@@ -43,7 +43,6 @@ export type TMonitorOrdersInitialState = {
   monitorDeliveryOrders: TOrders[];
   selectedStatus: string;
   iSOrderUpdate: boolean;
-  singleOrder: TPlaceOrder;
   bulkOrders: {
     selectedOrders: TPlaceOrder[];
     orderIds: string[];

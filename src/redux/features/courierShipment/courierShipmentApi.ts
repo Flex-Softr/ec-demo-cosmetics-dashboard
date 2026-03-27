@@ -6,21 +6,39 @@ const updateStatusApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getProcessingDoneAndCourierOrders: builder.query({
       query: (args: TQuery) => ({
-        url: "/orders/admin/processing-done-on-courier-orders",
+        url: "/orders/admin/courier-shipment-orders",
         params: searchParams(args),
       }),
-      providesTags: ["processingDoneAndCourierOrders"],
+      providesTags: ["courierShipmentOrders"],
     }),
-    sendCourierAndUpdateStatus: builder.mutation({
-      query: (payload: { orderIds: string[]; status: string }) => ({
-        url: `/orders/book-courier-and-update-status`,
-        method: "PATCH",
+    schedulePickup: builder.mutation({
+      query: (payload) => ({
+        url: "/orders/admin/schedule-pickup",
+        method: "POST",
         body: payload,
       }),
-      invalidatesTags: [
-        "processingDoneAndCourierOrders",
+      invalidatesTags: (result, error, { order_id }) => [
+        { type: "singleOrder", id: order_id },
         "processingOrders",
-        "allOrders",
+        "courierShipmentOrders",
+        "monitorDeliveryOrders",
+        "customerOrderHistory",
+      ],
+    }),
+    bulkSchedulePickup: builder.mutation({
+      query: (payload) => ({
+        url: "/orders/admin/bulk-schedule-pickup",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: (result, error, { order_ids }) => [
+        ...(order_ids || []).map(
+          (id: string) => ({ type: "singleOrder", id }) as const
+        ),
+        "processingOrders",
+        "courierShipmentOrders",
+        "monitorDeliveryOrders",
+        "customerOrderHistory",
       ],
     }),
   }),
@@ -28,5 +46,6 @@ const updateStatusApi = baseApi.injectEndpoints({
 
 export const {
   useGetProcessingDoneAndCourierOrdersQuery,
-  useSendCourierAndUpdateStatusMutation,
+  useSchedulePickupMutation,
+  useBulkSchedulePickupMutation,
 } = updateStatusApi;

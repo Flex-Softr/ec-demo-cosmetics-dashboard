@@ -20,9 +20,9 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import backgroundColor from "@/utilities/backgroundColor";
 import borderColor from "@/utilities/borderColor";
 import { useEffect, useState } from "react";
-
 // import DateRangeSelector from "@/components/DateRangeSelector";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
   const dispatch = useAppDispatch();
 
@@ -47,8 +47,7 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
     isLoading: loading,
     error,
   } = useGetMonitorDeliveryOrdersQuery({
-    // deliveryStatus:
-    //   manageProcessing && filter == "in_review" ? "cancelled" : filter,
+    deliveryStatus: filter === "all" ? "" : filter,
     startFrom,
     endAt,
     sort: "-createdAt",
@@ -73,18 +72,17 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
     if (error) {
       throw new Error("Something went wrong!");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, loading, error, dispatch]);
 
-  const showStatus = manageProcessing
-    ? orderStatusCount?.filter(
-        ({ name }) => name == "partial_delivered" || name == "cancelled"
-      )
-    : orderStatusCount;
+  // const showStatus = manageProcessing
+  //   ? orderStatusCount?.filter(
+  //       ({ name }) => name == "partial_delivered" || name == "cancelled"
+  //     )
+  //   : orderStatusCount;
 
   return (
     <div className="flex flex-wrap items-center justify-start gap-5">
-      {showStatus?.map((status: { name: string; total: string }) => {
+      {orderStatusCount?.map((status: { name: string; total: string }) => {
         const bg = `${backgroundColor(status.name)} text-white`;
         return (
           <Button

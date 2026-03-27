@@ -1,13 +1,13 @@
 "use client";
 
-import { setSelectedSource } from "@/redux/features/customerOrders/customerOrdersSlice";
+import { setSelectedSource } from "@/redux/features/completedOrders/completedOrdersSlice";
 import { useGetOrdersByPlatformCountQuery } from "@/redux/features/reports/reportsApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const FilterBySource = () => {
   const dispatch = useAppDispatch();
   const { selectedSource } = useAppSelector(
-    ({ customerOrders }) => customerOrders
+    ({ completedOrders }) => completedOrders
   );
 
   const { data, isLoading } = useGetOrdersByPlatformCountQuery({

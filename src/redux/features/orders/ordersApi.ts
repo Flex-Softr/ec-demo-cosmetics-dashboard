@@ -1,7 +1,5 @@
 import baseApi from "@/redux/baseApi/baseApi";
 import { TQuery } from "@/types/order.interface";
-import { TSuccessResponse } from "@/types/response";
-import { TCourier } from "@/types/shippingMethod";
 import searchParams from "@/utilities/searchParams";
 
 const updateStatusApi = baseApi.injectEndpoints({
@@ -12,7 +10,13 @@ const updateStatusApi = baseApi.injectEndpoints({
         method: "POST",
         body: orderData,
       }),
-      invalidatesTags: ["carts", "allOrders", "customerOrderHistory"],
+      invalidatesTags: ["allOrders", "customerOrderHistory"],
+    }),
+    getSingleOrder: builder.query({
+      query: (id: string) => ({
+        url: `/orders/admin/${id}`,
+      }),
+      providesTags: (result, error, id) => [{ type: "singleOrder", id }],
     }),
     getAllOrders: builder.query({
       query: (args: TQuery) => ({
@@ -20,12 +24,6 @@ const updateStatusApi = baseApi.injectEndpoints({
         params: searchParams(args),
       }),
       providesTags: ["allOrders"],
-    }),
-    getSingleOrder: builder.query({
-      query: (id: string) => ({
-        url: `/orders/admin/order-id/${id}`,
-      }),
-      providesTags: (result, error, id) => [{ type: "singleOrder", id }],
     }),
     updateOrder: builder.mutation({
       query: ({
@@ -43,14 +41,14 @@ const updateStatusApi = baseApi.injectEndpoints({
         { type: "singleOrder", id: _id },
         "allOrders",
         "processingOrders",
-        "processingDoneAndCourierOrders",
-        "monitorDelivery",
+        "courierShipmentOrders",
+        "monitorDeliveryOrders",
         "customerOrderHistory",
       ],
     }),
-    updateOrdersStatus: builder.mutation({
+    updateOrderStatus: builder.mutation({
       query: (payload: { orderIds: string[]; status: string }) => ({
-        url: `/orders/update-status`,
+        url: `/orders/update-order-status`,
         method: "PATCH",
         body: payload,
       }),
@@ -58,8 +56,6 @@ const updateStatusApi = baseApi.injectEndpoints({
         ...orderIds.map((id) => ({ type: "singleOrder", id }) as const),
         "allOrders",
         "processingOrders",
-        "processingDoneAndCourierOrders",
-        "monitorDelivery",
         "customerOrderHistory",
       ],
     }),
@@ -73,44 +69,8 @@ const updateStatusApi = baseApi.injectEndpoints({
         ...orderIds.map((id) => ({ type: "singleOrder", id }) as const),
         "allOrders",
         "processingOrders",
-        "processingDoneAndCourierOrders",
-        "monitorDelivery",
-        "customerOrderHistory",
-      ],
-    }),
-    getShippingMethodsForOrder: builder.query<
-      TSuccessResponse<TCourier[]>,
-      void
-    >({
-      query: () => ({
-        url: "/orders/get-courier-for-order",
-      }),
-    }),
-    schedulePickup: builder.mutation({
-      query: (payload) => ({
-        url: "/orders/admin/schedule-pickup",
-        method: "POST",
-        body: payload,
-      }),
-      invalidatesTags: (result, error, { order_id }) => [
-        { type: "singleOrder", id: order_id },
-        "allOrders",
-        "processingDoneAndCourierOrders",
-        "customerOrderHistory",
-      ],
-    }),
-    bulkSchedulePickup: builder.mutation({
-      query: (payload) => ({
-        url: "/orders/admin/bulk-schedule-pickup",
-        method: "POST",
-        body: payload,
-      }),
-      invalidatesTags: (result, error, { order_ids }) => [
-        ...(order_ids || []).map(
-          (id: string) => ({ type: "singleOrder", id }) as const
-        ),
-        "allOrders",
-        "processingDoneAndCourierOrders",
+        "courierShipmentOrders",
+        "monitorDeliveryOrders",
         "customerOrderHistory",
       ],
     }),
@@ -128,10 +88,7 @@ export const {
   useGetAllOrdersQuery,
   useGetSingleOrderQuery,
   useUpdateOrderMutation,
-  useUpdateOrdersStatusMutation,
+  useUpdateOrderStatusMutation,
   useDeleteOrdersMutation,
-  useGetShippingMethodsForOrderQuery,
-  useSchedulePickupMutation,
-  useBulkSchedulePickupMutation,
   useGetCustomerOrderHistoryQuery,
 } = updateStatusApi;

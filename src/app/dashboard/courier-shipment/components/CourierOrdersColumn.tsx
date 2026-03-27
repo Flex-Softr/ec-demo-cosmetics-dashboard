@@ -94,9 +94,9 @@ export const getColumns = (
     cell: ({ row }) => (
       <OrderStatus
         order={row.original}
-        disableStatus={["On courier"]}
+        disableStatus={["on courier"]}
         permissions={permissions}
-        currentRoute="courier"
+        currentRoute="shipment"
       />
     ),
   },

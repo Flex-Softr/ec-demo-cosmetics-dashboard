@@ -1,13 +1,13 @@
 "use client";
 import { PRODUCT_STATUS } from "@/const/products";
-import { setSelectedProduct } from "@/redux/features/customerOrders/customerOrdersSlice";
+import { setSelectedProduct } from "@/redux/features/completedOrders/completedOrdersSlice";
 import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const FilterByProduct = () => {
   const dispatch = useAppDispatch();
   const { selectedProduct } = useAppSelector(
-    ({ customerOrders }) => customerOrders
+    ({ completedOrders }) => completedOrders
   );
 
   const { data, isLoading } = useGetAdminProductsQuery({

@@ -35,7 +35,7 @@ const STATUS_COLORS: Record<string, string> = {
   "retry required": "bg-[#00C3C6]",
 
   // Blue
-  "On courier": "bg-[#4c84ff]",
+  "on courier": "bg-[#4c84ff]",
   partial_delivered: "bg-[#4c84ff]",
 
   // Red / Error

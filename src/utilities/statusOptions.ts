@@ -1,5 +1,5 @@
 const MONITOR_DELIVERY_OPTIONS: Record<string, string[]> = {
-  "On courier": ["delivered", "partial completed", "returned", "canceled"],
+  "on courier": ["completed", "partial completed", "returned", "canceled"],
   delivered: ["completed"],
   partial_delivered: ["partial completed"],
 };
@@ -14,7 +14,7 @@ const STATUS_OPTIONS_MAP: Record<string, string[]> = {
   "follow up": ["confirmed", "canceled", "deleted"],
   canceled: ["confirmed"],
   cancelled: ["returned"],
-  "On courier": ["completed", "canceled", "partial completed"],
+  "on courier": ["completed", "canceled", "partial completed"],
   delivered: ["completed"],
   partial_delivered: ["partial completed"],
 };

@@ -10,11 +10,11 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
 import { PERMISSIONS, TPermissionName } from "@/const/permissions";
-import { useAppSelector } from "@/redux/hooks";
-import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierShipment/courierShipmentApi";
-import { useCourierReturnedOrdersMutation } from "@/redux/features/monitorDelivery/monitorDeliveryApi";
-import { useUpdateOrdersStatusMutation } from "@/redux/features/orders/ordersApi";
+import { useSchedulePickupMutation } from "@/redux/features/courierShipment/courierShipmentApi";
+import { useUpdateMonitorDeliveryStatusMutation } from "@/redux/features/monitorDelivery/monitorDeliveryApi";
+import { useUpdateOrderStatusMutation } from "@/redux/features/orders/ordersApi";
 import { useUpdateProcessingOrderStatusMutation } from "@/redux/features/processingOrders/processingOrdersApi";
+import { useAppSelector } from "@/redux/hooks";
 import { TOrders } from "@/types/order.interface";
 import isPermitted, { TPermission } from "@/utilities/isPermitted";
 import { revalidateTag, TTags } from "@/utilities/revalidate";
@@ -23,7 +23,7 @@ import { useState } from "react";
 
 const ROUTE_MAP: Record<
   string,
-  "orders" | "processing" | "courier" | "return"
+  "orders" | "processing" | "shipment" | "monitor"
 > = {
   pending: "orders",
   confirmed: "orders",
@@ -33,11 +33,11 @@ const ROUTE_MAP: Record<
   processing: "processing",
   "warranty processing": "processing",
   "warranty added": "processing",
-  "processing done": "courier",
-  cancelled: "courier",
-  "On courier": "return",
-  delivered: "return",
-  partial_delivered: "return",
+  "processing done": "shipment",
+  cancelled: "shipment",
+  "on courier": "monitor",
+  delivered: "monitor",
+  partial_delivered: "monitor",
 };
 
 const ACTION_PERMISSION_MAP: Record<string, TPermissionName> = {
@@ -54,7 +54,7 @@ const ACTION_PERMISSION_MAP: Record<string, TPermissionName> = {
   "processing done": PERMISSIONS.MANAGE_PROCESSING_ORDER,
 
   completed: PERMISSIONS.MANAGE_SHIPMENT_ORDER,
-  "On courier": PERMISSIONS.MANAGE_SHIPMENT_ORDER,
+  "on courier": PERMISSIONS.MANAGE_SHIPMENT_ORDER,
   delivered: PERMISSIONS.MANAGE_SHIPMENT_ORDER,
   "partial completed": PERMISSIONS.MANAGE_SHIPMENT_ORDER,
   returned: PERMISSIONS.MANAGE_SHIPMENT_ORDER,
@@ -83,13 +83,13 @@ const UpdateOrderStatus = ({
     ({ monitorDelivery }) => monitorDelivery.editPermission
   );
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [updateOrdersStatus, { isLoading }] = useUpdateOrdersStatusMutation();
-  const [updateProcessingOrdersStatus, { isLoading: loading }] =
+  const [updateOrderStatus, { isLoading }] = useUpdateOrderStatusMutation();
+  const [updateProcessingOrderStatus, { isLoading: loading }] =
     useUpdateProcessingOrderStatusMutation();
-  const [sendCourierAndUpdateStatus, { isLoading: isSendLoading }] =
-    useSendCourierAndUpdateStatusMutation();
-  const [courierReturnedOrders, { isLoading: isReturnLoading }] =
-    useCourierReturnedOrdersMutation();
+  const [schedulePickup, { isLoading: isSendLoading }] =
+    useSchedulePickupMutation();
+  const [updateMonitorDeliveryStatus, { isLoading: isReturnLoading }] =
+    useUpdateMonitorDeliveryStatusMutation();
 
   const permittedOptions = statusOptions(status, currentRoute).filter(
     (option) => {
@@ -170,13 +170,13 @@ const UpdateOrderStatus = ({
     try {
       let res;
       if (route === "orders") {
-        res = await updateOrdersStatus(updatePayload).unwrap();
+        res = await updateOrderStatus(updatePayload).unwrap();
       } else if (route === "processing") {
-        res = await updateProcessingOrdersStatus(updatePayload).unwrap();
-      } else if (route === "courier") {
-        res = await sendCourierAndUpdateStatus(updatePayload).unwrap();
-      } else if (route === "return") {
-        res = await courierReturnedOrders(updatePayload).unwrap();
+        res = await updateProcessingOrderStatus(updatePayload).unwrap();
+      } else if (route === "shipment") {
+        res = await schedulePickup(updatePayload).unwrap();
+      } else if (route === "monitor") {
+        res = await updateMonitorDeliveryStatus(updatePayload).unwrap();
       }
       if (res?.success) {
         toast({

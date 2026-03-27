@@ -78,6 +78,7 @@ const PaymentDiscountAdvance = (props: TProps) => {
           >
             <option value="">-- Select Order Source --</option>
             <option value="Phone Call">Phone Call</option>
+            <option value="WhatsApp">WhatsApp</option>
             <option value="Social Media">Social Media</option>
             <option value="From Office">From Office</option>
           </select>

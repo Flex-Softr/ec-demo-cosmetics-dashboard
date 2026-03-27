@@ -1,25 +1,25 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useGetCompletedOrdersQuery } from "@/redux/features/completedOrders/completedOrdersApi";
+import {
+  setCompletedOrders,
+  setSelectedStatus,
+} from "@/redux/features/completedOrders/completedOrdersSlice";
 import {
   setIsLoading,
   setLimit,
   setPage,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  setCustomerOrders,
-  setSelectedStatus,
-} from "@/redux/features/customerOrders/customerOrdersSlice";
 import {
   setSearch,
   setSearchQuery,
   setSearchedOrders,
 } from "@/redux/features/search/searchSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import backgroundColor from "@/utilities/backgroundColor";
 import borderColor from "@/utilities/borderColor";
 import { useEffect, useState } from "react";
-import { useGetCustomerOrdersQuery } from "@/redux/features/customerOrders/customerOrdersApi";
 // import DateRangeSelector from "@/components/DateRangeSelector";
 
 const CustomerListOrdersStatusButtons = () => {
@@ -36,10 +36,10 @@ const CustomerListOrdersStatusButtons = () => {
     selectedUpazila,
     selectedDistrict,
     selectedDivision,
-    customerOrders,
-  } = useAppSelector(({ customerOrders }) => customerOrders);
+    completedOrders,
+  } = useAppSelector(({ completedOrders }) => completedOrders);
 
-  if (!customerOrders.length && page > 1) {
+  if (!completedOrders.length && page > 1) {
     dispatch(setPage(1));
   }
 
@@ -49,7 +49,7 @@ const CustomerListOrdersStatusButtons = () => {
     data,
     isLoading: loading,
     error,
-  } = useGetCustomerOrdersQuery({
+  } = useGetCompletedOrdersQuery({
     status: selectedStatus,
     orderedTimes: selectedTimes,
     orderSource: selectedSource,
@@ -72,7 +72,7 @@ const CustomerListOrdersStatusButtons = () => {
       const { meta, data: orders } = data;
       dispatch(setTotalPage(meta));
       setOrderStatusCount(orders?.countsByStatus);
-      dispatch(setCustomerOrders(orders?.data));
+      dispatch(setCompletedOrders(orders?.data));
       dispatch(setSearch(false));
       dispatch(setSearchQuery(""));
       dispatch(setSearchedOrders([]));

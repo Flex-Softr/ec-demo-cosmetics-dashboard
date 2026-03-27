@@ -88,8 +88,6 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
     reasonNotes,
   } = order;
 
-  // const deliveryStatus = order?.statusFromShippingProvider;
-
   const edit = [
     "pending",
     "confirmed",
@@ -301,7 +299,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
           </div>
 
           {/* Courier Info */}
-          {(order?.statusFromShippingProvider ||
+          {(order?.deliveryStatus ||
             order.courierDetails?.courierProvider?.name) && (
             <div className="pt-4 mt-2 border-t border-dashed">
               <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-sm">
@@ -310,9 +308,9 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                     Delivery Status:
                   </span>
                   <span
-                    className={`capitalize px-2 rounded text-[11px] font-medium text-white ${backgroundColor(order?.statusFromShippingProvider || "")}`}
+                    className={`capitalize px-2 rounded text-[11px] font-medium text-white ${backgroundColor(order?.deliveryStatus || "")}`}
                   >
-                    {order?.statusFromShippingProvider
+                    {order?.deliveryStatus
                       ?.replace("_", " ")
                       ?.replaceAll("-", " ")}
                   </span>
@@ -337,11 +335,11 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                   </>
                 )}
 
-                {order?.messageFromShippingProvider && (
+                {order?.deliveryMessage && (
                   <div className="flex items-center gap-2">
                     <span className="text-muted-foreground">Message:</span>
                     <span className="text-gray-600 italic">
-                      {order.messageFromShippingProvider}
+                      {order.deliveryMessage}
                     </span>
                   </div>
                 )}

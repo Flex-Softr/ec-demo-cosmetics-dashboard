@@ -41,7 +41,7 @@ export default function MultiSelectStatus() {
     selectedUpazila,
     selectedDistrict,
     selectedDivision,
-  } = useAppSelector(({ customerOrders }) => customerOrders);
+  } = useAppSelector(({ completedOrders }) => completedOrders);
 
   const {
     data: productsData,

@@ -66,9 +66,6 @@ export type TOrders = {
   payment: Payment;
   statusHistory: StatusHistory;
   status: string;
-  deliveryStatus: string;
-  monitoringStatus: string;
-  trackingStatus: string;
   followUpDate: string;
   shipping: Shipping;
   createdAt: Date;
@@ -79,7 +76,6 @@ export type TOrders = {
   courierNotes?: string;
   monitoringNotes?: string;
   reasonNotes?: string;
-  orderSource: { name: string; url: string; lpNo: number };
   courierDetails?: {
     courierProvider: {
       _id: string;
@@ -89,9 +85,12 @@ export type TOrders = {
     };
     trackingId: string;
   };
+  deliveryStatus: string;
+  deliveryMessage?: string;
+  monitoringStatus: string;
+  trackingStatus: string;
   eventId?: string;
-  messageFromShippingProvider?: string;
-  statusFromShippingProvider?: string;
+  orderSource: { name: string; url: string; lpNo: number };
 };
 
 export type TQuery = {

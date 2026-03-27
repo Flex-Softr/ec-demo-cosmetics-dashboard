@@ -4,7 +4,7 @@ import {
   setSelectedDistrict,
   setSelectedDivision,
   setSelectedUpazila,
-} from "@/redux/features/customerOrders/customerOrdersSlice";
+} from "@/redux/features/completedOrders/completedOrdersSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const FilterByDivisionDistrict = ({
@@ -17,7 +17,7 @@ const FilterByDivisionDistrict = ({
   const dispatch = useAppDispatch();
 
   const { selectedDivision, selectedDistrict, selectedUpazila } =
-    useAppSelector(({ customerOrders }) => customerOrders);
+    useAppSelector(({ completedOrders }) => completedOrders);
 
   const divisions = BdAddress.divisions(lang);
   const districts = selectedDivision

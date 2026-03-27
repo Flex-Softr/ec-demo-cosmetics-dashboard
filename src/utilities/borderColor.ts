@@ -48,7 +48,7 @@ const STATUS_BORDER_COLORS: Record<string, string> = {
     "ring-1 ring-[#00C3C6] text-[#00C3C6] hover:text-white hover:bg-[#00C3C6]",
 
   // Blue
-  "On courier":
+  "on courier":
     "ring-1 ring-[#4c84ff] text-[#4c84ff] hover:bg-[#4c84ff] hover:text-white",
   partial_delivered:
     "ring-1 ring-[#4c84ff] text-[#4c84ff] hover:bg-[#4c84ff] hover:text-white",

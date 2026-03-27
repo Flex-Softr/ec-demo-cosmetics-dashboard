@@ -9,18 +9,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-// import { refetchData } from "@/utilities/fetchData";
-import { useSendCourierAndUpdateStatusMutation } from "@/redux/features/courierShipment/courierShipmentApi";
+import { useBulkSchedulePickupMutation } from "@/redux/features/courierShipment/courierShipmentApi";
 import { setBulkOrder } from "@/redux/features/courierShipment/courierShipmentSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import statusOptions from "@/utilities/statusOptions";
 import { useState } from "react";
 import BulkSchedulePickup from "./BulkSchedulePickup";
 
 const CourierBulkAction = () => {
   const dispatch = useAppDispatch();
-  const [sendCourierAndUpdateStatus, { isLoading }] =
-    useSendCourierAndUpdateStatusMutation();
+  const [bulkSchedulePickup, { isLoading }] = useBulkSchedulePickupMutation();
   const { orderIds } = useAppSelector(
     ({ courierShipment }) => courierShipment.bulkOrders
   );
@@ -50,7 +48,7 @@ const CourierBulkAction = () => {
 
     try {
       if (bulkAction !== "bulk") {
-        const res = await sendCourierAndUpdateStatus(updatePayload).unwrap();
+        const res = await bulkSchedulePickup(updatePayload).unwrap();
         if (res.success) {
           dispatch(setBulkOrder({ orderIds: [] }));
           // dispatch(setIsOrderUpdate(!iSOrderUpdate));
@@ -72,7 +70,7 @@ const CourierBulkAction = () => {
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 items-start sm:items-center">
-      {statusOptions(filter).length && filter !== "On courier" ? (
+      {statusOptions(filter).length && filter !== "on courier" ? (
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Select onValueChange={(value) => setBulkAction(value)}>
             <SelectTrigger className="border-primary focus:ring-primary focus:ring-1 capitalize">

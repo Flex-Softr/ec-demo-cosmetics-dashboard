@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { TCustomerOrdersInitialState } from "./customerOrdersInterface";
+import { TCompletedOrdersInitialState } from "./completedOrdersInterface";
 
-const initialState: TCustomerOrdersInitialState = {
-  customerOrders: [],
+const initialState: TCompletedOrdersInitialState = {
+  completedOrders: [],
   selectedStatus: "completed",
   selectedProduct: "",
   selectedTimes: undefined,
@@ -17,12 +17,12 @@ const initialState: TCustomerOrdersInitialState = {
   },
 };
 
-const customerOrdersSlice = createSlice({
-  name: "customerOrdersSlice",
+const completedOrdersSlice = createSlice({
+  name: "completedOrdersSlice",
   initialState,
   reducers: {
-    setCustomerOrders: (state, action) => {
-      state.customerOrders = action.payload;
+    setCompletedOrders: (state, action) => {
+      state.completedOrders = action.payload;
     },
     setSelectedStatus: (state, action) => {
       state.selectedStatus = action.payload;
@@ -51,7 +51,7 @@ const customerOrdersSlice = createSlice({
     setBulkOrder: (state, action) => {
       state.bulkOrders = action.payload;
     },
-    setCustomerOrderFilterClear: (state) => {
+    setCompletedOrderFilterClear: (state) => {
       state.selectedStatus = "completed";
       state.selectedProduct = "";
       state.selectedTimes = undefined;
@@ -63,7 +63,7 @@ const customerOrdersSlice = createSlice({
   },
 });
 export const {
-  setCustomerOrders,
+  setCompletedOrders,
   setSelectedStatus,
   setSelectedProduct,
   setSelectedTimes,
@@ -71,9 +71,9 @@ export const {
   setSelectedDivision,
   setSelectedDistrict,
   setSelectedUpazila,
-  setCustomerOrderFilterClear,
+  setCompletedOrderFilterClear,
   // setIsOrderUpdate,
   setBulkOrder,
-} = customerOrdersSlice.actions;
+} = completedOrdersSlice.actions;
 
-export default customerOrdersSlice.reducer;
+export default completedOrdersSlice.reducer;

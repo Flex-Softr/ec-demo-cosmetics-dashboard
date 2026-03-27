@@ -26,7 +26,7 @@ const CourierShipmentOrder = async () => {
     <Card className="m-4 ">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 justify-between items-center">
         <h1 className="text-2xl font-bold">Courier Shipment Order</h1>
-        <OrderSearchBar endPoint="/orders/admin/order-deliver-status" />
+        <OrderSearchBar endPoint="/orders/admin/monitor-delivery-orders" />
       </div>
 
       <hr className="my-4" />

@@ -16,6 +16,7 @@ export type TOrderSource =
   | "Landing Page"
   | "App"
   | "Phone Call"
+  | "WhatsApp"
   | "Social Media"
   | "From Office"
   | "Warranty Claimed";

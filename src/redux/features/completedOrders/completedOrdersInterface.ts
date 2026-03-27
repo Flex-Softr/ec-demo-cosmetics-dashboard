@@ -12,7 +12,7 @@ type TShipping = {
   fullAddress: string | undefined;
 };
 
-type UpdateCustomersInitialState = {
+type UpdateCompletedOrdersInitialState = {
   discount: number;
   product: TProduct;
   subtotal: number;
@@ -31,8 +31,8 @@ export type TUpdatePayload = {
   };
 };
 
-export type TCustomerOrdersInitialState = {
-  customerOrders: TOrders[];
+export type TCompletedOrdersInitialState = {
+  completedOrders: TOrders[];
   selectedStatus: string;
   selectedProduct: string;
   selectedTimes: number | undefined;
@@ -46,6 +46,6 @@ export type TCustomerOrdersInitialState = {
     invoices: TOrders[];
   };
 };
-export type TInitialStateUpdateCustomerOrders = {
-  updateOrder: UpdateCustomersInitialState;
+export type TInitialStateUpdateCompletedOrders = {
+  updateOrder: UpdateCompletedOrdersInitialState;
 };

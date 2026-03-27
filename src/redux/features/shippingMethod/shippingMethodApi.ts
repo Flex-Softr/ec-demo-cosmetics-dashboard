@@ -1,8 +1,17 @@
 import baseApi from "@/redux/baseApi/baseApi";
-import { TRedXDeliveryArea } from "@/types/shippingMethod";
+import { TSuccessResponse } from "@/types/response";
+import { TCourier, TRedXDeliveryArea } from "@/types/shippingMethod";
 
 const shippingMethodApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getShippingMethodsForOrder: builder.query<
+      TSuccessResponse<TCourier[]>,
+      void
+    >({
+      query: () => ({
+        url: "/orders/get-courier-for-order",
+      }),
+    }),
     getRedXShippingArea: builder.query<{ data: TRedXDeliveryArea[] }, void>({
       query: () => ({
         url: "/courier-config/area/redx",
@@ -11,4 +20,7 @@ const shippingMethodApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetRedXShippingAreaQuery } = shippingMethodApi;
+export const {
+  useGetShippingMethodsForOrderQuery,
+  useGetRedXShippingAreaQuery,
+} = shippingMethodApi;

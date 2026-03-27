@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { useUpdateOrdersStatusMutation } from "@/redux/features/orders/ordersApi";
+import { useUpdateOrderStatusMutation } from "@/redux/features/orders/ordersApi";
 import { setBulkOrder } from "@/redux/features/orders/ordersSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import statusOptions from "@/utilities/statusOptions";
@@ -18,7 +18,7 @@ import PrintInvoiceButton from "../[orderId]/components/invoice/PrintInvoiceButt
 
 const BulkAction = () => {
   const dispatch = useAppDispatch();
-  const [updateOrderStatus, { isLoading }] = useUpdateOrdersStatusMutation();
+  const [updateOrderStatus, { isLoading }] = useUpdateOrderStatusMutation();
   const { orderIds, invoices } = useAppSelector(
     ({ orders }) => orders.bulkOrders
   );

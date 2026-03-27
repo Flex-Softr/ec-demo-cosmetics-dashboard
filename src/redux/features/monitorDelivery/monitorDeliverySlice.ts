@@ -3,16 +3,8 @@ import { TMonitorOrdersInitialState } from "./monitorDeliveryInterface";
 
 const initialState: TMonitorOrdersInitialState = {
   monitorDeliveryOrders: [],
-  selectedStatus: "in_review",
+  selectedStatus: "all",
   iSOrderUpdate: false,
-  singleOrder: {
-    invoice: "",
-    recipient_name: "",
-    recipient_phone: "",
-    recipient_address: "",
-    cod_amount: 0,
-    note: "",
-  },
   bulkOrders: {
     selectedOrders: [],
     orderIds: [],
@@ -34,9 +26,6 @@ const monitorDeliverySlice = createSlice({
     setIsOrderUpdate: (state, action) => {
       state.iSOrderUpdate = action.payload;
     },
-    setSingleOrder: (state, action) => {
-      state.singleOrder = action.payload;
-    },
     setBulkOrder: (state, action) => {
       state.bulkOrders = action.payload;
     },
@@ -45,10 +34,10 @@ const monitorDeliverySlice = createSlice({
     },
   },
 });
+
 export const {
   setMonitorDeliveryOrders,
   setSelectedStatus,
-  setSingleOrder,
   setBulkOrder,
   setEditPermission,
 } = monitorDeliverySlice.actions;

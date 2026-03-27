@@ -2,35 +2,35 @@ import baseApi from "@/redux/baseApi/baseApi";
 import { TQuery } from "@/types/order.interface";
 import searchParams from "@/utilities/searchParams";
 
-const updateStatusApi = baseApi.injectEndpoints({
+const monitorDeliveryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMonitorDeliveryOrders: builder.query({
       query: (args: TQuery) => ({
-        url: "/orders/admin/order-deliver-status",
+        url: "/orders/admin/monitor-delivery-orders",
         params: searchParams(args),
       }),
-      providesTags: ["monitorDelivery"],
+      providesTags: ["monitorDeliveryOrders"],
     }),
-    refreshCourierOrders: builder.mutation({
-      query: () => ({
-        url: "/orders/update-order-delivery-status",
-        method: "POST",
-      }),
-      invalidatesTags: ["monitorDelivery"],
-    }),
-    courierReturnedOrders: builder.mutation({
+    updateMonitorDeliveryStatus: builder.mutation({
       query: (payload: { orderIds: string[]; status: string }) => ({
-        url: "/orders/manage-return-partial",
+        url: "/orders/update-monitor-delivery-status",
         method: "PATCH",
         body: payload,
       }),
-      invalidatesTags: ["monitorDelivery", "processingOrders"],
+      invalidatesTags: (result, error, { orderIds }) => [
+        ...(orderIds || []).map(
+          (id: string) => ({ type: "singleOrder", id }) as const
+        ),
+        "courierShipmentOrders",
+        "monitorDeliveryOrders",
+        "completedOrders",
+        "customerOrderHistory",
+      ],
     }),
   }),
 });
 
 export const {
   useGetMonitorDeliveryOrdersQuery,
-  useRefreshCourierOrdersMutation,
-  useCourierReturnedOrdersMutation,
-} = updateStatusApi;
+  useUpdateMonitorDeliveryStatusMutation,
+} = monitorDeliveryApi;

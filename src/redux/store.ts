@@ -14,10 +14,10 @@ import baseApi from "./baseApi/baseApi";
 import addProductReducer from "./features/addProduct/addProductSlice";
 import variationReducer from "./features/addProduct/variation/variationSlice";
 import authReducer from "./features/auth/authSlice";
+import completedOrdersReducer from "./features/completedOrders/completedOrdersSlice";
 import couponSlice from "./features/coupon/couponSlice";
 import courierConfigurationReducer from "./features/courierConfiguration/courierConfigurationSlice";
 import courierShipmentReducer from "./features/courierShipment/courierShipmentSlice";
-import customerOrdersSlice from "./features/customerOrders/customerOrdersSlice";
 import imageSelectorReducer from "./features/imageSelector/imageSelectorSlice";
 import imageToOrderReqSlice from "./features/imageToOrder/imageToOrderSlice";
 import monitorDeliveryReducer from "./features/monitorDelivery/monitorDeliverySlice";
@@ -52,14 +52,14 @@ export const createStore = () => {
       processingOrders: processingOrdersReducer,
       courierShipment: courierShipmentReducer,
       monitorDelivery: monitorDeliveryReducer,
+      completedOrders: completedOrdersReducer,
+      warrantyClaim: warrantyClaimSlice,
+      imageToOrder: imageToOrderReqSlice,
       search: searchReducer,
       pagination: paginationReducer,
-      warrantyClaim: warrantyClaimSlice,
       users: userSlice,
-      customerOrders: customerOrdersSlice,
       allCoupons: couponSlice,
       shippingCharges: shippingChargesSlice,
-      imageToOrder: imageToOrderReqSlice,
       registeredCustomer: registeredCustomer,
       courierConfiguration: courierConfigurationReducer,
       paymentMethod: paymentMethodReducer,

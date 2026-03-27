@@ -48,17 +48,17 @@ export default function MonitorOrdersTable({
   const newColumns: ColumnDef<TOrders>[] = [
     ...columns.slice(0, 8),
     {
-      accessorKey: "statusFromShippingProvider",
+      accessorKey: "deliveryStatus",
       header: "Delivery",
       cell: ({ row }) => {
-        const status = row.original.statusFromShippingProvider || "";
+        const status = row.original.deliveryStatus || "";
         return (
           <div
-            className={`capitalize whitespace-nowrap rounded text-white px-1.5 ${backgroundColor(
+            className={`capitalize rounded text-white px-1.5 ${backgroundColor(
               status
             )}`}
           >
-            {status?.replace("_", " ")?.replaceAll("-", " ")}
+            {status?.replaceAll("_", " ")}
           </div>
         );
       },

@@ -13,13 +13,15 @@ const processingOrdersApi = baseApi.injectEndpoints({
     }),
     updateProcessingOrderStatus: builder.mutation({
       query: (payload: { orderIds: string[]; status: string }) => ({
-        url: `/orders/update-processing-status`,
+        url: `/orders/update-processing-order-status`,
         method: "PATCH",
         body: payload,
       }),
-      invalidatesTags: [
-        "processingOrders",
+      invalidatesTags: (result, error, { orderIds }) => [
+        ...orderIds.map((id) => ({ type: "singleOrder", id }) as const),
         "allOrders",
+        "processingOrders",
+        "courierShipmentOrders",
         "customerOrderHistory",
       ],
     }),

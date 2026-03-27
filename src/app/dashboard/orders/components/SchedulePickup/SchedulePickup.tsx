@@ -25,11 +25,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "@/components/ui/use-toast";
+
 import {
+  useGetRedXShippingAreaQuery,
   useGetShippingMethodsForOrderQuery,
-  useSchedulePickupMutation,
-} from "@/redux/features/orders/ordersApi";
-import { useGetRedXShippingAreaQuery } from "@/redux/features/shippingMethod/shippingMethodApi";
+} from "@/redux/features/shippingMethod/shippingMethodApi";
 import { TOrders } from "@/types/order.interface";
 import { TCourier } from "@/types/shippingMethod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,6 +50,7 @@ import {
   SchedulePickupSchema,
   TSchedulePickupForm,
 } from "../SchedulePickupSchema";
+import { useSchedulePickupMutation } from "@/redux/features/courierShipment/courierShipmentApi";
 
 const SchedulePickup = ({
   handleOpen,
