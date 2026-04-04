@@ -12,6 +12,7 @@ import {
 import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
 import {
   setProducts,
+  setCountsByStatus,
   setSearch,
   setSearchQuery,
   setSearchedProducts,
@@ -83,9 +84,11 @@ const ProductFilter = () => {
     ...stockStatusOptions,
   ];
 
-  if (!products.length && page > 1) {
-    dispatch(setPage(1));
-  }
+  useEffect(() => {
+    if (!products.length && page > 1) {
+      dispatch(setPage(1));
+    }
+  }, [products.length, page, dispatch]);
   const {
     data,
     isLoading: loading,
@@ -111,6 +114,7 @@ const ProductFilter = () => {
         dispatch(setTotalPage(meta));
       }
       dispatch(setProducts(products?.data));
+      dispatch(setCountsByStatus(products?.countsByStatus));
       dispatch(setSearch(false));
       dispatch(setSearchQuery(""));
       dispatch(setSearchedProducts([]));
@@ -126,7 +130,10 @@ const ProductFilter = () => {
       <CommonSelect
         options={categoryOptions}
         value={category}
-        onChange={(value) => setCategory(value)}
+        onChange={(value) => {
+          setCategory(value);
+          dispatch(setPage(1));
+        }}
         placeholder="All Categories"
         className="border-primary"
       />
@@ -134,7 +141,10 @@ const ProductFilter = () => {
       <CommonSelect
         options={collectionOptions}
         value={collection}
-        onChange={(value) => setCollection(value)}
+        onChange={(value) => {
+          setCollection(value);
+          dispatch(setPage(1));
+        }}
         placeholder="All Collections"
         className="border-primary"
       />
@@ -142,7 +152,10 @@ const ProductFilter = () => {
       <CommonSelect
         options={brandOptions}
         value={brand}
-        onChange={(value) => setBrand(value)}
+        onChange={(value) => {
+          setBrand(value);
+          dispatch(setPage(1));
+        }}
         placeholder="All Brands"
         className="border-primary"
       />
@@ -150,7 +163,10 @@ const ProductFilter = () => {
       <CommonSelect
         options={stockOptions}
         value={stock}
-        onChange={(value) => setStatus(value)}
+        onChange={(value) => {
+          setStatus(value);
+          dispatch(setPage(1));
+        }}
         placeholder="All Product Stock"
         className="border-primary"
       />

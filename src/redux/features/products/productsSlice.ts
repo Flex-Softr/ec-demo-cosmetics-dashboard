@@ -3,6 +3,7 @@ import { TProductsInitialState } from "./productsInterface";
 
 const initialState: TProductsInitialState = {
   products: [],
+  countsByStatus: [],
   selectedStatus: "all",
   bulkProducts: {
     productIds: [],
@@ -20,6 +21,9 @@ const productsSlice = createSlice({
   reducers: {
     setProducts: (state, action) => {
       state.products = action.payload;
+    },
+    setCountsByStatus: (state, action) => {
+      state.countsByStatus = action.payload;
     },
     setSelectedStatus: (state, action) => {
       state.selectedStatus = action.payload;
@@ -47,6 +51,7 @@ const productsSlice = createSlice({
 
 export const {
   setProducts,
+  setCountsByStatus,
   setSelectedStatus,
   setBulkProduct,
   setBulkProductSlugs,

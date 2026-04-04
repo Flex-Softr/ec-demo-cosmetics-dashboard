@@ -1,75 +1,25 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-  setIsLoading,
   setLimit,
   setPage,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
-import { useGetAdminProductsQuery } from "@/redux/features/products/productsApi";
-import {
-  setProducts,
-  setSearch,
-  setSearchQuery,
-  setSearchedProducts,
-  setSelectedStatus,
-} from "@/redux/features/products/productsSlice";
+import { setSelectedStatus } from "@/redux/features/products/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import backgroundColor from "@/utilities/backgroundColor";
 import borderColor from "@/utilities/borderColor";
-// import DateRangeSelector from "@/components/DateRangeSelector";
-import { useEffect, useState } from "react";
 
 const CountByStatusButtons = () => {
   const dispatch = useAppDispatch();
-  const { page, limit, isLoading } = useAppSelector(
-    ({ pagination }) => pagination
-  );
-  const { selectedStatus: filter, products } = useAppSelector(
+  const { limit, isLoading } = useAppSelector(({ pagination }) => pagination);
+  const { selectedStatus: filter, countsByStatus } = useAppSelector(
     ({ products }) => products
   );
 
-  if (!products.length && page > 1) {
-    dispatch(setPage(1));
-  }
-  const [productStatusCount, setCountByStatus] = useState<
-    { name: string; total: number }[]
-  >([]);
-  const {
-    data,
-    isLoading: loading,
-    error,
-  } = useGetAdminProductsQuery({
-    status: filter === "all" ? "" : filter,
-    sort: "-createdAt",
-    page,
-    limit,
-  });
-
-  useEffect(() => {
-    if (loading) {
-      dispatch(setIsLoading(true));
-    }
-    if (data) {
-      const { meta, data: products } = data;
-      if (meta) {
-        dispatch(setTotalPage(meta));
-      }
-      setCountByStatus(products?.countsByStatus);
-      dispatch(setProducts(products?.data));
-      dispatch(setSearch(false));
-      dispatch(setSearchQuery(""));
-      dispatch(setSearchedProducts([]));
-      dispatch(setIsLoading(false));
-    }
-    if (error) {
-      throw new Error("Something went wrong!");
-    }
-  }, [data, loading, error, dispatch]);
-
   return (
     <div className="flex flex-wrap items-center justify-start gap-5">
-      {productStatusCount?.map((status: { name: string; total: number }) => {
+      {countsByStatus?.map((status: { name: string; total: number }) => {
         const bg = `${backgroundColor(status.name)} text-white`;
         return (
           <Button
@@ -78,6 +28,7 @@ const CountByStatusButtons = () => {
               dispatch(setTotalPage({ total: status.total }));
               dispatch(setLimit(limit));
               dispatch(setSelectedStatus(status.name));
+              dispatch(setPage(1));
             }}
             disabled={isLoading}
             className={`capitalize bg-white flex items-center gap-1 rounded-2xl ${borderColor(
@@ -92,9 +43,6 @@ const CountByStatusButtons = () => {
           </Button>
         );
       })}
-      {/* <div>
-        <DateRangeSelector />
-      </div> */}
     </div>
   );
 };

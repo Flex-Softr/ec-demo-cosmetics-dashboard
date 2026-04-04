@@ -4,6 +4,7 @@ import { PERMISSIONS } from "@/const/permissions";
 import { TUser } from "@/redux/features/auth/interface";
 import decodeJWT from "@/utilities/decodeJWT";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
 export default async function getAccessToken(request: NextRequest) {
@@ -37,15 +38,22 @@ export default async function getAccessToken(request: NextRequest) {
 
 export async function getProfile() {
   const accessToken = cookies().get("__app.ec.at")?.value;
+
+  if (!accessToken) {
+    redirect("/login");
+  }
+
   const res = await fetch(`${config.api_base_url}/api/v1/users/profile`, {
     method: "GET",
     headers: { authorization: `Bearer ${accessToken}` },
     cache: "force-cache",
     next: { tags: ["profile"] },
   });
+
   if (!res.ok) {
-    throw new Error("Failed to fetch profile data");
+    redirect("/login");
   }
+
   const data = await res.json();
   return data?.data;
 }

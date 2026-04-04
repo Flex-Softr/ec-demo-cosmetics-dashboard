@@ -46,6 +46,7 @@ export type TProduct = {
 
 export type TProductsInitialState = {
   products: TProduct[];
+  countsByStatus: { name: string; total: number }[];
   selectedStatus: string;
   bulkProducts: {
     productIds: string[];
