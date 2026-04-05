@@ -6,6 +6,30 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function decodeUTF8(str: string | undefined | null): string {
+  if (!str) return "";
+
+  // If the string contains any characters outside the Latin-1 range (0-255),
+  // it is already a decoded Unicode string and should be returned as is.
+  for (let i = 0; i < str.length; i++) {
+    if (str.charCodeAt(i) > 255) {
+      return str;
+    }
+  }
+
+  try {
+    // Modern approach to handle UTF-8 bytes misinterpreted as ISO-8859-1
+    const bytes = new Uint8Array(str.length);
+    for (let i = 0; i < str.length; i++) {
+      bytes[i] = str.charCodeAt(i);
+    }
+    return new TextDecoder().decode(bytes);
+  } catch (e) {
+    // Fallback to original string if decoding fails
+    return str;
+  }
+}
+
 export function formatImageSrc(src: string | undefined | null): string {
   // Return placeholder if src is missing
   if (!src) return "/placeholder.png";

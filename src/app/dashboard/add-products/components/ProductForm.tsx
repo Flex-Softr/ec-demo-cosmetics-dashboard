@@ -36,6 +36,7 @@ import Published from "./Published";
 import RelatedProducts from "./RelatedProduct";
 import ShortDescriptionInput from "./ShortDescriptionInput";
 import TitleInput from "./TitleInput";
+import PreviewLinkInput from "./PreviewLinkInput";
 
 const ProductForm = ({ productId }: { productId?: string }) => {
   const dispatch = useAppDispatch();
@@ -58,6 +59,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       title: "",
       slug: "",
       description: "",
+      previewLink: "",
       shortDescription: "",
       type: PRODUCT_TYPE.SIMPLE,
       featured: false,
@@ -197,6 +199,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
           sku: restProductData.inventory?.sku || undefined,
         },
         category: category?.map((c: { _id: string }) => c._id),
+        previewLink: restProductData.previewLink || "",
         productCollection: productCollection?.map(
           (pc: { _id: string }) => pc._id
         ),
@@ -389,6 +392,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
             {/* Main content column */}
             <div className="w-full lg:w-[65%] space-y-3">
               <TitleInput />
+              <PreviewLinkInput />
               <ShortDescriptionInput />
               <ProductDataTabs />
               <DescriptionInput />

@@ -9,6 +9,7 @@ export type TProductPayload = {
   shortDescription?: string; // Textarea
   additionalInfo?: string; // Textarea (optional)
   usageGuidelines?: string; // Textarea (optional)
+  previewLink?: string; // URL input for preview
 
   // --- Pricing Section ---
   price?: {
@@ -129,6 +130,7 @@ export type IAdminProduct = {
     src: string; // Thumbnail Image
     alt: string;
   };
+  previewLink?: string;
   category: {
     name: string; // Category Column
   }[];

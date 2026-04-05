@@ -11,7 +11,7 @@ import {
   ClipboardList,
   Home,
   LayoutGrid,
-  // Image as ImageIcon,
+  Image as ImageIcon,
   LucideIcon,
   MapPinned,
   MessageSquareText,
@@ -98,7 +98,6 @@ export function SidebarClient({ permissions }: TProps) {
     { href: "/attribute", name: "Attribute" },
     { href: "/brand", name: "Brand" },
     { href: "/collection", name: "Collection" },
-    { href: "/media", name: "Media" },
   ];
 
   const sidebarGroups: SidebarGroup[] = [
@@ -150,6 +149,16 @@ export function SidebarClient({ permissions }: TProps) {
           // icon: ShieldCheck,
         },
       ].filter(Boolean) as SidebarItem[],
+    },
+    {
+      key: "media",
+      label: "Media",
+      icon: ImageIcon,
+      visible: !!manageProduct,
+      items: [
+        { name: "Media", href: "/dashboard/media" },
+        { name: "Book Previews", href: "/dashboard/book-previews" },
+      ],
     },
     {
       key: "configuration",
@@ -223,6 +232,16 @@ export function SidebarClient({ permissions }: TProps) {
         name: "",
         href: "/dashboard/products",
         icon: Package,
+      });
+      items.push({
+        name: "",
+        href: "/dashboard/media",
+        icon: ImageIcon,
+      });
+      items.push({
+        name: "",
+        href: "/dashboard/book-previews",
+        icon: LayoutGrid,
       });
     }
 

@@ -478,7 +478,7 @@ const NoteItem = ({
 }) => (
   <div>
     <p className="text-xs font-medium text-muted-foreground mb-1">{label}</p>
-    <div className="min-h-12 border border-dashed rounded-md p-3 text-sm bg-gray-50/50 text-gray-700 whitespace-pre-wrap break-words">
+    <div className="min-h-12 border border-dashed rounded-md p-3 text-sm bg-gray-50/50 text-gray-900 whitespace-pre-wrap break-words">
       {content}
     </div>
   </div>

@@ -1,6 +1,6 @@
 // import { setVariationThumbnail } from "@/redux/features/addProduct/variation/variationSlice";
 import { useToast } from "@/components/ui/use-toast";
-import { formatImageSrc } from "@/lib/utils";
+import { formatImageSrc, decodeUTF8 } from "@/lib/utils";
 import {
   useDeleteImageMutation,
   useGetImagesQuery,
@@ -181,7 +181,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                 >
                   <Image
                     src={formatImageSrc(image.src)}
-                    alt={image.alt}
+                    alt={decodeUTF8(image.alt)}
                     fill={true}
                     className="object-contain rounded-sm"
                     sizes="(max-width: 208px) 100vw,"
@@ -206,7 +206,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
                 >
                   <Image
                     src={formatImageSrc(image.src)}
-                    alt={image.alt}
+                    alt={decodeUTF8(image.alt)}
                     fill={true}
                     className="object-contain rounded-sm"
                     sizes="(max-width: 208px) 100vw,"

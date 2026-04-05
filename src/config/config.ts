@@ -17,6 +17,27 @@ const config = {
     address: process.env.NEXT_PUBLIC_COMPANY_ADDRESS,
   },
   per_item_shipping_cost: 0,
+  upload_limits: {
+    image_size: Number(process.env.NEXT_PUBLIC_UPLOAD_IMAGE_SIZE) || 2000000,
+    pdf_size: Number(process.env.NEXT_PUBLIC_UPLOAD_PDF_SIZE) || 5000000,
+    pdf_max_count: Number(process.env.NEXT_PUBLIC_UPLOAD_PDF_MAX_COUNT) || 5,
+    image_max_count:
+      Number(process.env.NEXT_PUBLIC_UPLOAD_IMAGE_MAX_COUNT) || 10,
+    image_formats: (process.env.NEXT_PUBLIC_UPLOAD_IMAGE_FORMAT?.split(",") || [
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".webp",
+      ".JPG",
+      ".JPEG",
+      ".PNG",
+      ".WEBP",
+    ]) as string[],
+    pdf_formats: (process.env.NEXT_PUBLIC_UPLOAD_PDF_FORMAT?.split(",") || [
+      ".pdf",
+      ".PDF",
+    ]) as string[],
+  },
 };
 
 export default config;

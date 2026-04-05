@@ -76,6 +76,7 @@ const tags = [
   "sliders",
   "homepage-sections",
   "registeredCustomers",
+  "bookPreviews",
 ] as const;
 
 const baseApi = createApi({

@@ -1,5 +1,6 @@
 import { PRODUCT_STATUS, PRODUCT_TYPE, stockStatus } from "@/const/products";
 import * as Yup from "yup";
+import config from "@/config/config";
 
 const PriceValidationSchema = Yup.object().shape({
   regularPrice: Yup.number()
@@ -107,6 +108,17 @@ const ProductSchema = Yup.object().shape({
   title: Yup.string().trim().required("Title is required"),
   slug: Yup.string().trim().required("Slug is required"),
   description: Yup.string().trim().optional(),
+  previewLink: Yup.string()
+    .transform((v) => v || undefined)
+    .test("is-url", "Must be a valid URL", (v) => {
+      if (!v) return true;
+      const isProd = config.env === "production";
+      if (isProd && v.includes("localhost")) return false;
+      return /^(https?:\/\/)?(localhost|[\da-z.-]+)(:\d+)?(\/[^\s]*)?$/i.test(
+        v
+      );
+    })
+    .optional(),
   shortDescription: Yup.string().trim().optional(),
   type: Yup.string().optional(),
   image: ImageValidationSchema.required(),

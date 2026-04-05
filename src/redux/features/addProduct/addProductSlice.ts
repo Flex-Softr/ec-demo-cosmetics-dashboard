@@ -21,6 +21,7 @@ const initialState: TProduct = {
   slug: "",
   type: PRODUCT_TYPE.SIMPLE,
   description: "",
+  previewLink: "",
   shortDescription: "",
   additionalInfo: "",
   price: {
@@ -93,6 +94,9 @@ const productSlice = createSlice({
     },
     setDescription: (state, action: PayloadAction<string>) => {
       state.description = action.payload;
+    },
+    setPreviewLink: (state, action: PayloadAction<string>) => {
+      state.previewLink = action.payload;
     },
     setShortDescription: (state, action: PayloadAction<string>) => {
       state.shortDescription = action.payload;
@@ -194,6 +198,7 @@ const productSlice = createSlice({
       const {
         title,
         description,
+        previewLink,
         shortDescription,
         additionalInfo,
         type,
@@ -208,6 +213,7 @@ const productSlice = createSlice({
       } = action.payload;
       state.title = title;
       state.description = description;
+      state.previewLink = previewLink;
       state.productCollection =
         typeof productCollection === "string"
           ? productCollection
@@ -236,6 +242,7 @@ export const {
   setTitle,
   setSlug,
   setDescription,
+  setPreviewLink,
   setShortDescription,
   setAdditionalInfo,
   setProductType,
