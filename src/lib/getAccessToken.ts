@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export default async function getAccessToken(request: NextRequest) {
   try {
-    const refreshToken = cookies().get("__app.ec.rt")?.value || "";
+    const refreshToken = cookies().get("_app.ec.rt")?.value || "";
     const res = await fetch(`${config.api_base_url}/api/v1/auth/access-token`, {
       method: "POST",
       headers: { authorization: refreshToken },
@@ -29,7 +29,7 @@ export default async function getAccessToken(request: NextRequest) {
       maxAge: Number(config.token_data.access_token_cookie_expires),
     };
     const response = NextResponse.next();
-    response.cookies.set("__app.ec.at", token, cookieOption);
+    response.cookies.set("_app.ec.at", token, cookieOption);
     return response;
   } catch (error) {
     return Response.redirect(new URL("/login", request.url));
@@ -37,7 +37,7 @@ export default async function getAccessToken(request: NextRequest) {
 }
 
 export async function getProfile() {
-  const accessToken = cookies().get("__app.ec.at")?.value;
+  const accessToken = cookies().get("_app.ec.at")?.value;
 
   if (!accessToken) {
     redirect("/login");
@@ -59,7 +59,7 @@ export async function getProfile() {
 }
 
 export const getPermission = () => {
-  const accessToken = cookies().get("__app.ec.at")?.value;
+  const accessToken = cookies().get("_app.ec.at")?.value;
   if (accessToken) {
     const user = decodeJWT(accessToken);
 
@@ -72,5 +72,5 @@ export const getPermission = () => {
 };
 
 export const accessTokenFromCookies = () => {
-  return cookies().get("__app.ec.at")?.value;
+  return cookies().get("_app.ec.at")?.value;
 };

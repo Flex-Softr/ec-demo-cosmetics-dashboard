@@ -8,8 +8,8 @@ import decodeJWT from "./utilities/decodeJWT";
 import isPermitted from "./utilities/isPermitted";
 
 export async function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get("__app.ec.at")?.value || "";
-  const refreshToken = request.cookies.get("__app.ec.rt")?.value;
+  const accessToken = request.cookies.get("_app.ec.at")?.value || "";
+  const refreshToken = request.cookies.get("_app.ec.rt")?.value;
 
   if (!refreshToken) {
     return Response.redirect(new URL("/login", request.url));

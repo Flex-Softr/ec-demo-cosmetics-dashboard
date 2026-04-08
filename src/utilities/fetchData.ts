@@ -28,7 +28,7 @@ const fetchData = async ({
   revalidate,
 }: TProps) => {
   let url = `${config.api_base_url}/api/v1${endPoint}`;
-  const accessToken = cookies().get("__app.ec.at")?.value;
+  const accessToken = cookies().get("_app.ec.at")?.value;
   const reqConfig = {
     headers: { authorization: `Bearer ${accessToken}` },
     cache: cache || "force-cache", // ✅ "force-cache" caches forever
