@@ -8,22 +8,6 @@ const nextConfig = {
       },
       {
         protocol: "http",
-        hostname: "siddikiaprokashoni.cloud",
-      },
-      {
-        protocol: "https",
-        hostname: "siddikiaprokashoni.cloud",
-      },
-      {
-        protocol: "http",
-        hostname: "api.siddikiaprokashoni.cloud",
-      },
-      {
-        protocol: "https",
-        hostname: "api.siddikiaprokashoni.cloud",
-      },
-      {
-        protocol: "http",
         hostname: "siddikiaprokashoni.com",
       },
       {
