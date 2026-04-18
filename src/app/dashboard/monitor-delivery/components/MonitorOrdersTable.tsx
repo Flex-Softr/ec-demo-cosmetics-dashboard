@@ -73,7 +73,7 @@ const DeliveryStatusCell = ({ row }: { row: any }) => {
       title="Click to sync status from courier"
     >
       {isSyncing ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
-      {status?.replaceAll("_", " ")}
+      {status ? status.replaceAll("_", " ") : "Sync"}
     </div>
   );
 };
