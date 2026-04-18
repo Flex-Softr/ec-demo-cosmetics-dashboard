@@ -8,7 +8,7 @@ import { TUser } from "@/redux/features/auth/interface";
 import { useAppDispatch } from "@/redux/hooks";
 import { TErrorMessages, TErrorResponse } from "@/types/response";
 import decodeJWT from "@/utilities/decodeJWT";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -21,6 +21,7 @@ const LoginPage = () => {
   const [serverMessage, setServerMessage] = useState<null | TErrorMessages[]>(
     null
   );
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -110,14 +111,32 @@ const LoginPage = () => {
               >
                 Password
               </label>
-              <Input
-                className={`h-12 px-4 bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm rounded-lg focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all ${errors.password ? "border-red-500 ring-2 ring-red-500/10" : ""}`}
-                type="password"
-                id="password"
-                placeholder="••••••••"
-                {...register("password")}
-                required
-              />
+              <div className="relative">
+                <Input
+                  className={`h-12 px-4 bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm rounded-lg focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all pr-10 ${errors.password ? "border-red-500 ring-2 ring-red-500/10" : ""}`}
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  placeholder="••••••••"
+                  {...register("password")}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => router.push("/forget-password")}
+                  className="text-xs font-semibold text-primary hover:underline transition-all"
+                >
+                  Forgot Password?
+                </button>
+              </div>
             </div>
           </div>
 

@@ -64,8 +64,8 @@ export async function middleware(request: NextRequest) {
   return null;
 }
 
+// ✅ Apply or will run middleware only to these routes,
+// variable name must be config, else will run middleware to every route
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$|login|registration|error).*)",
-  ],
+  matcher: ["/dashboard/:path*"],
 };
