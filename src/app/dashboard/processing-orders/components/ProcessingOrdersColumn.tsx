@@ -7,7 +7,7 @@ import ProductInfo from "@/components/ProductInfo";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TOrders } from "@/types/order.interface";
 import { ColumnDef } from "@tanstack/react-table";
-import ProductCode from "./ProductCode";
+// import ProductCode from "./ProductCode";
 
 import { TPermission } from "@/utilities/isPermitted";
 
@@ -73,16 +73,16 @@ export const getColumns = (
       return <ProductInfo products={row.original.products} />;
     },
   },
-  {
-    accessorKey: "productCode",
-    header: "Product Code",
-    cell: ({ row }) => {
-      const status = row.original.status;
-      const isDisable =
-        status === "partial completed" || status === "returned" ? true : false;
-      return <ProductCode order={row.original} disable={isDisable} />;
-    },
-  },
+  // {
+  //   accessorKey: "productCode",
+  //   header: "Product Code",
+  //   cell: ({ row }) => {
+  //     const status = row.original.status;
+  //     const isDisable =
+  //       status === "partial completed" || status === "returned" ? true : false;
+  //     return <ProductCode order={row.original} disable={isDisable} />;
+  //   },
+  // },
   {
     accessorKey: "total",
     header: "Total",

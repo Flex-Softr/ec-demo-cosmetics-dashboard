@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { TOrders } from "@/types/order.interface";
 import { TPermission } from "@/utilities/isPermitted";
 import { ColumnDef } from "@tanstack/react-table";
-import ProductCode from "../../processing-orders/components/ProductCode";
+// import ProductCode from "../../processing-orders/components/ProductCode";
 import SchedulePickupCell from "./SchedulePickupCell";
 
 export const getColumns = (
@@ -73,11 +73,11 @@ export const getColumns = (
       return <ProductInfo products={row.original.products} />;
     },
   },
-  {
-    accessorKey: "productCode",
-    header: "Product Code",
-    cell: ({ row }) => <ProductCode order={row.original} disable={true} />,
-  },
+  // {
+  //   accessorKey: "productCode",
+  //   header: "Product Code",
+  //   cell: ({ row }) => <ProductCode order={row.original} disable={true} />,
+  // },
   {
     accessorKey: "total",
     header: "Total",

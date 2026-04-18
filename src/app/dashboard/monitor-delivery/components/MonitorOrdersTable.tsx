@@ -35,6 +35,48 @@ import { columns } from "./MonitorOrdersColumn";
 import { TPermission } from "@/utilities/isPermitted";
 import OrderStatus from "@/components/OrderStatus";
 import backgroundColor from "@/utilities/backgroundColor";
+import { useSyncCourierStatusMutation } from "@/redux/features/orders/ordersApi";
+import { toast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const DeliveryStatusCell = ({ row }: { row: any }) => {
+  const orderId = row.original.orderId;
+  const status = row.original.deliveryStatus || "";
+  const [syncCourierStatus, { isLoading: isSyncing }] =
+    useSyncCourierStatusMutation();
+
+  const handleSync = async () => {
+    try {
+      const res = await syncCourierStatus(orderId).unwrap();
+      if (res.success) {
+        toast({
+          className: "bg-success text-white",
+          title: res.message || "Order status synchronized successfully",
+        });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: error?.data?.message || "Sync failed",
+      });
+    }
+  };
+
+  return (
+    <div
+      onClick={handleSync}
+      className={`capitalize rounded text-white px-1.5 cursor-pointer flex items-center justify-center gap-1 ${backgroundColor(
+        status
+      )} ${isSyncing ? "opacity-70 pointer-events-none" : ""}`}
+      title="Click to sync status from courier"
+    >
+      {isSyncing ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
+      {status?.replaceAll("_", " ")}
+    </div>
+  );
+};
 
 export default function MonitorOrdersTable({
   editPermission,
@@ -50,18 +92,7 @@ export default function MonitorOrdersTable({
     {
       accessorKey: "deliveryStatus",
       header: "Delivery",
-      cell: ({ row }) => {
-        const status = row.original.deliveryStatus || "";
-        return (
-          <div
-            className={`capitalize rounded text-white px-1.5 ${backgroundColor(
-              status
-            )}`}
-          >
-            {status?.replaceAll("_", " ")}
-          </div>
-        );
-      },
+      cell: ({ row }) => <DeliveryStatusCell row={row} />,
     },
     {
       accessorKey: "status",

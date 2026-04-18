@@ -8,7 +8,7 @@ import { TSelectedAttribute } from "@/redux/features/addProduct/variation/interf
 import { useGetAttributesQuery } from "@/redux/features/attributes/attributesApi";
 import { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import Advanced from "./Advanced";
+// import Advanced from "./Advanced";
 import Attributes from "./Attributes";
 import Inventory from "./Inventory";
 import Price from "./Price";
@@ -89,16 +89,16 @@ const ProductDataTabs = () => {
         fields: ["variations"],
         isVisible: type === PRODUCT_TYPE.VARIABLE,
       },
-      {
-        id: "advanced",
-        label: "Advanced",
-        component: <Advanced />,
-        fields: [
-          "warrantyInfo.duration.quantity",
-          "warrantyInfo.duration.unit",
-        ],
-        isVisible: true,
-      },
+      // {
+      //   id: "advanced",
+      //   label: "Advanced",
+      //   component: <Advanced />,
+      //   fields: [
+      //     "warrantyInfo.duration.quantity",
+      //     "warrantyInfo.duration.unit",
+      //   ],
+      //   isVisible: true,
+      // },
     ];
     return allTabs.filter((tab) => tab.isVisible);
   }, [type, attributes, isLoading]);

@@ -7,7 +7,7 @@ import { TOrders } from "@/types/order.interface";
 import { ColumnDef } from "@tanstack/react-table";
 // import ReasonNotes from "./ReasonNotes";
 import ProductInfo from "@/components/ProductInfo";
-import ProductCode from "../../processing-orders/components/ProductCode";
+// import ProductCode from "../../processing-orders/components/ProductCode";
 
 export const columns: ColumnDef<TOrders>[] = [
   {
@@ -69,11 +69,11 @@ export const columns: ColumnDef<TOrders>[] = [
       return <ProductInfo products={row.original.products} />;
     },
   },
-  {
-    accessorKey: "productCode",
-    header: "Product Code",
-    cell: ({ row }) => <ProductCode order={row.original} disable={true} />,
-  },
+  // {
+  //   accessorKey: "productCode",
+  //   header: "Product Code",
+  //   cell: ({ row }) => <ProductCode order={row.original} disable={true} />,
+  // },
   {
     accessorKey: "total",
     header: "Total",

@@ -56,8 +56,14 @@ const ProcessingOrdersStatusButtons = () => {
     }
     if (!loading && data) {
       const { meta, data: orders } = data;
+
+      const hidestatus = ["warranty processing", "warranty added"];
+      const filteredCount = orders?.countsByStatus.filter(
+        (s: { name: string; total: string }) => !hidestatus.includes(s.name)
+      );
+
       dispatch(setTotalPage(meta));
-      setOrderStatusCount(orders?.countsByStatus);
+      setOrderStatusCount(filteredCount);
       dispatch(setProcessingOrders(orders?.data));
       dispatch(setSearch(false));
       dispatch(setSearchQuery(""));

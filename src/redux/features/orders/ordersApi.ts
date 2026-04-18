@@ -80,6 +80,17 @@ const updateStatusApi = baseApi.injectEndpoints({
       }),
       providesTags: ["customerOrderHistory"],
     }),
+    syncCourierStatus: builder.mutation({
+      query: (id: string) => ({
+        url: `/orders/sync-courier-status/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: "singleOrder", id },
+        "courierShipmentOrders",
+        "monitorDeliveryOrders",
+      ],
+    }),
   }),
 });
 
@@ -91,4 +102,5 @@ export const {
   useUpdateOrderStatusMutation,
   useDeleteOrdersMutation,
   useGetCustomerOrderHistoryQuery,
+  useSyncCourierStatusMutation,
 } = updateStatusApi;

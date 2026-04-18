@@ -135,11 +135,11 @@ export function SidebarClient({ permissions }: TProps) {
         //     name: "Image to order",
         //     href: "/dashboard/image-to-order",
         //   },
-        manageWarrantyClaim && {
-          name: "Warranty Claims",
-          href: "/dashboard/warranty-claims",
-          // icon: ShieldAlert,
-        },
+        // manageWarrantyClaim && {
+        //   name: "Warranty Claims",
+        //   href: "/dashboard/warranty-claims",
+        //   // icon: ShieldAlert,
+        // },
         (manageOrder ||
           manageProcessingOrder ||
           manageShipmentOrder ||
