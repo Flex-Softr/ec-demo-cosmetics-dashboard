@@ -1,7 +1,7 @@
 import CommonModal from "@/components/modal/CommonModal";
 import { TUser } from "@/redux/features/user/userInterface";
 import { Dispatch, SetStateAction } from "react";
-import UpdateUserForm from "./UpdateUserForm";
+import StaffForm from "../StaffForm";
 const UpdateUser = ({
   editUserModal,
   handleEditUserModal,
@@ -21,7 +21,7 @@ const UpdateUser = ({
         modalTitle="Update user"
         className="min-h-[550px] w-[95vw] max-w-[950px]"
       >
-        <UpdateUserForm setEditUserModal={setEditUserModal} user={user} />
+        <StaffForm setModalOpen={setEditUserModal} user={user} />
       </CommonModal>
     </div>
   );

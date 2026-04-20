@@ -10,6 +10,7 @@ const EcButton = ({
   disabled = false,
   onClick,
   type = "simple",
+  form,
   ref,
   ...props
 }: {
@@ -18,7 +19,8 @@ const EcButton = ({
   loading?: boolean;
   disabled?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
-  type?: "simple" | "icon" | "submit";
+  type?: "simple" | "icon" | "submit" | "button";
+  form?: string;
   variant?:
     | "link"
     | "default"
@@ -39,6 +41,7 @@ const EcButton = ({
             "bg-base-100 flex justify-center items-center text-xs",
             className
           )}
+          form={form}
           {...props}
         >
           {children}
@@ -55,6 +58,7 @@ const EcButton = ({
         )}
         onClick={onClick}
         ref={ref}
+        form={form}
         {...props}
       >
         {children}
@@ -63,7 +67,7 @@ const EcButton = ({
   }
   if (loading) {
     return (
-      <Button disabled {...props} className={twMerge(className)}>
+      <Button disabled form={form} {...props} className={twMerge(className)}>
         Loading...
       </Button>
     );
@@ -77,6 +81,8 @@ const EcButton = ({
         className
       )}
       onClick={onClick}
+      type={type === "submit" ? "submit" : "button"}
+      form={form}
       {...props}
     >
       {children}

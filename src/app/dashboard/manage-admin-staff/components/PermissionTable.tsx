@@ -24,9 +24,15 @@ import { z } from "zod";
 const PermissionTable = ({
   permissionData,
   user,
+  isCreate = false,
+  onPermissionChange,
+  selectedPermissions: externalSelectedPermissions,
 }: {
   permissionData: TPermission[];
-  user: TUser;
+  user?: TUser;
+  isCreate?: boolean;
+  onPermissionChange?: (permissionIds: string[]) => void;
+  selectedPermissions?: string[];
 }) => {
   const [addRemovePermission] = useAddOrRemovePermissionFromUserMutation();
   const { toast } = useToast();
@@ -47,10 +53,19 @@ const PermissionTable = ({
 
   const defaultValues = Object.values(PERMISSIONS).reduce(
     (acc, permissionValue) => {
-      // Cast permissionValue to match FormSchema keys (which are the same strings)
-      acc[permissionValue as keyof typeof FormSchema.shape] = (
-        user?.permissions || []
-      ).some((p) => p.name === permissionValue);
+      if (externalSelectedPermissions) {
+        // If external state is provided, check against it
+        const permissionId = permissionData.find(
+          (p) => p.name === permissionValue
+        )?._id;
+        acc[permissionValue as keyof typeof FormSchema.shape] =
+          !!permissionId && externalSelectedPermissions.includes(permissionId);
+      } else {
+        // Otherwise fallback to user permissions
+        acc[permissionValue as keyof typeof FormSchema.shape] = (
+          user?.permissions || []
+        ).some((p) => p.name === permissionValue);
+      }
       return acc;
     },
     {} as Record<string, boolean>
@@ -153,6 +168,8 @@ const PermissionTable = ({
   ];
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (onPermissionChange || isCreate) return; // Parent handles submission if callback provided
+
     const trueFields = Object.keys(data).filter(
       (field) =>
         (
@@ -170,8 +187,8 @@ const PermissionTable = ({
 
     try {
       const res = (await addRemovePermission({
-        useId: user._id,
-        permissions: ids,
+        useId: user?._id as string,
+        permissions: ids as string[],
       }).unwrap()) as TSuccessResponse;
       toast({
         className: "toast-success",
@@ -185,6 +202,27 @@ const PermissionTable = ({
       });
     }
   }
+
+  // Handle changes for create mode
+  const handleSwitchChange = (fieldName: string, checked: boolean) => {
+    if (!onPermissionChange) return;
+
+    const currentValues = form.getValues();
+    const newValues = { ...currentValues, [fieldName]: checked };
+
+    const trueFields = Object.keys(newValues).filter(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (field) => (newValues as any)[field]
+    );
+    const ids = formFieldData
+      .filter(
+        (item) => "fieldName" in item && trueFields.includes(item.fieldName)
+      )
+      .map((item) => item._id)
+      .filter(Boolean);
+
+    onPermissionChange(ids as string[]);
+  };
 
   return (
     <Form {...form}>
@@ -213,7 +251,10 @@ const PermissionTable = ({
                     <FormControl>
                       <Switch
                         checked={field.value}
-                        onCheckedChange={field.onChange}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          handleSwitchChange(item.fieldName!, checked);
+                        }}
                       />
                     </FormControl>
                   </FormItem>
@@ -222,9 +263,11 @@ const PermissionTable = ({
             ))}
           </div>
         </div>
-        <div className="flex justify-end mb-6">
-          <Button type="submit">Update permission</Button>
-        </div>
+        {!isCreate && !onPermissionChange && (
+          <div className="flex justify-end mb-6">
+            <Button type="submit">Update permission</Button>
+          </div>
+        )}
       </form>
     </Form>
   );

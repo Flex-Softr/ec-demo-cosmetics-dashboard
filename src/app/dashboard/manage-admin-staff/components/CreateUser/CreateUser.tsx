@@ -3,7 +3,7 @@ import CommonModal from "@/components/modal/CommonModal";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import UserDataForm from "./UserDataForm";
+import StaffForm from "../StaffForm";
 const CreateUser = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const handleModal = () => {
@@ -21,7 +21,7 @@ const CreateUser = () => {
         modalTitle="Create user"
         className="min-h-[550px] w-[95vw] max-w-[950px]"
       >
-        <UserDataForm setModalOpen={setModalOpen} />
+        <StaffForm setModalOpen={setModalOpen} />
       </CommonModal>
     </div>
   );
