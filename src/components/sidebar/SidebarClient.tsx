@@ -36,6 +36,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
+import { useGetUnreadContactMessagesCountQuery } from "@/redux/features/contactMessage/contactMessageApi";
 
 type TProps = {
   permissions: {
@@ -216,6 +217,10 @@ export function SidebarClient({ permissions }: TProps) {
           name: "Registered customers",
           href: "/dashboard/registered-customers",
         },
+        {
+          name: "Contact Messages",
+          href: "/dashboard/contact-messages",
+        },
       ],
     },
   ];
@@ -344,10 +349,23 @@ export function SidebarClient({ permissions }: TProps) {
         href: "/dashboard/registered-customers",
         icon: UserCheck,
       });
+      items.push({
+        name: "",
+        href: "/dashboard/contact-messages",
+        icon: MessageSquareText,
+      });
     }
 
     return items;
   };
+
+  const { data: unreadCountData } = useGetUnreadContactMessagesCountQuery(
+    undefined,
+    {
+      pollingInterval: 600000, // Optional: Poll every 600 seconds
+    }
+  );
+  const unreadCount = unreadCountData?.data || 0;
 
   return (
     <>
@@ -422,7 +440,17 @@ export function SidebarClient({ permissions }: TProps) {
                   key={idx}
                   href={item.href || "#"}
                   name=""
-                  icon={item.icon ? <item.icon size={20} /> : undefined}
+                  icon={
+                    <div className="relative">
+                      {item.icon ? <item.icon size={20} /> : undefined}
+                      {item.href === "/dashboard/contact-messages" &&
+                        unreadCount > 0 && (
+                          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
+                            {unreadCount > 99 ? "99+" : unreadCount}
+                          </span>
+                        )}
+                    </div>
+                  }
                   className="justify-center gap-0 mx-auto p-2 border border-gray-300"
                 />
               ))}
@@ -453,15 +481,20 @@ export function SidebarClient({ permissions }: TProps) {
                         )}
                       >
                         <div className="flex items-center gap-3">
-                          <group.icon
-                            size={20}
-                            className={cn(
-                              "transition-colors",
-                              isGroupActive
-                                ? "text-primary"
-                                : "text-gray-500 group-hover:text-primary"
+                          <div className="relative">
+                            <group.icon
+                              size={20}
+                              className={cn(
+                                "transition-colors",
+                                isGroupActive
+                                  ? "text-primary"
+                                  : "text-gray-500 group-hover:text-primary"
+                              )}
+                            />
+                            {group.key === "customers" && unreadCount > 0 && (
+                              <span className="absolute -top-1 -right-1 bg-red-500 w-2 h-2 rounded-full border-2 border-white" />
                             )}
-                          />
+                          </div>
                           <span className="tracking-wide">{group.label}</span>
                         </div>
                       </AccordionTrigger>
@@ -478,6 +511,14 @@ export function SidebarClient({ permissions }: TProps) {
                               item.icon
                                 ? "justify-start w-full"
                                 : "text-sm m-0 px-0"
+                            }
+                            badge={
+                              item.href === "/dashboard/contact-messages" &&
+                              unreadCount > 0 ? (
+                                <span className="bg-red-500 text-white text-[10px] min-w-[1.25rem] h-5 flex items-center justify-center rounded-full ml-auto px-1 shadow-sm border border-white/20 mr-2">
+                                  {unreadCount > 99 ? "99+" : unreadCount}
+                                </span>
+                              ) : undefined
                             }
                           />
                         ))}

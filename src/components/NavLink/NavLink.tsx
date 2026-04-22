@@ -9,6 +9,7 @@ type TProps = {
   name: string;
   href: string;
   icon?: ReactNode;
+  badge?: ReactNode;
   className?: string;
   activeClassName?: string;
   onClick?: () => void;
@@ -18,6 +19,7 @@ const NavLink = ({
   name,
   href,
   icon,
+  badge,
   className,
   activeClassName,
   onClick,
@@ -38,6 +40,7 @@ const NavLink = ({
       name={name}
       href={href}
       icon={icon}
+      badge={badge}
       className={cn("w-full", className)}
       activeClassName={activeClassName}
       onClick={handleClick}

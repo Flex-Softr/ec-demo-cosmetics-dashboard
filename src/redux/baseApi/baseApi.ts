@@ -77,6 +77,7 @@ const tags = [
   "homepage-sections",
   "registeredCustomers",
   "bookPreviews",
+  "contactMessages",
 ] as const;
 
 const baseApi = createApi({

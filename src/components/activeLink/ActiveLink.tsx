@@ -7,6 +7,7 @@ type TProps = {
   name: string;
   href: string;
   icon?: ReactNode;
+  badge?: ReactNode;
   className?: string;
   activeClassName?: string;
   onClick?: () => void;
@@ -16,6 +17,7 @@ const ActiveLink = ({
   name,
   href,
   icon,
+  badge,
   className,
   activeClassName,
   onClick,
@@ -48,6 +50,7 @@ const ActiveLink = ({
           {icon}
         </span>
         <span className="truncate tracking-wide text-sm">{name}</span>
+        {badge}
       </span>
     </Link>
   );
