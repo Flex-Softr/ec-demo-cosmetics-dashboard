@@ -1,3 +1,5 @@
+import { Shipping } from "@/types/order.interface";
+
 export type TCustomer = {
   _id: string;
   uid: string;
@@ -6,4 +8,5 @@ export type TCustomer = {
   status: string;
   createdAt: string;
   name: string;
+  shipping: Shipping;
 };

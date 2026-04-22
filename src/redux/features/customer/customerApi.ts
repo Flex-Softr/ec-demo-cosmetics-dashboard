@@ -10,8 +10,17 @@ const customerApi = baseApi.injectEndpoints({
       }),
       providesTags: ["customers"],
     }),
+    getSingleCustomer: builder.query({
+      query: (id: string) => ({
+        url: `/customers/${id}`,
+      }),
+      providesTags: ["customers"],
+    }),
   }),
 });
 
-export const { useGetAllCustomersQuery, useLazyGetAllCustomersQuery } =
-  customerApi;
+export const {
+  useGetAllCustomersQuery,
+  useLazyGetAllCustomersQuery,
+  useGetSingleCustomerQuery,
+} = customerApi;

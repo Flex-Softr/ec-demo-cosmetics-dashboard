@@ -1,6 +1,9 @@
 import CustomerInfo from "@/components/CustomerInfo";
 import { TRegisteredCustomer } from "@/types/registeredUser";
 import { ColumnDef } from "@tanstack/react-table";
+import { format, formatDistanceToNow } from "date-fns";
+import { ShoppingBag } from "lucide-react";
+import Link from "next/link";
 import RegisteredCustomerDetails from "./RegisteredCustomerDetails";
 import UpdateUserStatus from "./UpdateUserStatus";
 
@@ -17,7 +20,14 @@ const columns: ColumnDef<TRegisteredCustomer>[] = [
   {
     accessorKey: "name",
     header: () => <h2 className="text-start">ID</h2>,
-    cell: ({ row }) => <h2 className="text-start">{row.original?.uid}</h2>,
+    cell: ({ row }) => (
+      <Link
+        href={`/dashboard/registered-customers/${row.original?._id}`}
+        className="text-start font-semibold text-primary hover:underline"
+      >
+        {row.original?.uid}
+      </Link>
+    ),
   },
   {
     accessorKey: "shipping",
@@ -28,10 +38,43 @@ const columns: ColumnDef<TRegisteredCustomer>[] = [
     },
   },
   {
+    accessorKey: "createdAt",
+    header: "Registered At",
+    cell: ({ row }) => (
+      <div className="flex flex-col min-w-28">
+        <span className="font-medium">
+          {row.original.createdAt
+            ? format(new Date(row.original.createdAt), "dd MMM yyyy")
+            : "N/A"}
+        </span>
+        <span className="text-xs text-muted-foreground">
+          {row.original.createdAt ? (
+            <>
+              {format(new Date(row.original.createdAt), "hh:mm a")} (
+              {formatDistanceToNow(new Date(row.original.createdAt), {
+                addSuffix: true,
+              })}
+              )
+            </>
+          ) : (
+            ""
+          )}
+        </span>
+      </div>
+    ),
+  },
+  {
     accessorKey: "totalOrders",
-    header: "Total orders",
+    header: "Total Orders",
     cell: ({ row }) => {
-      return <h4>{row?.original?.totalOrders}</h4>;
+      return (
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 rounded-md bg-blue-50 text-blue-600">
+            <ShoppingBag size={14} />
+          </div>
+          <span className="font-semibold">{row?.original?.totalOrders}</span>
+        </div>
+      );
     },
   },
   {
