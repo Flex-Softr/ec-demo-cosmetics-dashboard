@@ -86,13 +86,13 @@ const NameMobileAddress = (props: TProps) => {
       {/* Full Address */}
       <div className="flex flex-col gap-1 min-w-0">
         <Label htmlFor="fullAddress" className="text-sm font-medium">
-          Full Address <span className="text-red-600">*</span>
+          Address <span className="text-red-600">*</span>
         </Label>
         <Input
           type="text"
           {...register("shipping.fullAddress")}
           id="fullAddress"
-          placeholder="Enter full address"
+          placeholder="Enter address"
           className="w-full"
           defaultValue={shipping?.fullAddress}
         />

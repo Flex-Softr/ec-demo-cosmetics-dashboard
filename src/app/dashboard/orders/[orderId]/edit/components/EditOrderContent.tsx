@@ -24,6 +24,7 @@ const EditOrderContent = ({ orderId }: { orderId: string }) => {
       division: order?.shipping?.division,
       district: order?.shipping?.district,
       upazila: order?.shipping?.upazila,
+      email: order?.shipping?.email,
     },
     shippingCharge:
       order?.shippingCharge?._id ||

@@ -18,6 +18,7 @@ import {
   CreditCard,
   Edit,
   Loader2,
+  Mail,
   MapPin,
   Phone,
   Truck,
@@ -220,6 +221,12 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                       {shipping?.phoneNumber}
                     </Link>
                   </div>
+                  {shipping?.email && (
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      <p>{shipping?.email}</p>
+                    </div>
+                  )}
                 </div>
               </div>
 

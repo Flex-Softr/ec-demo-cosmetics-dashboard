@@ -114,6 +114,12 @@ const CustomerDetailsView = ({
                 <span className="font-semibold w-32 shrink-0">Phone:</span>
                 <span>{customer.shipping.phoneNumber}</span>
               </div>
+              {customer.shipping.email && (
+                <div className="flex border-b pb-1">
+                  <span className="font-semibold w-32 shrink-0">Email:</span>
+                  <span>{customer.shipping.email}</span>
+                </div>
+              )}
               <div className="flex border-b pb-1">
                 <span className="font-semibold w-32 shrink-0">Address:</span>
                 <span>{customer.shipping.fullAddress}</span>
