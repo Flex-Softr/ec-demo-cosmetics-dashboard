@@ -125,7 +125,9 @@ const CustomerDetailsView = ({
                 <span>{customer.shipping.fullAddress}</span>
               </div>
               <div className="flex border-b pb-1">
-                <span className="font-semibold w-32 shrink-0">Upazila:</span>
+                <span className="font-semibold w-32 shrink-0">
+                  Thana / Upazila:
+                </span>
                 <span>{customer.shipping.upazila}</span>
               </div>
               <div className="flex border-b pb-1">

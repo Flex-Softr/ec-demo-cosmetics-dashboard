@@ -69,7 +69,9 @@ const FilterByDivisionDistrict = ({
         disabled={!selectedDistrict}
       >
         <option value="">
-          -- {selectedDistrict ? "Select Upazila" : "Select District First"} --
+          --{" "}
+          {selectedDistrict ? "Select Thana/Upazila" : "Select District First"}{" "}
+          --
         </option>
         {upazilas.map(({ id, name }) => (
           <option key={id} value={id}>

@@ -126,7 +126,7 @@ const DivisionDistrictUpazilaSelector = <T extends FieldValues>({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="upazila">Upazila</Label>
+        <Label htmlFor="upazila">Thana/Upazila</Label>
         <select
           id="upazila"
           value={upazila}
@@ -136,8 +136,19 @@ const DivisionDistrictUpazilaSelector = <T extends FieldValues>({
           disabled={!district}
           className="w-full h-9 border border-primary outline-primary rounded-md"
         >
-          <option value="">
-            -- {district ? "Select Upazila" : "Select District First"} --
+          <option value="" className="lg:hidden">
+            --{" "}
+            {district
+              ? "থানা / উপজেলা সিলেক্ট / Select Thana/Upazila"
+              : "আগে জেলা সিলেক্ট / Select District First"}{" "}
+            --
+          </option>
+          <option value="" className="hidden lg:block">
+            --{" "}
+            {district
+              ? "থানা / উপজেলা / Thana / Upazila"
+              : "আগে জেলা / District First"}{" "}
+            --
           </option>
           {upazilas.map((u) => (
             <option key={u.id} value={u.id}>
