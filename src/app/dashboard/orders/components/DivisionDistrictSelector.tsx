@@ -137,18 +137,10 @@ const DivisionDistrictUpazilaSelector = <T extends FieldValues>({
           className="w-full h-9 border border-primary outline-primary rounded-md"
         >
           <option value="" className="lg:hidden">
-            --{" "}
-            {district
-              ? "থানা / উপজেলা সিলেক্ট / Select Thana/Upazila"
-              : "আগে জেলা সিলেক্ট / Select District First"}{" "}
-            --
+            -- {district ? "Select Thana/Upazila" : "Select District First"} --
           </option>
           <option value="" className="hidden lg:block">
-            --{" "}
-            {district
-              ? "থানা / উপজেলা / Thana / Upazila"
-              : "আগে জেলা / District First"}{" "}
-            --
+            -- {district ? " Thana/Upazila" : "District First"} --
           </option>
           {upazilas.map((u) => (
             <option key={u.id} value={u.id}>

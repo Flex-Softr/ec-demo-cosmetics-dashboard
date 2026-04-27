@@ -74,7 +74,11 @@ export const getColumns = (
   {
     accessorKey: "total",
     header: "Total",
-    cell: ({ row }) => <span>&#2547; {row.getValue("total")}</span>,
+    cell: ({ row }) => (
+      <span className="text-center text-nowrap">
+        &#2547; {row.getValue("total")}
+      </span>
+    ),
   },
   {
     accessorKey: "payment",

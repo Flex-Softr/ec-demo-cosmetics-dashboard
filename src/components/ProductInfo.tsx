@@ -23,12 +23,9 @@ const ProductInfo = ({ products = [] }: { products: TOrderedProducts[] }) => {
     .join(" ");
 
   return (
-    <div className="">
-      <p
-        className="flex flex-col gap-1 w-40"
-        title={`${title}\n${variationProps}`}
-      >
-        {title.length > 18 ? title.slice(0, 18) + "..." : title}
+    <div className="flex flex-col mx-auto w-[140px] xl:w-[155px] 2xl:w-[170px] text-left">
+      <p className="truncate w-full" title={`${title}\n${variationProps}`}>
+        {title}
       </p>
       <p>&#2547; {unitPrice || 0}</p>
       <p>Quantity : {quantity || 0}</p>

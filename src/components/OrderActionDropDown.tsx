@@ -31,7 +31,7 @@ const OrderActionDropDown = ({ order }: { order: TOrders }) => {
   const isEdit = edit || editPermission;
 
   return (
-    <div className="flex justify-center items-center gap-2 min-w-[90px]">
+    <div className="flex justify-center items-center gap-2 min-w-[60px]">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <span className="p-2 cursor-pointer">

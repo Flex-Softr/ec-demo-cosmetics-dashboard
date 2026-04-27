@@ -15,6 +15,7 @@ import { Eye, MapPin, Phone, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import CommonModal from "./modal/CommonModal";
+import BdAddress from "@/lib/bdAddress";
 
 const CustomerInfo = ({ order }: { order: TOrders }) => {
   const { shipping: customer, deliveryStatus } = order || {};
@@ -26,23 +27,22 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
 
   return (
     <>
-      <div className="capitalize flex flex-col mx-auto w-[155px]">
-        <div className="flex items-center gap-1" title={customer.fullName}>
-          <UserRound className="w-4" />
-          <span>
-            {customer.fullName.length > 15
-              ? customer.fullName.slice(0, 15) + "..."
-              : customer.fullName}
-          </span>
+      <div className="capitalize flex flex-col mx-auto w-[140px] xl:w-[155px] 2xl:w-[170px] text-left">
+        <div
+          className="flex items-center gap-1 w-full"
+          title={customer.fullName}
+        >
+          <UserRound className="w-4 shrink-0" />
+          <span className="truncate">{customer.fullName}</span>
         </div>
-        <div className="flex items-center gap-1 relative">
+        <div className="flex items-center gap-1 relative w-full">
           {/* <Link
             href={`https://wa.me/88${customer.phoneNumber}`}
             target="_blank"
             title="Whatsapp"
           ></Link> */}
-          <Phone className="w-4" />
-          <span>{customer.phoneNumber}</span>
+          <Phone className="w-4 shrink-0" />
+          <span className="truncate">{customer.phoneNumber}</span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <span
@@ -90,12 +90,14 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="flex items-center gap-1" title={customer.fullAddress}>
-          <MapPin className="w-4" />
-          <span>
-            {customer.fullAddress.length > 15
-              ? customer.fullAddress.slice(0, 15) + "..."
-              : customer.fullAddress}
+        <div
+          className="flex items-center gap-1 w-full"
+          title={customer.fullAddress}
+        >
+          <MapPin className="w-4 shrink-0" />
+          <span className="truncate">
+            {BdAddress.districtNameById(customer.district).name ||
+              customer.fullAddress}
           </span>
         </div>
       </div>
