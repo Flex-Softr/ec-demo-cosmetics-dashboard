@@ -18,7 +18,7 @@ import CommonModal from "./modal/CommonModal";
 import BdAddress from "@/lib/bdAddress";
 
 const CustomerInfo = ({ order }: { order: TOrders }) => {
-  const { shipping: customer, deliveryStatus } = order || {};
+  const { shipping, deliveryStatus } = order || {};
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -30,10 +30,10 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
       <div className="capitalize flex flex-col mx-auto w-[140px] xl:w-[155px] 2xl:w-[170px] text-left">
         <div
           className="flex items-center gap-1 w-full"
-          title={customer.fullName}
+          title={shipping?.fullName}
         >
           <UserRound className="w-4 shrink-0" />
-          <span className="truncate">{customer.fullName}</span>
+          <span className="truncate">{shipping?.fullName}</span>
         </div>
         <div className="flex items-center gap-1 relative w-full">
           {/* <Link
@@ -42,7 +42,7 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
             title="Whatsapp"
           ></Link> */}
           <Phone className="w-4 shrink-0" />
-          <span className="truncate">{customer.phoneNumber}</span>
+          <span className="truncate">{shipping?.phoneNumber}</span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <span
@@ -77,7 +77,7 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
                 )}
                 <DropdownMenuItem>
                   <Link
-                    href={`https://wa.me/88${customer.phoneNumber}`}
+                    href={`https://wa.me/88${shipping?.phoneNumber}`}
                     target="_blank"
                     title="Whatsapp"
                     className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
@@ -93,21 +93,22 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
         <div
           className="flex items-center gap-1 w-full"
           title={[
-            customer.fullAddress,
-            customer.upazila &&
-              BdAddress.upazilaNameById(customer.upazila).name,
-            customer.district &&
-              BdAddress.districtNameById(customer.district).name,
-            customer.division &&
-              BdAddress.divisionNameById(customer.division).name,
+            shipping?.fullAddress,
+            shipping?.upazila &&
+              BdAddress.upazilaNameById(shipping?.upazila).name,
+            shipping?.district &&
+              BdAddress.districtNameById(shipping?.district).name,
+            shipping?.division &&
+              BdAddress.divisionNameById(shipping?.division).name,
           ]
             .filter(Boolean)
             .join(", ")}
         >
           <MapPin className="w-4 shrink-0" />
           <span className="truncate">
-            {BdAddress.districtNameById(customer.district).name ||
-              customer.fullAddress}
+            {BdAddress.districtNameById(shipping?.district).name ||
+              shipping?.district ||
+              shipping?.fullAddress}
           </span>
         </div>
       </div>
@@ -117,8 +118,8 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
         modalTitle="Customer Order History"
         className="h-[95%] sm:h-[90%] w-[100%] xl:!w-[1100px] overflow-y-auto"
       >
-        <FraudCheck phoneNumber={customer.phoneNumber} />
-        <CustomerOrderHistory phoneNumber={customer.phoneNumber} />
+        <FraudCheck phoneNumber={shipping?.phoneNumber} />
+        <CustomerOrderHistory phoneNumber={shipping?.phoneNumber} />
       </CommonModal>
     </>
   );
