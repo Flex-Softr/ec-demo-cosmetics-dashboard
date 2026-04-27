@@ -258,13 +258,17 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                 <div className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
                   <span className="break-words">
-                    {shipping?.fullAddress}
-                    {shipping?.upazila &&
-                      `, ${BdAddress.upazilaNameById(shipping?.upazila).name}`}
-                    {shipping?.district &&
-                      `, ${BdAddress.districtNameById(shipping?.district).name}`}
-                    {shipping?.division &&
-                      `, ${BdAddress.divisionNameById(shipping?.division).name}`}
+                    {[
+                      shipping.fullAddress,
+                      shipping.upazila &&
+                        BdAddress.upazilaNameById(shipping.upazila).name,
+                      shipping.district &&
+                        BdAddress.districtNameById(shipping.district).name,
+                      shipping.division &&
+                        BdAddress.divisionNameById(shipping.division).name,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
                   </span>
                 </div>
               </div>

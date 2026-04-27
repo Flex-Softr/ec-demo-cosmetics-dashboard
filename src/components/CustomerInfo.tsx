@@ -92,7 +92,17 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
         </div>
         <div
           className="flex items-center gap-1 w-full"
-          title={customer.fullAddress}
+          title={[
+            customer.fullAddress,
+            customer.upazila &&
+              BdAddress.upazilaNameById(customer.upazila).name,
+            customer.district &&
+              BdAddress.districtNameById(customer.district).name,
+            customer.division &&
+              BdAddress.divisionNameById(customer.division).name,
+          ]
+            .filter(Boolean)
+            .join(", ")}
         >
           <MapPin className="w-4 shrink-0" />
           <span className="truncate">
