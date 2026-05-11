@@ -39,9 +39,18 @@ export type TUpdatePayload = {
   };
 };
 
+export type TCourierCount = {
+  _id: string;
+  name: string;
+  slug: string;
+  total: number;
+};
+
 export type TMonitorOrdersInitialState = {
   monitorDeliveryOrders: TOrders[];
   selectedStatus: string;
+  selectedCourierId: string;
+  countsByCourier: TCourierCount[];
   iSOrderUpdate: boolean;
   bulkOrders: {
     selectedOrders: TPlaceOrder[];

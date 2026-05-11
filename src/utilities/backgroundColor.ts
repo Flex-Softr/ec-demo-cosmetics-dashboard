@@ -37,6 +37,11 @@ const STATUS_COLORS: Record<string, string> = {
   // Blue
   "on courier": "bg-[#4c84ff]",
   partial_delivered: "bg-[#4c84ff]",
+  "in transit": "bg-[#4c84ff]",
+  "picked for delivery": "bg-[#4c84ff]",
+  "received at point": "bg-[#4c84ff]",
+  delivered: "bg-[#2DB224]",
+  "partial delivered": "bg-[#2DB224]",
 
   // Red / Error
   cancelled: "bg-[#fe5461]",

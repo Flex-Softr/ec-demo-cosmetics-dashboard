@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useGetMonitorDeliveryOrdersQuery } from "@/redux/features/monitorDelivery/monitorDeliveryApi";
 import {
+  setCountsByCourier,
   setMonitorDeliveryOrders,
   setSelectedStatus,
 } from "@/redux/features/monitorDelivery/monitorDeliverySlice";
@@ -20,7 +21,6 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import backgroundColor from "@/utilities/backgroundColor";
 import borderColor from "@/utilities/borderColor";
 import { useEffect, useState } from "react";
-// import DateRangeSelector from "@/components/DateRangeSelector";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
@@ -32,9 +32,11 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
 
   const { startFrom, endAt } = useAppSelector(({ orders }) => orders);
 
-  const { selectedStatus: filter, monitorDeliveryOrders } = useAppSelector(
-    ({ monitorDelivery }) => monitorDelivery
-  );
+  const {
+    selectedStatus: filter,
+    monitorDeliveryOrders,
+    selectedCourierId,
+  } = useAppSelector(({ monitorDelivery }) => monitorDelivery);
 
   if (!monitorDeliveryOrders.length && page > 1) {
     dispatch(setPage(1));
@@ -48,6 +50,7 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
     error,
   } = useGetMonitorDeliveryOrdersQuery({
     deliveryStatus: filter === "all" ? "" : filter,
+    courierId: selectedCourierId || "",
     startFrom,
     endAt,
     sort: "-createdAt",
@@ -63,6 +66,7 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
       const { meta, data: orders } = data;
       dispatch(setTotalPage(meta));
       setOrderStatusCount(orders?.countsByStatus);
+      dispatch(setCountsByCourier(orders?.countsByCourier || []));
       dispatch(setMonitorDeliveryOrders(orders?.data));
       dispatch(setSearch(false));
       dispatch(setSearchQuery(""));
@@ -73,12 +77,6 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
       throw new Error("Something went wrong!");
     }
   }, [data, loading, error, dispatch]);
-
-  // const showStatus = manageProcessing
-  //   ? orderStatusCount?.filter(
-  //       ({ name }) => name == "partial_delivered" || name == "cancelled"
-  //     )
-  //   : orderStatusCount;
 
   return (
     <div className="flex flex-wrap items-center justify-start gap-5">
@@ -106,9 +104,6 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
           </Button>
         );
       })}
-      {/* <div>
-        <DateRangeSelector />
-      </div> */}
     </div>
   );
 };

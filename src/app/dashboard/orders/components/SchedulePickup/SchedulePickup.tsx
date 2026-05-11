@@ -261,7 +261,7 @@ const SchedulePickup = ({
 
                   <div className="flex flex-wrap items-start gap-4 bg-muted/20 p-3 rounded-lg border border-muted/50">
                     {/* WEIGHT */}
-                    {["pathao", "redx"].includes(
+                    {["pathao", "redx", "paperfly"].includes(
                       selectedProvider?.slug ?? ""
                     ) && (
                       <FormField

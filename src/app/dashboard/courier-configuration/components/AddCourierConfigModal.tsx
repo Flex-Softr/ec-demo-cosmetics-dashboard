@@ -182,7 +182,7 @@ export default function AddCourierConfigModal({
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   id="isActive"
-                  className="data-[state=checked]:bg-[#3c51d6]"
+                  className="data-[state=checked]:bg-primary"
                 />
               )}
             />

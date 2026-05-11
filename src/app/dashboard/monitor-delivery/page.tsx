@@ -7,8 +7,7 @@ import isPermitted from "@/utilities/isPermitted";
 import { redirect } from "next/navigation";
 import MonitorOrdersTable from "./components/MonitorOrdersTable";
 import StatusButtons from "./components/StatusButtons";
-// import RefreshCourier from "./components/RefreshCourier";
-// import StatusButtons from "./components/StatusButtons";
+import CourierFilter from "./components/CourierFilter";
 
 const MonitorDelivery = async () => {
   const { permissions = [] } = await getPermission();
@@ -37,17 +36,15 @@ const MonitorDelivery = async () => {
       <hr className="my-4" />
       <div className="space-y-3">
         {/* All, delivery status*/}
-        <div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <StatusButtons
             manageProcessing={
               manageShipmentOrder ? false : manageProcessingOrder
             }
           />
+          <CourierFilter />
         </div>
         <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
-          {/*Bulk actions for Orders*/}
-          {/* <MonitorOrderDateRange />
-          <RefreshCourier /> */}
           <Show />
         </div>
         {/*Monitor delivery orders table */}

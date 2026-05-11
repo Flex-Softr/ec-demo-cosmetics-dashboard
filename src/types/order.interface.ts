@@ -96,6 +96,7 @@ export type TOrders = {
 export type TQuery = {
   status?: string;
   deliveryStatus?: string;
+  courierId?: string;
   category?: string;
   collection?: string;
   stock?: string;
