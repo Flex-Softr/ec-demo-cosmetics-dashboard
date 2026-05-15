@@ -64,7 +64,12 @@ const BulkAction = () => {
 
   const isBulkAction =
     filter == "pending" || filter == "confirmed" || filter == "follow up";
-  const isInvoice = filter == "processing";
+  const isInvoice =
+    filter == "processing" ||
+    filter == "processing done" ||
+    filter == "warranty processing" ||
+    filter == "warranty added" ||
+    filter == "on courier";
 
   return (
     <>

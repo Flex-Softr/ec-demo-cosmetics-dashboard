@@ -67,8 +67,8 @@ const ProcessingBulkAction = () => {
 
   return (
     <>
-      {isBulkAction && (
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 items-start sm:items-center">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 items-start sm:items-center">
+        {isBulkAction && (
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Select onValueChange={(value) => setBulkAction(value)}>
               <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
@@ -89,11 +89,11 @@ const ProcessingBulkAction = () => {
               Apply
             </Button>
           </div>
-          <div className="w-full sm:w-auto">
-            <PrintInvoiceButton orders={invoices} />
-          </div>
+        )}
+        <div className="w-full sm:w-auto">
+          <PrintInvoiceButton orders={invoices} />
         </div>
-      )}
+      </div>
     </>
   );
 };

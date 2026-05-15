@@ -43,9 +43,10 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
       </Button>
 
       {/* Hidden Print Content */}
-      <div className="printContent" ref={contentRef}>
+      <div className="printContent max-w-[210mm] mx-auto" ref={contentRef}>
         {orders?.map((order) => {
-          const { orderId, products, shipping, createdAt } = order;
+          const { orderId, products, shipping, createdAt, courierDetails } =
+            order;
           const {
             fullName,
             phoneNumber,
@@ -62,11 +63,11 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
           return (
             <div
               key={orderId}
-              className="bg-white text-black max-w-[210mm] mx-auto min-h-[297mm] flex flex-col font-sans break-after-page print:break-after-page"
-              style={{ pageBreakAfter: "always" }}
+              className="bg-white text-black block font-sans print:break-inside-avoid border-b border-dashed border-transparent"
+              style={{ minHeight: "0", height: "auto" }}
             >
               {/* Header */}
-              <div className="flex justify-between items-center px-8 py-4 mb-3">
+              <div className="flex justify-between items-center px-8 py-2 mb-1">
                 <div>
                   <h1 className="text-4xl font-extrabold text-black tracking-tight uppercase">
                     Invoice
@@ -75,21 +76,33 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
                     <span className="text-black">Invoice No:</span> #{orderId}
                   </p>
                   <p className="text-sm text-black font-medium">
-                    <span className="text-black">Date:</span>{" "}
+                    <span className="text-black">Order Date:</span>{" "}
                     {formatDate(createdAt)}
                   </p>
+                  {courierDetails?.courierProvider?.name && (
+                    <p className="text-sm text-black font-medium">
+                      <span className="text-black">Courier:</span>{" "}
+                      {courierDetails.courierProvider.name}
+                    </p>
+                  )}
+                  {courierDetails?.trackingId && (
+                    <p className="text-sm text-black font-medium">
+                      <span className="text-black">Tracking ID:</span>{" "}
+                      {courierDetails.trackingId}
+                    </p>
+                  )}
                 </div>
                 <Image
                   src={logo}
                   alt="Logo"
-                  className="w-32 h-auto object-contain mix-blend-multiply"
+                  className="w-48 h-auto object-contain mix-blend-multiply"
                   priority
                   placeholder="blur"
                 />
               </div>
 
               {/* Content Wrapper */}
-              <div className="px-8 flex-grow">
+              <div className="px-8">
                 {/* Info Section */}
                 <div className="grid grid-cols-2 gap-12 mb-4 items-start">
                   {/* Customer Info */}
@@ -140,8 +153,8 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
               </div>
 
               {/* Footer */}
-              <div className="mt-auto">
-                <div className="px-8 pb-8">
+              <div>
+                {/* <div className="px-8 pb-8">
                   <p className="text-center text-sm font-medium text-black mb-2">
                     Thank you for your business!
                   </p>
@@ -152,10 +165,10 @@ const PrintInvoiceButton = ({ orders }: { orders: TOrders[] }) => {
                     This is a computer generated invoice and does not require a
                     signature.
                   </p>
-                </div>
+                </div> */}
 
                 {/* Cut Line */}
-                <div className="flex items-center px-4 pb-4 opacity-50">
+                <div className="flex items-center px-4 pb-1 opacity-50">
                   <ScissorsLineDashedIcon className="text-black w-4 h-4 mr-2 flex-shrink-0" />
                   <div className="border-t border-dashed border-gray-400 w-full" />
                 </div>

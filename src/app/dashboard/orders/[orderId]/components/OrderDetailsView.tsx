@@ -113,6 +113,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
     "warranty processing",
     "warranty added",
     "processing done",
+    "on courier",
   ].includes(status);
 
   const isDeleted = ["pending", "follow up"].includes(status);
@@ -330,7 +331,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
                 {order?.courierDetails && (
                   <>
                     <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Provider:</span>
+                      <span className="text-muted-foreground">Courier:</span>
                       <span className="font-medium text-gray-900">
                         {order.courierDetails?.courierProvider?.name}
                       </span>

@@ -15,11 +15,12 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import statusOptions from "@/utilities/statusOptions";
 import { useState } from "react";
 import BulkSchedulePickup from "./BulkSchedulePickup";
+import PrintInvoiceButton from "../../orders/[orderId]/components/invoice/PrintInvoiceButton";
 
 const CourierBulkAction = () => {
   const dispatch = useAppDispatch();
   const [bulkSchedulePickup, { isLoading }] = useBulkSchedulePickupMutation();
-  const { orderIds } = useAppSelector(
+  const { orderIds, invoices } = useAppSelector(
     ({ courierShipment }) => courierShipment.bulkOrders
   );
   const filter = useAppSelector(
@@ -92,6 +93,10 @@ const CourierBulkAction = () => {
           </Button>
         </div>
       ) : null}
+
+      <div className="w-full sm:w-auto">
+        <PrintInvoiceButton orders={invoices} />
+      </div>
 
       <BulkSchedulePickup
         open={openBulkPickup}
