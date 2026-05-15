@@ -79,7 +79,7 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
   }, [data, loading, error, dispatch]);
 
   return (
-    <div className="flex flex-wrap items-center justify-start gap-5">
+    <>
       {orderStatusCount?.map((status: { name: string; total: string }) => {
         const bg = `${backgroundColor(status.name)} text-white`;
         return (
@@ -104,7 +104,7 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
           </Button>
         );
       })}
-    </div>
+    </>
   );
 };
 

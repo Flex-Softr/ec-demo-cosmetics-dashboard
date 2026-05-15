@@ -36,7 +36,7 @@ const MonitorDelivery = async () => {
       <hr className="my-4" />
       <div className="space-y-3">
         {/* All, delivery status*/}
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-start gap-5">
           <StatusButtons
             manageProcessing={
               manageShipmentOrder ? false : manageProcessingOrder

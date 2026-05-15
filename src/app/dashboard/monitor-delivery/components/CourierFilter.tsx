@@ -14,7 +14,7 @@ const CourierFilter = () => {
   if (!countsByCourier || countsByCourier.length === 0) return null;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 ml-auto">
       <label
         htmlFor="courier-filter"
         className="text-sm font-medium whitespace-nowrap text-muted-foreground"
