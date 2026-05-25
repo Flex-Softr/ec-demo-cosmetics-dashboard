@@ -10,10 +10,6 @@ import {
   setGallery,
   setThumbnail,
 } from "@/redux/features/imageSelector/imageSelectorSlice";
-import {
-  setIsLoading,
-  setTotalPage,
-} from "@/redux/features/pagination/PaginationSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { EyeIcon } from "lucide-react";
@@ -21,7 +17,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import CommonAlertDialog from "../common/CommonAlertDialog";
 import CommonModal from "../modal/CommonModal";
-import { PagePagination } from "../pagination/PagePagination";
 import { Button } from "../ui/button";
 import ImageDetails, { TMediaImage } from "./ImageDetails";
 
@@ -48,6 +43,12 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
   const [localGallery, setLocalGallery] = useState<string[]>(gallery);
   const [localDeleteImages, setLocalDeleteImages] =
     useState<string[]>(deleteImages);
+
+  // ── Local pagination state (isolated from the global Redux pagination) ──
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [totalPage, setTotalPageLocal] = useState(0);
+  const [total, setTotal] = useState(0);
 
   // Sync local delete selection when Redux state is cleared externally (e.g. Clear button)
   useEffect(() => {
@@ -100,8 +101,6 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
     }
   };
 
-  const { page, limit } = useAppSelector(({ pagination }) => pagination);
-
   const { data, isLoading, error } = useGetImagesQuery({
     page,
     limit,
@@ -109,18 +108,15 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
   });
 
   useEffect(() => {
-    if (isLoading) {
-      dispatch(setIsLoading(true));
-    }
     if (data) {
       const { meta } = data;
-      dispatch(setTotalPage(meta));
-      dispatch(setIsLoading(false));
+      setTotalPageLocal(meta?.totalPage ?? 0);
+      setTotal(meta?.total ?? 0);
     }
     if (error) {
       throw new Error("Something went wrong!");
     }
-  }, [data, error, isLoading, dispatch]);
+  }, [data, error]);
 
   const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
 
@@ -232,7 +228,16 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
               ))}
         </div>
         <div className="flex items-center justify-end space-x-2 h-20">
-          {data?.meta?.totalPage > 1 && <PagePagination />}
+          {totalPage > 1 && (
+            <LocalPagination
+              page={page}
+              totalPage={totalPage}
+              total={total}
+              limit={limit}
+              isLoading={isLoading}
+              onPageChange={setPage}
+            />
+          )}
           <div className="flex justify-end">
             <Button
               onClick={() =>
@@ -273,5 +278,87 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
     </>
   );
 };
+
+// ─────────────────────────────────────────────
+// Inline pagination component (local state only)
+// ─────────────────────────────────────────────
+type LocalPaginationProps = {
+  page: number;
+  totalPage: number;
+  total: number;
+  limit: number;
+  isLoading: boolean;
+  onPageChange: (page: number) => void;
+};
+
+function LocalPagination({
+  page: currentPage,
+  totalPage,
+  total,
+  limit,
+  isLoading,
+  onPageChange,
+}: LocalPaginationProps) {
+  const pages = [...Array(totalPage)].map((_, i) => i + 1);
+
+  let displayPages: (number | string)[];
+  if (totalPage <= 5) {
+    displayPages = pages;
+  } else {
+    const left = Math.max(0, currentPage - 2);
+    const right = Math.min(totalPage - 1, currentPage);
+    if (currentPage - 1 > 2) {
+      displayPages = ([1, "..."] as (number | string)[]).concat(
+        pages.slice(left, right + 1)
+      );
+    } else {
+      displayPages = pages.slice(0, right + 1);
+    }
+    if (currentPage + 1 < totalPage - 1) {
+      displayPages = displayPages.concat(["...", totalPage]);
+    } else {
+      displayPages = displayPages.concat(pages.slice(right + 1));
+    }
+  }
+
+  const showFrom = currentPage * limit - limit;
+
+  return (
+    <div className="flex items-center gap-1 text-sm flex-wrap">
+      <span className="mr-4 whitespace-nowrap text-muted-foreground">
+        {total !== 0 ? showFrom + 1 : showFrom}–
+        {currentPage * limit < total ? currentPage * limit : total} of {total}
+      </span>
+      <button
+        className="px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-40"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={isLoading || currentPage === 1}
+      >
+        ‹
+      </button>
+      {displayPages.map((item, i) => (
+        <button
+          key={i}
+          onClick={() => typeof item === "number" && onPageChange(item)}
+          disabled={isLoading || item === "..."}
+          className={`px-2 py-1 rounded ${
+            currentPage === item
+              ? "bg-primary text-white"
+              : "bg-gray-100 hover:bg-gray-200"
+          } disabled:opacity-40`}
+        >
+          {item}
+        </button>
+      ))}
+      <button
+        className="px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-40"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={isLoading || currentPage === totalPage}
+      >
+        ›
+      </button>
+    </div>
+  );
+}
 
 export default MediaLibrary;

@@ -13,6 +13,7 @@ import { THomePageSection } from "@/types/homepageSection";
 import { SquarePen, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import HomepageSectionForm from "./HomepageSectionForm";
+import { revalidateTag } from "@/utilities/revalidate";
 
 const HomepageSectionAction = ({
   homepageSection,
@@ -30,6 +31,10 @@ const HomepageSectionAction = ({
           className: "bg-success text-white",
           title: "Homepage section deleted successfully",
         });
+        await revalidateTag([
+          "homepageSections",
+          `homepageSections-${homepageSection._id}`,
+        ]);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

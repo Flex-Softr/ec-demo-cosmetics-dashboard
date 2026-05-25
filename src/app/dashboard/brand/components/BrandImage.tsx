@@ -10,8 +10,12 @@ import { useState } from "react";
 const BrandImage = ({ image }: { image?: { src: string; alt: string } }) => {
   const [open, setOpen] = useState(false);
   const [click, setClick] = useState<string>("");
-  const handleOpen = () => {
-    setOpen(!open);
+  const handleOpen = (value?: boolean) => {
+    if (typeof value === "boolean") {
+      setOpen(value);
+    } else {
+      setOpen((prev) => !prev);
+    }
   };
 
   const { thumbnail } = useAppSelector(({ imageSelector }) => imageSelector);
