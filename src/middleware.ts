@@ -38,6 +38,8 @@ export async function middleware(request: NextRequest) {
       return Response.redirect(new URL("/dashboard", request.url));
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_PRODUCT)) {
       return Response.redirect(new URL("/dashboard/products", request.url));
+    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_BLOG)) {
+      return Response.redirect(new URL("/dashboard/blog-posts", request.url));
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_ORDER)) {
       return Response.redirect(new URL("/dashboard/orders", request.url));
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_PROCESSING_ORDER)) {

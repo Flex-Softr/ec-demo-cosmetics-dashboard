@@ -47,6 +47,7 @@ const PermissionTable = ({
     [PERMISSIONS.MANAGE_SHIPMENT_ORDER]: z.boolean().optional(),
     [PERMISSIONS.MANAGE_WARRANTY_CLAIM]: z.boolean().optional(),
     [PERMISSIONS.MANAGE_PRODUCT]: z.boolean().optional(),
+    [PERMISSIONS.MANAGE_BLOG]: z.boolean().optional(),
     [PERMISSIONS.MANAGE_SMS]: z.boolean().optional(),
     [PERMISSIONS.MANAGE_CUSTOMER]: z.boolean().optional(),
   });
@@ -149,6 +150,12 @@ const PermissionTable = ({
       ),
       description: "Can manage products",
       fieldName: PERMISSIONS.MANAGE_PRODUCT,
+      warn: undefined,
+    },
+    {
+      ...permissionData.find((item) => item.name === PERMISSIONS.MANAGE_BLOG),
+      description: "Can manage blog posts, QnA, categories and tags",
+      fieldName: PERMISSIONS.MANAGE_BLOG,
       warn: undefined,
     },
     {

@@ -8,6 +8,7 @@ export async function Sidebar() {
 
   const isSuperAdmin = isPermitted(permissions);
   const manageProduct = isPermitted(permissions, PERMISSIONS.MANAGE_PRODUCT);
+  const manageBlog = isPermitted(permissions, PERMISSIONS.MANAGE_BLOG);
   const manageOrder = isPermitted(permissions, PERMISSIONS.MANAGE_ORDER);
   const manageImgToOrder = isPermitted(
     permissions,
@@ -47,6 +48,7 @@ export async function Sidebar() {
   const permissionsObj = {
     isSuperAdmin,
     manageProduct,
+    manageBlog,
     manageOrder,
     manageImgToOrder,
     manageProcessingOrder,

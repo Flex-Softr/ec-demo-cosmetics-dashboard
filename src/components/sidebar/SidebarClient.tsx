@@ -11,6 +11,7 @@ import {
   ClipboardList,
   Home,
   LayoutGrid,
+  LibraryBig,
   Image as ImageIcon,
   LucideIcon,
   MapPinned,
@@ -42,6 +43,7 @@ type TProps = {
   permissions: {
     isSuperAdmin: boolean;
     manageProduct: boolean;
+    manageBlog: boolean;
     manageOrder: boolean;
     manageImgToOrder: boolean;
     manageProcessingOrder: boolean;
@@ -78,6 +80,7 @@ export function SidebarClient({ permissions }: TProps) {
   const {
     isSuperAdmin,
     manageProduct,
+    manageBlog,
     manageOrder,
     // manageImgToOrder,
     manageProcessingOrder,
@@ -159,6 +162,19 @@ export function SidebarClient({ permissions }: TProps) {
       items: [
         { name: "Media", href: "/dashboard/media" },
         { name: "Book Previews", href: "/dashboard/book-previews" },
+      ],
+    },
+    {
+      key: "blog-qna",
+      label: "Blog & QnA",
+      icon: LibraryBig,
+      visible: !!(isSuperAdmin || manageBlog),
+      items: [
+        { name: "Blog Posts", href: "/dashboard/blog-posts" },
+        { name: "QnA", href: "/dashboard/qna" },
+        { name: "Categories", href: "/dashboard/blog-categories" },
+        { name: "Topics", href: "/dashboard/blog-topics" },
+        { name: "Tags", href: "/dashboard/blog-tags" },
       ],
     },
     {
@@ -247,6 +263,24 @@ export function SidebarClient({ permissions }: TProps) {
         name: "",
         href: "/dashboard/book-previews",
         icon: LayoutGrid,
+      });
+    }
+
+    if (isSuperAdmin || manageBlog) {
+      items.push({
+        name: "",
+        href: "/dashboard/blog-posts",
+        icon: LibraryBig,
+      });
+      items.push({
+        name: "",
+        href: "/dashboard/qna",
+        icon: MessageSquareText,
+      });
+      items.push({
+        name: "",
+        href: "/dashboard/blog-topics",
+        icon: LibraryBig,
       });
     }
 
