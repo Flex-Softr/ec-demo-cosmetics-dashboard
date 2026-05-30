@@ -78,6 +78,11 @@ const tags = [
   "registeredCustomers",
   "bookPreviews",
   "contactMessages",
+  "blogPosts",
+  "qna",
+  "blogQaCategories",
+  "blogQaTopics",
+  "blogQaTags",
 ] as const;
 
 const baseApi = createApi({

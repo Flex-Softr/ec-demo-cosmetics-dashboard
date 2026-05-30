@@ -16,7 +16,13 @@ export type TTags =
   | "sliderBanner"
   | `homepageSections`
   | `homepageSections-${string}`
-  | "homepageIndividualSection";
+  | "homepageIndividualSection"
+  | "blogPosts"
+  | `blogPost-${string}`
+  | "qna"
+  | `qna-${string}`
+  | "blogQaCategories"
+  | "blogQaTags";
 
 export const revalidateTag = async (tag: TTags | TTags[]) => {
   let tags: string;
