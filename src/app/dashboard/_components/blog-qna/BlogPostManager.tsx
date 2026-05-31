@@ -95,10 +95,9 @@ export default function BlogPostManager() {
             <TableRow className="hover:bg-primary/90">
               <TableHead>Title</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Tags</TableHead>
+              <TableHead>Topic</TableHead>
               <TableHead>Views</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -120,12 +119,12 @@ export default function BlogPostManager() {
                   </TableCell>
                   <TableCell>{getRefLabel(post.category)}</TableCell>
                   <TableCell>
-                    <StatusBadge status={post.status} />
-                  </TableCell>
-                  <TableCell>
-                    <TagsPreview values={post.tags} />
+                    <TagsPreview values={post.topics} />
                   </TableCell>
                   <TableCell>{post.views || 0}</TableCell>
+                  <TableCell>
+                    <StatusBadge status={post.status} />
+                  </TableCell>
                   <TableCell>
                     <div className="flex justify-end gap-2">
                       <Link href={`/dashboard/blog-posts/${post._id}/edit`}>

@@ -19,6 +19,7 @@ export type TSeoData = {
   metaTitle?: string;
   metaDescription?: string;
   keywords?: string[];
+  canonicalUrl?: string;
   schemaMarkup?: string;
 };
 
@@ -62,6 +63,7 @@ export type TBlogPost = {
   excerpt?: string;
   readTime?: number;
   category: string | TEntityRef;
+  topics?: Array<string | TEntityRef>;
   tags?: Array<string | TEntityRef>;
   author: string | TEntityRef;
   featuredImage?: string | TEntityRef;
@@ -81,6 +83,7 @@ export type TQnA = {
   answer: string;
   category: string | TEntityRef;
   tags?: Array<string | TEntityRef>;
+  topics?: Array<string | TEntityRef>;
   author: string | TEntityRef;
   relatedQuestions?: Array<string | TEntityRef>;
   seo?: TSeoData;

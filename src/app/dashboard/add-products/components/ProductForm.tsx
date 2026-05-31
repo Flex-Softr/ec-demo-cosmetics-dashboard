@@ -37,6 +37,7 @@ import RelatedProducts from "./RelatedProduct";
 import ShortDescriptionInput from "./ShortDescriptionInput";
 import TitleInput from "./TitleInput";
 import PreviewLinkInput from "./PreviewLinkInput";
+import Seo from "./Seo";
 
 const ProductForm = ({ productId }: { productId?: string }) => {
   const dispatch = useAppDispatch();
@@ -58,6 +59,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     return {
       title: "",
       slug: "",
+      metaTitle: "",
+      metaDescription: "",
+      keywords: "",
+      canonicalUrl: "",
+      schemaMarkup: "",
       description: "",
       previewLink: "",
       shortDescription: "",
@@ -253,11 +259,40 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         }
       );
 
-      const payload = {
-        ...data,
+      // Extract SEO fields and transform keywords into array for backend
+      const {
+        metaTitle,
+        metaDescription,
+        keywords,
+        canonicalUrl,
+        schemaMarkup,
+        ...restData
+      } = data;
+
+      const buildSeoData = () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const obj: any = {};
+        if (metaTitle) obj.metaTitle = metaTitle;
+        if (metaDescription) obj.metaDescription = metaDescription;
+        const kws = keywords
+          ? String(keywords)
+              .split(",")
+              .map((k) => k.trim())
+              .filter(Boolean)
+          : [];
+        if (kws.length) obj.keywords = kws;
+        if (canonicalUrl) obj.canonicalUrl = canonicalUrl;
+        if (schemaMarkup) obj.schemaMarkup = schemaMarkup;
+        return Object.keys(obj).length ? obj : undefined;
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const payload: any = {
+        ...restData,
         attributes: payloadAttributes,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         relatedProducts: data.relatedProducts?.map((p: any) => p.value) || [],
+        ...(buildSeoData() ? { seo: buildSeoData() } : {}),
       };
 
       if (!payload.inventory?.sku) {
@@ -396,6 +431,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
               <ShortDescriptionInput />
               <ProductDataTabs />
               <DescriptionInput />
+              <Seo />
               {productData?.createdAt && (
                 <div className="text-xs text-muted-foreground flex flex-wrap gap-2 sm:gap-4">
                   <p>

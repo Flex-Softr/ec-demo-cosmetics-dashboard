@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import {
   useCreateQnAMutation,
@@ -33,6 +32,7 @@ import {
   RichTextEditor,
   slugify,
 } from "./BlogQnaUtils";
+import { SeoControlled } from "@/components/Seo";
 
 const emptyForm = {
   question: "",
@@ -45,6 +45,7 @@ const emptyForm = {
   metaTitle: "",
   metaDescription: "",
   keywords: "",
+  canonicalUrl: "",
   schemaMarkup: "",
   status: "draft" as TBlogStatus,
 };
@@ -118,6 +119,7 @@ const QnaForm = ({ qnaId, initialData }: QnaFormProps) => {
             metaTitle: qnaData.seo?.metaTitle || "",
             metaDescription: qnaData.seo?.metaDescription || "",
             keywords: qnaData.seo?.keywords?.join(", ") || "",
+            canonicalUrl: qnaData.seo?.canonicalUrl || "",
             schemaMarkup: qnaData.seo?.schemaMarkup || "",
             status: qnaData.status,
           }
@@ -139,6 +141,23 @@ const QnaForm = ({ qnaId, initialData }: QnaFormProps) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const buildSeo = () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const obj: any = {};
+      if (form.metaTitle) obj.metaTitle = form.metaTitle;
+      if (form.metaDescription) obj.metaDescription = form.metaDescription;
+      const keywords = form.keywords
+        ? String(form.keywords)
+            .split(",")
+            .map((k) => k.trim())
+            .filter(Boolean)
+        : [];
+      if (keywords.length) obj.keywords = keywords;
+      if (form.canonicalUrl) obj.canonicalUrl = form.canonicalUrl;
+      if (form.schemaMarkup) obj.schemaMarkup = form.schemaMarkup;
+      return Object.keys(obj).length ? obj : undefined;
+    };
+
     const payload: TQnAPayload = {
       question: form.question,
       slug: form.slug,
@@ -147,15 +166,7 @@ const QnaForm = ({ qnaId, initialData }: QnaFormProps) => {
       tags: form.tags,
       author: form.author,
       relatedQuestions: form.relatedQuestions,
-      seo: {
-        metaTitle: form.metaTitle || undefined,
-        metaDescription: form.metaDescription || undefined,
-        keywords: form.keywords
-          .split(",")
-          .map((item) => item.trim())
-          .filter(Boolean),
-        schemaMarkup: form.schemaMarkup || undefined,
-      },
+      seo: buildSeo(),
       status: form.status,
     };
 
@@ -267,32 +278,17 @@ const QnaForm = ({ qnaId, initialData }: QnaFormProps) => {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Input
-            placeholder="Meta title"
-            value={form.metaTitle}
-            onChange={(event) => setValue("metaTitle", event.target.value)}
-          />
-          <Input
-            placeholder="Keywords, comma separated"
-            value={form.keywords}
-            onChange={(event) => setValue("keywords", event.target.value)}
-          />
-          <Textarea
-            className="md:col-span-2"
-            placeholder="Meta description"
-            value={form.metaDescription}
-            onChange={(event) =>
-              setValue("metaDescription", event.target.value)
-            }
-          />
-          <Textarea
-            className="md:col-span-2"
-            placeholder="Schema markup"
-            value={form.schemaMarkup}
-            onChange={(event) => setValue("schemaMarkup", event.target.value)}
-          />
-        </div>
+        <SeoControlled
+          values={{
+            metaTitle: form.metaTitle,
+            keywords: form.keywords,
+            canonicalUrl: form.canonicalUrl,
+            metaDescription: form.metaDescription,
+            schemaMarkup: form.schemaMarkup,
+          }}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onChange={(k: any, v: any) => setValue(k as any, v)}
+        />
 
         <div className="flex justify-end gap-2">
           <Link href="/dashboard/qna">

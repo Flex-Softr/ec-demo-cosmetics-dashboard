@@ -75,11 +75,12 @@ export type TProductPayload = {
   }[];
 
   // --- Meta & SEO Section ---
-  seoData?: {
-    metaTitle: string; // Text input
-    metaDescription: string; // Textarea
-    focusKeyphrase: string; // Text input
-    slug: string; // Read-only or editable slug mapping
+  seo?: {
+    metaTitle?: string; // Text input
+    metaDescription?: string; // Textarea
+    keywords?: string; // Comma-separated keywords
+    canonicalUrl?: string;
+    schemaMarkup?: string;
   };
 
   // --- Warranty & Policy ---

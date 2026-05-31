@@ -107,6 +107,21 @@ const PublishedStatusSchema = Yup.string()
 const ProductSchema = Yup.object().shape({
   title: Yup.string().trim().required("Title is required"),
   slug: Yup.string().trim().required("Slug is required"),
+  metaTitle: Yup.string().trim().optional(),
+  metaDescription: Yup.string().trim().optional(),
+  keywords: Yup.string().trim().optional(),
+  canonicalUrl: Yup.string()
+    .transform((v) => v || undefined)
+    .test("is-url", "Must be a valid URL", (v) => {
+      if (!v) return true;
+      const isProd = config.env === "production";
+      if (isProd && v.includes("localhost")) return false;
+      return /^(https?:\/\/)?(localhost|[\da-z.-]+)(:\d+)?(\/[^\s]*)?$/i.test(
+        v
+      );
+    })
+    .optional(),
+  schemaMarkup: Yup.string().optional(),
   description: Yup.string().trim().optional(),
   previewLink: Yup.string()
     .transform((v) => v || undefined)

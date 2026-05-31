@@ -95,9 +95,9 @@ export default function QnaManager() {
             <TableRow className="hover:bg-primary/90">
               <TableHead>Question</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Tags</TableHead>
+              <TableHead>Topics</TableHead>
               <TableHead>Views</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -119,12 +119,12 @@ export default function QnaManager() {
                   </TableCell>
                   <TableCell>{getRefLabel(item.category)}</TableCell>
                   <TableCell>
-                    <StatusBadge status={item.status} />
-                  </TableCell>
-                  <TableCell>
-                    <TagsPreview values={item.tags} />
+                    <TagsPreview values={item.topics} />
                   </TableCell>
                   <TableCell>{item.views || 0}</TableCell>
+                  <TableCell>
+                    <StatusBadge status={item.status} />
+                  </TableCell>
                   <TableCell>
                     <div className="flex justify-end gap-2">
                       <Link href={`/dashboard/qna/${item._id}/edit`}>

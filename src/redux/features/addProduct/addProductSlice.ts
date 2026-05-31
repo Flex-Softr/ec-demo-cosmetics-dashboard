@@ -11,7 +11,7 @@ import {
   TOffer,
   TPrice,
   TProduct,
-  TSeoData,
+  TSeo,
 } from "./interface";
 import { TSelectValue } from "./variation/interface";
 
@@ -66,11 +66,12 @@ const initialState: TProduct = {
   },
   productCollection: undefined,
   // tag: [],
-  // seoData: {
-  //   focusKeyphrase: "",
+  // seo: {
   //   metaTitle: "",
-  //   slug: "",
   //   metaDescription: "",
+  //   keywords: "",
+  //   canonicalUrl: "",
+  //   schemaMarkup: "",
   // },
   featured: false,
   // review: false,
@@ -163,8 +164,10 @@ const productSlice = createSlice({
     setTag: (state, action: PayloadAction<TSelectValue[]>) => {
       state.tag = action.payload;
     },
-    setSeoData: (state, action: PayloadAction<TSeoData>) => {
-      state.seoData = { ...action.payload };
+    setSeo: (state, action: PayloadAction<TSeo>) => {
+      // convert keywords array/string handling is done in ProductForm before sending
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      state.seo = { ...action.payload } as any;
     },
     setPublishedStatus: (state, action: PayloadAction<string>) => {
       state.publishedStatus = action.payload;
@@ -257,7 +260,7 @@ export const {
   setProductCollection,
   setBrand,
   setTag,
-  setSeoData,
+  setSeo,
   setPublishedStatus,
   setAdvanced,
   setProduct,

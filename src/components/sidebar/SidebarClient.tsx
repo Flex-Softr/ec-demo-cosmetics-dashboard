@@ -172,9 +172,9 @@ export function SidebarClient({ permissions }: TProps) {
       items: [
         { name: "Blog Posts", href: "/dashboard/blog-posts" },
         { name: "QnA", href: "/dashboard/qna" },
-        { name: "Categories", href: "/dashboard/blog-categories" },
-        { name: "Topics", href: "/dashboard/blog-topics" },
-        { name: "Tags", href: "/dashboard/blog-tags" },
+        { name: "Categories", href: "/dashboard/blog-qna-categories" },
+        { name: "Topics", href: "/dashboard/blog-qna-topics" },
+        { name: "Tags", href: "/dashboard/blog-qna-tags" },
       ],
     },
     {
@@ -279,7 +279,7 @@ export function SidebarClient({ permissions }: TProps) {
       });
       items.push({
         name: "",
-        href: "/dashboard/blog-topics",
+        href: "/dashboard/blog-qna-topics",
         icon: LibraryBig,
       });
     }

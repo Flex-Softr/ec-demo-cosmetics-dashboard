@@ -111,10 +111,10 @@ export default function BlogTaxonomyManager({ kind }: { kind: TKind }) {
 
   const title =
     kind === "category"
-      ? "Blog Categories"
+      ? "Blog & QnA Categories"
       : kind === "tag"
-        ? "Blog Tags"
-        : "Blog Topics";
+        ? "Blog & QnA Tags"
+        : "Blog & QnA Topics";
 
   const handleDelete = async (id: string) => {
     if (!confirm(`Delete this ${kind}?`)) return;
@@ -181,8 +181,8 @@ export default function BlogTaxonomyManager({ kind }: { kind: TKind }) {
             <TableRow className="hover:bg-primary/90">
               <TableHead>Name</TableHead>
               <TableHead>Slug</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead>Description</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -198,11 +198,11 @@ export default function BlogTaxonomyManager({ kind }: { kind: TKind }) {
                 <TableRow key={item._id}>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.slug}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={item.status} />
-                  </TableCell>
                   <TableCell className="max-w-md truncate">
                     {item.description || "-"}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={item.status} />
                   </TableCell>
                   <TableCell>
                     <div className="flex justify-end gap-2">

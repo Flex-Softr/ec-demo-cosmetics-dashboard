@@ -58,11 +58,12 @@ export type TCategory = {
   subCategory: string | undefined;
 };
 
-export type TSeoData = {
-  focusKeyphrase: string;
-  metaTitle: string;
-  slug: string;
-  metaDescription: string;
+export type TSeo = {
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string; // comma separated
+  canonicalUrl?: string;
+  schemaMarkup?: string;
 };
 
 export type TWarrantyInfo = {
@@ -89,7 +90,7 @@ export type TProduct = {
   category: TCategory;
   productCollection?: string;
   tag?: TSelectValue[];
-  seoData?: TSeoData;
+  seo?: TSeo;
   offer?: TOffer;
   featured: boolean;
   review?: boolean;
