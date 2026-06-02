@@ -34,11 +34,9 @@ export function formatImageSrc(src: string | undefined | null): string {
   // Return placeholder if src is missing
   if (!src) return "/placeholder.png";
 
-  // Debug log
-  // console.log("formatImageSrc input:", src);
-
   // Trim and replace backslashes
-  let cleanSrc = src.trim().replace(/\\/g, "/");
+  let cleanSrc =
+    config.env === "development" ? src.trim().replace(/\\/g, "/") : src;
 
   // Check for string "null" or "undefined"
   if (cleanSrc === "null" || cleanSrc === "undefined" || !cleanSrc) {
