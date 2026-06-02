@@ -4,17 +4,20 @@ import { SectionTitle } from "@/components/ui/sectionTitle";
 import ImageSelectPopup from "@/components/uploader/ImageSelectPopup";
 import { cn, formatImageSrc } from "@/lib/utils";
 import { useGetSingleImageQuery } from "@/redux/features/addProduct/media/mediaApi";
+import { setGallery } from "@/redux/features/imageSelector/imageSelectorSlice";
 import { useAppSelector } from "@/redux/hooks";
-import { UploadCloud } from "lucide-react";
+import { UploadCloud, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { useAppDispatch } from "@/redux/hooks";
 
 type TProps = {
   isVariation?: boolean;
   index?: number;
 };
 const Media = ({ isVariation }: TProps) => {
+  const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [click, setClick] = useState<string>("");
   const handleOpen = () => {
@@ -24,6 +27,7 @@ const Media = ({ isVariation }: TProps) => {
   const {
     setValue,
     trigger,
+    clearErrors,
     formState: { errors, submitCount },
   } = useFormContext();
 
@@ -49,15 +53,24 @@ const Media = ({ isVariation }: TProps) => {
     }
   }, [thumbnail, gallery, setValue, isVariation, trigger]);
 
+  const handleClearGallery = () => {
+    dispatch(setGallery([]));
+    setValue("image.gallery", [], { shouldValidate: true, shouldDirty: true });
+    clearErrors("image.gallery");
+    trigger("image.gallery");
+  };
+
   // const image = useAppSelector(
   //   ({ productVariation }) => productVariation.variations[index || 0]?.image
   // );
 
   const { data: thumbnailImage } = useGetSingleImageQuery(
-    thumbnail || undefined
+    thumbnail || undefined,
+    { skip: !thumbnail }
   );
   const { data: galleryImage } = useGetSingleImageQuery(
-    gallery[0] || undefined
+    gallery[0] || undefined,
+    { skip: !gallery.length }
   );
 
   const getError = (path: string) => {
@@ -165,6 +178,18 @@ const Media = ({ isVariation }: TProps) => {
                   className="object-cover rounded-sm"
                   sizes="(max-width: 208px) 100vw,"
                 />
+                <button
+                  type="button"
+                  aria-label="Clear gallery images"
+                  title="Clear gallery images"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClearGallery();
+                  }}
+                  className="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-gray-700 shadow-sm transition hover:bg-white hover:text-red-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
                 <span className="text-white text-4xl absolute mx-auto my-auto group-hover:bg-white group-hover:text-gray-600 group-hover:opacity-70 h-10 w-10 text-center items-center rounded-full">
                   {gallery.length}
                 </span>
