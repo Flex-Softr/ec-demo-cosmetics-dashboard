@@ -24,9 +24,26 @@ import { Input } from "../ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
 import { setPage } from "@/redux/features/pagination/PaginationSlice";
 
-type TBookPreviewItem = { _id: string; src: string; alt: string };
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
-const BookPreviewLibrary = () => {
+type TBookPreviewItem = {
+  _id: string;
+  src: string;
+  alt: string;
+  previewType: "short" | "full" | "free";
+};
+
+const BookPreviewLibrary = ({
+  fixedType,
+}: {
+  fixedType?: "short" | "full" | "free";
+}) => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
@@ -35,6 +52,9 @@ const BookPreviewLibrary = () => {
 
   const [localDeleteItems, setLocalDeleteItems] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [previewType, setPreviewType] = useState<
+    "all" | "short" | "full" | "free"
+  >(fixedType || "all");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const selectItem = (itemId: string) => {
@@ -61,6 +81,7 @@ const BookPreviewLibrary = () => {
     limit,
     sort: "-createdAt",
     search: debouncedSearchTerm,
+    ...(previewType !== "all" && { previewType }),
   });
 
   useEffect(() => {
@@ -149,6 +170,24 @@ const BookPreviewLibrary = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
+            {!fixedType && (
+              <Select
+                value={previewType}
+                onValueChange={(val: "all" | "short" | "full" | "free") =>
+                  setPreviewType(val)
+                }
+              >
+                <SelectTrigger className="w-[120px] h-9">
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="short">Short</SelectItem>
+                  <SelectItem value="full">Full</SelectItem>
+                  <SelectItem value="free">Free</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
           <div className="flex gap-2">
             <Button
@@ -185,6 +224,9 @@ const BookPreviewLibrary = () => {
                 title={decodeUTF8(item.alt)}
               >
                 {decodeUTF8(item.alt)}
+              </span>
+              <span className="text-[10px] uppercase font-bold text-gray-400 mt-1">
+                {item.previewType}
               </span>
 
               <div className="flex gap-1 absolute right-2 top-2 z-10">

@@ -1,14 +1,34 @@
 import { useToast } from "@/components/ui/use-toast";
-import { useUploadBookPreviewMutation } from "@/redux/features/bookPreview/bookPreviewApi";
+import {
+  useGetBookPreviewPresignedUrlMutation,
+  useUploadBookPreviewMutation,
+} from "@/redux/features/bookPreview/bookPreviewApi";
 import { Cross2Icon, FileTextIcon } from "@radix-ui/react-icons";
 import { ChangeEvent, useState } from "react";
 import { Button } from "../ui/button";
 import config from "@/config/config";
 
-const UploadBookPreview = () => {
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+
+const UploadBookPreview = ({
+  fixedType,
+}: {
+  fixedType?: "short" | "full" | "free";
+}) => {
   const { toast } = useToast();
   const [uploadBookPreview, { isLoading }] = useUploadBookPreviewMutation();
+  const [getPresignedUrl] = useGetBookPreviewPresignedUrlMutation();
+  const [isUploading, setIsUploading] = useState(false);
   const [previews, setPreviews] = useState<File[]>([]);
+  const [previewType, setPreviewType] = useState<"short" | "full" | "free">(
+    fixedType || "short"
+  );
 
   const MAX_FILE_SIZE = config.upload_limits.pdf_size;
   const MAX_FILE_COUNT = config.upload_limits.pdf_max_count;
@@ -102,12 +122,45 @@ const UploadBookPreview = () => {
   };
 
   const handleUpload = async () => {
+    setIsUploading(true);
     try {
-      const formData = new FormData();
-      previews.forEach((preview) => {
-        formData.append(`previews`, preview);
-      });
-      const res = await uploadBookPreview(formData).unwrap();
+      const uploadedPreviews = [];
+
+      for (const preview of previews) {
+        // 1. Get presigned URL
+        const res = await getPresignedUrl({
+          filename: preview.name,
+          contentType: preview.type,
+          previewType,
+        }).unwrap();
+
+        const { presignedUrl, key } = res.data;
+
+        // 2. Upload directly to R2
+        const uploadRes = await fetch(presignedUrl, {
+          method: "PUT",
+          body: preview,
+          headers: {
+            "Content-Type": preview.type,
+          },
+        });
+
+        if (!uploadRes.ok) {
+          throw new Error(`Failed to upload ${preview.name} to Cloudflare R2`);
+        }
+
+        // 3. Keep track of successfully uploaded previews
+        uploadedPreviews.push({
+          src: key,
+          alt: preview.name,
+          previewType,
+        });
+      }
+
+      // 4. Save metadata to backend
+      const res = await uploadBookPreview({
+        previews: uploadedPreviews,
+      }).unwrap();
       if (!res.error) {
         setPreviews([]);
       }
@@ -119,9 +172,12 @@ const UploadBookPreview = () => {
     } catch (err: any) {
       toast({
         variant: "destructive",
-        title: err?.data?.message || "Book previews upload failed!",
+        title:
+          err?.data?.message || err?.message || "Book previews upload failed!",
         description: "There was a problem with your request.",
       });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -169,18 +225,48 @@ const UploadBookPreview = () => {
               multiple
             />
           </div>
-          <div className="flex justify-end gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setPreviews([])}
-              disabled={isLoading}
-            >
-              Clear
-            </Button>
-            <Button size="sm" onClick={handleUpload} disabled={isLoading}>
-              Upload PDFs
-            </Button>
+          <div className="flex justify-between items-center gap-2">
+            {!fixedType ? (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">
+                  Preview Type:
+                </span>
+                <Select
+                  value={previewType}
+                  onValueChange={(val: "short" | "full" | "free") =>
+                    setPreviewType(val)
+                  }
+                >
+                  <SelectTrigger className="w-[120px] h-9">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="short">Short</SelectItem>
+                    <SelectItem value="full">Full</SelectItem>
+                    <SelectItem value="free">Free</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <div></div>
+            )}
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setPreviews([])}
+                disabled={isLoading}
+              >
+                Clear
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleUpload}
+                disabled={isLoading || isUploading}
+              >
+                {isUploading ? "Uploading..." : "Upload PDFs"}
+              </Button>
+            </div>
           </div>
         </div>
       ) : (

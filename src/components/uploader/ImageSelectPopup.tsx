@@ -10,8 +10,15 @@ type TProps = {
   click?: string;
   handleOpen: (open: boolean) => void;
   modalTitle: string;
+  purpose?: "product" | "blog" | "general";
 };
-const ImageSelectPopup = ({ open, click, handleOpen, modalTitle }: TProps) => {
+const ImageSelectPopup = ({
+  open,
+  click,
+  handleOpen,
+  modalTitle,
+  purpose,
+}: TProps) => {
   const [activeTab, setActiveTab] = useState<string>("uploadFile");
 
   const handleTabClick = (tab: string) => {
@@ -49,9 +56,13 @@ const ImageSelectPopup = ({ open, click, handleOpen, modalTitle }: TProps) => {
           </Button>
         </div>
         <div className={`flex-1`}>
-          {activeTab === "uploadFile" && <UploadFile />}
+          {activeTab === "uploadFile" && <UploadFile purpose={purpose} />}
           {activeTab === "mediaLibrary" && (
-            <MediaLibrary click={click} handleOpen={handleOpen} />
+            <MediaLibrary
+              click={click}
+              handleOpen={handleOpen}
+              purpose={purpose}
+            />
           )}
         </div>
       </div>

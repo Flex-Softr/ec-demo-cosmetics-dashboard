@@ -1,16 +1,34 @@
-import { useUploadImageMutation } from "@/redux/features/imageSelector/imageApi";
+import {
+  useGetPresignedUrlMutation,
+  useUploadImageMutation,
+} from "@/redux/features/imageSelector/imageApi";
 import { useToast } from "@/components/ui/use-toast";
 import { Cross2Icon, ImageIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { ChangeEvent, useState } from "react";
 import { Button } from "../ui/button";
 import config from "@/config/config";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
-const UploadFile = () => {
+const UploadFile = ({
+  purpose,
+}: {
+  purpose?: "product" | "blog" | "general";
+}) => {
   const { toast } = useToast();
   const [uploadImage, { isLoading }] = useUploadImageMutation();
-  // const [images, setImages] = useState(""); // for single
+  const [getPresignedUrl] = useGetPresignedUrlMutation();
+  const [isUploading, setIsUploading] = useState(false);
   const [images, setImages] = useState<File[]>([]);
+  const [selectedPurpose, setSelectedPurpose] = useState<
+    "product" | "blog" | "general"
+  >(purpose || "general");
 
   const MAX_FILE_SIZE = config.upload_limits.image_size;
   const MAX_FILE_COUNT = config.upload_limits.image_max_count;
@@ -108,13 +126,43 @@ const UploadFile = () => {
   };
 
   const handleUpload = async () => {
+    setIsUploading(true);
     try {
-      const formData = new FormData();
-      // formData.append(`images`, images); // for single
-      images.forEach((image) => {
-        formData.append(`images`, image);
-      });
-      const res = await uploadImage(formData).unwrap();
+      const uploadedImages = [];
+
+      for (const image of images) {
+        // 1. Get presigned URL
+        const res = await getPresignedUrl({
+          filename: image.name,
+          contentType: image.type,
+          purpose: selectedPurpose,
+        }).unwrap();
+
+        const { presignedUrl, key } = res.data;
+
+        // 2. Upload directly to R2
+        const uploadRes = await fetch(presignedUrl, {
+          method: "PUT",
+          body: image,
+          headers: {
+            "Content-Type": image.type,
+          },
+        });
+
+        if (!uploadRes.ok) {
+          throw new Error(`Failed to upload ${image.name} to Cloudflare R2`);
+        }
+
+        // 3. Keep track of successfully uploaded images
+        uploadedImages.push({
+          src: key,
+          alt: image.name,
+          purpose: selectedPurpose,
+        });
+      }
+
+      // 4. Save metadata to backend
+      const res = await uploadImage({ images: uploadedImages }).unwrap();
       if (!res.error) {
         setImages([]);
       }
@@ -126,9 +174,11 @@ const UploadFile = () => {
     } catch (err: any) {
       toast({
         variant: "destructive",
-        title: err?.data?.message || "Images upload failed!",
+        title: err?.data?.message || err?.message || "Images upload failed!",
         description: "There was a problem with your request.",
       });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -176,10 +226,48 @@ const UploadFile = () => {
               multiple
             />
           </div>
-          <div className="flex justify-end ">
-            <Button size="sm" onClick={handleUpload} disabled={isLoading}>
-              Upload Files
-            </Button>
+          <div className="flex justify-between items-center gap-2">
+            {!purpose ? (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">
+                  Image Type:
+                </span>
+                <Select
+                  value={selectedPurpose}
+                  onValueChange={(val: "product" | "blog" | "general") =>
+                    setSelectedPurpose(val)
+                  }
+                >
+                  <SelectTrigger className="w-[120px] h-9">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="general">General</SelectItem>
+                    <SelectItem value="product">Product</SelectItem>
+                    <SelectItem value="blog">Blog</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <div></div>
+            )}
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setImages([])}
+                disabled={isLoading}
+              >
+                Clear
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleUpload}
+                disabled={isLoading || isUploading}
+              >
+                {isUploading ? "Uploading..." : "Upload Files"}
+              </Button>
+            </div>
           </div>
         </div>
       ) : (

@@ -1,21 +1,46 @@
 import baseApi from "../../baseApi/baseApi";
-import searchParams from "@/utilities/searchParams";
 
 const bookPreviewApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getBookPreviewPresignedUrl: builder.mutation({
+      query: (payload: {
+        filename: string;
+        contentType: string;
+        previewType?: string;
+        bookId?: string;
+      }) => ({
+        url: "/book-previews/presigned-url",
+        method: "POST",
+        body: payload,
+      }),
+    }),
     uploadBookPreview: builder.mutation({
-      query: (data) => ({
+      query: (payload: {
+        previews: { src: string; alt: string; previewType?: string }[];
+      }) => ({
         url: "/book-previews",
         method: "POST",
-        body: data,
+        body: payload,
       }),
       invalidatesTags: ["bookPreviews"],
     }),
     getBookPreviews: builder.query({
-      query: (args) => ({
-        url: "/book-previews",
-        method: "GET",
-        params: searchParams(args),
+      query: ({
+        page,
+        limit,
+        sort,
+        search,
+        previewType,
+      }: {
+        page: number;
+        limit: number;
+        sort: string;
+        search?: string;
+        previewType?: string;
+      }) => ({
+        url: `/book-previews?page=${page}&limit=${limit}&sort=${sort}${
+          search ? `&searchTerm=${search}` : ""
+        }${previewType ? `&previewType=${previewType}` : ""}`,
       }),
       providesTags: ["bookPreviews"],
     }),
@@ -31,6 +56,7 @@ const bookPreviewApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetBookPreviewPresignedUrlMutation,
   useUploadBookPreviewMutation,
   useGetBookPreviewsQuery,
   useDeleteBookPreviewMutation,

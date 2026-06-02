@@ -198,6 +198,7 @@ const Media = ({ isVariation }: TProps) => {
           click={click}
           handleOpen={handleOpen}
           modalTitle={`Add image for ${click}`}
+          purpose="product"
         />
       </div>
     </>

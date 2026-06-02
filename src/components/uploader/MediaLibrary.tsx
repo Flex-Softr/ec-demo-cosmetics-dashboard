@@ -20,15 +20,15 @@ import CommonModal from "../modal/CommonModal";
 import { Button } from "../ui/button";
 import ImageDetails, { TMediaImage } from "./ImageDetails";
 
-// type TImage = { _id: string; src: string; alt: string };
 type TProps = {
   click?: string;
   index?: number;
   handleOpen?: (open: boolean) => void;
+  purpose?: "product" | "blog" | "general";
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
+const MediaLibrary = ({ click, index, handleOpen, purpose }: TProps) => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
@@ -105,6 +105,7 @@ const MediaLibrary = ({ click, index, handleOpen }: TProps) => {
     page,
     limit,
     sort: "-createdAt",
+    purpose,
   });
 
   useEffect(() => {

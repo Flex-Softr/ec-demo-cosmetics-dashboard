@@ -5,7 +5,11 @@ import { useState } from "react";
 import BookPreviewLibrary from "@/components/book-preview/BookPreviewLibrary";
 import UploadBookPreview from "@/components/book-preview/UploadBookPreview";
 
-const BookPreviewManager = () => {
+const BookPreviewManager = ({
+  fixedType,
+}: {
+  fixedType?: "short" | "full" | "free";
+}) => {
   const [activeTab, setActiveTab] = useState<string>("uploadFile");
 
   const handleTabClick = (tab: string) => {
@@ -48,8 +52,12 @@ const BookPreviewManager = () => {
         )}
       </div>
       <div>
-        {activeTab === "uploadFile" && <UploadBookPreview />}
-        {activeTab === "mediaLibrary" && <BookPreviewLibrary />}
+        {activeTab === "uploadFile" && (
+          <UploadBookPreview fixedType={fixedType} />
+        )}
+        {activeTab === "mediaLibrary" && (
+          <BookPreviewLibrary fixedType={fixedType} />
+        )}
       </div>
     </div>
   );
