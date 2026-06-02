@@ -26,7 +26,6 @@ import {
   LocalPagination,
   SearchAndStatus,
   StatusBadge,
-  TagsPreview,
 } from "./BlogQnaUtils";
 
 export default function QnaManager() {
@@ -118,9 +117,7 @@ export default function QnaManager() {
                     </div>
                   </TableCell>
                   <TableCell>{getRefLabel(item.category)}</TableCell>
-                  <TableCell>
-                    <TagsPreview values={item.topics} />
-                  </TableCell>
+                  <TableCell>{getRefLabel(item.topic)}</TableCell>
                   <TableCell>{item.views || 0}</TableCell>
                   <TableCell>
                     <StatusBadge status={item.status} />

@@ -5,13 +5,6 @@ import { useRouter } from "next/navigation";
 import { revalidateTag } from "@/utilities/revalidate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import ImageSelectPopup from "@/components/uploader/ImageSelectPopup";
@@ -21,22 +14,20 @@ import {
   useGetBlogPostsQuery,
   useGetBlogQaCategoriesQuery,
   useGetBlogQaTagsQuery,
+  useGetBlogQaTopicsQuery,
   useUpdateBlogPostMutation,
 } from "@/redux/features/blogQna/blogQnaApi";
 import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice";
-import { useGetAllUsersQuery } from "@/redux/features/user/userApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { TBlogPost, TBlogPostPayload, TBlogStatus } from "@/types/blog-qna";
 import { ImageIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import {
-  getListData,
-  getRefId,
-  MultiSelect,
-  RichTextEditor,
-  slugify,
-} from "./BlogQnaUtils";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { formatImageSrc } from "@/lib/utils";
+import { useGetSingleImageQuery } from "@/redux/features/addProduct/media/mediaApi";
+import { getListData, getRefId, RichTextEditor, slugify } from "./BlogQnaUtils";
 import RelatedBlogs from "./RelatedBlogs";
+import TagsSelect from "./TagsSelect";
 import { SeoControlled } from "@/components/Seo";
 
 const emptyForm = {
@@ -47,7 +38,7 @@ const emptyForm = {
   readTime: "5",
   category: "",
   tags: [] as string[],
-  author: "",
+  topic: "",
   featuredImage: "",
   relatedBlogs: [] as Array<string | { value: string; label: string }>,
   metaTitle: "",
@@ -83,10 +74,14 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
     status: "active",
   });
   const { data: postResponse } = useGetBlogPostsQuery({ limit: 1000 });
-  const { data: userResponse } = useGetAllUsersQuery({ limit: 1000 });
+  const { data: topicResponse } = useGetBlogQaTopicsQuery({
+    limit: 1000,
+    status: "active",
+  });
 
   const [imageOpen, setImageOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const isNew = !postId;
   const blogPost = initialData ?? blogPostResponse?.data;
@@ -95,24 +90,25 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
   const categories = getListData<{ _id: string; name: string }>(
     categoryResponse
   );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const topics = getListData<{ _id: string; name: string; category?: any }>(
+    topicResponse
+  );
   const tags = getListData<{ _id: string; name: string }>(tagResponse);
   const posts = getListData<TBlogPost>(postResponse).filter(
     (post) => post._id !== blogPost?._id
   );
-  const users = getListData<{
-    _id: string;
-    fullName?: string;
-    email?: string;
-  }>(userResponse);
 
-  const userOptions = useMemo(
-    () =>
-      users.map((item) => ({
-        _id: item._id,
-        label: item.fullName || item.email || item._id,
-      })),
-    [users]
+  const { data: thumbnailImage } = useGetSingleImageQuery(
+    form.featuredImage || undefined
   );
+
+  const filteredTopics = topics.filter((topic) => {
+    if (!form.category) return false;
+    const topicCategoryId =
+      typeof topic.category === "string" ? topic.category : topic.category?._id;
+    return topicCategoryId === form.category;
+  });
 
   useEffect(() => {
     if (postId && isFetchingPost) return;
@@ -127,7 +123,7 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
           readTime: String(blogPost.readTime || 5),
           category: getRefId(blogPost.category),
           tags: blogPost.tags?.map(getRefId).filter(Boolean) || [],
-          author: getRefId(blogPost.author),
+          topic: getRefId(blogPost.topic),
           featuredImage: currentImage,
           relatedBlogs:
             blogPost.relatedBlogs?.map(getRefId).filter(Boolean) || [],
@@ -154,6 +150,7 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setValue = (key: keyof typeof emptyForm, value: any) => {
+    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: "" }));
     setForm((current) => ({
       ...current,
       [key]: value,
@@ -163,6 +160,23 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setErrors({});
+
+    const newErrors: Record<string, string> = {};
+    if (!form.title?.trim()) newErrors.title = "Title is required";
+    if (!form.slug?.trim()) newErrors.slug = "Slug is required";
+    if (!form.category) newErrors.category = "Category is required";
+    if (!form.topic) newErrors.topic = "Topic is required";
+    if (!form.content?.trim()) newErrors.content = "Content is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast({
+        variant: "destructive",
+        title: "Validation failed. Please check the form.",
+      });
+      return;
+    }
 
     // build seo only if any field is present to avoid sending `seo: undefined` to backend
     const buildSeo = () => {
@@ -190,7 +204,7 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
       readTime: Number(form.readTime) || 0,
       category: form.category,
       tags: form.tags,
-      author: form.author,
+      topic: form.topic,
       featuredImage: form.featuredImage || undefined,
       relatedBlogs: form.relatedBlogs.map((item) =>
         typeof item === "string" ? item : item.value
@@ -220,6 +234,19 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
 
       router.push("/dashboard/blog-posts");
     } catch (error: unknown) {
+      const apiErrors = (
+        error as {
+          data?: { errorMessages?: Array<{ path: string; message: string }> };
+        }
+      )?.data?.errorMessages;
+      if (apiErrors && Array.isArray(apiErrors)) {
+        const errorObj: Record<string, string> = {};
+        apiErrors.forEach((err) => {
+          errorObj[err.path] = err.message;
+        });
+        setErrors(errorObj);
+      }
+
       const message =
         typeof error === "object" && error !== null && "data" in error
           ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -239,7 +266,7 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
   }
 
   return (
-    <div className="space-y-4 p-4 md:p-6">
+    <div className="space-y-4 pb-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-bold">
@@ -250,72 +277,172 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
           <Button variant="outline">Back to posts</Button>
         </Link>
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <label className="space-y-2 text-sm font-medium">
             <span>Title</span>
             <Input
               value={form.title}
               onChange={(event) => setValue("title", event.target.value)}
+              placeholder="Enter blog post title"
               required
+              className={
+                errors.title ? "border-red-500 focus-visible:ring-red-500" : ""
+              }
             />
+            {errors.title && (
+              <p className="text-red-500 text-xs mt-1">{errors.title}</p>
+            )}
           </label>
           <label className="space-y-2 text-sm font-medium">
             <span>Slug</span>
             <Input
               value={form.slug}
               onChange={(event) => setValue("slug", event.target.value)}
+              placeholder="enter-blog-post-slug"
               required
+              className={
+                errors.slug ? "border-red-500 focus-visible:ring-red-500" : ""
+              }
             />
+            {errors.slug && (
+              <p className="text-red-500 text-xs mt-1">{errors.slug}</p>
+            )}
           </label>
-          <SelectField
-            label="Status"
-            value={form.status}
-            onChange={(value) => setValue("status", value)}
-            options={["draft", "published", "archived"]}
-          />
+
           <SelectField
             label="Category"
             value={form.category}
-            onChange={(value) => setValue("category", value)}
+            onChange={(value) => {
+              setValue("category", value);
+              setValue("topic", "");
+            }}
             options={categories.map((item) => ({
               value: item._id,
               label: item.name,
             }))}
+            placeholder="Select a category"
+            error={errors.category}
           />
           <SelectField
-            label="Author"
-            value={form.author}
-            onChange={(value) => setValue("author", value)}
-            options={userOptions.map((item) => ({
+            label="Topic"
+            value={form.topic}
+            onChange={(value) => setValue("topic", value)}
+            options={filteredTopics.map((item) => ({
               value: item._id,
-              label: item.label,
+              label: item.name,
             }))}
+            disabled={!form.category}
+            placeholder={
+              form.category ? "Select a topic" : "Select Category first"
+            }
+            error={errors.topic}
           />
-          <label className="space-y-2 text-sm font-medium">
-            <span>Read time</span>
-            <Input
-              type="number"
-              value={form.readTime}
-              onChange={(event) => setValue("readTime", event.target.value)}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:col-span-2">
+            <label className="space-y-2 text-sm font-medium">
+              <span>Read time</span>
+              <Input
+                type="number"
+                value={form.readTime}
+                onChange={(event) => setValue("readTime", event.target.value)}
+                placeholder="e.g. 5"
+              />
+            </label>
+            <SelectField
+              label="Status"
+              value={form.status}
+              onChange={(value) => setValue("status", value)}
+              options={["draft", "published", "archived"]}
+              placeholder="Select status"
+              error={errors.status}
             />
-          </label>
-          <label className="space-y-2 text-sm font-medium">
-            <span>Published at</span>
-            <Input
-              type="datetime-local"
-              value={form.publishedAt}
-              onChange={(event) => setValue("publishedAt", event.target.value)}
-            />
-          </label>
+            <label className="space-y-2 text-sm font-medium">
+              <span>Published at</span>
+              <Input
+                type="datetime-local"
+                value={form.publishedAt}
+                onChange={(event) =>
+                  setValue("publishedAt", event.target.value)
+                }
+              />
+            </label>
+          </div>
         </div>
-
+        <div className="rounded-md border p-4 bg-card text-card-foreground shadow-sm">
+          <div className="mb-3 text-sm font-semibold tracking-tight">
+            Featured Image
+          </div>
+          {thumbnailImage?.data?.src && form.featuredImage ? (
+            <div className="space-y-3">
+              <div
+                onClick={() => setImageOpen(true)}
+                className="relative w-full max-w-sm aspect-video rounded-md border overflow-hidden cursor-pointer group bg-muted"
+              >
+                <Image
+                  src={formatImageSrc(thumbnailImage.data.src)}
+                  alt={thumbnailImage.data.alt || "Featured Image Preview"}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  sizes="(max-width: 384px) 100vw, 384px"
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <span className="text-white text-sm font-medium bg-black/60 px-3 py-1.5 rounded-md">
+                    Change Image
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setImageOpen(true)}
+                >
+                  Change Image
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => {
+                    setValue("featuredImage", "");
+                    dispatch(setThumbnail(""));
+                  }}
+                >
+                  Remove Image
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-6 border border-dashed rounded-md bg-muted/40 hover:bg-muted/60 transition-colors">
+              <ImageIcon className="h-10 w-10 text-muted-foreground/60 mb-2" />
+              <p className="text-sm font-medium text-muted-foreground mb-3">
+                No image selected
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setImageOpen(true)}
+              >
+                Select Image
+              </Button>
+            </div>
+          )}
+          <ImageSelectPopup
+            open={imageOpen}
+            click="thumbnail"
+            handleOpen={setImageOpen}
+            modalTitle="Select Featured Image"
+            purpose="blog"
+          />
+        </div>
         <label className="space-y-2 text-sm font-medium">
           <span>Excerpt</span>
           <Textarea
             value={form.excerpt}
             onChange={(event) => setValue("excerpt", event.target.value)}
+            placeholder="Provide a brief summary of the blog post..."
           />
         </label>
 
@@ -325,14 +452,17 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
             value={form.content}
             onBlur={(value: string) => setValue("content", value)}
           />
+          {errors.content && (
+            <p className="text-red-500 text-xs mt-1">{errors.content}</p>
+          )}
         </label>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <MultiSelect
+          <TagsSelect
             label="Tags"
             value={form.tags}
             onChange={(value) => setValue("tags", value)}
-            options={tags.map((item) => ({ _id: item._id, label: item.name }))}
+            options={tags.map((item) => ({ _id: item._id, name: item.name }))}
           />
           <RelatedBlogs
             label="Related blogs"
@@ -341,30 +471,11 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
             options={posts.map((item) => ({
               _id: item._id,
               label: item.title,
+              thumb:
+                typeof item.featuredImage === "object"
+                  ? item.featuredImage?.src
+                  : undefined,
             }))}
-          />
-        </div>
-
-        <div className="rounded-md border p-3">
-          <div className="mb-2 text-sm font-medium">Featured image</div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setImageOpen(true)}
-            >
-              <ImageIcon className="mr-2 h-4 w-4" />
-              Select Image
-            </Button>
-            <span className="text-sm text-muted-foreground">
-              {form.featuredImage || "No image selected"}
-            </span>
-          </div>
-          <ImageSelectPopup
-            open={imageOpen}
-            click="thumbnail"
-            handleOpen={setImageOpen}
-            modalTitle="Select Featured Image"
           />
         </div>
 
@@ -395,42 +506,56 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
   );
 };
 
-function SelectField({
+export function SelectField({
   label,
   value,
   onChange,
   options,
+  disabled,
+  placeholder,
+  error,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   options: Array<string | { value: string; label: string }>;
+  disabled?: boolean;
+  placeholder?: string;
+  error?: string;
 }) {
   return (
-    <label className="space-y-2 text-sm font-medium">
+    <label
+      className={`space-y-2 text-sm font-medium ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
+    >
       <span>{label}</span>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger>
-          <SelectValue placeholder={label} />
-        </SelectTrigger>
-        <SelectContent>
-          {options.map((option) => {
-            const optionValue =
-              typeof option === "string" ? option : option.value;
-            const optionLabel =
-              typeof option === "string" ? option : option.label;
-            return (
-              <SelectItem
-                key={optionValue}
-                value={optionValue}
-                className="capitalize"
-              >
-                {optionLabel}
-              </SelectItem>
-            );
-          })}
-        </SelectContent>
-      </Select>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer capitalize ${
+          error ? "border-red-500 focus:ring-red-500" : "border-input"
+        }`}
+      >
+        <option value="" disabled>
+          {placeholder || `Select ${label}`}
+        </option>
+        {options.map((option) => {
+          const optionValue =
+            typeof option === "string" ? option : option.value;
+          const optionLabel =
+            typeof option === "string" ? option : option.label;
+          return (
+            <option
+              key={optionValue}
+              value={optionValue}
+              className="capitalize"
+            >
+              {optionLabel}
+            </option>
+          );
+        })}
+      </select>
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </label>
   );
 }

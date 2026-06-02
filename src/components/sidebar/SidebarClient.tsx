@@ -162,6 +162,7 @@ export function SidebarClient({ permissions }: TProps) {
       items: [
         { name: "Media", href: "/dashboard/media" },
         { name: "Book Previews", href: "/dashboard/book-previews" },
+        { name: "Free PDFs", href: "/dashboard/free-pdfs" },
       ],
     },
     {

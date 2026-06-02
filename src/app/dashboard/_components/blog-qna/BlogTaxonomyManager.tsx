@@ -58,6 +58,7 @@ import {
   slugify,
   StatusBadge,
 } from "./BlogQnaUtils";
+import { SelectField } from "./BlogPostForm";
 
 type TKind = "category" | "tag" | "topic";
 type TTaxonomyItem = TBlogQACategory | TBlogQATag | TBlogQATopic;
@@ -65,6 +66,7 @@ type TTaxonomyItem = TBlogQACategory | TBlogQATag | TBlogQATopic;
 const emptyForm = {
   name: "",
   slug: "",
+  category: "",
   description: "",
   status: "active" as TBlogTaxonomyStatus,
   metaTitle: "",
@@ -181,7 +183,8 @@ export default function BlogTaxonomyManager({ kind }: { kind: TKind }) {
             <TableRow className="hover:bg-primary/90">
               <TableHead>Name</TableHead>
               <TableHead>Slug</TableHead>
-              <TableHead>Description</TableHead>
+              {kind === "topic" && <TableHead>Category</TableHead>}
+              {kind !== "tag" && <TableHead>Description</TableHead>}
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -198,9 +201,23 @@ export default function BlogTaxonomyManager({ kind }: { kind: TKind }) {
                 <TableRow key={item._id}>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.slug}</TableCell>
-                  <TableCell className="max-w-md truncate">
-                    {item.description || "-"}
-                  </TableCell>
+                  {kind === "topic" &&
+                    (() => {
+                      const topicItem = item as TBlogQATopic;
+                      const cat = topicItem.category;
+                      return (
+                        <TableCell>
+                          {typeof cat === "object" && cat !== null
+                            ? (cat as { name: string }).name
+                            : cat || "-"}
+                        </TableCell>
+                      );
+                    })()}
+                  {kind !== "tag" && (
+                    <TableCell className="max-w-md truncate">
+                      {item.description || "-"}
+                    </TableCell>
+                  )}
                   <TableCell>
                     <StatusBadge status={item.status} />
                   </TableCell>
@@ -270,6 +287,14 @@ function TaxonomyForm({
     useCreateBlogQaTopicMutation();
   const [updateTopic, { isLoading: isUpdatingTopic }] =
     useUpdateBlogQaTopicMutation();
+  const { data: categoryResponse } = useGetBlogQaCategoriesQuery({
+    limit: 1000,
+    status: "active",
+  });
+  const categories = getListData<{ _id: string; name: string }>(
+    categoryResponse
+  );
+
   const isLoading =
     isCreatingCategory || isUpdatingCategory || isCreatingTag || isUpdatingTag;
   // include topic loading
@@ -283,6 +308,13 @@ function TaxonomyForm({
         ? {
             name: initialData.name,
             slug: initialData.slug,
+            // category only exists on TBlogQATopic — narrow with 'in' before accessing
+            category:
+              "category" in initialData && initialData.category
+                ? typeof initialData.category === "object"
+                  ? (initialData.category as { _id: string })._id
+                  : initialData.category
+                : "",
             description: initialData.description || "",
             status: initialData.status,
             metaTitle:
@@ -312,11 +344,22 @@ function TaxonomyForm({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    // Validate: category is required for topics
+    if (kind === "topic" && !form.category) {
+      toast({
+        variant: "destructive",
+        title: "Please select a category for this topic.",
+      });
+      return;
+    }
+
     const payload = {
       name: form.name,
       slug: form.slug,
       description: form.description || undefined,
       status: form.status,
+      ...(kind === "topic" ? { category: form.category } : {}),
       ...(kind === "category"
         ? {
             seo: {
@@ -396,29 +439,49 @@ function TaxonomyForm({
               />
             </label>
           </div>
-          <label className="space-y-2 text-sm font-medium">
-            <span>Description</span>
-            <Textarea
-              value={form.description}
-              onChange={(event) => setValue("description", event.target.value)}
-            />
-          </label>
-          <label className="space-y-2 text-sm font-medium">
-            <span>Status</span>
-            <Select
-              value={form.status}
-              onValueChange={(value) => setValue("status", value)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-          </label>
-          {kind === "category" && (
+          {kind !== "tag" && (
+            <label className="space-y-2 text-sm font-medium">
+              <span>Description</span>
+              <Textarea
+                value={form.description}
+                onChange={(event) =>
+                  setValue("description", event.target.value)
+                }
+              />
+            </label>
+          )}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-center">
+            {kind === "topic" && (
+              <SelectField
+                label="Category *"
+                value={form.category}
+                onChange={(value) => setValue("category", value)}
+                options={categories.map((item) => ({
+                  value: item._id,
+                  label: item.name,
+                }))}
+                placeholder="Select a category"
+              />
+            )}
+            <div className={kind === "tag" ? "md:col-span-2" : ""}>
+              <label className="space-y-2 text-sm font-medium">
+                <span>Status</span>
+                <Select
+                  value={form.status}
+                  onValueChange={(value) => setValue("status", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </label>
+            </div>
+          </div>
+          {kind !== "tag" && (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <Input
                 placeholder="Meta title"

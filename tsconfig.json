@@ -20,8 +20,7 @@
     "paths": {
       "@/*": ["./src/*", "./public/*", "./src/hooks/*"]
     },
-    "downlevelIteration": true,
-    "ignoreDeprecations": "6.0"
+    "downlevelIteration": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

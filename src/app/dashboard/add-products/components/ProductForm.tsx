@@ -123,6 +123,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         attributes = [],
         relatedProducts = [],
         productCollection = [],
+        seo = {},
         ...restProductData
       } = productData;
 
@@ -195,6 +196,13 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       const formData = {
         ...defaultValues,
         ...restProductData,
+        metaTitle: seo?.metaTitle || "",
+        metaDescription: seo?.metaDescription || "",
+        keywords: Array.isArray(seo?.keywords)
+          ? seo.keywords.join(", ")
+          : seo?.keywords || "",
+        canonicalUrl: seo?.canonicalUrl || "",
+        schemaMarkup: seo?.schemaMarkup || "",
         image: {
           thumbnail: thumbnail?._id || "",
           gallery: galleryData || [],

@@ -26,7 +26,6 @@ import {
   LocalPagination,
   SearchAndStatus,
   StatusBadge,
-  TagsPreview,
 } from "./BlogQnaUtils";
 
 export default function BlogPostManager() {
@@ -118,9 +117,7 @@ export default function BlogPostManager() {
                     </div>
                   </TableCell>
                   <TableCell>{getRefLabel(post.category)}</TableCell>
-                  <TableCell>
-                    <TagsPreview values={post.topics} />
-                  </TableCell>
+                  <TableCell>{getRefLabel(post.topic)}</TableCell>
                   <TableCell>{post.views || 0}</TableCell>
                   <TableCell>
                     <StatusBadge status={post.status} />
