@@ -138,7 +138,7 @@ const UploadFile = ({
           purpose: selectedPurpose,
         }).unwrap();
 
-        const { presignedUrl, key } = res.data;
+        const { presignedUrl, url } = res.data;
 
         // 2. Upload directly to R2
         const uploadRes = await fetch(presignedUrl, {
@@ -155,7 +155,8 @@ const UploadFile = ({
 
         // 3. Keep track of successfully uploaded images
         uploadedImages.push({
-          src: key,
+          // src: key,
+          src: url,
           alt: image.name,
           purpose: selectedPurpose,
         });

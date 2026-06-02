@@ -134,7 +134,7 @@ const UploadBookPreview = ({
           previewType,
         }).unwrap();
 
-        const { presignedUrl, key } = res.data;
+        const { presignedUrl, url } = res.data;
 
         // 2. Upload directly to R2
         const uploadRes = await fetch(presignedUrl, {
@@ -151,7 +151,8 @@ const UploadBookPreview = ({
 
         // 3. Keep track of successfully uploaded previews
         uploadedPreviews.push({
-          src: key,
+          // src: key,
+          src: url,
           alt: preview.name,
           previewType,
         });
