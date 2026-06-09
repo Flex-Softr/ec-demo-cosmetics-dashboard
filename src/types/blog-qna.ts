@@ -87,6 +87,7 @@ export type TQnA = {
   relatedQuestions?: Array<string | TEntityRef>;
   seo?: TSeo;
   status: TBlogStatus;
+  publishedAt?: string;
   views: number;
   createdAt?: string;
   updatedAt?: string;

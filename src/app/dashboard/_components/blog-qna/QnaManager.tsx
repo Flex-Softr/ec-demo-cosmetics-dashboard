@@ -96,6 +96,7 @@ export default function QnaManager() {
               <TableHead>Category</TableHead>
               <TableHead>Topics</TableHead>
               <TableHead>Views</TableHead>
+              <TableHead>Published At</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -103,7 +104,7 @@ export default function QnaManager() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center">
+                <TableCell colSpan={7} className="h-24 text-center">
                   Loading...
                 </TableCell>
               </TableRow>
@@ -119,6 +120,15 @@ export default function QnaManager() {
                   <TableCell>{getRefLabel(item.category)}</TableCell>
                   <TableCell>{getRefLabel(item.topic)}</TableCell>
                   <TableCell>{item.views || 0}</TableCell>
+                  <TableCell>
+                    {item.publishedAt
+                      ? new Date(item.publishedAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : "N/A"}
+                  </TableCell>
                   <TableCell>
                     <StatusBadge status={item.status} />
                   </TableCell>
@@ -142,7 +152,7 @@ export default function QnaManager() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center">
+                <TableCell colSpan={7} className="h-24 text-center">
                   No QnA found.
                 </TableCell>
               </TableRow>

@@ -96,6 +96,7 @@ export default function BlogPostManager() {
               <TableHead>Category</TableHead>
               <TableHead>Topic</TableHead>
               <TableHead>Views</TableHead>
+              <TableHead>Published At</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -119,6 +120,15 @@ export default function BlogPostManager() {
                   <TableCell>{getRefLabel(post.category)}</TableCell>
                   <TableCell>{getRefLabel(post.topic)}</TableCell>
                   <TableCell>{post.views || 0}</TableCell>
+                  <TableCell>
+                    {post.publishedAt
+                      ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : "N/A"}
+                  </TableCell>
                   <TableCell>
                     <StatusBadge status={post.status} />
                   </TableCell>
