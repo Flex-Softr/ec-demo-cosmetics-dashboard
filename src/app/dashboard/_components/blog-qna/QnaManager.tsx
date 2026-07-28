@@ -90,7 +90,7 @@ export default function QnaManager() {
 
       <div className="rounded-md border">
         <Table>
-          <TableHeader className="bg-primary text-white hover:bg-primary/90">
+          <TableHeader className="bg-primary text-primary-foreground hover:bg-primary/90">
             <TableRow className="hover:bg-primary/90">
               <TableHead>Question</TableHead>
               <TableHead>Category</TableHead>

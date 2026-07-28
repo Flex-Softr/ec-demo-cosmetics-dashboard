@@ -37,7 +37,7 @@ export default async function SMS() {
                 <p className="text-[12px] text-red-500 mt-1">
                   Minimum Top Up 500 Taka
                 </p>
-                <button className="mt-2 w-full py-2 rounded-md text-white bg-primary hover:bg-[#0caed8] transition">
+                <button className="mt-2 w-full py-2 rounded-md text-primary-foreground bg-primary hover:bg-primary/90 transition">
                   Top Up SMS
                 </button>
               </>
@@ -54,7 +54,7 @@ export default async function SMS() {
         ].map(({ label, value, custom }, i) => (
           <div
             key={i}
-            className="bg-[#e6f8fc] rounded-2xl p-6 text-center shadow-sm border"
+            className="bg-accent rounded-2xl p-6 text-center shadow-sm border"
           >
             <p className="text-slate-600 font-medium mb-2">{label}</p>
             {custom ?? (

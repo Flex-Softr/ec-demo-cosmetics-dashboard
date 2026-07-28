@@ -70,7 +70,7 @@ const ResetPasswordPage = () => {
 
       if (res.success) {
         toast({
-          className: "bg-emerald-500 text-white border-none",
+          className: "bg-success text-success-foreground border-none",
           title: "Success!",
           description: "Your password has been reset successfully.",
         });

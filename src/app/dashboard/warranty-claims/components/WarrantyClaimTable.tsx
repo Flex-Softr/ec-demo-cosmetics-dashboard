@@ -26,7 +26,7 @@ const WarrantyClaimTable = () => {
   return (
     <div className="rounded-lg overflow-hidden">
       <Table className="min-w-[1100px]">
-        <TableHeader className="bg-primary text-white">
+        <TableHeader className="bg-primary text-primary-foreground">
           {table?.getHeaderGroups()?.map((headerGroup) => (
             <TableRow key={headerGroup?.id} className="hover:bg-muted/0">
               {headerGroup.headers.map((header) => {

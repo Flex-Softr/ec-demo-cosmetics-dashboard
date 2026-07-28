@@ -50,7 +50,7 @@ const SingleVariation = ({ item, index }: TProps) => {
               onClick={() => handleTabClick("price")}
               className={`${
                 activeTab === "price"
-                  ? "bg-primary text-white hover:bg-secondary"
+                  ? "bg-primary text-primary-foreground hover:bg-secondary"
                   : "border border-primary bg-inherit text-muted-foreground hover:bg-inherit"
               }`}
             >
@@ -61,7 +61,7 @@ const SingleVariation = ({ item, index }: TProps) => {
               onClick={() => handleTabClick("inventory")}
               className={`${
                 activeTab === "inventory"
-                  ? "bg-primary text-white hover:bg-secondary"
+                  ? "bg-primary text-primary-foreground hover:bg-secondary"
                   : "border border-primary bg-inherit text-muted-foreground hover:bg-inherit"
               }`}
             >

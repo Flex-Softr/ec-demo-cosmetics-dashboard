@@ -462,7 +462,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 type="submit"
                 form="order-form"
                 disabled={isLoading}
-                className="w-full mt-2 bg-primary text-white"
+                className="w-full mt-2 bg-primary text-primary-foreground"
                 size="default"
               >
                 {isLoading

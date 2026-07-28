@@ -55,7 +55,7 @@ const SearchRegisteredUser = () => {
           <button
             onClick={handleSearch}
             //   disabled={searchQuery && isLoading ? true : false}
-            className="font-bold w-[45px] flex justify-center items-center outline-none ring-1 ring-primary rounded-md rounded-l-none border-l-0 border-secondary bg-secondary h-[40px] text-white"
+            className="font-bold w-[45px] flex justify-center items-center outline-none ring-1 ring-primary rounded-md rounded-l-none border-l-0 border-secondary bg-secondary h-[40px] text-secondary-foreground"
           >
             <Search className="w-6 h-6" />
           </button>

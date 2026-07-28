@@ -25,7 +25,7 @@ const UsersTable = () => {
   return (
     <div className="rounded-lg overflow-x-auto">
       <Table className="min-w-[1100px] whitespace-nowrap">
-        <TableHeader className="bg-primary text-white">
+        <TableHeader className="bg-primary text-primary-foreground">
           {table?.getHeaderGroups()?.map((headerGroup) => (
             <TableRow key={headerGroup?.id} className="hover:bg-muted/0">
               {headerGroup.headers.map((header) => {

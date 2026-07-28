@@ -61,7 +61,8 @@ module.exports = {
         },
       },
       backgroundImage: {
-        "dashboard-gradient": "linear-gradient(135deg, #ffffff, #E0F7FA)",
+        "dashboard-gradient":
+          "linear-gradient(135deg, hsl(var(--background)), hsl(var(--accent)))",
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -76,7 +76,7 @@ const CategoryActionBase = ({
             className="!bg-white hover:!bg-gray-100"
             onClick={() => handleOpen(true)}
           >
-            <SquarePen className="h-4 w-4 text-green-600" />
+            <SquarePen className="h-4 w-4 text-primary" />
           </Button>
         }
       />

@@ -26,7 +26,7 @@ const ForgetPasswordPage = () => {
       const res = await forgetPassword({ email: data.email.trim() }).unwrap();
       if (res.success) {
         toast({
-          className: "bg-emerald-500 text-white border-none",
+          className: "bg-success text-success-foreground border-none",
           title: "OTP Sent!",
           description: res.message || "An OTP has been sent to your email.",
         });

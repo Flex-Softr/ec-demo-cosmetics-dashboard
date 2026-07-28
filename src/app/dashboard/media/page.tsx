@@ -25,7 +25,7 @@ const Page = () => {
             size="sm"
             className={`${
               activeTab === "uploadFile"
-                ? "bg-primary text-white hover:bg-secondary"
+                ? "bg-primary text-primary-foreground hover:bg-secondary"
                 : "border border-primary bg-inherit text-inherit hover:bg-inherit"
             }`}
           >
@@ -36,7 +36,7 @@ const Page = () => {
             size="sm"
             className={`${
               activeTab === "mediaLibrary"
-                ? "bg-primary text-white hover:bg-secondary"
+                ? "bg-primary text-primary-foreground hover:bg-secondary"
                 : "border border-primary bg-inherit text-inherit hover:bg-inherit"
             }`}
           >

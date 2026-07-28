@@ -122,8 +122,8 @@ const Media = ({ isVariation }: TProps) => {
               />
             ) : (
               <div className="flex flex-col items-center justify-center p-4 text-center space-y-3">
-                <div className="p-3 rounded-full bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
-                  <UploadCloud className="w-6 h-6 text-emerald-500 group-hover:text-emerald-600 transition-colors" />
+                <div className="p-3 rounded-full bg-accent group-hover:bg-primary/10 transition-colors">
+                  <UploadCloud className="w-6 h-6 text-primary group-hover:text-primary/80 transition-colors" />
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm font-semibold text-foreground">
@@ -196,8 +196,8 @@ const Media = ({ isVariation }: TProps) => {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center p-4 text-center space-y-3">
-                <div className="p-3 rounded-full bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
-                  <UploadCloud className="w-6 h-6 text-emerald-500 group-hover:text-emerald-600 transition-colors" />
+                <div className="p-3 rounded-full bg-accent group-hover:bg-primary/10 transition-colors">
+                  <UploadCloud className="w-6 h-6 text-primary group-hover:text-primary/80 transition-colors" />
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm font-semibold text-foreground">

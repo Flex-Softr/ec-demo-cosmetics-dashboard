@@ -11,12 +11,14 @@ const hindSiliguri = Hind_Siliguri({
   variable: "--font-bengali",
 });
 
+const SITE_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME;
+
 export const metadata: Metadata = {
   title: {
-    default: "সিদ্দীকিয়া প্রকাশনী",
-    template: "%s | সিদ্দীকিয়া প্রকাশনী",
+    default: SITE_NAME || "Electro commerce",
+    template: `%s | ${SITE_NAME}`,
   },
-  description: "সিদ্দীকিয়া প্রকাশনী",
+  description: SITE_NAME,
 };
 
 export default function RootLayout({

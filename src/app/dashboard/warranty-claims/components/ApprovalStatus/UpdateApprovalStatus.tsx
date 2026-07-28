@@ -190,22 +190,22 @@ const UpdateApprovalStatus = ({
         </div>
 
         <Tabs defaultValue="orderNote">
-          <TabsList className="grid w-full grid-cols-3 gap-4 bg-cyan-50">
+          <TabsList className="grid w-full grid-cols-3 gap-4 bg-accent">
             <TabsTrigger
               value="orderNote"
-              className="border border-cyan-400 data-[state=active]:bg-primary data-[state=active]:text-white"
+              className="border border-primary/40 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Official Note
             </TabsTrigger>
             <TabsTrigger
               value="invoiceNote"
-              className="border border-cyan-400 data-[state=active]:bg-primary data-[state=active]:text-white"
+              className="border border-primary/40 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Invoice Note
             </TabsTrigger>
             <TabsTrigger
               value="courierNote"
-              className="border border-cyan-400 data-[state=active]:bg-primary data-[state=active]:text-white"
+              className="border border-primary/40 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Courier Note
             </TabsTrigger>

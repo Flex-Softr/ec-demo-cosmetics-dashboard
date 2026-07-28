@@ -160,7 +160,7 @@ export default function AddCourierConfigModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-0 rounded-2xl border-none">
         <DialogHeader className="p-6 pb-0 flex flex-row items-center justify-between">
-          <DialogTitle className="text-xl font-bold text-[#1e2337]">
+          <DialogTitle className="text-xl font-bold text-foreground">
             {selectedCourier ? "Edit Shipping Method" : "Add Shipping Method"}
           </DialogTitle>
         </DialogHeader>
@@ -170,7 +170,7 @@ export default function AddCourierConfigModal({
           <div className="flex items-center justify-between p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
             <Label
               htmlFor="isActive"
-              className="text-base font-medium text-[#1e2337]"
+              className="text-base font-medium text-foreground"
             >
               Active Status
             </Label>
@@ -192,7 +192,7 @@ export default function AddCourierConfigModal({
 
           {/* Thumbnail Section */}
           {/* <div className="space-y-3">
-            <Label className="text-base font-bold text-[#1e2337]">
+            <Label className="text-base font-bold text-foreground">
               Thumbnail
             </Label>
             <div className="flex flex-col gap-3">
@@ -236,20 +236,20 @@ export default function AddCourierConfigModal({
                   />
                 )}
               </div>
-              <p className="text-sm text-[#7e84a3] font-medium">
+              <p className="text-sm text-muted-foreground font-medium">
                 Upload a new image to replace the existing one.
               </p>
             </div>
           </div> */}
 
           <div className="space-y-4 pt-2">
-            <h3 className="text-base font-bold text-[#1e2337]">Credentials</h3>
+            <h3 className="text-base font-bold text-foreground">Credentials</h3>
             {/* Render additional credentials if any */}
             <div className="grid grid-cols-2 gap-5">
               {fields.map((field, index) => (
                 <div key={field.id} className="">
                   <div className="space-y-2">
-                    <Label className="text-sm font-semibold text-[#1e2337] capitalize">
+                    <Label className="text-sm font-semibold text-foreground capitalize">
                       {field.key}
                     </Label>
                     <Controller
@@ -278,7 +278,7 @@ export default function AddCourierConfigModal({
           <div className="space-y-2">
             <Label
               htmlFor="description"
-              className="text-sm font-semibold text-[#1e2337]"
+              className="text-sm font-semibold text-foreground"
             >
               Description
             </Label>

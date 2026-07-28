@@ -133,7 +133,9 @@ export const CategoryTableBase = ({
         <Table>
           <TableHeader
             className={
-              !isSubCategory ? "bg-primary text-white hover:bg-primary/90" : ""
+              !isSubCategory
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : ""
             }
           >
             {table.getHeaderGroups().map((headerGroup) => (

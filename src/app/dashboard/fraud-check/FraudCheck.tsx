@@ -129,7 +129,7 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
             <button
               onClick={handleSearch}
               disabled={loading}
-              className="bg-primary text-white px-6 py-3 rounded hover:bg-secondary shrink-0"
+              className="bg-primary text-primary-foreground px-6 py-3 rounded hover:bg-secondary shrink-0"
             >
               {loading ? "Loading..." : "Check"}
             </button>

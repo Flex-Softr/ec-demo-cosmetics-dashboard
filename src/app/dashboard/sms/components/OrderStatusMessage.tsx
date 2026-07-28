@@ -240,7 +240,7 @@ export default function OrderStatusMessage({
                       className={cn(
                         "cursor-pointer px-4 py-1.5 text-sm select-none transition-all rounded-full hover:scale-105 active:scale-95",
                         isActive
-                          ? "bg-primary text-white hover:bg-primary/90 border-transparent shadow-md"
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent shadow-md"
                           : "bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary"
                       )}
                       onClick={() => toggleMedium(m.value)}

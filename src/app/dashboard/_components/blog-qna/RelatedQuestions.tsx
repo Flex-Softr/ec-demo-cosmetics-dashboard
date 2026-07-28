@@ -126,7 +126,7 @@ export default function RelatedQuestions({
               className="flex items-center justify-between gap-3 border-b pb-2"
             >
               <div className="flex items-center gap-3">
-                <HelpCircle className="h-5 w-5 text-emerald-500" />
+                <HelpCircle className="h-5 w-5 text-primary" />
                 <span className="text-sm text-gray-400 dark:text-white">
                   {p.label}
                 </span>

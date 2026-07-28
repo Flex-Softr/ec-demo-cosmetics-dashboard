@@ -68,7 +68,7 @@ const AddNotes = ({ order }: { order: TOrders }) => {
       {notes ? (
         <button onClick={handleOpen} className="relative">
           <span
-            className="flex justify-center items-center absolute -top-[10px] -right-2 h-4 w-4 bg-primary text-white rounded-full"
+            className="flex justify-center items-center absolute -top-[10px] -right-2 h-4 w-4 bg-primary text-primary-foreground rounded-full"
             title="view notes"
           >
             {noteNumbers}
@@ -97,35 +97,35 @@ const AddNotes = ({ order }: { order: TOrders }) => {
             defaultValue="orderNotes"
             // onChange={(e) => handleTabClick(e.target)}
           >
-            <TabsList className="grid w-full grid-cols-5 gap-4 bg-cyan-50">
+            <TabsList className="grid w-full grid-cols-5 gap-4 bg-accent">
               <TabsTrigger
                 value="orderNotes"
-                className="border border-cyan-400 data-[state=active]:bg-primary data-[state=active]:text-white"
+                className="border border-primary/40 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 Customer Note
               </TabsTrigger>
               <TabsTrigger
                 value="officialNotes"
-                className="border border-cyan-400 data-[state=active]:bg-primary data-[state=active]:text-white"
+                className="border border-primary/40 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 Official Note
               </TabsTrigger>
               <TabsTrigger
                 value="monitoringNotes"
-                className="border border-cyan-400 data-[state=active]:bg-primary data-[state=active]:text-white"
+                className="border border-primary/40 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 Monitoring Note
               </TabsTrigger>
               <TabsTrigger
                 value="courierNotes"
-                className="border border-cyan-400 data-[state=active]:bg-primary data-[state=active]:text-white"
+                className="border border-primary/40 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 Courier Note
               </TabsTrigger>
 
               <TabsTrigger
                 value="invoiceNotes"
-                className="border border-cyan-400 data-[state=active]:bg-primary data-[state=active]:text-white"
+                className="border border-primary/40 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 Invoice Note
               </TabsTrigger>

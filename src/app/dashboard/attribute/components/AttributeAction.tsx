@@ -55,7 +55,7 @@ const AttributeAction = ({ attribute }: { attribute: TAttribute }) => {
             size="icon"
             className="!bg-white hover:!bg-gray-100 h-8 w-8"
           >
-            <SquarePen className="h-4 w-4 text-green-600" />
+            <SquarePen className="h-4 w-4 text-primary" />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[600px] h-fit max-h-[90vh] overflow-y-auto">

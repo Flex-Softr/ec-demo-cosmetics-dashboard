@@ -245,7 +245,7 @@ const BookPreviewLibrary = ({
               </div>
 
               {localDeleteItems.includes(item._id) && (
-                <div className="bg-primary text-white absolute left-2 top-2 p-0.5 rounded-full z-10">
+                <div className="bg-primary text-primary-foreground absolute left-2 top-2 p-0.5 rounded-full z-10">
                   <CheckIcon className="h-4 w-4" />
                 </div>
               )}

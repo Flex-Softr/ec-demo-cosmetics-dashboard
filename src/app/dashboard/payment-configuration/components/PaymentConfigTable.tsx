@@ -74,7 +74,7 @@ export default function PaymentConfigTable({
   return (
     <div className="rounded-md border overflow-x-auto">
       <Table className="whitespace-nowrap">
-        <TableHeader className="bg-primary text-white hover:!bg-primary">
+        <TableHeader className="bg-primary text-primary-foreground hover:!bg-primary">
           <TableRow className="hover:!bg-primary">
             <TableHead className="text-white">SL</TableHead>
             <TableHead className="text-white">Name</TableHead>
@@ -134,7 +134,7 @@ export default function PaymentConfigTable({
                     onClick={() => handleEdit(method)}
                     className="!bg-white hover:!bg-gray-100"
                   >
-                    <Edit className="h-4 w-4 text-green-600" />
+                    <Edit className="h-4 w-4 text-primary" />
                   </Button>
 
                   <AlertDialog>

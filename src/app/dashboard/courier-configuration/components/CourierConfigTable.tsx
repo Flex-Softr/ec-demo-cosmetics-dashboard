@@ -34,7 +34,7 @@ export default function CourierConfigTable({
   return (
     <div className="rounded-md border">
       <Table>
-        <TableHeader className="bg-primary text-white">
+        <TableHeader className="bg-primary text-primary-foreground">
           <TableRow>
             {/* <TableHead className="w-20">Thumb</TableHead> */}
             <TableHead>Courier Name</TableHead>
@@ -87,7 +87,7 @@ export default function CourierConfigTable({
                     onClick={() => handleEdit(courier)}
                     className="!bg-white hover:!bg-white rounded-full"
                   >
-                    <PencilLine className="h-4 w-4 text-green-600" />
+                    <PencilLine className="h-4 w-4 text-primary" />
                   </Button>
                 </TableCell>
               </TableRow>

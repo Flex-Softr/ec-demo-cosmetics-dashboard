@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
+
 type TProps = {
   name: string;
   href: string;
@@ -27,29 +28,33 @@ const ActiveLink = ({
   const acClass = isActive
     ? activeClassName
       ? activeClassName
-      : "bg-primary text-white font-bold rounded-lg shadow-md"
-    : "text-gray-600 hover:bg-gray-50 hover:text-primary font-semibold rounded-lg";
+      : "bg-primary text-primary-foreground font-semibold shadow-sm shadow-primary/20"
+    : "text-foreground hover:bg-accent hover:text-primary font-medium";
 
   return (
     <Link href={href} onClick={onClick}>
       <span
         className={cn(
-          "group flex gap-3 items-center px-2 py-2 my-0.5 transition-all duration-300 ease-in-out cursor-pointer select-none mx-1.5",
+          "group relative flex gap-2.5 items-center px-2.5 py-2 my-0.5 rounded-lg transition-all duration-200 ease-out cursor-pointer select-none",
           acClass,
           className
         )}
       >
-        <span
-          className={cn(
-            "transition-all duration-300 group-hover:scale-110 shrink-0",
-            isActive
-              ? "text-white scale-110 drop-shadow-sm"
-              : "text-gray-500 group-hover:text-primary"
-          )}
-        >
-          {icon}
-        </span>
-        <span className="truncate tracking-wide text-sm">{name}</span>
+        {icon && (
+          <span
+            className={cn(
+              "shrink-0 transition-colors duration-200",
+              isActive
+                ? "text-primary-foreground"
+                : "text-foreground group-hover:text-primary"
+            )}
+          >
+            {icon}
+          </span>
+        )}
+        {name ? (
+          <span className="truncate tracking-wide text-sm flex-1">{name}</span>
+        ) : null}
         {badge}
       </span>
     </Link>

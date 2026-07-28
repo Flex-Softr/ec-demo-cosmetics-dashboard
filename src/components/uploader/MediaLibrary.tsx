@@ -184,7 +184,7 @@ const MediaLibrary = ({ click, index, handleOpen, purpose }: TProps) => {
                     sizes="(max-width: 208px) 100vw,"
                   />
                   {localThumbnail === image._id && (
-                    <button className="bg-white text-green-500 absolute right-1 bottom-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
+                    <button className="bg-white text-success absolute right-1 bottom-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
                       {/* <Cross2Icon className="h-5 w-5" /> */}
                       <CheckIcon className="h-5 w-5" />
                     </button>
@@ -210,7 +210,7 @@ const MediaLibrary = ({ click, index, handleOpen, purpose }: TProps) => {
                   />
                   <span title="View image">
                     <EyeIcon
-                      className="h-6 w-6 bg-white text-green-500 absolute right-1 top-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10"
+                      className="h-6 w-6 bg-white text-success absolute right-1 top-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10"
                       onClick={(e) => {
                         showImageDetails(image);
                         e.stopPropagation();
@@ -220,7 +220,7 @@ const MediaLibrary = ({ click, index, handleOpen, purpose }: TProps) => {
 
                   {(localGallery.includes(image._id) ||
                     localDeleteImages.includes(image._id)) && (
-                    <button className="bg-white text-green-500 absolute right-1 bottom-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
+                    <button className="bg-white text-success absolute right-1 bottom-1 p-1 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
                       {/* <Cross2Icon className="h-5 w-5" /> */}
                       <CheckIcon className="h-5 w-5" />
                     </button>
@@ -344,7 +344,7 @@ function LocalPagination({
           disabled={isLoading || item === "..."}
           className={`px-2 py-1 rounded ${
             currentPage === item
-              ? "bg-primary text-white"
+              ? "bg-primary text-primary-foreground"
               : "bg-gray-100 hover:bg-gray-200"
           } disabled:opacity-40`}
         >

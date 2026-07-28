@@ -92,7 +92,7 @@ const BestSellingProductsTable = ({
     <div className="w-full">
       <div className="rounded-md border overflow-x-auto">
         <Table className="min-w-[500px]">
-          <TableHeader className="bg-primary text-white rounded-full">
+          <TableHeader className="bg-primary text-primary-foreground rounded-full">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-muted/0">
                 {headerGroup.headers.map((header) => {

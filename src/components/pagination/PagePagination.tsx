@@ -77,7 +77,7 @@ export function PagePagination() {
             <PaginationLink
               onClick={() => dispatch(setPage(item))}
               size={"sm"}
-              className={`cursor-pointer bg-gray-100 hover:bg-gray-100 ${currentPage === item && "bg-primary hover:bg-primary text-white hover:text-white"}`}
+              className={`cursor-pointer bg-gray-100 hover:bg-gray-100 ${currentPage === item && "bg-primary hover:bg-primary text-primary-foreground hover:text-white"}`}
               disabled={isLoading}
             >
               {item}

@@ -62,8 +62,8 @@ const STATUS_COLORS: Record<string, string> = {
   Draft: "bg-[#808080]",
 
   // Roles
-  [ROLES.ADMIN]: "bg-teal-500",
-  [ROLES.STAFF]: "bg-cyan-500",
+  [ROLES.ADMIN]: "bg-primary",
+  [ROLES.STAFF]: "bg-secondary",
 
   // Default
   all: "bg-primary",

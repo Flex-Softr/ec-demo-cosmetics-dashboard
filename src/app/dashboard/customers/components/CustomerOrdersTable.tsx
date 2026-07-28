@@ -60,7 +60,7 @@ export default function CustomerOrdersTable({
     <div className="w-full">
       <div className="rounded-lg border overflow-x-auto">
         <Table className="min-w-[1100px] whitespace-nowrap">
-          <TableHeader className="bg-primary text-white">
+          <TableHeader className="bg-primary text-primary-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-muted/0">
                 {headerGroup.headers.map((header) => {

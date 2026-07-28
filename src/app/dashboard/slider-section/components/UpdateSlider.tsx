@@ -159,7 +159,7 @@ const UpdateSlider = ({ slider }: { slider: TSlider }) => {
           size="icon"
           className="!bg-white hover:!bg-gray-100"
         >
-          <SquarePen className="h-4 w-4 text-green-600" />
+          <SquarePen className="h-4 w-4 text-primary" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[725px]">

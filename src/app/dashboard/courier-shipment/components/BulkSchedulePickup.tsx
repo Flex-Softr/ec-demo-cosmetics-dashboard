@@ -135,7 +135,7 @@ const BulkSchedulePickup = ({
                           <div
                             className={`
                           p-2 rounded-full 
-                          ${isActive ? "bg-primary text-white" : "bg-muted text-muted-foreground"}
+                          ${isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}
                         `}
                           >
                             <Truck className="h-5 w-5" />
@@ -147,7 +147,7 @@ const BulkSchedulePickup = ({
                           </span>
                         </div>
                         {isActive && (
-                          <div className="absolute -top-2 -right-2 bg-primary text-white p-1 rounded-full shadow-lg">
+                          <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground p-1 rounded-full shadow-lg">
                             <ChevronRight className="h-3 w-3" />
                           </div>
                         )}

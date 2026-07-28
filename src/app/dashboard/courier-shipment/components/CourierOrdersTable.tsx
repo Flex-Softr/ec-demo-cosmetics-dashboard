@@ -63,7 +63,7 @@ export default function CourierOrdersTable({
     <div className="w-full">
       <div className="rounded-md border overflow-hidden">
         <Table className="min-w-[1100px]">
-          <TableHeader className="bg-primary text-white">
+          <TableHeader className="bg-primary text-primary-foreground">
             {table?.getHeaderGroups()?.map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-muted/0">
                 {headerGroup.headers.map((header) => {

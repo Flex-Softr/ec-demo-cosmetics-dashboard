@@ -26,7 +26,7 @@ const BookPreviewManager = ({
             type="button"
             className={`${
               activeTab === "uploadFile"
-                ? "bg-primary text-white hover:bg-secondary"
+                ? "bg-primary text-primary-foreground hover:bg-secondary"
                 : "border border-primary bg-inherit text-inherit hover:bg-inherit"
             }`}
           >
@@ -38,7 +38,7 @@ const BookPreviewManager = ({
             type="button"
             className={`${
               activeTab === "mediaLibrary"
-                ? "bg-primary text-white hover:bg-secondary"
+                ? "bg-primary text-primary-foreground hover:bg-secondary"
                 : "border border-primary bg-inherit text-inherit hover:bg-inherit"
             }`}
           >

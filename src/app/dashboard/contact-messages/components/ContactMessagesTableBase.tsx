@@ -53,7 +53,7 @@ export const ContactMessagesTableBase = ({
     <div className="rounded-md border overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
-          <TableHeader className="bg-primary text-white hover:bg-primary/90">
+          <TableHeader className="bg-primary text-primary-foreground hover:bg-primary/90">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-primary/90">
                 {headerGroup.headers.map((header) => (

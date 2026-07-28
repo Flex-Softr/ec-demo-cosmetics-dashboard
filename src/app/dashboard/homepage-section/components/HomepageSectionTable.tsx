@@ -75,7 +75,7 @@ const HomepageSectionTable = () => {
     <div className="space-y-4">
       <div className="rounded-md border">
         <Table>
-          <TableHeader className="bg-primary text-white hover:bg-primary/90">
+          <TableHeader className="bg-primary text-primary-foreground hover:bg-primary/90">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-primary/90">
                 {headerGroup.headers.map((header) => (

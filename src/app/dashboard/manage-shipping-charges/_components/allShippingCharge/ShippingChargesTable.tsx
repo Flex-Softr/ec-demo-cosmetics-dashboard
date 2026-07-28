@@ -27,7 +27,7 @@ const ShippingChargesTable = () => {
   return (
     <div className="rounded-lg overflow-hidden">
       <Table className="w-full">
-        <TableHeader className="bg-primary text-white">
+        <TableHeader className="bg-primary text-primary-foreground">
           {table?.getHeaderGroups()?.map((headerGroup) => (
             <TableRow key={headerGroup?.id} className="hover:bg-muted/0">
               {headerGroup.headers.map((header) => {

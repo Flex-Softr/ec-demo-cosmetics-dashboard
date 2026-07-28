@@ -134,7 +134,7 @@ const EditOrderTable = ({
 
       <div className="relative shadow-md sm:rounded-lg">
         <table className="w-[720px] text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="text-white bg-primary dark:bg-gray-700">
+          <thead className="text-primary-foreground bg-primary">
             <tr>
               <th className="px-6 py-3">Product Name</th>
               {deliveryStatus === "partial_delivered" && (
