@@ -8,6 +8,7 @@ import Image from "next/image";
 import { ChangeEvent, useState } from "react";
 import { Button } from "../ui/button";
 import config from "@/config/config";
+import { convertImageToWebp } from "@/lib/convertImageToWebp";
 import {
   Select,
   SelectContent,
@@ -131,10 +132,12 @@ const UploadFile = ({
       const uploadedImages = [];
 
       for (const image of images) {
+        const webpImage = await convertImageToWebp(image);
+
         // 1. Get presigned URL
         const res = await getPresignedUrl({
-          filename: image.name,
-          contentType: image.type,
+          filename: webpImage.name,
+          contentType: webpImage.type,
           purpose: selectedPurpose,
         }).unwrap();
 
@@ -143,21 +146,23 @@ const UploadFile = ({
         // 2. Upload directly to R2
         const uploadRes = await fetch(presignedUrl, {
           method: "PUT",
-          body: image,
+          body: webpImage,
           headers: {
-            "Content-Type": image.type,
+            "Content-Type": webpImage.type,
           },
         });
 
         if (!uploadRes.ok) {
-          throw new Error(`Failed to upload ${image.name} to Cloudflare R2`);
+          throw new Error(
+            `Failed to upload ${webpImage.name} to Cloudflare R2`
+          );
         }
 
         // 3. Keep track of successfully uploaded images
         uploadedImages.push({
           // src: key,
           src: url,
-          alt: image.name,
+          alt: webpImage.name,
           purpose: selectedPurpose,
         });
       }

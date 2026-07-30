@@ -4,27 +4,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "localhost",
-      },
-      {
-        protocol: "http",
-        hostname: "siddikiaprokashoni.com",
+        hostname: "*",
       },
       {
         protocol: "https",
-        hostname: "siddikiaprokashoni.com",
-      },
-      {
-        protocol: "http",
-        hostname: "api.siddikiaprokashoni.com",
-      },
-      {
-        protocol: "https",
-        hostname: "api.siddikiaprokashoni.com",
-      },
-      {
-        protocol: "https",
-        hostname: "cdn.siddikiaprokashoni.com",
+        hostname: "*",
       },
     ],
   },
