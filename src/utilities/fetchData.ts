@@ -27,7 +27,7 @@ const fetchData = async ({
   cache,
   revalidate,
 }: TProps) => {
-  let url = `${config.api_base_url}/api/v1${endPoint}`;
+  let url = `${config.api_base_url}/server-api/v1${endPoint}`;
   const accessToken = cookies().get("_app.ec.at")?.value;
   const reqConfig = {
     headers: { authorization: `Bearer ${accessToken}` },

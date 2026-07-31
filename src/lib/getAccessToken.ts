@@ -10,10 +10,13 @@ import { NextRequest, NextResponse } from "next/server";
 export default async function getAccessToken(request: NextRequest) {
   try {
     const refreshToken = cookies().get("_app.ec.rt")?.value || "";
-    const res = await fetch(`${config.api_base_url}/api/v1/auth/access-token`, {
-      method: "POST",
-      headers: { authorization: refreshToken },
-    });
+    const res = await fetch(
+      `${config.api_base_url}/server-api/v1/auth/access-token`,
+      {
+        method: "POST",
+        headers: { authorization: refreshToken },
+      }
+    );
     if (!res.ok) {
       throw new Error("Failed to fetch access token");
     }
@@ -43,12 +46,15 @@ export async function getProfile() {
     redirect("/login");
   }
 
-  const res = await fetch(`${config.api_base_url}/api/v1/users/profile`, {
-    method: "GET",
-    headers: { authorization: `Bearer ${accessToken}` },
-    cache: "force-cache",
-    next: { tags: ["profile"] },
-  });
+  const res = await fetch(
+    `${config.api_base_url}/server-api/v1/users/profile`,
+    {
+      method: "GET",
+      headers: { authorization: `Bearer ${accessToken}` },
+      cache: "force-cache",
+      next: { tags: ["profile"] },
+    }
+  );
 
   if (!res.ok) {
     redirect("/login");
