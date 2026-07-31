@@ -1,5 +1,4 @@
-"use server";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import envConfig from "./config/config";
 import { PERMISSIONS } from "./const/permissions";
 import { ROLES } from "./const/role";
@@ -15,7 +14,7 @@ export async function middleware(request: NextRequest) {
   const refreshToken = request.cookies.get("_app.ec.rt")?.value;
 
   if (!refreshToken) {
-    return Response.redirect(new URL(`${basePath}/login`, request.url));
+    return NextResponse.redirect(new URL(`${basePath}/login`, request.url));
   }
 
   if (!accessToken) {
@@ -23,62 +22,66 @@ export async function middleware(request: NextRequest) {
     return res;
   }
 
-  const currentUser = decodeJWT(accessToken as string) as TUser; // Decode the JWT
-  // const currentUser = { role: "admin" }; // Decode the JWT
+  const currentUser = decodeJWT(accessToken as string) as TUser;
 
   if (
     currentUser.role !== ROLES.SUPER_ADMIN &&
     currentUser.role !== ROLES.ADMIN &&
     currentUser.role !== ROLES.STAFF
   ) {
-    return Response.redirect(new URL("/error", request.url));
+    return NextResponse.redirect(new URL(`${basePath}/error`, request.url));
   }
 
   const { permissions } = await getPermission();
 
-  if (!request.nextUrl.pathname.startsWith(`${basePath}/dashboard`)) {
+  // With next.config basePath, matcher is auto-prefixed; pathname is without basePath.
+  if (!request.nextUrl.pathname.startsWith(`/dashboard`)) {
     if (isPermitted(permissions)) {
-      return Response.redirect(new URL(`${basePath}/dashboard`, request.url));
+      return NextResponse.redirect(
+        new URL(`${basePath}/dashboard`, request.url)
+      );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_PRODUCT)) {
-      return Response.redirect(
+      return NextResponse.redirect(
         new URL(`${basePath}/dashboard/products`, request.url)
       );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_BLOG)) {
-      return Response.redirect(
+      return NextResponse.redirect(
         new URL(`${basePath}/dashboard/blog-posts`, request.url)
       );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_ORDER)) {
-      return Response.redirect(
+      return NextResponse.redirect(
         new URL(`${basePath}/dashboard/orders`, request.url)
       );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_PROCESSING_ORDER)) {
-      return Response.redirect(
+      return NextResponse.redirect(
         new URL(`${basePath}/dashboard/processing-orders`, request.url)
       );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_COURIER)) {
-      return Response.redirect(
+      return NextResponse.redirect(
         new URL(`${basePath}/dashboard/courier-management`, request.url)
       );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_WARRANTY_CLAIM)) {
-      return Response.redirect(
+      return NextResponse.redirect(
         new URL(`${basePath}/dashboard/warranty-claims`, request.url)
       );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_ADMIN_OR_STAFF)) {
-      return Response.redirect(
+      return NextResponse.redirect(
         new URL(`${basePath}/dashboard/manage-admin-staff`, request.url)
       );
-    } else return Response.redirect(new URL(`${basePath}/error`, request.url));
+    } else
+      return NextResponse.redirect(new URL(`${basePath}/error`, request.url));
   }
-  if (request.nextUrl.pathname === `${basePath}/dashboard/user`) {
-    return Response.redirect(
+  if (request.nextUrl.pathname === `/dashboard/user`) {
+    return NextResponse.redirect(
       new URL(`${basePath}/dashboard/user/profile`, request.url)
     );
   }
-  return null;
+  return NextResponse.next();
 }
 
-// ✅ Apply or will run middleware only to these routes,
-// variable name must be config, else will run middleware to every route
+// Matcher must be a static string — dynamic values are ignored and middleware
+// runs on every route (including /login), which causes ERR_TOO_MANY_REDIRECTS.
+// With basePath: "/admin", this matches /admin/dashboard/:path* automatically.
 export const config = {
-  matcher: [`${basePath}/dashboard/:path*`],
+  matcher: ["/dashboard/:path*"],
 };

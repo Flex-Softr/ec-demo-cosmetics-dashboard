@@ -43,7 +43,8 @@ export async function getProfile() {
   const accessToken = cookies().get("_app.ec.at")?.value;
 
   if (!accessToken) {
-    redirect(`${config.base_path}/login`);
+    // next/navigation redirect() auto-prefixes basePath — do not add it again
+    redirect("/login");
   }
 
   const res = await fetch(
@@ -57,7 +58,7 @@ export async function getProfile() {
   );
 
   if (!res.ok) {
-    redirect(`${config.base_path}/login`);
+    redirect("/login");
   }
 
   const data = await res.json();
