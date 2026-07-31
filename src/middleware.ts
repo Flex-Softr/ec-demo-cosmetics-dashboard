@@ -1,5 +1,6 @@
 "use server";
 import { NextRequest } from "next/server";
+import envConfig from "./config/config";
 import { PERMISSIONS } from "./const/permissions";
 import { ROLES } from "./const/role";
 import getAccessToken, { getPermission } from "./lib/getAccessToken";
@@ -7,12 +8,14 @@ import { TUser } from "./redux/features/auth/interface";
 import decodeJWT from "./utilities/decodeJWT";
 import isPermitted from "./utilities/isPermitted";
 
+const basePath = envConfig.base_path;
+
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("_app.ec.at")?.value || "";
   const refreshToken = request.cookies.get("_app.ec.rt")?.value;
 
   if (!refreshToken) {
-    return Response.redirect(new URL("/login", request.url));
+    return Response.redirect(new URL(`${basePath}/login`, request.url));
   }
 
   if (!accessToken) {
@@ -33,35 +36,43 @@ export async function middleware(request: NextRequest) {
 
   const { permissions } = await getPermission();
 
-  if (!request.nextUrl.pathname.startsWith("/dashboard")) {
+  if (!request.nextUrl.pathname.startsWith(`${basePath}/dashboard`)) {
     if (isPermitted(permissions)) {
-      return Response.redirect(new URL("/dashboard", request.url));
+      return Response.redirect(new URL(`${basePath}/dashboard`, request.url));
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_PRODUCT)) {
-      return Response.redirect(new URL("/dashboard/products", request.url));
+      return Response.redirect(
+        new URL(`${basePath}/dashboard/products`, request.url)
+      );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_BLOG)) {
-      return Response.redirect(new URL("/dashboard/blog-posts", request.url));
+      return Response.redirect(
+        new URL(`${basePath}/dashboard/blog-posts`, request.url)
+      );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_ORDER)) {
-      return Response.redirect(new URL("/dashboard/orders", request.url));
+      return Response.redirect(
+        new URL(`${basePath}/dashboard/orders`, request.url)
+      );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_PROCESSING_ORDER)) {
       return Response.redirect(
-        new URL("/dashboard/processing-orders", request.url)
+        new URL(`${basePath}/dashboard/processing-orders`, request.url)
       );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_COURIER)) {
       return Response.redirect(
-        new URL("/dashboard/courier-management", request.url)
+        new URL(`${basePath}/dashboard/courier-management`, request.url)
       );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_WARRANTY_CLAIM)) {
       return Response.redirect(
-        new URL("/dashboard/warranty-claims", request.url)
+        new URL(`${basePath}/dashboard/warranty-claims`, request.url)
       );
     } else if (isPermitted(permissions, PERMISSIONS.MANAGE_ADMIN_OR_STAFF)) {
       return Response.redirect(
-        new URL("/dashboard/manage-admin-staff", request.url)
+        new URL(`${basePath}/dashboard/manage-admin-staff`, request.url)
       );
-    } else return Response.redirect(new URL("/error", request.url));
+    } else return Response.redirect(new URL(`${basePath}/error`, request.url));
   }
-  if (request.nextUrl.pathname === "/dashboard/user") {
-    return Response.redirect(new URL("/dashboard/user/profile", request.url));
+  if (request.nextUrl.pathname === `${basePath}/dashboard/user`) {
+    return Response.redirect(
+      new URL(`${basePath}/dashboard/user/profile`, request.url)
+    );
   }
   return null;
 }
@@ -69,5 +80,5 @@ export async function middleware(request: NextRequest) {
 // ✅ Apply or will run middleware only to these routes,
 // variable name must be config, else will run middleware to every route
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: [`${basePath}/dashboard/:path*`],
 };

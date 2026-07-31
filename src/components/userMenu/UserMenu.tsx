@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
+import config from "@/config/config";
 import { useLogOutMutation } from "@/redux/features/auth/authApi";
 import { logOut, setUser } from "@/redux/features/auth/authSlice";
 import { TUser } from "@/redux/features/auth/interface";
@@ -58,7 +59,7 @@ const UserMenu = ({
     try {
       await logoutUser({}).unwrap();
       dispatch(logOut());
-      router.push("/login");
+      router.push(`${config.base_path}/login`);
     } catch (error) {
       const err = (error as { data: TErrorResponse }).data;
       toast({

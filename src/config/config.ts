@@ -38,6 +38,7 @@ const config = {
       ".PDF",
     ]) as string[],
   },
+  base_path: process.env.NEXT_PUBLIC_BASE_PATH || "/admin",
 };
 
 export default config;

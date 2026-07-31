@@ -2,6 +2,7 @@
 import EcButton from "@/components/EcButton/EcButton";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import config from "@/config/config";
 import { useForgetPasswordMutation } from "@/redux/features/auth/authApi";
 import { TErrorResponse } from "@/types/response";
 import { ArrowLeft, Fingerprint, Loader2 } from "lucide-react";
@@ -105,7 +106,7 @@ const ForgetPasswordPage = () => {
           <div className="text-center pt-2">
             <button
               type="button"
-              onClick={() => router.push("/login")}
+              onClick={() => router.push(`${config.base_path}/login`)}
               className="text-sm font-semibold text-slate-500 hover:text-primary transition-all flex items-center justify-center gap-2 w-full"
             >
               <ArrowLeft size={16} />

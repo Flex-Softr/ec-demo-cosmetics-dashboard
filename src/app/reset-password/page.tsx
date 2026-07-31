@@ -2,10 +2,11 @@
 import EcButton from "@/components/EcButton/EcButton";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import config from "@/config/config";
 import { useResetPasswordMutation } from "@/redux/features/auth/authApi";
 import { TErrorResponse } from "@/types/response";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Eye, EyeOff, Lock, Loader2, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2, Lock } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -74,7 +75,7 @@ const ResetPasswordPage = () => {
           title: "Success!",
           description: "Your password has been reset successfully.",
         });
-        router.push("/login");
+        router.push(`${config.base_path}/login`);
       }
     } catch (error) {
       const err = (error as { data: TErrorResponse }).data;

@@ -35,7 +35,7 @@ export default async function getAccessToken(request: NextRequest) {
     response.cookies.set("_app.ec.at", token, cookieOption);
     return response;
   } catch (error) {
-    return Response.redirect(new URL("/login", request.url));
+    return Response.redirect(new URL(`${config.base_path}/login`, request.url));
   }
 }
 
@@ -43,7 +43,7 @@ export async function getProfile() {
   const accessToken = cookies().get("_app.ec.at")?.value;
 
   if (!accessToken) {
-    redirect("/login");
+    redirect(`${config.base_path}/login`);
   }
 
   const res = await fetch(
@@ -57,7 +57,7 @@ export async function getProfile() {
   );
 
   if (!res.ok) {
-    redirect("/login");
+    redirect(`${config.base_path}/login`);
   }
 
   const data = await res.json();
