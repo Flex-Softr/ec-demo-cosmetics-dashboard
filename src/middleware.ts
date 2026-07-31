@@ -1,15 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
 import envConfig from "./config/config";
-import { PERMISSIONS } from "./const/permissions";
 import { ROLES } from "./const/role";
-import getAccessToken, { getPermission } from "./lib/getAccessToken";
+import getAccessToken from "./lib/getAccessToken";
 import { TUser } from "./redux/features/auth/interface";
 import decodeJWT from "./utilities/decodeJWT";
-import isPermitted from "./utilities/isPermitted";
 
-const basePath = envConfig.base_path;
+const basePath = envConfig.base_path || "/admin";
+
+const PUBLIC_PATHS = [
+  "/login",
+  "/forget-password",
+  "/reset-password",
+  "/error",
+];
+
+/** Normalize pathname whether or not Next included basePath. */
+function appPathname(pathname: string) {
+  if (basePath && pathname.startsWith(basePath)) {
+    const stripped = pathname.slice(basePath.length);
+    return stripped.startsWith("/") ? stripped : `/${stripped}`;
+  }
+  return pathname;
+}
+
+function isPublicPath(pathname: string) {
+  const path = appPathname(pathname);
+  return PUBLIC_PATHS.some(
+    (publicPath) => path === publicPath || path.startsWith(`${publicPath}/`)
+  );
+}
 
 export async function middleware(request: NextRequest) {
+  const path = appPathname(request.nextUrl.pathname);
+
+  // Never redirect public auth pages (prevents ERR_TOO_MANY_REDIRECTS)
+  if (isPublicPath(request.nextUrl.pathname)) {
+    return NextResponse.next();
+  }
+
+  // Only protect dashboard routes
+  if (!path.startsWith("/dashboard")) {
+    return NextResponse.next();
+  }
+
   const accessToken = request.cookies.get("_app.ec.at")?.value || "";
   const refreshToken = request.cookies.get("_app.ec.rt")?.value;
 
@@ -18,8 +51,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!accessToken) {
-    const res = await getAccessToken(request);
-    return res;
+    return getAccessToken(request);
   }
 
   const currentUser = decodeJWT(accessToken as string) as TUser;
@@ -32,56 +64,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`${basePath}/error`, request.url));
   }
 
-  const { permissions } = await getPermission();
-
-  // With next.config basePath, matcher is auto-prefixed; pathname is without basePath.
-  if (!request.nextUrl.pathname.startsWith(`/dashboard`)) {
-    if (isPermitted(permissions)) {
-      return NextResponse.redirect(
-        new URL(`${basePath}/dashboard`, request.url)
-      );
-    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_PRODUCT)) {
-      return NextResponse.redirect(
-        new URL(`${basePath}/dashboard/products`, request.url)
-      );
-    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_BLOG)) {
-      return NextResponse.redirect(
-        new URL(`${basePath}/dashboard/blog-posts`, request.url)
-      );
-    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_ORDER)) {
-      return NextResponse.redirect(
-        new URL(`${basePath}/dashboard/orders`, request.url)
-      );
-    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_PROCESSING_ORDER)) {
-      return NextResponse.redirect(
-        new URL(`${basePath}/dashboard/processing-orders`, request.url)
-      );
-    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_COURIER)) {
-      return NextResponse.redirect(
-        new URL(`${basePath}/dashboard/courier-management`, request.url)
-      );
-    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_WARRANTY_CLAIM)) {
-      return NextResponse.redirect(
-        new URL(`${basePath}/dashboard/warranty-claims`, request.url)
-      );
-    } else if (isPermitted(permissions, PERMISSIONS.MANAGE_ADMIN_OR_STAFF)) {
-      return NextResponse.redirect(
-        new URL(`${basePath}/dashboard/manage-admin-staff`, request.url)
-      );
-    } else
-      return NextResponse.redirect(new URL(`${basePath}/error`, request.url));
-  }
-  if (request.nextUrl.pathname === `/dashboard/user`) {
+  if (path === "/dashboard/user") {
     return NextResponse.redirect(
       new URL(`${basePath}/dashboard/user/profile`, request.url)
     );
   }
+
   return NextResponse.next();
 }
 
-// Matcher must be a static string — dynamic values are ignored and middleware
-// runs on every route (including /login), which causes ERR_TOO_MANY_REDIRECTS.
-// With basePath: "/admin", this matches /admin/dashboard/:path* automatically.
+// Must be static string literals (variables are ignored → middleware runs on all routes).
+// With basePath: "/admin", these match /admin/dashboard and /admin/dashboard/*
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard", "/dashboard/:path*"],
 };
