@@ -1,4 +1,6 @@
 import baseApi from "@/redux/baseApi/baseApi";
+import { TUserProfile } from "@/types/user.interface";
+import { TSuccessResponse } from "@/types/response";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,11 +11,12 @@ const authApi = baseApi.injectEndpoints({
         body: userInfo,
       }),
     }),
-    // getProfile: builder.query({
-    //   query: () => ({
-    //     url: "/users/profile",
-    //   }),
-    // }),
+    getProfile: builder.query<TSuccessResponse<TUserProfile>, void>({
+      query: () => ({
+        url: "/users/profile",
+      }),
+      providesTags: ["profile"],
+    }),
     logOut: builder.mutation({
       query: () => ({
         url: "/auth/logout",
@@ -46,6 +49,7 @@ const authApi = baseApi.injectEndpoints({
 
 export const {
   useLoginMutation,
+  useGetProfileQuery,
   useLogOutMutation,
   useChangePasswordMutation,
   useForgetPasswordMutation,

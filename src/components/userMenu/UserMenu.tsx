@@ -10,18 +10,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
-import config from "@/config/config";
 import { useLogOutMutation } from "@/redux/features/auth/authApi";
-import { logOut, setUser } from "@/redux/features/auth/authSlice";
-import { TUser } from "@/redux/features/auth/interface";
+import { logOut } from "@/redux/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { TErrorResponse } from "@/types/response";
-import { TUserProfile } from "@/types/user.interface";
-import decodeJWT from "@/utilities/decodeJWT";
 import { Key, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import dummyUser from "../../../public/user.jpg";
 
 const listItems = [
@@ -37,29 +32,27 @@ const listItems = [
   },
 ];
 
-const UserMenu = ({
-  user,
-  accessToken,
-}: {
-  user: TUserProfile;
-  accessToken?: string;
-}) => {
+const UserMenu = () => {
   const router = useRouter();
   const { toast } = useToast();
-  const { fullName, profilePicture } = user || {};
   const dispatch = useAppDispatch();
-  const token = useAppSelector((state) => state.auth.token);
+  const profile = useAppSelector((state) => state.auth.profile);
+  const user = useAppSelector((state) => state.auth.user);
 
-  const profilePicUrl = profilePicture ? `${profilePicture}` : dummyUser.src;
+  const fullName = profile?.fullName || "";
+  const role = profile?.role || user?.role || "";
+  const profilePicUrl = profile?.profilePicture
+    ? `${profile.profilePicture}`
+    : dummyUser.src;
 
-  // handle logout
   const [logoutUser] = useLogOutMutation();
 
   const handleLogout = async () => {
     try {
       await logoutUser({}).unwrap();
       dispatch(logOut());
-      router.push(`${config.base_path}/login`);
+      // next/navigation auto-prefixes basePath — do not add /admin again
+      router.push("/login");
     } catch (error) {
       const err = (error as { data: TErrorResponse }).data;
       toast({
@@ -69,15 +62,6 @@ const UserMenu = ({
     }
   };
 
-  useEffect(() => {
-    if (token && accessToken && token == accessToken) {
-      return;
-    } else if (accessToken) {
-      const user = decodeJWT(accessToken) as TUser;
-      dispatch(setUser({ user: user, token: accessToken }));
-    }
-  }, [dispatch, token, accessToken]);
-
   return (
     <div>
       <DropdownMenu>
@@ -85,16 +69,16 @@ const UserMenu = ({
           <div className="flex items-center gap-3 cursor-pointer group select-none outline-none">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold text-gray-900 group-hover:text-primary transition-colors">
-                {fullName}
+                {fullName || "User"}
               </p>
               <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wider">
-                {user?.role?.replace("_", " ")}
+                {String(role).replace("_", " ")}
               </p>
             </div>
             <Avatar className="h-9 w-9 border-2 border-transparent group-hover:border-primary/20 transition-all duration-300 ring-2 ring-gray-50">
               <AvatarImage src={profilePicUrl} className="object-cover" />
               <AvatarFallback className="bg-primary/5 text-primary text-xs font-bold">
-                {fullName?.substring(0, 2).toUpperCase()}
+                {fullName?.substring(0, 2).toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
           </div>
@@ -105,7 +89,7 @@ const UserMenu = ({
         >
           <div className="px-3 py-3 border-b border-gray-50 sm:hidden">
             <p className="text-sm font-bold text-gray-900">{fullName}</p>
-            <p className="text-xs text-gray-500">{user?.role}</p>
+            <p className="text-xs text-gray-500">{role}</p>
           </div>
           <DropdownMenuLabel className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-3 py-2">
             User Account

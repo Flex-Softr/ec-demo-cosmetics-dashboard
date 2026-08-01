@@ -78,6 +78,6 @@ export const store = createStore();
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-persistStore(store);
+export const persistor = persistStore(store);
 
 export default store;

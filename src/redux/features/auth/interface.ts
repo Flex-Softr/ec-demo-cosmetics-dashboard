@@ -12,12 +12,20 @@ export type TUser = {
 type UserProfile = {
   permissions: { _id: string; name: TPermissionName }[];
   _id: string;
+  uid?: string;
   role: TRole;
   phoneNumber: string;
   email: string;
   status: string;
   fullName: string;
   profilePicture: string;
+  emergencyContact?: string;
+  NIDNo?: string;
+  birthCertificateNo?: string;
+  joiningDate?: string;
+  address?: {
+    fullAddress?: string;
+  };
 };
 
 export type TInitialState = {

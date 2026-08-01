@@ -5,7 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { setUser } from "@/redux/features/auth/authSlice";
 import { TUser } from "@/redux/features/auth/interface";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { TErrorMessages, TErrorResponse } from "@/types/response";
 import decodeJWT from "@/utilities/decodeJWT";
 import {
@@ -19,7 +19,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 const securityTips = [
@@ -51,6 +51,7 @@ const securityTips = [
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.auth.token);
   const [login, { isLoading }] = useLoginMutation();
   const [serverMessage, setServerMessage] = useState<null | TErrorMessages[]>(
     null
@@ -64,6 +65,13 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  // Already authenticated — skip login (profile has no permission gates)
+  useEffect(() => {
+    if (token) {
+      router.replace("/dashboard/accounts");
+    }
+  }, [token, router]);
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setServerMessage(null);
@@ -82,7 +90,8 @@ const LoginPage = () => {
         title: "Welcome Back!",
         description: res.message || "Logged in successfully.",
       });
-      router.push("/");
+      // Land on profile first — avoids permission redirects on other dashboard pages
+      router.push("/dashboard/accounts");
     } catch (error) {
       const err = (error as { data: TErrorResponse }).data;
       if (err?.errorMessages?.length) {

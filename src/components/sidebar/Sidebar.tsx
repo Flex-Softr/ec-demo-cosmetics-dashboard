@@ -1,10 +1,14 @@
+"use client";
+
 import { PERMISSIONS } from "@/const/permissions";
-import { getPermission } from "@/lib/getAccessToken";
+import { useAppSelector } from "@/redux/hooks";
 import isPermitted from "@/utilities/isPermitted";
 import { SidebarClient } from "./SidebarClient";
 
-export async function Sidebar() {
-  const { permissions = [] } = await getPermission();
+export function Sidebar() {
+  const profile = useAppSelector((state) => state.auth.profile);
+  const user = useAppSelector((state) => state.auth.user);
+  const permissions = profile?.permissions || user?.permissions || [];
 
   const isSuperAdmin = isPermitted(permissions);
   const manageProduct = isPermitted(permissions, PERMISSIONS.MANAGE_PRODUCT);

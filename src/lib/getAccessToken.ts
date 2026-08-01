@@ -4,9 +4,12 @@ import { PERMISSIONS } from "@/const/permissions";
 import { TUser } from "@/redux/features/auth/interface";
 import decodeJWT from "@/utilities/decodeJWT";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * Cookie-based access-token refresh (legacy helper).
+ * Auth is primarily handled client-side via Redux + AuthGuard.
+ */
 export default async function getAccessToken(request: NextRequest) {
   try {
     const refreshToken = cookies().get("_app.ec.rt")?.value || "";
@@ -34,48 +37,60 @@ export default async function getAccessToken(request: NextRequest) {
     const response = NextResponse.next();
     response.cookies.set("_app.ec.at", token, cookieOption);
     return response;
-  } catch (error) {
+  } catch {
     return Response.redirect(new URL(`${config.base_path}/login`, request.url));
   }
 }
 
+/**
+ * Optional cookie-based profile fetch for remaining server components.
+ * Does NOT redirect — missing auth is handled by client AuthGuard.
+ */
 export async function getProfile() {
   const accessToken = cookies().get("_app.ec.at")?.value;
 
   if (!accessToken) {
-    // next/navigation redirect() auto-prefixes basePath — do not add it again
-    redirect("/login");
+    return null;
   }
 
-  const res = await fetch(
-    `${config.api_base_url}/server-api/v1/users/profile`,
-    {
-      method: "GET",
-      headers: { authorization: `Bearer ${accessToken}` },
-      cache: "force-cache",
-      next: { tags: ["profile"] },
+  try {
+    const res = await fetch(
+      `${config.api_base_url}/server-api/v1/users/profile`,
+      {
+        method: "GET",
+        headers: { authorization: `Bearer ${accessToken}` },
+        cache: "force-cache",
+        next: { tags: ["profile"] },
+      }
+    );
+
+    if (!res.ok) {
+      return null;
     }
-  );
 
-  if (!res.ok) {
-    redirect("/login");
+    const data = await res.json();
+    return data?.data ?? null;
+  } catch {
+    return null;
   }
-
-  const data = await res.json();
-  return data?.data;
 }
 
+/**
+ * Returns JWT permissions from cookie when available.
+ * Falls back to SUPER_ADMIN only when cookie is missing so remaining
+ * server pages do not redirect to /error before client AuthGuard runs.
+ * Route protection itself is handled by Redux AuthGuard.
+ */
 export const getPermission = () => {
   const accessToken = cookies().get("_app.ec.at")?.value;
   if (accessToken) {
     const user = decodeJWT(accessToken);
-
     return user as TUser;
-  } else {
-    return {
-      permissions: [{ _id: "super_admin_id", name: PERMISSIONS.SUPER_ADMIN }],
-    };
   }
+
+  return {
+    permissions: [{ _id: "super_admin_id", name: PERMISSIONS.SUPER_ADMIN }],
+  };
 };
 
 export const accessTokenFromCookies = () => {

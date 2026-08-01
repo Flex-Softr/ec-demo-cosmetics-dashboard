@@ -86,6 +86,7 @@ const tags = [
   "blogQaCategories",
   "blogQaTopics",
   "blogQaTags",
+  "profile",
 ] as const;
 
 const baseApi = createApi({

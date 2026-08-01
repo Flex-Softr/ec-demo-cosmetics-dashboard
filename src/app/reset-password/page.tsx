@@ -2,7 +2,6 @@
 import EcButton from "@/components/EcButton/EcButton";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import config from "@/config/config";
 import { useResetPasswordMutation } from "@/redux/features/auth/authApi";
 import { TErrorResponse } from "@/types/response";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -75,7 +74,7 @@ const ResetPasswordPage = () => {
           title: "Success!",
           description: "Your password has been reset successfully.",
         });
-        router.push(`${config.base_path}/login`);
+        router.push("/login");
       }
     } catch (error) {
       const err = (error as { data: TErrorResponse }).data;
