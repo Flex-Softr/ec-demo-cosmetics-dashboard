@@ -1,38 +1,35 @@
-"use client";
+import { PERMISSIONS } from "@/const/permissions";
+import { getPermission } from "@/lib/getAccessToken";
+import isPermitted from "@/utilities/isPermitted";
+import { redirect } from "next/navigation";
+import DashboardSummary from "./components/DashboardSummary";
+import OrderReport from "./components/OrderReport";
+import OrderStatus from "./components/OrderStatus";
+import RecentOrders from "./components/RecentOrders";
+import SalesSummary from "./components/SalesSummary";
+import ShippingStatus from "./components/ShippingStatus";
+import TopCustomers from "./components/TopCustomers";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAppSelector } from "@/redux/hooks";
-import { Loader2 } from "lucide-react";
-import dummyUser from "../../../public/user.jpg";
+const Dashboard = async () => {
+  const { permissions = [] } = await getPermission();
+  const isSuperAdmin = isPermitted(permissions, PERMISSIONS.SUPER_ADMIN);
 
-const Dashboard = () => {
-  const { profile, isProfileLoading } = useAppSelector((state) => state.auth);
-
-  if (isProfileLoading || !profile) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+  if (!isSuperAdmin) {
+    redirect("/error");
   }
 
-  const profilePicUrl = profile.profilePicture
-    ? `${profile.profilePicture}`
-    : dummyUser.src;
-
   return (
-    <div className="flex justify-center items-center h-full">
-      <div>
-        <div className="flex justify-center">
-          <Avatar className="rounded-full w-28 h-28">
-            <AvatarImage src={profilePicUrl} />
-            <AvatarFallback>{profile.fullName}</AvatarFallback>
-          </Avatar>
-        </div>
-        <h2 className="text-center font-semibold text-xl">
-          {profile.fullName}
-        </h2>
-        <h2 className="text-center">{profile.phoneNumber}</h2>
+    <div className="p-2 sm:p-4 space-y-5">
+      <DashboardSummary />
+      <SalesSummary />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <OrderStatus />
+        <ShippingStatus />
+      </div>
+      <OrderReport />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <TopCustomers />
+        <RecentOrders />
       </div>
     </div>
   );

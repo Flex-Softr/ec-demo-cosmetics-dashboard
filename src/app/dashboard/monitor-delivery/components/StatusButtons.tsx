@@ -18,8 +18,7 @@ import {
   setSearchQuery,
 } from "@/redux/features/search/searchSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import backgroundColor from "@/utilities/backgroundColor";
-import borderColor from "@/utilities/borderColor";
+import { statusChipClass } from "@/lib/tableStyles";
 import { useEffect, useState } from "react";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -81,10 +80,11 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
   return (
     <>
       {orderStatusCount?.map((status: { name: string; total: string }) => {
-        const bg = `${backgroundColor(status.name)} text-white`;
         return (
           <Button
-            size={"sm"}
+            size="sm"
+            type="button"
+            variant="outline"
             key={status.name}
             onClick={() => {
               dispatch(setPage(1));
@@ -92,15 +92,10 @@ const StatusButtons = ({ manageProcessing }: { manageProcessing: boolean }) => {
               dispatch(setSelectedStatus(status.name));
             }}
             disabled={isLoading}
-            className={`capitalize bg-white flex items-center gap-1 rounded-2xl whitespace-nowrap ${borderColor(
-              status.name
-            )
-              .split(" ")
-              .filter((c) => !c.startsWith("text-"))
-              .join(" ")} ${filter === status.name ? bg : "text-black"}`}
+            className={statusChipClass(filter === status.name)}
           >
             <span>{status.name}</span>
-            <span>({status.total})</span>
+            <span className="text-[11px] opacity-80">({status.total})</span>
           </Button>
         );
       })}

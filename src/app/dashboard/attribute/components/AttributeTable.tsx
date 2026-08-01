@@ -1,8 +1,7 @@
 "use client";
 
 import { PagePagination } from "@/components/pagination/PagePagination";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import TableSearch from "@/components/tableSearch/TableSearch";
 import {
   Table,
   TableBody,
@@ -34,7 +33,6 @@ const AttributeTable = () => {
   const [globalFilter, setGlobalFilter] = React.useState("");
   const debouncedSearch = useDebounce(globalFilter, 500);
 
-  // Note: if query API supports search, pass it here natively.
   const queryParams = debouncedSearch
     ? { search: debouncedSearch }
     : { page, limit };
@@ -69,36 +67,34 @@ const AttributeTable = () => {
 
   if (isLoading) {
     return (
-      <Card className="flex items-center justify-center h-40">
-        <p className="text-xl font-semibold text-gray-900">
-          Loading attributes...
-        </p>
-      </Card>
+      <div className="flex h-40 items-center justify-center rounded-xl border border-border bg-muted/30 text-sm text-muted-foreground">
+        Loading attributes…
+      </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row justify-between gap-4">
-        <div className="w-full sm:max-w-sm">
-          <Input
-            placeholder="Search attributes..."
-            value={globalFilter ?? ""}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            className="w-full"
-          />
-        </div>
+      <div className="flex flex-wrap items-center gap-2 justify-between">
+        <TableSearch
+          value={globalFilter}
+          onChange={setGlobalFilter}
+          placeholder="Search attributes…"
+        />
       </div>
 
-      <div className="rounded-md border bg-white shadow-sm overflow-x-auto -mx-2 sm:mx-0">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
         <Table>
-          <TableHeader className="bg-primary hover:bg-primary/95 transition-colors">
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow
+                key={headerGroup.id}
+                className="border-b border-border hover:bg-muted"
+              >
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-white whitespace-nowrap"
+                    className="whitespace-nowrap py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
                   >
                     {header.isPlaceholder
                       ? null
@@ -116,7 +112,7 @@ const AttributeTable = () => {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="align-top py-4">
+                    <TableCell key={cell.id} className="align-top py-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -140,9 +136,9 @@ const AttributeTable = () => {
       </div>
 
       {!globalFilter && meta && (
-        <div className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0 py-2">
+        <div className="flex flex-col items-center justify-between gap-2 py-1 sm:flex-row">
           <div className="text-sm text-muted-foreground">
-            Showing Page {page} of {meta.totalPage || 1}
+            Showing page {page} of {meta.totalPage || 1}
           </div>
           <PagePagination />
         </div>

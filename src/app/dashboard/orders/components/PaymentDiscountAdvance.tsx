@@ -43,7 +43,7 @@ const PaymentDiscountAdvance = (props: TProps) => {
               <select
                 {...register("payment.paymentMethod")}
                 defaultValue={payment?.paymentMethod?._id}
-                className="w-full h-9 border border-primary outline-primary  rounded-md"
+                className="w-full h-9 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20"
               >
                 <option value="">-- Select Payment --</option>
                 {paymentMethods?.data?.map(
@@ -74,7 +74,7 @@ const PaymentDiscountAdvance = (props: TProps) => {
           </Label>
           <select
             {...register("orderSource.name")}
-            className="w-full h-9 border border-primary outline-primary  rounded-md"
+            className="w-full h-9 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20"
           >
             <option value="">-- Select Order Source --</option>
             <option value="Phone Call">Phone Call</option>
@@ -117,7 +117,7 @@ const PaymentDiscountAdvance = (props: TProps) => {
                             : false,
                         }
                       )}
-                      className="w-full h-9 border border-gray-300 rounded-md px-2"
+                      className="w-full h-9 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20"
                     >
                       <option value="">Select {input.name}</option>
                       {input.enums?.split(",").map((opt) => (

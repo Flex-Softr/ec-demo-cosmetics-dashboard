@@ -134,12 +134,18 @@ export function OrderedProductTable({
   return (
     <div className="w-full">
       <Table className="min-w-[600px]">
-        <TableHeader>
+        <TableHeader className="bg-muted">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow
+              key={headerGroup.id}
+              className="border-b border-border hover:bg-muted"
+            >
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id} className="font-bold">
+                  <TableHead
+                    key={header.id}
+                    className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(

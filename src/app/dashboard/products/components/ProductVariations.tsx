@@ -28,18 +28,14 @@ export const VariationSKU = ({ sku }: { sku?: string }) => (
 );
 
 export const VariationPrice = ({ price }: { price: Variation["price"] }) => (
-  <div className="flex gap-2 leading-tight items-baseline justify-center">
-    <span
-      className={
-        price.salePrice
-          ? "line-through text-muted-foreground text-xs whitespace-nowrap"
-          : "whitespace-nowrap"
-      }
-    >
-      &#2547;{price.regularPrice}
+  <div className="flex flex-col items-center gap-0.5 leading-tight">
+    <span className="whitespace-nowrap text-sm font-semibold text-primary">
+      &#2547;{price.salePrice ?? price.regularPrice}
     </span>
     {price.salePrice && (
-      <span className="whitespace-nowrap">&#2547;{price.salePrice}</span>
+      <span className="whitespace-nowrap text-xs text-muted-foreground line-through">
+        &#2547;{price.regularPrice}
+      </span>
     )}
   </div>
 );

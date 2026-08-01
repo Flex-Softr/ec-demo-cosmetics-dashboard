@@ -51,11 +51,14 @@ const TitleInput = () => {
 
   return (
     <SectionContentWrapper heading={"Product Title and Slug"}>
-      <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className="text-sm font-medium mb-1 block">Title</label>
+          <label className="mb-1.5 block text-sm font-medium text-foreground">
+            Title
+          </label>
           <Input
             placeholder="Product Title"
+            className="rounded-lg"
             {...register("title", {
               onChange: () => {
                 setIsTitleEdited(true);
@@ -63,15 +66,18 @@ const TitleInput = () => {
             })}
           />
           {errors.title && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="mt-1 text-sm text-destructive">
               {errors.title.message as string}
             </p>
           )}
         </div>
         <div>
-          <label className="text-sm font-medium mb-1 block">Slug</label>
+          <label className="mb-1.5 block text-sm font-medium text-foreground">
+            Slug
+          </label>
           <Input
             placeholder="product-slug"
+            className="rounded-lg"
             {...register("slug", {
               onChange: () => {
                 setIsSlugManuallyEdited(true);
@@ -79,7 +85,7 @@ const TitleInput = () => {
             })}
           />
           {errors.slug && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="mt-1 text-sm text-destructive">
               {errors.slug.message as string}
             </p>
           )}

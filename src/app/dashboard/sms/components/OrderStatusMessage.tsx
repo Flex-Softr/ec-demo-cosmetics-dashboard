@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,7 +47,6 @@ export default function OrderStatusMessage({
   const { toast } = useToast();
   const [selectedStatus, setSelectedStatus] = useState<string>("order_created");
 
-  // Initialize state with all status keys
   const [messages, setMessages] = useState<MessageMap>(() => {
     const initial: MessageMap = {};
     statusList.forEach((s: any) => {
@@ -68,7 +68,6 @@ export default function OrderStatusMessage({
 
     savedMessages?.forEach((item: Message) => {
       const { slug, customTemplate, activeMedium, emailSubject } = item;
-      // Find matching status in statusList to ensure valid slug
       const isValidSlug = statusList.some((s: any) => s.slug === slug);
       if (isValidSlug) {
         updatedMessages[slug] = {
@@ -110,17 +109,13 @@ export default function OrderStatusMessage({
   const toggleMedium = (medium: TOrderSMSNotificationMediumType) => {
     setMessages((prev) => {
       const currentMessage = prev[selectedStatus];
-      if (!currentMessage) return prev; // Should not happen
+      if (!currentMessage) return prev;
 
       const currentMediums = currentMessage.activeMedium || [];
       const isActive = currentMediums.includes(medium);
-      let newMediums;
-
-      if (isActive) {
-        newMediums = currentMediums.filter((m) => m !== medium);
-      } else {
-        newMediums = [...currentMediums, medium];
-      }
+      const newMediums = isActive
+        ? currentMediums.filter((m) => m !== medium)
+        : [...currentMediums, medium];
 
       return {
         ...prev,
@@ -143,7 +138,10 @@ export default function OrderStatusMessage({
         currentMessageState;
 
       if (!customTemplate && !id) {
-        alert("Please enter a message before saving.");
+        toast({
+          title: "Please enter a message before saving.",
+          variant: "destructive",
+        });
         return;
       }
 
@@ -177,7 +175,7 @@ export default function OrderStatusMessage({
       }
 
       refetchData("order-sms-notification");
-    } catch (error) {
+    } catch {
       toast({
         title: "Failed to save message. Please try again.",
         variant: "destructive",
@@ -195,18 +193,17 @@ export default function OrderStatusMessage({
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 p-4 md:p-6 bg-white rounded-xl shadow-sm border">
-      {/* Left Panel - Status Selector */}
-      <div className="space-y-4">
+    <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-3 md:gap-5">
+      <div className="space-y-2">
         {statusList.map(({ slug, status }: any) => (
           <Button
             key={slug}
             onClick={() => handleStatusClick(slug)}
             className={cn(
-              "w-full text-left justify-start px-4 py-2 rounded-lg transition-colors",
+              "w-full justify-start rounded-lg px-4 py-2 text-left transition-colors",
               selectedStatus === slug
-                ? "bg-primary hover:bg-primary/90 text-white"
-                : "bg-purple-50 text-gray-800 hover:bg-purple-100/50"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "border border-border bg-muted/40 text-foreground hover:bg-muted"
             )}
             variant="ghost"
           >
@@ -215,20 +212,19 @@ export default function OrderStatusMessage({
         ))}
       </div>
 
-      {/* Right Panel - Message Input with animation */}
       <AnimatePresence mode="wait">
         {hasMounted && (
           <motion.div
             key={selectedStatus}
-            initial={{ rotateY: 90, opacity: 0 }}
-            animate={{ rotateY: 0, opacity: 1 }}
-            exit={{ rotateY: -90, opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-purple-50 rounded-xl h-full md:col-span-2 p-4 md:p-6 shadow-sm space-y-6"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-5 rounded-xl border border-border bg-muted/30 p-4 md:col-span-2 md:p-5"
           >
             <div className="flex flex-col gap-3">
-              <Label className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                Notifications Channels
+              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Notification Channels
               </Label>
               <div className="flex flex-wrap gap-2">
                 {mediums.map((m) => {
@@ -238,10 +234,10 @@ export default function OrderStatusMessage({
                       key={m.value}
                       variant={isActive ? "default" : "outline"}
                       className={cn(
-                        "cursor-pointer px-4 py-1.5 text-sm select-none transition-all rounded-full hover:scale-105 active:scale-95",
+                        "cursor-pointer select-none rounded-lg px-3 py-1.5 text-sm transition-colors",
                         isActive
-                          ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent shadow-md"
-                          : "bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary"
+                          ? "border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "border-border bg-card text-muted-foreground hover:border-primary hover:text-primary"
                       )}
                       onClick={() => toggleMedium(m.value)}
                     >
@@ -255,58 +251,61 @@ export default function OrderStatusMessage({
             <div className="space-y-2">
               <Label
                 htmlFor="email-subject"
-                className="text-sm font-semibold text-gray-700 uppercase tracking-wide"
+                className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
               >
                 Email Subject
               </Label>
               <Input
                 id="email-subject"
-                className="bg-white border-gray-200 focus:border-primary focus:ring-primary/20 transition-all rounded-lg"
-                placeholder="Enter email subject (optional)..."
+                className="rounded-lg"
+                placeholder="Enter email subject (optional)…"
                 value={currentData.emailSubject}
                 onChange={(e) => handleSubjectChange(e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <div className="flex justify-between items-end">
+              <div className="flex items-end justify-between">
                 <Label
                   htmlFor="message-body"
-                  className="text-sm font-semibold text-gray-700 uppercase tracking-wide"
+                  className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
                 >
                   Message Body
                 </Label>
                 <span
                   className={cn(
                     "text-xs font-medium",
-                    smsCount > 1 ? "text-amber-600" : "text-slate-400"
+                    smsCount > 1 ? "text-amber-600" : "text-muted-foreground"
                   )}
                 >
                   {charCount} char | {smsCount} SMS
                 </span>
               </div>
-              <p className="text-xs text-gray-500 bg-white/50 p-2 rounded border border-purple-100">
-                <span className="font-semibold">Variables:</span>{" "}
+              <p className="rounded-lg border border-border bg-card p-2 text-xs text-muted-foreground">
+                <span className="font-semibold text-foreground">
+                  Variables:
+                </span>{" "}
                 <code>{`{fullName}, {orderId}, {trackingUrl}, {total}, {break}`}</code>
               </p>
               <Textarea
                 id="message-body"
-                className="w-full p-4 min-h-[160px] border-gray-200 rounded-lg bg-white focus:border-primary focus:ring-primary/20 transition-all resize-y"
+                className="min-h-[160px] w-full resize-y rounded-lg p-4"
                 value={currentData.customTemplate}
                 onChange={(e) => handleMessageChange(e.target.value)}
-                placeholder="Enter your message template here..."
+                placeholder="Enter your message template here…"
               />
-              <p className="text-[10px] text-slate-400 mt-1 italic">
+              <p className="mt-1 text-[10px] italic text-muted-foreground">
                 * Special characters like ~ ^ &#123;&#125; [ ] | reduce char
                 limit per SMS to 70.
               </p>
             </div>
 
-            <div className="flex justify-start pt-2">
+            <div className="flex justify-end pt-2">
               <Button
                 onClick={saveMessage}
                 disabled={isLoading || loading}
-                className="w-full sm:w-auto px-8 rounded-full font-medium"
+                size="sm"
+                className="rounded-lg px-6"
               >
                 {isLoading || loading ? "Saving..." : "Save Changes"}
               </Button>

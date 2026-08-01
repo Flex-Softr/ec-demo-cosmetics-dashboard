@@ -1,5 +1,7 @@
-import EcButton from "@/components/EcButton/EcButton";
-import CommonModal from "@/components/modal/CommonModal";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateCouponsMutation } from "@/redux/features/coupon/couponApi";
 import { TCoupon } from "@/redux/features/coupon/couponInterface";
@@ -8,12 +10,10 @@ import { Dispatch, SetStateAction } from "react";
 
 const DeleteCoupon = ({
   coupon,
-  handleOpen,
   open,
   setOpen,
 }: {
   coupon: TCoupon;
-  handleOpen: () => void;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
@@ -41,38 +41,36 @@ const DeleteCoupon = ({
       });
     }
   };
+
   return (
-    <>
-      <div className="flex justify-center">
-        <CommonModal
-          open={open}
-          handleOpen={handleOpen}
-          className="h-[230px] w-[650px]"
-          modalTitle="Are you sure?"
-        >
-          <div>
-            <p>
-              <span className="font-semibold">Coupon:</span> {coupon.code}
-            </p>
-            <p className="mt-5">
-              This action cannot be undone. This will delete coupon.
-            </p>
-            <div className="flex justify-end gap-2 mt-5">
-              <EcButton variant={"outline"} onClick={() => setOpen(false)}>
-                Cancel
-              </EcButton>
-              <EcButton
-                loading={isLoading}
-                disabled={isLoading}
-                onClick={() => handleDelete()}
-              >
-                Confirm
-              </EcButton>
-            </div>
-          </div>
-        </CommonModal>
-      </div>
-    </>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-[425px]">
+        <h1 className="text-lg font-semibold text-foreground">
+          Delete Coupon?
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Are you sure you want to delete{" "}
+          <span className="font-semibold text-foreground">{coupon.code}</span>?
+          This action cannot be undone.
+        </p>
+        <div className="mt-4 flex justify-end gap-2">
+          <DialogClose asChild>
+            <Button variant="outline" size="sm" className="rounded-lg">
+              Cancel
+            </Button>
+          </DialogClose>
+          <Button
+            variant="destructive"
+            size="sm"
+            className="rounded-lg"
+            disabled={isLoading}
+            onClick={handleDelete}
+          >
+            {isLoading ? "Deleting..." : "Delete"}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

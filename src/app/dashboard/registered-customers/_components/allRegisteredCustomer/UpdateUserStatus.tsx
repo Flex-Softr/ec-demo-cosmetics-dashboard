@@ -1,6 +1,14 @@
 "use client";
-import EcButton from "@/components/EcButton/EcButton";
-import CommonModal from "@/components/modal/CommonModal";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -12,11 +20,16 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
 import { useUpdateCustomerMutation } from "@/redux/features/registeredCustomer/RegisteredCustomerApi";
-
 import { TRegisteredUserStatus } from "@/types/registeredUser";
 import { TErrorResponse, TSuccessResponse } from "@/types/response";
-import backgroundColor from "@/utilities/backgroundColor";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
+
+const statusTone: Record<string, string> = {
+  active: "bg-emerald-50 text-emerald-700",
+  banned: "bg-red-50 text-red-700",
+  deleted: "bg-slate-100 text-slate-600",
+};
 
 const UpdateUserStatus = ({
   status,
@@ -26,29 +39,21 @@ const UpdateUserStatus = ({
   id: string;
 }) => {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => {
-    setOpen(!open);
-  };
-
-  // Update
   const [updateUser, { isLoading }] = useUpdateCustomerMutation();
   const [value, setValue] = useState(status);
   const results: TRegisteredUserStatus[] = ["active", "banned", "deleted"];
 
   const handleResultChange = async () => {
-    const updateData = {
-      body: { status: value },
-      id: id,
-    };
     try {
-      const result = (await updateUser(
-        updateData
-      ).unwrap()) as TSuccessResponse;
+      const result = (await updateUser({
+        body: { status: value },
+        id,
+      }).unwrap()) as TSuccessResponse;
 
       if (result.success) {
         setOpen(false);
         toast({
-          className: "toast-success ",
+          className: "toast-success",
           title: result.message,
         });
       }
@@ -56,7 +61,7 @@ const UpdateUserStatus = ({
       const err = error as { data: TErrorResponse };
       toast({
         className: "toast-error",
-        title: err?.data?.errorMessages![0]?.message,
+        title: err?.data?.errorMessages?.[0]?.message || "Update failed",
       });
     }
   };
@@ -64,51 +69,77 @@ const UpdateUserStatus = ({
   return (
     <div>
       <button
-        onClick={handleOpen}
-        className={`capitalize px-2 pb-[2px] pt-[1px] rounded text-white ${backgroundColor(status as string)}`}
+        type="button"
+        onClick={() => setOpen(true)}
+        className={cn(
+          "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize",
+          statusTone[status || ""] || "bg-muted text-muted-foreground"
+        )}
       >
         {status}
       </button>
-      <CommonModal
-        open={open}
-        handleOpen={handleOpen}
-        className="h-[450px] "
-        modalTitle="Approve and create new order"
-      >
-        <div>
-          <span>Current status : </span>
-          <span
-            className={`capitalize px-2 pb-[2px] pt-[1px] rounded text-white ${backgroundColor(status as string)}`}
-          >
-            {status}
-          </span>
-        </div>
-        <div className="space-y-5">
-          <Select
-            defaultValue={value}
-            onValueChange={(changedValue: TRegisteredUserStatus) =>
-              setValue(changedValue)
-            }
-          >
-            <SelectTrigger className="w-[180px] capitalize">
-              <SelectValue placeholder={value} className="capitalize" />
-            </SelectTrigger>
-            <SelectContent className="capitalize">
-              <SelectGroup>
-                <SelectLabel>Result</SelectLabel>
-                {results.map((item) => (
-                  <SelectItem key={item} value={item} className="capitalize">
-                    {item}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <EcButton loading={isLoading} onClick={handleResultChange}>
-            Update
-          </EcButton>
-        </div>
-      </CommonModal>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Update User Status</DialogTitle>
+            <DialogDescription>
+              Change the account status for this customer.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="text-sm text-muted-foreground">
+              Current status:{" "}
+              <span
+                className={cn(
+                  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize",
+                  statusTone[status || ""] || "bg-muted text-muted-foreground"
+                )}
+              >
+                {status}
+              </span>
+            </div>
+
+            <Select
+              defaultValue={value}
+              onValueChange={(changedValue: TRegisteredUserStatus) =>
+                setValue(changedValue)
+              }
+            >
+              <SelectTrigger className="w-full capitalize rounded-lg">
+                <SelectValue placeholder={value} className="capitalize" />
+              </SelectTrigger>
+              <SelectContent className="capitalize">
+                <SelectGroup>
+                  <SelectLabel>Status</SelectLabel>
+                  {results.map((item) => (
+                    <SelectItem key={item} value={item} className="capitalize">
+                      {item}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <DialogClose asChild>
+                <Button variant="outline" size="sm" className="rounded-lg">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                size="sm"
+                className="rounded-lg"
+                disabled={isLoading}
+                onClick={handleResultChange}
+              >
+                {isLoading ? "Updating…" : "Update"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

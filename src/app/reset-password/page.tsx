@@ -114,8 +114,8 @@ const ResetPasswordPage = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-700">
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">
               Email
             </label>
             <Controller
@@ -124,18 +124,20 @@ const ResetPasswordPage = () => {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="h-12 px-4 bg-slate-100 border border-slate-200 text-slate-500 text-sm rounded-lg cursor-not-allowed"
+                  className="h-9 border-border bg-muted text-sm text-muted-foreground"
                   disabled
                 />
               )}
             />
             {errors.email && (
-              <p className="text-xs text-red-500">{errors.email.message}</p>
+              <p className="text-[11px] text-destructive">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-700">
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">
               OTP Code
             </label>
             <Controller
@@ -145,17 +147,19 @@ const ResetPasswordPage = () => {
                 <Input
                   {...field}
                   placeholder="Enter 6-digit OTP"
-                  className={`h-12 px-4 bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all ${errors.otp ? "border-red-500" : ""}`}
+                  className={`h-9 border-border text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 ${errors.otp ? "border-destructive" : ""}`}
                 />
               )}
             />
             {errors.otp && (
-              <p className="text-xs text-red-500">{errors.otp.message}</p>
+              <p className="text-[11px] text-destructive">
+                {errors.otp.message}
+              </p>
             )}
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-700">
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">
               New Password
             </label>
             <div className="relative">
@@ -167,20 +171,22 @@ const ResetPasswordPage = () => {
                     {...field}
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className={`h-12 px-4 bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all pr-10 ${errors.password ? "border-red-500" : ""}`}
+                    className={`h-9 border-border pr-10 text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 ${errors.password ? "border-destructive" : ""}`}
                   />
                 )}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
             {errors.password && (
-              <p className="text-xs text-red-500">{errors.password.message}</p>
+              <p className="text-[11px] text-destructive">
+                {errors.password.message}
+              </p>
             )}
           </div>
 

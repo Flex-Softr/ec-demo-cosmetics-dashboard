@@ -84,7 +84,7 @@ const Advanced = () => {
                       onValueChange={field.onChange}
                       value={field.value || "select"}
                     >
-                      <SelectTrigger className="w-[120px] border-primary focus:ring-0">
+                      <SelectTrigger className="w-[120px] border-border focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20">
                         <SelectValue placeholder={"select"} />
                       </SelectTrigger>
                       <SelectContent>
@@ -127,7 +127,7 @@ const Advanced = () => {
                 placeholder="Type warranty terms here."
                 {...register("warrantyInfo.terms")}
                 id="terms"
-                className="min-h-10 border border-primary focus-visible:ring-primary w-full"
+                className="min-h-10 w-full border-border focus-visible:border-muted-foreground/40 focus-visible:ring-1 focus-visible:ring-muted-foreground/20"
               />
               {getError("warrantyInfo.terms") && (
                 <p className="text-red-500 text-sm">

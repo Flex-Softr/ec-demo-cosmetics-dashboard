@@ -32,62 +32,56 @@ export default function CourierConfigTable({
   };
 
   return (
-    <div className="rounded-md border">
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
       <Table>
-        <TableHeader className="bg-primary text-primary-foreground">
-          <TableRow>
-            {/* <TableHead className="w-20">Thumb</TableHead> */}
-            <TableHead>Courier Name</TableHead>
-            {/* <TableHead>API Base URL</TableHead> */}
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+        <TableHeader className="bg-muted">
+          <TableRow className="border-b border-border hover:bg-muted">
+            <TableHead className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Courier Name
+            </TableHead>
+            <TableHead className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Status
+            </TableHead>
+            <TableHead className="py-3 text-right text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {couriers.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="h-24 text-center">
+              <TableCell
+                colSpan={3}
+                className="h-24 text-center text-muted-foreground"
+              >
                 No couriers configured.
               </TableCell>
             </TableRow>
           ) : (
             couriers.map((courier) => (
-              <TableRow key={courier._id}>
-                {/* <TableCell>
-                  <div className="relative w-10 h-10 rounded border overflow-hidden bg-gray-50 flex items-center justify-center">
-                    {courier.thumb ? (
-                      <Image
-                        src={formatImageSrc(courier.thumb)}
-                        alt={courier.name}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <span className="text-[10px] text-gray-400">No img</span>
-                    )}
-                  </div>
-                </TableCell> */}
-                <TableCell className="font-medium">{courier.name}</TableCell>
-                {/* <TableCell>{courier.apiBaseUrl}</TableCell> */}
-                <TableCell>
+              <TableRow key={courier._id} className="border-b border-border">
+                <TableCell className="py-3 font-semibold text-foreground">
+                  {courier.name}
+                </TableCell>
+                <TableCell className="py-3">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs ${
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                       courier.isActive
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                        ? "bg-emerald-50 text-emerald-700"
+                        : "bg-red-50 text-red-700"
                     }`}
                   >
                     {courier.isActive ? "Active" : "Inactive"}
                   </span>
                 </TableCell>
-                <TableCell className="text-right space-x-2">
+                <TableCell className="py-3 text-right">
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => handleEdit(courier)}
-                    className="!bg-white hover:!bg-white rounded-full"
+                    className="h-7 w-7 rounded-md text-muted-foreground hover:bg-primary/10 hover:text-primary"
                   >
-                    <PencilLine className="h-4 w-4 text-primary" />
+                    <PencilLine className="h-4 w-4" />
                   </Button>
                 </TableCell>
               </TableRow>

@@ -1,4 +1,5 @@
 "use client";
+
 import { PagePagination } from "@/components/pagination/PagePagination";
 import {
   Table,
@@ -17,7 +18,7 @@ import {
 import columns from "./RegisteredCustomerColumn";
 
 const RegisteredCustomerTable = () => {
-  const { users } = useAppSelector(
+  const { users, isLoading } = useAppSelector(
     ({ registeredCustomer }) => registeredCustomer
   );
   const table = useReactTable({
@@ -25,55 +26,75 @@ const RegisteredCustomerTable = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (isLoading) {
+    return (
+      <div className="flex h-40 items-center justify-center rounded-xl border border-border bg-muted/30 text-sm text-muted-foreground">
+        Loading customers…
+      </div>
+    );
+  }
+
   return (
-    <div className="rounded-lg border overflow-x-auto">
-      <Table className="w-full whitespace-nowrap">
-        <TableHeader className="bg-primary text-primary-foreground">
-          {table?.getHeaderGroups()?.map((headerGroup) => (
-            <TableRow key={headerGroup?.id} className="hover:bg-muted/0">
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header?.id} className="text-center">
-                    {header?.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header?.column?.columnDef?.header,
-                          header?.getContext()
+    <div className="space-y-4">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <div className="overflow-x-auto">
+          <Table className="w-full whitespace-nowrap">
+            <TableHeader className="bg-muted">
+              {table?.getHeaderGroups()?.map((headerGroup) => (
+                <TableRow
+                  key={headerGroup?.id}
+                  className="border-b border-border hover:bg-muted"
+                >
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header?.id}
+                      className="py-3 text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+                    >
+                      {header?.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header?.column?.columnDef?.header,
+                            header?.getContext()
+                          )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {users?.length ? (
+                table?.getRowModel()?.rows?.map((row) => (
+                  <TableRow
+                    key={row?.id}
+                    data-state={row?.getIsSelected() && "selected"}
+                    className="border-b border-border"
+                  >
+                    {row?.getVisibleCells()?.map((cell) => (
+                      <TableCell key={cell?.id} className="py-3 text-center">
+                        {flexRender(
+                          cell?.column?.columnDef?.cell,
+                          cell?.getContext()
                         )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {users?.length ? (
-            table?.getRowModel()?.rows?.map((row) => (
-              <TableRow
-                key={row?.id}
-                data-state={row?.getIsSelected() && "selected"}
-                className="border-b"
-              >
-                {row?.getVisibleCells()?.map((cell) => (
-                  <TableCell key={cell?.id} className="text-center">
-                    {flexRender(
-                      cell?.column?.columnDef?.cell,
-                      cell?.getContext()
-                    )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    No customers found.
                   </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No user found
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <div className="flex items-center justify-end space-x-2 py-2">
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+      <div className="flex items-center justify-end py-1">
         <PagePagination />
       </div>
     </div>

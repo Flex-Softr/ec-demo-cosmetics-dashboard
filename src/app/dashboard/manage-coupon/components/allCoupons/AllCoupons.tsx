@@ -1,8 +1,6 @@
 "use client";
 
 import Show from "@/components/Show";
-import { Card } from "@/components/ui/card";
-import CreateCoupons from "../createCoupons/CreateCoupons";
 import CouponsClaimTable from "./CouponTable";
 import FetchCouponData from "./FetchCouponData";
 import FilterByTag from "./FilterByTag";
@@ -12,25 +10,16 @@ const AllCoupons = () => {
   return (
     <>
       <FetchCouponData />
-      <Card className="space-y-5 m-2 sm:m-4 p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
-          <h2 className="text-xl font-bold">All coupons</h2>
-          <div className="w-full sm:w-auto">
-            <SearchCoupon />
-          </div>
-        </div>
-        <hr className="mt-4" />
-        <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
-          <CreateCoupons />
-          <div className="flex flex-wrap gap-3 sm:gap-5">
+      <div className="space-y-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <SearchCoupon />
+          <div className="flex flex-wrap items-center gap-2">
             <FilterByTag />
             <Show />
           </div>
         </div>
-        <div className="overflow-x-auto -mx-4 sm:mx-0">
-          <CouponsClaimTable />
-        </div>
-      </Card>
+        <CouponsClaimTable />
+      </div>
     </>
   );
 };

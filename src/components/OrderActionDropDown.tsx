@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,8 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAppSelector } from "@/redux/hooks";
 import { TOrders } from "@/types/order.interface";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { Eye, Pencil } from "lucide-react";
+import { Eye, MoreVertical, Pencil } from "lucide-react";
 import Link from "next/link";
 
 const OrderActionDropDown = ({ order }: { order: TOrders }) => {
@@ -31,34 +31,39 @@ const OrderActionDropDown = ({ order }: { order: TOrders }) => {
   const isEdit = edit || editPermission;
 
   return (
-    <div className="flex justify-center items-center gap-2 min-w-[60px]">
+    <div className="flex justify-end items-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <span className="p-2 cursor-pointer">
-            <DotsVerticalIcon className="h-4 w-4" />
-          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+            aria-label="Order actions"
+          >
+            <MoreVertical className="h-4 w-4" />
+          </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent align="end">
           <DropdownMenuGroup>
-            <DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link
                 href={`/dashboard/orders/${order._id}`}
-                className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
+                className="flex items-center gap-2 cursor-pointer w-full"
               >
                 <Eye className="w-4 h-4" />
-                <span>View</span>
+                View
               </Link>
             </DropdownMenuItem>
 
             {isEdit && (
-              <DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link
                   href={`/dashboard/orders/${order._id}/edit`}
                   title="Edit"
-                  className="text-green-500 hover:text-green-700 flex items-center gap-1"
+                  className="flex items-center gap-2 cursor-pointer w-full"
                 >
                   <Pencil className="w-4 h-4" />
-                  <span>Edit</span>
+                  Edit
                 </Link>
               </DropdownMenuItem>
             )}
@@ -68,4 +73,5 @@ const OrderActionDropDown = ({ order }: { order: TOrders }) => {
     </div>
   );
 };
+
 export default OrderActionDropDown;

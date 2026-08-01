@@ -1,20 +1,17 @@
 "use client";
-import { Input } from "@/components/ui/input";
-import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
-import * as React from "react";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { PagePagination } from "@/components/pagination/PagePagination";
+import TableSearch from "@/components/tableSearch/TableSearch";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
   setIsLoading,
   setPage,
   setTotalPage,
 } from "@/redux/features/pagination/PaginationSlice";
-import { PagePagination } from "@/components/pagination/PagePagination";
-import { useDebounce } from "@/hooks/useDebounce";
-import { Button } from "@/components/ui/button";
-
+import { useGetCategoriesQuery } from "@/redux/features/category/categoryApi";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import * as React from "react";
 import { TCategories } from "../lib/category.interface";
 export type { TCategories };
-import CategoryForm from "./CategoryForm";
 import { CategoryTableBase } from "./CategoryTableBase";
 
 export const CategoryTable = () => {
@@ -22,8 +19,8 @@ export const CategoryTable = () => {
   const { page, limit } = useAppSelector(({ pagination }) => pagination);
 
   const [globalFilter, setGlobalFilter] = React.useState("");
-  const debunce = useDebounce(globalFilter, 500);
-  const queryParams = debunce ? { search: debunce } : { page, limit };
+  const debounced = useDebounce(globalFilter, 500);
+  const queryParams = debounced ? { search: debounced } : { page, limit };
 
   const { data: response, isLoading } = useGetCategoriesQuery(queryParams);
 
@@ -44,29 +41,14 @@ export const CategoryTable = () => {
     dispatch(setIsLoading(isLoading));
   }, [isLoading, dispatch]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="space-y-1">
-      <div className="bg-white px-4 rounded-lg shadow-sm space-y-4 py-2">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-xl font-bold text-dark">Category Management</h1>
-          <div>
-            <CategoryForm trigger={<Button>Add Category</Button>} />
-          </div>
-        </div>
-        <div className="flex items-center gap-2 pb-2">
-          <div className="w-full sm:max-w-xs">
-            <Input
-              placeholder="Search categories..."
-              value={globalFilter ?? ""}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              className="h-8 text-sm focus-visible:ring-primary"
-            />
-          </div>
-        </div>
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-2 justify-between">
+        <TableSearch
+          value={globalFilter}
+          onChange={setGlobalFilter}
+          placeholder="Search categories…"
+        />
       </div>
 
       <CategoryTableBase
@@ -77,7 +59,7 @@ export const CategoryTable = () => {
       />
 
       {!globalFilter && (
-        <div className="flex items-center justify-end space-x-2 py-2">
+        <div className="flex items-center justify-end py-1">
           <PagePagination />
         </div>
       )}

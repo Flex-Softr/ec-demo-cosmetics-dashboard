@@ -1,6 +1,5 @@
 import { formatDate, formatTime } from "@/lib/formatDate";
 import { TCoupon } from "@/redux/features/coupon/couponInterface";
-import backgroundColor from "@/utilities/backgroundColor";
 import { ColumnDef } from "@tanstack/react-table";
 import { isAfter, isBefore, parseISO } from "date-fns";
 import Action from "./Action";
@@ -8,75 +7,91 @@ import UpdateActiveStatus from "./UpdateActiveStatus";
 
 const columns: ColumnDef<TCoupon>[] = [
   {
-    accessorKey: "",
+    id: "sl",
     header: "SL",
     cell: ({ row }) => (
-      <div className="capitalize flex flex-col justify-center items-center">
-        <span className="">{row?.index + 1}</span>
-      </div>
+      <span className="text-sm text-muted-foreground">{row.index + 1}</span>
     ),
   },
   {
     accessorKey: "name",
-    header: () => <h2 className="text-start">Name</h2>,
-    cell: ({ row }) => <h2 className="text-start">{row.original?.name}</h2>,
+    header: "Name",
+    cell: ({ row }) => (
+      <span className="font-semibold text-foreground">
+        {row.original?.name}
+      </span>
+    ),
   },
   {
     accessorKey: "code",
-    header: () => <h2 className="text-start">Code</h2>,
-    cell: ({ row }) => <h2 className="text-start">{row.original?.code}</h2>,
+    header: "Code",
+    cell: ({ row }) => (
+      <span className="font-medium text-foreground">{row.original?.code}</span>
+    ),
   },
   {
     accessorKey: "usageCount",
-    header: () => <h2 className="text-start">Usage count</h2>,
+    header: "Usage",
     cell: ({ row }) => (
-      <h2 className="text-start">{row.original?.usageCount}</h2>
+      <span className="text-sm text-muted-foreground">
+        {row.original?.usageCount}
+      </span>
     ),
   },
   {
     accessorKey: "discountType",
-    header: () => <h2 className="text-start">Discount type</h2>,
+    header: "Type",
     cell: ({ row }) => (
-      <h2 className="text-start capitalize">{row.original?.discountType}</h2>
+      <span className="capitalize text-sm text-foreground">
+        {row.original?.discountType}
+      </span>
     ),
   },
   {
     accessorKey: "discountValue",
-    header: () => <h2 className="text-start">Discount value</h2>,
+    header: "Value",
     cell: ({ row }) => (
-      <h2 className="text-start">{row.original?.discountValue || "N/A"}</h2>
+      <span className="text-sm text-foreground">
+        {row.original?.discountValue || "—"}
+      </span>
     ),
   },
   {
     accessorKey: "maxDiscountAmount",
-    header: () => <h2 className="text-start">Max amount</h2>,
+    header: "Max",
     cell: ({ row }) => (
-      <h2 className="text-start">{row.original?.maxDiscount || "N/A"}</h2>
+      <span className="text-sm text-muted-foreground">
+        {row.original?.maxDiscount || "—"}
+      </span>
     ),
   },
   {
     accessorKey: "startDate",
-    header: () => <h2 className="text-start">Start time</h2>,
+    header: "Start",
     cell: ({ row }) => (
-      <div>
-        <p className="text-start">{formatTime(row.original?.startDate)}</p>
-        <h2 className="text-start">{formatDate(row.original?.startDate)}</h2>
+      <div className="text-sm">
+        <p className="text-foreground">{formatTime(row.original?.startDate)}</p>
+        <p className="text-muted-foreground">
+          {formatDate(row.original?.startDate)}
+        </p>
       </div>
     ),
   },
   {
     accessorKey: "endDate",
-    header: () => <h2 className="text-start">Ends in</h2>,
+    header: "Ends",
     cell: ({ row }) => (
-      <div>
-        <p className="text-start">{formatTime(row.original?.endDate)}</p>
-        <h2 className="text-start">{formatDate(row.original?.endDate)}</h2>
+      <div className="text-sm">
+        <p className="text-foreground">{formatTime(row.original?.endDate)}</p>
+        <p className="text-muted-foreground">
+          {formatDate(row.original?.endDate)}
+        </p>
       </div>
     ),
   },
   {
     accessorKey: "status",
-    header: () => <h2 className="text-center">Status</h2>,
+    header: "Status",
     cell: ({ row }) => {
       const startDate = row.original?.startDate
         ? parseISO(row.original.startDate)
@@ -93,7 +108,7 @@ const columns: ColumnDef<TCoupon>[] = [
         isNaN(endDate.getTime())
       ) {
         return (
-          <span className="px-2 rounded-md text-gray-500 py-1">
+          <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
             Invalid date
           </span>
         );
@@ -101,27 +116,24 @@ const columns: ColumnDef<TCoupon>[] = [
 
       let status = {
         label: "Active",
-        color: "completed",
-        textColor: "text-white",
+        className: "bg-emerald-50 text-emerald-700",
       };
 
       if (isBefore(currentDate, startDate)) {
         status = {
           label: "Not started",
-          color: "pending",
-          textColor: "text-black",
+          className: "bg-amber-50 text-amber-700",
         };
       } else if (isAfter(currentDate, endDate)) {
         status = {
           label: "Expired",
-          color: "problem",
-          textColor: "text-white",
+          className: "bg-red-50 text-red-700",
         };
       }
 
       return (
         <span
-          className={`${backgroundColor(status.color)} px-2 rounded-md ${status.textColor} py-1`}
+          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}
         >
           {status.label}
         </span>
@@ -130,13 +142,18 @@ const columns: ColumnDef<TCoupon>[] = [
   },
   {
     accessorKey: "isActive",
-    header: () => <h2 className="text-start">Active status</h2>,
+    header: "Active",
     cell: ({ row }) => <UpdateActiveStatus coupon={row.original} />,
   },
   {
     accessorKey: "action",
-    header: () => <h2 className="text-start">Action</h2>,
-    cell: ({ row }) => <Action coupon={row.original} />,
+    header: () => <div className="text-center">Actions</div>,
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <Action coupon={row.original} />
+      </div>
+    ),
   },
 ];
+
 export default columns;

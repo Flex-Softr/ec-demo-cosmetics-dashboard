@@ -1,20 +1,22 @@
-// Import necessary components
-import { Card } from "@/components/ui/card";
+import ContentCard from "@/components/contentCard/ContentCard";
+import PageHeader from "@/components/pageHeader/PageHeader";
+import { ImageIcon } from "lucide-react";
 import AddSlider from "./components/AddSlider";
 import SliderMediaTable from "./components/SliderMediaTable";
 
 const SliderSection = () => {
   return (
-    <Card className="m-4">
-      <div className="flex flex-col md:flex-row gap-3 justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Slider Banner Set Up</h1>
-        <AddSlider />
-      </div>
-      <hr className="my-4" />
-      <div className="w-full">
+    <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="Slider Config"
+        subtitle="Manage homepage slider banners"
+        icon={ImageIcon}
+        actions={<AddSlider />}
+      />
+      <ContentCard>
         <SliderMediaTable />
-      </div>
-    </Card>
+      </ContentCard>
+    </div>
   );
 };
 

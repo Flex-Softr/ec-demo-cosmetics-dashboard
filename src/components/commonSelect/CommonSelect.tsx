@@ -41,9 +41,7 @@ export default function CommonSelect({
       <React.Fragment key={node.value}>
         <SelectItem
           value={String(node.value)}
-          // Tailwind can't read dynamic class like pl-${depth * 4}
-          // Use inline style or a small helper instead:
-          style={{ paddingLeft: depth * 8 }} // 1rem per depth
+          style={{ paddingLeft: depth * 8 }}
           className="capitalize cursor-pointer"
         >
           {node.label} {node?.count ? `(${node?.count})` : null}
@@ -63,7 +61,7 @@ export default function CommonSelect({
       <SelectTrigger
         disabled={disabled}
         className={cn(
-          "w-auto focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer",
+          "w-auto cursor-pointer border-border focus:border-primary focus:ring-2 focus:ring-primary/20",
           sizeClasses[size || "default"],
           className
         )}

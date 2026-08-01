@@ -11,11 +11,10 @@ import { useGetPaymentMethodQuery } from "@/redux/features/paymentMethod/payment
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { ReactNode } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { PRODUCT_TYPE } from "@/const/products";
@@ -27,7 +26,24 @@ import NameMobileAddress from "./NameMobileAddress";
 import Notes from "./Notes";
 import PaymentDiscountAdvance from "./PaymentDiscountAdvance";
 import SelectProduct from "./SelectProduct";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ShoppingCart } from "lucide-react";
+
+function SectionCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
+      <div className="flex items-center gap-2.5 border-b border-border bg-muted px-5 py-3.5">
+        <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+      </div>
+      <div className="p-5">{children}</div>
+    </div>
+  );
+}
 
 const schema = yup.object().shape({
   shipping: yup.object().shape({
@@ -303,36 +319,44 @@ const OrderForm: React.FC<OrderFormProps> = ({
   };
 
   return (
-    <div className="w-full p-2 sm:px-4 sm:pt-4 sm:pb-10">
+    <div className="w-full space-y-5 p-4 sm:p-6 sm:pb-10">
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 px-1">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-3">
           <Button
             variant="outline"
             size="icon"
             onClick={() => router.back()}
-            className="rounded-full h-8 w-8 sm:h-9 sm:w-9 border bg-white text-primary hover:text-primary shadow-sm border-primary"
+            className="h-9 w-9 rounded-lg border-border"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 capitalize">
-            {orderId ? `Edit Order #${order?.orderId}` : "Create Order"}
-          </h1>
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+              <ShoppingCart className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold leading-tight text-foreground capitalize">
+                {orderId ? `Edit Order #${order?.orderId}` : "Create Order"}
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                {orderId
+                  ? "Update customer, products, and payment details"
+                  : "Place a new customer order"}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
       <form
         id="order-form"
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4"
+        className="space-y-5"
       >
-        {/* Customer Info Section - More compact grid */}
-        <Card className="border-none shadow-sm py-2">
-          <h2 className="text-base font-semibold mb-2 pb-1 border-b">
-            Customer Information
-          </h2>
+        <SectionCard title="Customer Information">
           <div className="space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr_1.5fr_2fr] gap-4 items-start">
+            <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-[1.2fr_0.8fr_1.5fr_2fr]">
               <NameMobileAddress
                 register={register}
                 reset={reset}
@@ -350,132 +374,136 @@ const OrderForm: React.FC<OrderFormProps> = ({
               errors={errors}
             />
           </div>
-        </Card>
+        </SectionCard>
 
-        {/* Product & Order Details Section - Combined Card */}
-        <Card className="border-none shadow-sm space-y-3 py-2">
-          <div>
-            <h2 className="text-base font-semibold mb-1">Product Selection</h2>
-            <SelectProduct
-              control={control}
-              register={register}
-              errors={errors}
-              setValue={setValue}
-              clearErrors={clearErrors}
-            />
-          </div>
-
-          <Separator />
-
-          {/* Footer Section: Notes & Summary/Payment */}
-          <div className="flex flex-col lg:flex-row gap-10">
-            {/* Notes Section */}
-            <div className="flex-1">
-              <h2 className="text-base font-semibold mb-3">Notes</h2>
-              <Notes register={register} order={undefined} errors={errors} />
+        <SectionCard title="Products & Payment">
+          <div className="space-y-5">
+            <div>
+              <h3 className="mb-2 text-sm font-semibold text-foreground">
+                Product Selection
+              </h3>
+              <SelectProduct
+                control={control}
+                register={register}
+                errors={errors}
+                setValue={setValue}
+                clearErrors={clearErrors}
+              />
             </div>
 
-            {/* Summary & Payment - Fixed width */}
-            <div className="w-full lg:w-[400px] space-y-4">
-              <h2 className="text-base font-semibold">Order Summary</h2>
+            <Separator />
 
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-bold">
-                    &#2547; {Number(calculation.subtotal).toFixed(2)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Shipping</span>
-                  <span>
-                    &#2547; {Number(calculation.shippingCost).toFixed(2)} +{" "}
-                    {calculation?.shippingCostExceptFirst}
-                  </span>
-                </div>
+            <div className="flex flex-col gap-10 lg:flex-row">
+              <div className="flex-1">
+                <h3 className="mb-3 text-sm font-semibold text-foreground">
+                  Notes
+                </h3>
+                <Notes register={register} order={undefined} errors={errors} />
+              </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground w-20">Discount</span>
-                  <div className="flex items-center gap-1 bg-white border rounded px-2 h-8">
-                    <span>&#2547;</span>
-                    <Input
-                      type="number"
-                      min={0}
-                      {...register("discount")}
-                      className="h-full w-20 border-none text-right focus-visible:ring-0 p-0 shadow-none bg-transparent"
-                      placeholder="0"
-                    />
+              <div className="w-full space-y-4 lg:w-[400px]">
+                <h3 className="text-sm font-semibold text-foreground">
+                  Order Summary
+                </h3>
+
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="font-bold">
+                      &#2547; {Number(calculation.subtotal).toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span>
+                      &#2547; {Number(calculation.shippingCost).toFixed(2)} +{" "}
+                      {calculation?.shippingCostExceptFirst}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="w-20 text-muted-foreground">Discount</span>
+                    <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-card px-2">
+                      <span>&#2547;</span>
+                      <Input
+                        type="number"
+                        min={0}
+                        {...register("discount")}
+                        className="h-full w-20 border-none bg-transparent p-0 text-right shadow-none focus-visible:ring-0"
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">
+                      Coupon Discount
+                    </span>
+                    <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-card px-2">
+                      <span>&#2547;</span>
+                      <Input
+                        type="number"
+                        min={0}
+                        {...register("couponDiscount")}
+                        className="h-full w-20 border-none bg-transparent p-0 text-right shadow-none focus-visible:ring-0"
+                        placeholder="0"
+                        readOnly
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="w-20 text-muted-foreground">Advance</span>
+                    <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-card px-2">
+                      <span>&#2547;</span>
+                      <Input
+                        type="number"
+                        min={0}
+                        {...register("advance")}
+                        className="h-full w-20 border-none bg-transparent p-0 text-right shadow-none focus-visible:ring-0"
+                        placeholder="0"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Coupon Discount</span>
-                  <div className="flex items-center gap-1 bg-white border rounded px-2 h-8">
-                    <span>&#2547;</span>
-                    <Input
-                      type="number"
-                      min={0}
-                      {...register("couponDiscount")}
-                      className="h-full w-20 border-none text-right focus-visible:ring-0 p-0 shadow-none bg-transparent"
-                      placeholder="0"
-                      readOnly
-                    />
-                  </div>
+                <Separator className="h-0.5" />
+                <div className="flex justify-between text-lg font-bold">
+                  <span>Total</span>
+                  <span>&#2547; {Number(calculation.total).toFixed(2)}</span>
                 </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground w-20">Advance</span>
-                  <div className="flex items-center gap-1 bg-white border rounded px-2 h-8">
-                    <span>&#2547;</span>
-                    <Input
-                      type="number"
-                      min={0}
-                      {...register("advance")}
-                      className="h-full w-20 border-none text-right focus-visible:ring-0 p-0 shadow-none bg-transparent"
-                      placeholder="0"
-                    />
-                  </div>
+                <Separator className="h-0.5" />
+
+                <div className="pt-2">
+                  <PaymentDiscountAdvance
+                    register={register}
+                    payment={initialValues?.payment}
+                    errors={errors}
+                    watch={watch}
+                    control={control}
+                  />
                 </div>
+
+                <Button
+                  type="submit"
+                  form="order-form"
+                  disabled={isLoading}
+                  className="mt-2 w-full rounded-lg"
+                  size="default"
+                >
+                  {isLoading
+                    ? isEdit
+                      ? "Updating..."
+                      : "Placing..."
+                    : isEdit
+                      ? "Update Order"
+                      : "Place Order"}
+                </Button>
               </div>
-
-              <Separator className="h-0.5" />
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
-                <span>&#2547; {Number(calculation.total).toFixed(2)}</span>
-              </div>
-
-              <Separator className="h-0.5" />
-
-              {/* Payment Section Integrated Here */}
-              <div className="pt-2">
-                <PaymentDiscountAdvance
-                  register={register}
-                  payment={initialValues?.payment}
-                  errors={errors}
-                  watch={watch}
-                  control={control}
-                />
-              </div>
-
-              {/* Bottom Submit Button for Mobile UX (Optional but top is primary now) */}
-              <Button
-                type="submit"
-                form="order-form"
-                disabled={isLoading}
-                className="w-full mt-2 bg-primary text-primary-foreground"
-                size="default"
-              >
-                {isLoading
-                  ? isEdit
-                    ? "Updating..."
-                    : "Placing..."
-                  : isEdit
-                    ? "Update Order"
-                    : "Place Order"}
-              </Button>
             </div>
           </div>
-        </Card>
+        </SectionCard>
       </form>
     </div>
   );

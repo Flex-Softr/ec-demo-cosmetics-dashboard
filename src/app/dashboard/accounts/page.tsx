@@ -1,90 +1,69 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
 import { useAppSelector } from "@/redux/hooks";
-import { Loader2 } from "lucide-react";
-import dummyUser from "../../../../public/user.jpg";
+import { Loader2, UserRound } from "lucide-react";
+import ChangePasswordPanel from "./components/ChangePasswordPanel";
+import PermissionsPanel from "./components/PermissionsPanel";
+import PersonalInfoPanel from "./components/PersonalInfoPanel";
+import ProfileHero from "./components/ProfileHero";
 
 const AccountsPage = () => {
-  const { profile, isProfileLoading } = useAppSelector((state) => state.auth);
+  const { profile, user, isProfileLoading } = useAppSelector(
+    (state) => state.auth
+  );
 
   if (isProfileLoading || !profile) {
     return (
       <div className="flex flex-1 items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
-  const profilePicUrl = profile.profilePicture
-    ? `${profile.profilePicture}`
-    : dummyUser.src;
+  const permissions = profile.permissions?.length
+    ? profile.permissions
+    : user?.permissions || [];
 
   return (
-    <div className="flex-1 space-y-6">
-      <Card>
-        <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start text-center sm:text-left">
-          <div>
-            <Avatar className="rounded-full w-20 h-20">
-              <AvatarImage src={profilePicUrl} />
-              <AvatarFallback>{profile.fullName}</AvatarFallback>
-            </Avatar>
-          </div>
-          <div className="flex-1">
-            <p className="font-semibold text-xl">{profile.fullName}</p>
-            <p className="capitalize text-gray-500">{profile.role}</p>
-            <p className="capitalize text-gray-500">{profile.uid}</p>
-          </div>
+    <div className="space-y-5">
+      <div className="flex items-center gap-3">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+          <UserRound className="h-5 w-5 text-primary" />
         </div>
-      </Card>
-      <Card>
-        <h2 className="font-semibold text-lg">Personal information</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 mt-5 gap-4">
-          <div>
-            <p className="text-gray-500">Full name:</p>
-            <p className="text-gray-600 font-semibold capitalize">
-              {profile.fullName}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-500">Mobile:</p>
-            <p className="text-gray-600 font-semibold">{profile.phoneNumber}</p>
-          </div>
-          <div>
-            <p className="text-gray-500">Email:</p>
-            <p className="text-gray-600 font-semibold">{profile.email}</p>
-          </div>
-          <div>
-            <p className="text-gray-500">Birth certificate No:</p>
-            <p className="text-gray-600 font-semibold">
-              {profile.birthCertificateNo || "N/A"}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-500">NID:</p>
-            <p className="text-gray-600 font-semibold">
-              {profile.NIDNo || "N/A"}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-500">Emergency contact:</p>
-            <p className="text-gray-600 font-semibold">
-              {profile.emergencyContact || "N/A"}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-500">Joining Date:</p>
-            <p className="text-gray-600 font-semibold">{profile.joiningDate}</p>
-          </div>
-          <div>
-            <p className="text-gray-500">Full address:</p>
-            <p className="text-gray-600 font-semibold">
-              {profile.address?.fullAddress || "N/A"}
-            </p>
-          </div>
+        <div>
+          <h1 className="text-lg font-semibold text-foreground">My profile</h1>
+          <p className="text-xs text-muted-foreground">
+            Account details, password, and assigned permissions
+          </p>
         </div>
-      </Card>
+      </div>
+
+      <ProfileHero
+        fullName={profile.fullName}
+        role={profile.role}
+        email={profile.email}
+        phoneNumber={profile.phoneNumber}
+        profilePicture={profile.profilePicture}
+        uid={profile.uid}
+      />
+
+      <PersonalInfoPanel
+        fullName={profile.fullName}
+        emergencyContact={profile.emergencyContact}
+        NIDNo={profile.NIDNo}
+        birthCertificateNo={profile.birthCertificateNo}
+        joiningDate={profile.joiningDate}
+        fullAddress={profile.address?.fullAddress}
+      />
+
+      <div className="grid gap-5 md:grid-cols-5">
+        <div className="md:col-span-2">
+          <ChangePasswordPanel />
+        </div>
+        <div className="md:col-span-3">
+          <PermissionsPanel permissions={permissions} />
+        </div>
+      </div>
     </div>
   );
 };

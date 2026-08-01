@@ -1,25 +1,25 @@
 import PageTitle from "@/components/pageTitle/PageTitle";
-import BestSellingProducts from "./components/BestSellingProducts/BestSellingProducts";
-import OrdersCount from "./components/ordersCounts/OrdersCount";
-import OrderStatusChangeCount from "./components/OrderStatusChangeCount/OrderStatusChangeCount";
-import SalesByPlatform from "./components/SalesByPlatform/SalesByPlatform";
-import Stats from "./components/stats/Stats";
+import { PERMISSIONS } from "@/const/permissions";
+import { getPermission } from "@/lib/getAccessToken";
+import isPermitted from "@/utilities/isPermitted";
+import { redirect } from "next/navigation";
+import SalesReport from "./components/SalesReport/SalesReport";
 
-const Reports = () => {
+const Reports = async () => {
+  const { permissions = [] } = await getPermission();
+  const isSuperAdmin = isPermitted(permissions, PERMISSIONS.SUPER_ADMIN);
+
+  if (!isSuperAdmin) {
+    redirect("/error");
+  }
+
   return (
-    <div className="p-2 sm:p-4">
-      <PageTitle title="Reports" />
-      <div className="flex flex-col gap-4 sm:gap-5">
-        <Stats />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
-          <OrdersCount />
-          <SalesByPlatform />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-          <OrderStatusChangeCount />
-          <BestSellingProducts />
-        </div>
-      </div>
+    <div className="p-2 sm:p-4 space-y-6">
+      <PageTitle
+        title="Reports"
+        subtitle="Advanced sales analytics with date filtering"
+      />
+      <SalesReport />
     </div>
   );
 };

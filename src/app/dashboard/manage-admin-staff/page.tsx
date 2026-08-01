@@ -1,7 +1,9 @@
-import { Card } from "@/components/ui/card";
+import ContentCard from "@/components/contentCard/ContentCard";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
+import { Users } from "lucide-react";
 import { redirect } from "next/navigation";
 import CreateUser from "./components/CreateUser/CreateUser";
 import GetAllUser from "./components/GetAllUser";
@@ -21,20 +23,23 @@ const ManageUser = async () => {
   }
 
   return (
-    <>
+    <div className="space-y-5 p-4 sm:p-6">
       <GetAllUser />
-      <Card className="m-4">
-        <h2 className="text-2xl font-bold">Manage employs</h2>
-        <hr className="mt-4 mb-6" />
-        <div className="space-y-3">
-          <div className="flex flex-col sm:flex-row justify-between px-3 gap-4">
-            <CreateUser />
+      <PageHeader
+        title="Manage Employees"
+        subtitle="Create and manage admin and staff accounts"
+        icon={Users}
+        actions={<CreateUser />}
+      />
+      <ContentCard>
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <SearchEmployee />
           </div>
           <UsersTable />
         </div>
-      </Card>
-    </>
+      </ContentCard>
+    </div>
   );
 };
 

@@ -1,20 +1,26 @@
 "use client";
 
 import { useSidebar } from "@/providers/SidebarProvider";
-import { Menu } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Button } from "../ui/button";
 
 export default function SidebarToggle() {
-  const { toggleSidebar } = useSidebar();
+  const { isCollapsed, toggleSidebar } = useSidebar();
 
   return (
     <Button
       variant="ghost"
       size="icon"
-      className="mr-4 bg-white hover:bg-white"
+      className="h-9 w-9 shrink-0 rounded-lg text-foreground/80 hover:bg-muted hover:text-foreground"
       onClick={toggleSidebar}
+      aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
     >
-      <Menu size={24} />
+      {isCollapsed ? (
+        <PanelLeftOpen className="h-5 w-5" strokeWidth={2} />
+      ) : (
+        <PanelLeftClose className="h-5 w-5" strokeWidth={2} />
+      )}
     </Button>
   );
 }

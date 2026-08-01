@@ -71,15 +71,15 @@ const ForgetPasswordPage = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <label
-              className="text-sm font-semibold text-slate-700"
+              className="text-xs font-medium text-muted-foreground"
               htmlFor="email"
             >
               Email Address
             </label>
             <Input
-              className={`h-12 px-4 bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm rounded-lg focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all ${errors.email ? "border-red-500 ring-2 ring-red-500/10" : ""}`}
+              className={`h-9 border-border text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 ${errors.email ? "border-destructive" : ""}`}
               placeholder="Enter your registered email"
               id="email"
               type="email"

@@ -7,8 +7,15 @@ import {
 } from "@/redux/features/pagination/PaginationSlice";
 import { setSelectedStatus } from "@/redux/features/products/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import backgroundColor from "@/utilities/backgroundColor";
-import borderColor from "@/utilities/borderColor";
+import { cn } from "@/lib/utils";
+
+const statusTone: Record<string, string> = {
+  all: "border-border text-foreground",
+  published: "border-emerald-200 text-emerald-700",
+  draft: "border-amber-200 text-amber-700",
+  pending: "border-sky-200 text-sky-700",
+  archived: "border-slate-200 text-slate-600",
+};
 
 const CountByStatusButtons = () => {
   const dispatch = useAppDispatch();
@@ -18,12 +25,17 @@ const CountByStatusButtons = () => {
   );
 
   return (
-    <div className="flex flex-wrap items-center justify-start gap-5">
+    <div className="flex flex-wrap items-center gap-2">
       {countsByStatus?.map((status: { name: string; total: number }) => {
-        const bg = `${backgroundColor(status.name)} text-white`;
+        const isActive = filter === status.name;
+        const tone = statusTone[status.name] ?? "border-border text-foreground";
+
         return (
           <Button
             key={status.name}
+            type="button"
+            variant="outline"
+            size="sm"
             onClick={() => {
               dispatch(setTotalPage({ total: status.total }));
               dispatch(setLimit(limit));
@@ -31,15 +43,16 @@ const CountByStatusButtons = () => {
               dispatch(setPage(1));
             }}
             disabled={isLoading}
-            className={`capitalize bg-white flex items-center gap-1 rounded-2xl ${borderColor(
-              status.name
-            )
-              .split(" ")
-              .filter((c) => !c.startsWith("text-"))
-              .join(" ")} ${filter === status.name ? bg : "text-black"}`}
+            className={cn(
+              "h-8 rounded-lg border capitalize gap-1.5 px-3 text-xs font-medium shadow-none",
+              tone,
+              isActive
+                ? "bg-primary/10 border-primary/30 text-primary"
+                : "bg-card hover:bg-muted"
+            )}
           >
             <span>{status.name}</span>
-            <span>({status.total})</span>
+            <span className="text-[11px] opacity-80">({status.total})</span>
           </Button>
         );
       })}

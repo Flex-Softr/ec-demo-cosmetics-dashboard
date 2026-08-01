@@ -9,109 +9,108 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import config from "@/config/config";
+import BdAddress from "@/lib/bdAddress";
 import { TOrders } from "@/types/order.interface";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { Eye, MapPin, Phone, UserRound } from "lucide-react";
+import { Eye, MapPin, MoreVertical, Phone, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import CommonModal from "./modal/CommonModal";
-import BdAddress from "@/lib/bdAddress";
+import { Button } from "./ui/button";
 
 const CustomerInfo = ({ order }: { order: TOrders }) => {
   const { shipping, deliveryStatus } = order || {};
-
   const [open, setOpen] = useState(false);
-  const handleOpen = () => {
-    setOpen(!open);
-  };
+  const handleOpen = () => setOpen((prev) => !prev);
+
+  const fullAddress = [
+    shipping?.fullAddress,
+    shipping?.upazila && BdAddress.upazilaNameById(shipping?.upazila).name,
+    shipping?.district && BdAddress.districtNameById(shipping?.district).name,
+    shipping?.division && BdAddress.divisionNameById(shipping?.division).name,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  const locationLabel =
+    BdAddress.districtNameById(shipping?.district).name ||
+    shipping?.district ||
+    shipping?.fullAddress ||
+    "—";
 
   return (
     <>
-      <div className="capitalize flex flex-col mx-auto w-[140px] xl:w-[155px] 2xl:w-[170px] text-left">
+      <div className="relative flex flex-col gap-1 min-w-0 text-left max-w-[220px] pr-7">
         <div
-          className="flex items-center gap-1 w-full"
+          className="flex items-center gap-1.5 min-w-0"
           title={shipping?.fullName}
         >
-          <UserRound className="w-4 shrink-0" />
-          <span className="truncate">{shipping?.fullName}</span>
-        </div>
-        <div className="flex items-center gap-1 relative w-full">
-          {/* <Link
-            href={`https://wa.me/88${customer.phoneNumber}`}
-            target="_blank"
-            title="Whatsapp"
-          ></Link> */}
-          <Phone className="w-4 shrink-0" />
-          <span className="truncate">{shipping?.phoneNumber}</span>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <span
-                title="Customer Overview"
-                className="p-2 cursor-pointer bg-gray-200 hover:bg-slate-300 rounded-full absolute -right-1"
-              >
-                <DotsVerticalIcon className="h-4 w-4" />
-              </span>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <button
-                    onClick={handleOpen}
-                    className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
-                  >
-                    <Eye className="w-4 h-4" />
-                    <span>Customer History</span>
-                  </button>
-                </DropdownMenuItem>
-                {deliveryStatus && (
-                  <DropdownMenuItem>
-                    <a
-                      href={`${config.courier_status_check_url}/${order?.courierDetails?.trackingId}`}
-                      target="_blank"
-                      className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
-                    >
-                      <Eye className="w-4 h-4" />
-                      <span>Courier Status</span>
-                    </a>
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem>
-                  <Link
-                    href={`https://wa.me/88${shipping?.phoneNumber}`}
-                    target="_blank"
-                    title="Whatsapp"
-                    className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
-                  >
-                    <Phone className="w-4 h-4" />
-                    <span>Whatsapp</span>
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <div
-          className="flex items-center gap-1 w-full"
-          title={[
-            shipping?.fullAddress,
-            shipping?.upazila &&
-              BdAddress.upazilaNameById(shipping?.upazila).name,
-            shipping?.district &&
-              BdAddress.districtNameById(shipping?.district).name,
-            shipping?.division &&
-              BdAddress.divisionNameById(shipping?.division).name,
-          ]
-            .filter(Boolean)
-            .join(", ")}
-        >
-          <MapPin className="w-4 shrink-0" />
-          <span className="truncate">
-            {BdAddress.districtNameById(shipping?.district).name ||
-              shipping?.district ||
-              shipping?.fullAddress}
+          <UserRound className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
+          <span className="text-sm font-medium text-foreground capitalize line-clamp-1">
+            {shipping?.fullName || "—"}
           </span>
         </div>
+        <div className="flex items-center gap-1.5 min-w-0">
+          <Phone className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground tabular-nums truncate">
+            {shipping?.phoneNumber || "—"}
+          </span>
+        </div>
+        <div className="flex items-start gap-1.5 min-w-0" title={fullAddress}>
+          <MapPin className="w-3.5 h-3.5 shrink-0 text-muted-foreground mt-0.5" />
+          <span className="text-xs text-muted-foreground line-clamp-2">
+            {locationLabel}
+          </span>
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-7 w-7 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+              title="Customer Overview"
+            >
+              <MoreVertical className="h-3.5 w-3.5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={handleOpen}
+                className="gap-2 cursor-pointer"
+              >
+                <Eye className="w-4 h-4" />
+                Customer History
+              </DropdownMenuItem>
+              {deliveryStatus && (
+                <DropdownMenuItem asChild>
+                  <a
+                    href={`${config.courier_status_check_url}/${order?.courierDetails?.trackingId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="gap-2 cursor-pointer"
+                  >
+                    <Eye className="w-4 h-4" />
+                    Courier Status
+                  </a>
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`https://wa.me/88${shipping?.phoneNumber}`}
+                  target="_blank"
+                  title="Whatsapp"
+                  className="gap-2 cursor-pointer"
+                >
+                  <Phone className="w-4 h-4" />
+                  Whatsapp
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
       <CommonModal
         open={open}
         handleOpen={handleOpen}

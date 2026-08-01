@@ -1,10 +1,12 @@
+"use client";
+
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateSliderMutation } from "@/redux/features/sliderBanner/sliderApi";
 import { TErrorResponse } from "@/types/response";
 import { revalidateTag } from "@/utilities/revalidate";
 import { useState } from "react";
-import { TSlider } from "./SliderMediaTable";
+import { TSlider } from "../lib/slider.interface";
 
 const UpdateSliderActiveStatus = ({ slider }: { slider: TSlider }) => {
   const { toast } = useToast();

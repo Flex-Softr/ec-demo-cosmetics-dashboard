@@ -1,4 +1,5 @@
 "use client";
+import OrdersTableSkeleton from "@/components/skeleton/OrdersTableSkeleton";
 import {
   Table,
   TableBody,
@@ -23,14 +24,20 @@ const UsersTable = () => {
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <div className="rounded-lg overflow-x-auto">
+    <div className="overflow-x-auto overflow-hidden rounded-xl border border-border bg-card">
       <Table className="min-w-[1100px] whitespace-nowrap">
-        <TableHeader className="bg-primary text-primary-foreground">
+        <TableHeader className="bg-muted">
           {table?.getHeaderGroups()?.map((headerGroup) => (
-            <TableRow key={headerGroup?.id} className="hover:bg-muted/0">
+            <TableRow
+              key={headerGroup?.id}
+              className="border-b border-border hover:bg-muted"
+            >
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header?.id} className="text-center">
+                  <TableHead
+                    key={header?.id}
+                    className="py-3 text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
                     {header?.isPlaceholder
                       ? null
                       : flexRender(
@@ -44,15 +51,17 @@ const UsersTable = () => {
           ))}
         </TableHeader>
         <TableBody>
-          {users?.length ? (
+          {isUsersLoading ? (
+            <OrdersTableSkeleton columns={columns.length} rows={6} />
+          ) : users?.length ? (
             table?.getRowModel()?.rows?.map((row) => (
               <TableRow
                 key={row?.id}
                 data-state={row?.getIsSelected() && "selected"}
-                className="border-b"
+                className="border-b border-border"
               >
                 {row?.getVisibleCells()?.map((cell) => (
-                  <TableCell key={cell?.id} className="text-center">
+                  <TableCell key={cell?.id} className="py-3 text-center">
                     {flexRender(
                       cell?.column?.columnDef?.cell,
                       cell?.getContext()
@@ -63,8 +72,11 @@ const UsersTable = () => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                {isUsersLoading ? "Loading..." : null}
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 text-center text-muted-foreground"
+              >
+                No employees found
               </TableCell>
             </TableRow>
           )}

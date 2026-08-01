@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import ContentCard from "@/components/contentCard/ContentCard";
 import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
@@ -17,9 +17,11 @@ const SubCategory = async ({ params }: { params: { categoryId: string } }) => {
   }
 
   return (
-    <Card className="m-4">
-      <SubCategoryContent categoryId={categoryId} />
-    </Card>
+    <div className="space-y-5 p-4 sm:p-6">
+      <ContentCard>
+        <SubCategoryContent categoryId={categoryId} />
+      </ContentCard>
+    </div>
   );
 };
 

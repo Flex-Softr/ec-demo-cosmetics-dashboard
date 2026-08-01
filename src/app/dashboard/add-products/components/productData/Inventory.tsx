@@ -1,8 +1,15 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { stockStatusOptions } from "@/const/products";
 import { getStockStatusColor } from "@/lib/utils";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
 // ... (skipping unchanged parts) ...
 
@@ -16,6 +23,7 @@ const Inventory = ({ prefix = "inventory" }: TProps) => {
     register,
     watch,
     setValue,
+    control,
     formState: { errors, defaultValues },
   } = useFormContext();
 
@@ -116,25 +124,30 @@ const Inventory = ({ prefix = "inventory" }: TProps) => {
           Stock Status
         </Label>
         <div className="w-full">
-          <select
-            {...register(`${prefix}.stockStatus`)}
-            id={`${prefix}.stockStatus`}
-            className={`w-full h-9 border border-primary outline-primary rounded-md px-2 ${getStockStatusColor(
-              stockStatus
-            )}`}
-          >
-            {stockStatusOptions.map((status) => (
-              <option
-                key={status.value}
-                value={status.value}
-                className="text-black"
-              >
-                {status.label}
-              </option>
-            ))}
-          </select>
+          <Controller
+            name={`${prefix}.stockStatus`}
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger
+                  className={`h-9 border-border focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20 ${getStockStatusColor(
+                    stockStatus
+                  )}`}
+                >
+                  <SelectValue placeholder="Select stock status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {stockStatusOptions.map((status) => (
+                    <SelectItem key={status.value} value={status.value}>
+                      {status.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
           {getError(`${prefix}.stockStatus`) && (
-            <p className="text-red-600 text-sm mt-1">
+            <p className="mt-1 text-sm text-destructive">
               {getError(`${prefix}.stockStatus`)}
             </p>
           )}

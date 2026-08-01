@@ -1,5 +1,5 @@
 "use client";
-import TableSkeleton from "@/components/skeleton/TableSkeleton";
+
 import { useGetAProductQuery } from "@/redux/features/products/productsApi";
 import { TProduct } from "@/redux/features/products/productsInterface";
 
@@ -12,32 +12,28 @@ const EditProductWrapper = ({
   productId,
   children,
 }: EditProductWrapperProps) => {
-  // Assuming 'params' and 'skipToken' are available in this scope,
-  // or that 'productId' should be used instead of 'params.productId'.
-  // For now, I'll use 'productId' as it's available in the component props.
-  // If 'params' and 'skipToken' are intended, they would need to be defined or imported.
-  const { isLoading } = useGetAProductQuery(
-    productId // Changed from params.productId ? params.productId : skipToken to productId
-  ) as { data: TProduct | null; isLoading: boolean };
-
-  // Assuming useUpdateProductMutation is imported from somewhere, e.g., productsApi
-  // const [updateProduct, { isSuccess, isError, error }] = useUpdateProductMutation();
+  const { isLoading } = useGetAProductQuery(productId) as {
+    data: TProduct | null;
+    isLoading: boolean;
+  };
 
   if (isLoading) {
     return (
-      <div className="p-4 space-y-4">
-        <div className="flex justify-between items-center mb-6 p-4 border border-gray-200 rounded">
-          <div className="h-6 w-40 bg-gray-300 animate-pulse rounded" />
-          <div className="h-6 w-16 bg-gray-300 animate-pulse rounded" />
+      <div className="space-y-5 p-4 sm:p-6">
+        <div className="flex h-12 items-center justify-between rounded-xl border border-border bg-card px-4">
+          <div className="h-5 w-40 animate-pulse rounded-md bg-muted" />
+          <div className="h-8 w-24 animate-pulse rounded-lg bg-muted" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 space-y-4">
-            <TableSkeleton />
-            <div className="h-64 bg-gray-300 animate-pulse rounded" />
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+          <div className="space-y-4 lg:col-span-2">
+            <div className="h-40 animate-pulse rounded-xl border border-border bg-muted/40" />
+            <div className="h-64 animate-pulse rounded-xl border border-border bg-muted/40" />
+            <div className="h-48 animate-pulse rounded-xl border border-border bg-muted/40" />
           </div>
           <div className="space-y-4">
-            <div className="h-48 bg-gray-300 animate-pulse rounded" />
-            <div className="h-48 bg-gray-300 animate-pulse rounded" />
+            <div className="h-32 animate-pulse rounded-xl border border-border bg-muted/40" />
+            <div className="h-56 animate-pulse rounded-xl border border-border bg-muted/40" />
+            <div className="h-40 animate-pulse rounded-xl border border-border bg-muted/40" />
           </div>
         </div>
       </div>

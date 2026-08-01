@@ -1,10 +1,12 @@
 "use client";
 import { TAttribute } from "@/app/dashboard/attribute/lib/attribute.interface";
+import DeleteProductBtn from "@/components/DeleteProductBtn";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { PRODUCT_STATUS, PRODUCT_TYPE, STOCK_STATUS } from "@/const/products";
 import { useGetAttributesQuery } from "@/redux/features/attributes/attributesApi";
+import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import {
   setDeleteImage,
   setGallery,
@@ -18,29 +20,25 @@ import {
 import { useAppDispatch } from "@/redux/hooks";
 import { revalidateTag } from "@/utilities/revalidate";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { ArrowLeft, Package, PackagePlus } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import ProductSchema, { ProductFormValues } from "../lib/productValidation";
-// import AdditionalInfo from "./AdditionalInfo";
-import DeleteProductBtn from "@/components/DeleteProductBtn";
-import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
-import BrandInput from "./BrandInput";
-import { CategoryField } from "./CategoryField";
-import CollectionInput from "./CollectionInput";
 import DescriptionInput from "./DescriptionInput";
-import Featured from "./Featured";
+import PreviewLinkInput from "./PreviewLinkInput";
 import ProductDataTabs from "./productData/ProductDataTabs";
+import ProductOrganizationPanel from "./ProductOrganizationPanel";
 import ProductResetter from "./ProductResetter";
 import Published from "./Published";
 import RelatedProducts from "./RelatedProduct";
+import Seo from "./Seo";
 import ShortDescriptionInput from "./ShortDescriptionInput";
 import TitleInput from "./TitleInput";
-import PreviewLinkInput from "./PreviewLinkInput";
-import Seo from "./Seo";
 
 const ProductForm = ({ productId }: { productId?: string }) => {
   const dispatch = useAppDispatch();
+  const isEdit = Boolean(productId);
 
   const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
@@ -128,10 +126,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       } = productData;
 
       const galleryData = gallery?.map(({ _id }: { _id: string }) => _id);
-      // const { _id: categoryId, subCategory } = category;
 
-      // Transform Attributes for Form State
-      // 1. Map available attributes to the format used in dropdown
       const availableAttributesMap = new Map();
       attributesData.data.forEach((attr: TAttribute) => {
         availableAttributesMap.set(attr._id, {
@@ -145,7 +140,6 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         });
       });
 
-      // 2. Reconstruct selected attributes with full details (including child options)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const transformedAttributes: any[] = [];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -153,10 +147,8 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       attributes.forEach((prodAttr: any) => {
-        // Try to find by ID (value) or Label (name)
         let matchedAttr = availableAttributesMap.get(prodAttr._id);
         if (!matchedAttr) {
-          // Fallback: search by name
           for (const val of availableAttributesMap.values()) {
             if (val.label === prodAttr.name) {
               matchedAttr = val;
@@ -167,21 +159,18 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
         if (matchedAttr) {
           transformedAttributes.push(matchedAttr);
-          // Map values
-          const values =
+          transformedAttributeValues.push(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             prodAttr.values?.map((v: any) => ({
               label: v.name,
               value: v._id,
-            })) || [];
-          transformedAttributeValues.push(values);
+            })) || []
+          );
         } else {
-          // Keep original if not found? Might break UI if no child options.
-          // But helpful for preservation.
           transformedAttributes.push({
             label: prodAttr.name,
             value: prodAttr._id,
-            child: [], // Unable to provide options if not found
+            child: [],
           });
           transformedAttributeValues.push(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -231,8 +220,6 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       };
 
       reset(formData);
-
-      // Dispatch image data to Redux to keep "SetProduct" style logic for Media component synchronization
       dispatch(setThumbnail(thumbnail._id));
       dispatch(setGallery(galleryData));
     }
@@ -248,8 +235,6 @@ const ProductForm = ({ productId }: { productId?: string }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit: SubmitHandler<any> = async (data) => {
     try {
-      // Transformation for submission
-      // Combine attributes and attributeValues to matching backend payload
       const uiAttributes = data.attributes || [];
       const uiAttributeValues = data.attributeValues || [];
 
@@ -259,7 +244,6 @@ const ProductForm = ({ productId }: { productId?: string }) => {
             uiAttributeValues[index]?.map(
               (v: { label: string; value: string }) => v.value
             ) || [];
-          // Backend likely expects values as strings (names) or Ids?
           return {
             name: attr.value,
             values: values,
@@ -267,7 +251,6 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         }
       );
 
-      // Extract SEO fields and transform keywords into array for backend
       const {
         metaTitle,
         metaDescription,
@@ -316,10 +299,8 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         });
       }
 
-      // Remove temporary UI field
       delete payload.attributeValues;
 
-      // Clean up price/inventory based on type
       if (data.type === PRODUCT_TYPE.VARIABLE) {
         delete payload.price;
         delete payload.inventory;
@@ -327,9 +308,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         delete payload.variations;
       }
 
-      // Clean up optional fields that might be empty strings
       if (!payload.brand) delete payload.brand;
-
       if (!payload.category.subCategory) delete payload.category.subCategory;
 
       let res;
@@ -388,10 +367,6 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onInvalid = (errors: any) => {
-    // eslint-disable-next-line no-console
-    // console.error("Validation Errors:", errors);
-
-    // Extract the first error message to show in toast
     let firstErrorMessage = "Please check the form for errors.";
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const getFirstError = (obj: any): string | null => {
@@ -414,26 +389,70 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     });
   };
 
-  if (isFetching) return <p>Loading...</p>;
+  if (isFetching) {
+    return (
+      <div className="space-y-5 p-4 sm:p-6">
+        <div className="flex h-40 items-center justify-center rounded-xl border border-border bg-muted/30 text-sm text-muted-foreground">
+          Loading product…
+        </div>
+      </div>
+    );
+  }
+
+  const submitLabel =
+    isCreating || isUpdating
+      ? isEdit
+        ? "Updating…"
+        : "Saving…"
+      : isEdit
+        ? "Update Product"
+        : "Save Product";
 
   return (
-    <div className="mb-10">
+    <div className="mb-10 space-y-5 p-4 sm:p-6">
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
+        <form
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
+          className="space-y-5"
+        >
           {!productId && <ProductResetter />}
-          <Card className="flex flex-wrap gap-3 justify-between items-center mx-2 sm:mx-4 my-4 px-4 py-3">
-            <h1 className="text-lg sm:text-2xl font-bold">
-              {productId ? "Edit Product" : "Add Product"}
-            </h1>
-            <Link href={"/dashboard/products"} passHref>
-              <Button type="button">View All</Button>
-            </Link>
-          </Card>
 
-          {/* product data section */}
-          <div className="flex flex-col lg:flex-row justify-between gap-4 w-full px-2 sm:px-4">
-            {/* Main content column */}
-            <div className="w-full lg:w-[65%] space-y-3">
+          <PageHeader
+            title={isEdit ? "Edit Product" : "Add Product"}
+            subtitle={
+              isEdit
+                ? "Update product details, media, and organization"
+                : "Create a new product for your catalog"
+            }
+            icon={isEdit ? Package : PackagePlus}
+            actions={
+              <div className="flex items-center gap-2">
+                <Button
+                  asChild
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="rounded-lg gap-1.5"
+                >
+                  <Link href="/dashboard/products">
+                    <ArrowLeft className="h-4 w-4" />
+                    <span className="hidden sm:inline">Back</span>
+                  </Link>
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="rounded-lg"
+                  disabled={isCreating || isUpdating}
+                >
+                  {submitLabel}
+                </Button>
+              </div>
+            }
+          />
+
+          <div className="flex w-full flex-col justify-between gap-5 lg:flex-row">
+            <div className="w-full min-w-0 space-y-4 lg:w-[70%]">
               <TitleInput />
               <PreviewLinkInput />
               <ShortDescriptionInput />
@@ -441,9 +460,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
               <DescriptionInput />
               <Seo />
               {productData?.createdAt && (
-                <div className="text-xs text-muted-foreground flex flex-wrap gap-2 sm:gap-4">
+                <div className="flex flex-wrap gap-3 rounded-xl border border-border bg-muted/20 px-4 py-3 text-xs text-muted-foreground">
                   <p>
-                    <span className="font-semibold">Created At:</span>{" "}
+                    <span className="font-semibold text-foreground">
+                      Created At:
+                    </span>{" "}
                     {new Date(productData.createdAt).toLocaleDateString(
                       "en-GB",
                       { day: "numeric", month: "short", year: "2-digit" }
@@ -456,7 +477,9 @@ const ProductForm = ({ productId }: { productId?: string }) => {
                   </p>
                   {productData.updatedAt && (
                     <p>
-                      <span className="font-semibold">Updated At:</span>{" "}
+                      <span className="font-semibold text-foreground">
+                        Updated At:
+                      </span>{" "}
                       {new Date(productData.updatedAt).toLocaleDateString(
                         "en-GB",
                         { day: "numeric", month: "short", year: "2-digit" }
@@ -472,31 +495,34 @@ const ProductForm = ({ productId }: { productId?: string }) => {
               )}
             </div>
 
-            {/* Right Sidebar */}
-            <div className="w-full lg:w-2/6 space-y-3 flex flex-col">
-              <Published
-                productId={productId as string}
-                isLoading={isCreating || isUpdating}
-              />
-              <CategoryField />
-              <CollectionInput
+            <div className="flex w-full shrink-0 flex-col space-y-4 lg:w-[30%]">
+              <Published />
+              <ProductOrganizationPanel
                 collectionsData={collectionsResponse?.data?.data}
                 isLoading={collectionLoading}
               />
-              <Featured />
-              <BrandInput />
               <RelatedProducts />
-              {productId && (
-                <div className="mt-4">
+              <div className="sticky bottom-4 z-10 space-y-2 rounded-xl border border-border bg-card p-3 shadow-none">
+                <Button
+                  type="submit"
+                  size="sm"
+                  disabled={isCreating || isUpdating}
+                  className="w-full rounded-lg"
+                >
+                  {submitLabel}
+                </Button>
+                {productId && (
                   <DeleteProductBtn
                     id={productId}
                     slug={productData?.slug}
                     variant="destructive"
+                    size="sm"
+                    className="w-full rounded-lg"
                   >
                     Delete Product
                   </DeleteProductBtn>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </form>

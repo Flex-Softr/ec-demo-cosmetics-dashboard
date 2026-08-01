@@ -1,6 +1,8 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
+import ContentCard from "@/components/contentCard/ContentCard";
+import PageHeader from "@/components/pageHeader/PageHeader";
+import { Package } from "lucide-react";
 import { useState } from "react";
 import AddCourierConfigModal from "./AddCourierConfigModal";
 import CourierConfigTable from "./CourierConfigTable";
@@ -9,20 +11,16 @@ export default function CourierConfigContainer() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Card className="space-y-6 m-4">
-      <div className="flex items-center justify-between p-4 pb-0">
-        <h1 className="text-2xl font-bold tracking-tight">
-          Courier Configuration
-        </h1>
-        {/* <Button onClick={() => setIsOpen(true)} className="rounded-full">
-          <Plus className="mr-2 h-4 w-4" /> Add Courier
-        </Button> */}
-      </div>
-
-      <div className="p-4 pt-0">
+    <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="Courier Configuration"
+        subtitle="Manage courier providers and connection settings"
+        icon={Package}
+      />
+      <ContentCard>
         <CourierConfigTable setIsOpen={setIsOpen} />
-      </div>
+      </ContentCard>
       <AddCourierConfigModal isOpen={isOpen} setIsOpen={setIsOpen} />
-    </Card>
+    </div>
   );
 }

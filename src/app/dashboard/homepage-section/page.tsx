@@ -1,26 +1,34 @@
 "use client";
 
+import ContentCard from "@/components/contentCard/ContentCard";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { LayoutGrid, Plus } from "lucide-react";
 import HomepageSectionForm from "./components/HomepageSectionForm";
 import HomepageSectionTable from "./components/HomepageSectionTable";
 
 export default function HomepageSectionPage() {
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex flex-col md:flex-row gap-3 justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">Homepage Sections</h1>
-        <HomepageSectionForm
-          trigger={
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add Homepage Section
-            </Button>
-          }
-        />
-      </div>
+    <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="Homepage Sections"
+        subtitle="Manage homepage content sections and order"
+        icon={LayoutGrid}
+        actions={
+          <HomepageSectionForm
+            trigger={
+              <Button size="sm" className="rounded-lg gap-1.5">
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline">New Section</span>
+              </Button>
+            }
+          />
+        }
+      />
 
-      <HomepageSectionTable />
+      <ContentCard>
+        <HomepageSectionTable />
+      </ContentCard>
     </div>
   );
 }

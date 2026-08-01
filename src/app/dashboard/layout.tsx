@@ -11,7 +11,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           <Navbar />
           <div className="flex">
             <Sidebar />
-            <div className="flex-1 h-[calc(100vh-60px)] overflow-y-auto">
+            <div className="flex-1 h-[calc(100vh-56px)] overflow-y-auto">
               {children}
             </div>
           </div>

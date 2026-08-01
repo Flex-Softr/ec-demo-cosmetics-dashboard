@@ -1,6 +1,12 @@
 "use client";
-import CommonModal from "@/components/modal/CommonModal";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { formatImageSrc } from "@/lib/utils";
@@ -193,190 +199,195 @@ const ProductCode = ({
         </Button>
       )}
 
-      <CommonModal
-        open={open}
-        handleOpen={handleOpen}
-        modalTitle="Add Product Warranty Codes"
-        className="max-h-[80vh] w-full max-w-4xl overflow-y-auto"
-      >
-        <div className="space-y-6 p-1">
-          <div className="flex items-center justify-between border-b pb-4">
-            <div>
-              <p className="text-sm text-muted-foreground">Order ID</p>
-              <p className="font-bold text-lg">{order?.orderId}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Total Items</p>
-              <p className="font-bold text-lg">
-                {order.products?.reduce((acc, curr) => acc + curr.quantity, 0)}
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {order.products?.map((product, productIndex) => {
-              const {
-                _id,
-                title,
-                quantity,
-                isProductWarrantyAvailable,
-                warranty,
-                image,
-                attributes,
-              } = product;
-
-              const totalCodes = warranty?.warrantyCodes?.length || 0;
-              const requiredCodes =
-                totalCodes < quantity ? quantity : totalCodes;
-
-              const variationProps = attributes
-                ? Object.entries(attributes)
-                    .map(([key, value]) => `${key}: ${value}`)
-                    .join(", ")
-                : "";
-
-              return (
-                <div
-                  key={productIndex}
-                  className={`rounded border shadow-sm ${
-                    !isProductWarrantyAvailable
-                      ? "bg-muted/10 opacity-70"
-                      : "bg-card"
-                  }`}
-                >
-                  <div className="flex items-start gap-3 p-3 border-b bg-muted/20">
-                    <div className="relative h-10 w-10 overflow-hidden rounded border flex-shrink-0">
-                      <Image
-                        src={formatImageSrc(image?.src)}
-                        alt={title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2">
-                        <h4 className="font-semibold text-sm truncate leading-tight">
-                          {title}
-                        </h4>
-                        {isProductWarrantyAvailable && !disable && (
-                          <div
-                            className="flex items-center"
-                            title="Copy your codes first, then click here to paste them automatically"
-                          >
-                            <button
-                              type="button"
-                              className="flex items-center gap-1.5 h-6 px-2 text-xs text-muted-foreground hover:text-primary transition-colors bg-transparent border-none outline-none cursor-pointer"
-                              onClick={() =>
-                                handleSmartPaste(productIndex, requiredCodes)
-                              }
-                            >
-                              <ClipboardCopy className="h-3 w-3" />
-                              <span className="underline decoration-dotted underline-offset-2 font-medium">
-                                Paste
-                              </span>
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-muted-foreground">
-                        <span className="bg-primary/5 text-primary px-1.5 py-0.5 rounded font-medium">
-                          Qty: {quantity}
-                        </span>
-                        {variationProps && <span>{variationProps}</span>}
-
-                        {!isProductWarrantyAvailable && (
-                          <span className="text-orange-600 font-medium flex items-center gap-1">
-                            • No Warranty Available
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {isProductWarrantyAvailable ? (
-                    <div className="p-3">
-                      <input
-                        type="text"
-                        defaultValue={_id}
-                        {...register(`warrantyInfo.${productIndex}.itemId`)}
-                        className="hidden"
-                      />
-
-                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                        {Array.from({ length: requiredCodes }).map(
-                          (_, index) => (
-                            <div
-                              key={`product-${productIndex}-code-${index}`}
-                              className="relative"
-                            >
-                              <Input
-                                {...register(
-                                  `warrantyInfo.${productIndex}.codes.${index}.code`
-                                )}
-                                defaultValue={
-                                  (warranty?.warrantyCodes?.length &&
-                                    warranty?.warrantyCodes[index]?.code) ||
-                                  ""
-                                }
-                                placeholder={`Enter code #${index + 1}`}
-                                className="h-8 text-xs font-mono disabled:opacity-100"
-                                disabled={disable}
-                              />
-                              {errors.warrantyInfo?.[productIndex]?.codes?.[
-                                index
-                              ]?.code && (
-                                <p className="text-[10px] text-red-500 mt-0.5 ml-1">
-                                  {
-                                    errors.warrantyInfo[productIndex]?.codes?.[
-                                      index
-                                    ]?.code?.message
-                                  }
-                                </p>
-                              )}
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="p-2 bg-muted/5 text-center">
-                      <p className="text-[11px] text-muted-foreground">
-                        This product does not have warranty (non-warranty
-                        product)
-                      </p>
-                    </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Product Warranty Codes</DialogTitle>
+            <DialogDescription>
+              Add or update warranty codes for this order.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6 p-1">
+            <div className="flex items-center justify-between border-b pb-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Order ID</p>
+                <p className="font-bold text-lg">{order?.orderId}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-muted-foreground">Total Items</p>
+                <p className="font-bold text-lg">
+                  {order.products?.reduce(
+                    (acc, curr) => acc + curr.quantity,
+                    0
                   )}
-                </div>
-              );
-            })}
-          </div>
-
-          {!disable && (
-            <div className="pt-6 flex justify-end gap-6">
-              <Button
-                variant="ghost"
-                onClick={handleOpen}
-                type="button"
-                className="text-red-500 hover:text-red-600 hover:bg-red-50"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSubmit(warranty ? update : onSubmit)}
-                className="min-w-[120px]"
-                disabled={isLoading || loading}
-              >
-                {isLoading || loading
-                  ? "Saving..."
-                  : warranty
-                    ? "Update Codes"
-                    : "Save Codes"}
-              </Button>
+                </p>
+              </div>
             </div>
-          )}
-        </div>
-      </CommonModal>
+
+            <div className="space-y-4">
+              {order.products?.map((product, productIndex) => {
+                const {
+                  _id,
+                  title,
+                  quantity,
+                  isProductWarrantyAvailable,
+                  warranty,
+                  image,
+                  attributes,
+                } = product;
+
+                const totalCodes = warranty?.warrantyCodes?.length || 0;
+                const requiredCodes =
+                  totalCodes < quantity ? quantity : totalCodes;
+
+                const variationProps = attributes
+                  ? Object.entries(attributes)
+                      .map(([key, value]) => `${key}: ${value}`)
+                      .join(", ")
+                  : "";
+
+                return (
+                  <div
+                    key={productIndex}
+                    className={`rounded border shadow-sm ${
+                      !isProductWarrantyAvailable
+                        ? "bg-muted/10 opacity-70"
+                        : "bg-card"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3 p-3 border-b bg-muted/20">
+                      <div className="relative h-10 w-10 overflow-hidden rounded border flex-shrink-0">
+                        <Image
+                          src={formatImageSrc(image?.src)}
+                          alt={title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <h4 className="font-semibold text-sm truncate leading-tight">
+                            {title}
+                          </h4>
+                          {isProductWarrantyAvailable && !disable && (
+                            <div
+                              className="flex items-center"
+                              title="Copy your codes first, then click here to paste them automatically"
+                            >
+                              <button
+                                type="button"
+                                className="flex items-center gap-1.5 h-6 px-2 text-xs text-muted-foreground hover:text-primary transition-colors bg-transparent border-none outline-none cursor-pointer"
+                                onClick={() =>
+                                  handleSmartPaste(productIndex, requiredCodes)
+                                }
+                              >
+                                <ClipboardCopy className="h-3 w-3" />
+                                <span className="underline decoration-dotted underline-offset-2 font-medium">
+                                  Paste
+                                </span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-muted-foreground">
+                          <span className="bg-primary/5 text-primary px-1.5 py-0.5 rounded font-medium">
+                            Qty: {quantity}
+                          </span>
+                          {variationProps && <span>{variationProps}</span>}
+
+                          {!isProductWarrantyAvailable && (
+                            <span className="text-orange-600 font-medium flex items-center gap-1">
+                              • No Warranty Available
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {isProductWarrantyAvailable ? (
+                      <div className="p-3">
+                        <input
+                          type="text"
+                          defaultValue={_id}
+                          {...register(`warrantyInfo.${productIndex}.itemId`)}
+                          className="hidden"
+                        />
+
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {Array.from({ length: requiredCodes }).map(
+                            (_, index) => (
+                              <div
+                                key={`product-${productIndex}-code-${index}`}
+                                className="relative"
+                              >
+                                <Input
+                                  {...register(
+                                    `warrantyInfo.${productIndex}.codes.${index}.code`
+                                  )}
+                                  defaultValue={
+                                    (warranty?.warrantyCodes?.length &&
+                                      warranty?.warrantyCodes[index]?.code) ||
+                                    ""
+                                  }
+                                  placeholder={`Enter code #${index + 1}`}
+                                  className="h-8 text-xs font-mono disabled:opacity-100"
+                                  disabled={disable}
+                                />
+                                {errors.warrantyInfo?.[productIndex]?.codes?.[
+                                  index
+                                ]?.code && (
+                                  <p className="text-[10px] text-red-500 mt-0.5 ml-1">
+                                    {
+                                      errors.warrantyInfo[productIndex]
+                                        ?.codes?.[index]?.code?.message
+                                    }
+                                  </p>
+                                )}
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-2 bg-muted/5 text-center">
+                        <p className="text-[11px] text-muted-foreground">
+                          This product does not have warranty (non-warranty
+                          product)
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {!disable && (
+              <div className="pt-6 flex justify-end gap-6">
+                <Button
+                  variant="ghost"
+                  onClick={handleOpen}
+                  type="button"
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSubmit(warranty ? update : onSubmit)}
+                  className="min-w-[120px]"
+                  disabled={isLoading || loading}
+                >
+                  {isLoading || loading
+                    ? "Saving..."
+                    : warranty
+                      ? "Update Codes"
+                      : "Save Codes"}
+                </Button>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

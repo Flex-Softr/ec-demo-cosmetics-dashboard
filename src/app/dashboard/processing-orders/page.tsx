@@ -1,9 +1,11 @@
+import ContentCard from "@/components/contentCard/ContentCard";
 import OrderSearchBar from "@/components/OrderSearchBar";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import Show from "@/components/Show";
-import { Card } from "@/components/ui/card";
 import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
+import { PackageCheck } from "lucide-react";
 import { redirect } from "next/navigation";
 import BulkAction from "./components/ProcessingBulkAction";
 import ProcessingOrderDateRange from "./components/ProcessingOrderDateRange";
@@ -23,26 +25,32 @@ const ProcessingOrders = async () => {
   }
 
   return (
-    <Card className="m-4">
-      {/* header section , search bar  */}
-      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-3">
-        <h1 className="text-2xl font-bold">Processing orders</h1>
-        <OrderSearchBar endPoint="/orders/admin/processing-orders" />
-      </div>
-      <hr className="my-4" />
-      <div className="space-y-3">
-        {/* All, processing, processing done, canceled etc status*/}
-        <ProcessingOrdersStatusButtons />
-        <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
-          {/*Bulk actions and invoice print for Orders*/}
-          <BulkAction />
-          <ProcessingOrderDateRange />
-          <Show />
+    <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="Processing Orders"
+        subtitle="Prepare and process confirmed orders"
+        icon={PackageCheck}
+      />
+
+      <ContentCard>
+        <div className="space-y-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <ProcessingOrdersStatusButtons />
+            <OrderSearchBar endPoint="/orders/admin/processing-orders" />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 justify-between">
+            <BulkAction />
+            <div className="flex flex-wrap items-center gap-2">
+              <ProcessingOrderDateRange />
+              <Show />
+            </div>
+          </div>
+
+          <ProcessingOrdersTable permissions={permissions} />
         </div>
-        {/* Processing orders table */}
-        <ProcessingOrdersTable permissions={permissions} />
-      </div>
-    </Card>
+      </ContentCard>
+    </div>
   );
 };
 

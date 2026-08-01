@@ -76,7 +76,7 @@ const BulkAction = () => {
       {isBulkAction && (
         <div className="flex items-center gap-2">
           <Select onValueChange={(value) => setBulkAction(value)}>
-            <SelectTrigger className="border-primary focus:ring-primary focus:ring-1">
+            <SelectTrigger className="h-10 w-44 rounded-lg border-border focus:ring-2 focus:ring-primary/20">
               <SelectValue placeholder="Bulk Actions" />
             </SelectTrigger>
             <SelectContent>
@@ -90,7 +90,12 @@ const BulkAction = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button onClick={handleBulkAction} disabled={isLoading}>
+          <Button
+            size="sm"
+            onClick={handleBulkAction}
+            disabled={isLoading}
+            className="h-10 rounded-lg"
+          >
             Apply
           </Button>
         </div>

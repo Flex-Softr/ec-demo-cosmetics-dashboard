@@ -10,7 +10,7 @@ export const columns: ColumnDef<TAttribute>[] = [
     accessorKey: "name",
     header: "Attribute Name",
     cell: ({ row }) => (
-      <span className="font-medium text-base whitespace-nowrap">
+      <span className="whitespace-nowrap text-base font-semibold text-foreground">
         {row.getValue("name")}
       </span>
     ),
@@ -22,18 +22,18 @@ export const columns: ColumnDef<TAttribute>[] = [
       const values = row.original.values;
       return (
         <div className="min-w-80">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {values && values.length > 0 ? (
               values.map((item) => (
                 <span
                   key={item?._id}
-                  className="px-2.5 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground border border-border"
+                  className="rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-medium text-foreground"
                 >
                   {item?.name}
                 </span>
               ))
             ) : (
-              <span className="text-muted-foreground text-sm italic">
+              <span className="text-sm italic text-muted-foreground">
                 No values
               </span>
             )}

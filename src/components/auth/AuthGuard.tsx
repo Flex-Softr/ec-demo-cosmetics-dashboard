@@ -53,8 +53,8 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
   if (!token || waitingForProfile) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-slate-50">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }

@@ -1,4 +1,5 @@
 "use client";
+import OrdersTableSkeleton from "@/components/skeleton/OrdersTableSkeleton";
 import {
   Table,
   TableBody,
@@ -16,21 +17,30 @@ import {
 import columns from "./ImgToOrderColumn";
 
 const ImgToOrderTable = () => {
-  const { allRequests } = useAppSelector(({ imageToOrder }) => imageToOrder);
+  const { allRequests, isLoading } = useAppSelector(
+    ({ imageToOrder }) => imageToOrder
+  );
   const table = useReactTable({
     data: allRequests,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
   return (
-    <div className="rounded-lg overflow-hidden">
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
       <Table className="w-full">
-        <TableHeader className="bg-primary text-primary-foreground">
+        <TableHeader className="bg-muted">
           {table?.getHeaderGroups()?.map((headerGroup) => (
-            <TableRow key={headerGroup?.id} className="hover:bg-muted/0">
+            <TableRow
+              key={headerGroup?.id}
+              className="border-b border-border hover:bg-muted"
+            >
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header?.id} className="text-center">
+                  <TableHead
+                    key={header?.id}
+                    className="py-3 text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
                     {header?.isPlaceholder
                       ? null
                       : flexRender(
@@ -44,15 +54,17 @@ const ImgToOrderTable = () => {
           ))}
         </TableHeader>
         <TableBody>
-          {allRequests?.length ? (
+          {isLoading ? (
+            <OrdersTableSkeleton columns={columns.length} rows={6} />
+          ) : allRequests?.length ? (
             table?.getRowModel()?.rows?.map((row) => (
               <TableRow
                 key={row?.id}
                 data-state={row?.getIsSelected() && "selected"}
-                className="border-b"
+                className="border-b border-border"
               >
                 {row?.getVisibleCells()?.map((cell) => (
-                  <TableCell key={cell?.id} className="text-center">
+                  <TableCell key={cell?.id} className="py-3 text-center">
                     {flexRender(
                       cell?.column?.columnDef?.cell,
                       cell?.getContext()
@@ -63,7 +75,10 @@ const ImgToOrderTable = () => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 text-center text-muted-foreground"
+              >
                 No image to order found
               </TableCell>
             </TableRow>

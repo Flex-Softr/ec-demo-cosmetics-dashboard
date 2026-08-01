@@ -1,3 +1,6 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
 import { TRegisteredCustomer } from "@/types/registeredUser";
 import { Eye } from "lucide-react";
 import Link from "next/link";
@@ -9,13 +12,17 @@ const RegisteredCustomerDetails = ({
 }) => {
   return (
     <div className="flex justify-center">
-      <Link
-        href={`/dashboard/registered-customers/${customer._id}`}
-        className="w-9 h-9 flex justify-center items-center rounded-lg border border-primary/20 bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all duration-200 shadow-sm"
+      <Button
+        asChild
+        variant="ghost"
+        size="icon"
+        className="h-7 w-7 rounded-md text-muted-foreground hover:bg-primary/10 hover:text-primary"
         title="View Details"
       >
-        <Eye size={18} />
-      </Link>
+        <Link href={`/dashboard/registered-customers/${customer._id}`}>
+          <Eye className="h-4 w-4" />
+        </Link>
+      </Button>
     </div>
   );
 };

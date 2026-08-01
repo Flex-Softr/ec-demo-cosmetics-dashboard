@@ -1,13 +1,15 @@
+import ContentCard from "@/components/contentCard/ContentCard";
 import OrderSearchBar from "@/components/OrderSearchBar";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import Show from "@/components/Show";
-import { Card } from "@/components/ui/card";
 import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
+import { MapPinned } from "lucide-react";
 import { redirect } from "next/navigation";
+import CourierFilter from "./components/CourierFilter";
 import MonitorOrdersTable from "./components/MonitorOrdersTable";
 import StatusButtons from "./components/StatusButtons";
-import CourierFilter from "./components/CourierFilter";
 
 const MonitorDelivery = async () => {
   const { permissions = [] } = await getPermission();
@@ -27,33 +29,38 @@ const MonitorDelivery = async () => {
   }
 
   return (
-    <Card className="m-4">
-      {/* header section , button , search bar  */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 justify-between items-center">
-        <h1 className="text-2xl font-bold">Monitor Delivery</h1>
-        <OrderSearchBar endPoint="/orders/admin/monitor-delivery-orders" />
-      </div>
-      <hr className="my-4" />
-      <div className="space-y-3">
-        {/* All, delivery status*/}
-        <div className="flex flex-wrap items-center justify-start gap-5">
-          <StatusButtons
-            manageProcessing={
-              manageShipmentOrder ? false : manageProcessingOrder
-            }
+    <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="Monitor Delivery"
+        subtitle="Track delivery status and courier updates"
+        icon={MapPinned}
+      />
+
+      <ContentCard>
+        <div className="space-y-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-wrap items-center gap-2">
+              <StatusButtons
+                manageProcessing={
+                  manageShipmentOrder ? false : manageProcessingOrder
+                }
+              />
+              <CourierFilter />
+            </div>
+            <OrderSearchBar endPoint="/orders/admin/monitor-delivery-orders" />
+          </div>
+
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <Show />
+          </div>
+
+          <MonitorOrdersTable
+            editPermission={manageProcessingOrder}
+            permissions={permissions}
           />
-          <CourierFilter />
         </div>
-        <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
-          <Show />
-        </div>
-        {/*Monitor delivery orders table */}
-        <MonitorOrdersTable
-          editPermission={manageProcessingOrder}
-          permissions={permissions}
-        />
-      </div>
-    </Card>
+      </ContentCard>
+    </div>
   );
 };
 

@@ -8,89 +8,79 @@
 
 @layer base {
   :root {
-    /* Base – soft pink-tinted white */
-    --background: 345 30% 98%;
-    /* hsl(345 30% 98%) */
-    --foreground: 345 25% 12%;
-    /* hsl(345 25% 12%) */
+    /* Base – cool neutral canvas */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 345 25% 12%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 345 25% 12%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Primary – Logo Pink #f65f84 */
-    --primary: 345 89% 67%;
-    /* hsl(345 89% 67%) → #f65f84 */
+    /* Primary – Modern Emerald #10b981 */
+    --primary: 160 84% 39%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary – Logo Gold #e1aa50 */
-    --secondary: 37 71% 60%;
-    /* hsl(37 71% 60%) → #e1aa50 */
-    --secondary-foreground: 37 45% 15%;
+    /* Secondary – Soft Slate */
+    --secondary: 215 25% 93%;
+    --secondary-foreground: 222 47% 20%;
 
-    /* Muted – Soft rose grey */
-    --muted: 345 20% 96%;
-    --muted-foreground: 345 10% 40%;
+    /* Muted – Cool gray */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    /* Accent – Light pink (hover/selection) */
-    --accent: 345 70% 95%;
-    /* hsl(345 70% 95%) */
-    --accent-foreground: 345 70% 35%;
+    /* Accent – Soft emerald tint */
+    --accent: 160 45% 95%;
+    --accent-foreground: 160 70% 26%;
 
     /* Destructive */
-    --destructive: 0 72% 55%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
     /* UI */
-    --border: 345 15% 88%;
-    --input: 345 15% 88%;
-    --ring: 345 89% 67%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 160 84% 39%;
 
-    --success: 134 61% 41%;
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    /* Base – soft pink-tinted white */
-    --background: 345 30% 98%;
-    --foreground: 345 25% 12%;
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 345 25% 12%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 345 25% 12%;
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 98%;
 
-    /* Primary – Logo Pink #f65f84 */
-    --primary: 345 89% 67%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary – Brighter emerald for dark surfaces */
+    --primary: 160 72% 45%;
+    --primary-foreground: 160 90% 8%;
 
-    /* Secondary – Logo Gold #e1aa50 */
-    --secondary: 37 71% 60%;
-    --secondary-foreground: 37 45% 15%;
+    /* Secondary – Deep slate */
+    --secondary: 217 25% 18%;
+    --secondary-foreground: 210 40% 96%;
 
-    /* Muted – Soft rose grey */
-    --muted: 345 20% 96%;
-    --muted-foreground: 345 10% 40%;
+    --muted: 217 25% 15%;
+    --muted-foreground: 215 16% 65%;
 
-    /* Accent – Light pink (hover/selection) */
-    --accent: 345 70% 95%;
-    --accent-foreground: 345 70% 35%;
+    --accent: 160 30% 16%;
+    --accent-foreground: 160 70% 70%;
 
-    /* Destructive */
-    --destructive: 0 72% 55%;
+    --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    /* UI */
-    --border: 345 15% 88%;
-    --input: 345 15% 88%;
-    --ring: 345 89% 67%;
+    --border: 217 25% 18%;
+    --input: 217 25% 18%;
+    --ring: 160 72% 45%;
 
-    --success: 134 61% 41%;
+    --success: 142 65% 40%;
     --success-foreground: 0 0% 100%;
 
     --radius: 0.5rem;
@@ -121,10 +111,10 @@
       "Segoe UI Symbol",
       "Noto Color Emoji";
     background-image:
-      radial-gradient(at 0% 0%, hsla(345, 89%, 67%, 0.06) 0px, transparent 50%),
+      radial-gradient(at 0% 0%, hsla(160, 84%, 39%, 0.06) 0px, transparent 50%),
       radial-gradient(
         at 100% 0%,
-        hsla(37, 71%, 60%, 0.05) 0px,
+        hsla(215, 25%, 50%, 0.05) 0px,
         transparent 50%
       );
     background-attachment: fixed;

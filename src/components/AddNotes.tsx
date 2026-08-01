@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateOrderMutation } from "@/redux/features/orders/ordersApi";
 import { TOrders } from "@/types/order.interface";
+import { Pen } from "lucide-react";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
@@ -66,24 +67,27 @@ const AddNotes = ({ order }: { order: TOrders }) => {
   return (
     <>
       {notes ? (
-        <button onClick={handleOpen} className="relative">
+        <button
+          onClick={handleOpen}
+          className="relative inline-flex items-center gap-1.5 text-xs text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+        >
           <span
-            className="flex justify-center items-center absolute -top-[10px] -right-2 h-4 w-4 bg-primary text-primary-foreground rounded-full"
-            title="view notes"
+            className="flex items-center justify-center h-4 w-4 bg-primary text-primary-foreground rounded-full text-[9px] font-bold shrink-0"
+            title="View notes"
           >
             {noteNumbers}
           </span>
-          <span title={notes}>
-            {notes.length > 10 ? notes.slice(0, 10) + "..." : notes}
+          <span className="line-clamp-1 max-w-[88px]" title={notes}>
+            {notes.length > 12 ? notes.slice(0, 12) + "…" : notes}
           </span>
         </button>
       ) : (
-        <Button
+        <button
           onClick={handleOpen}
-          className="bg-inherit text-inherit hover:bg-inherit"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
-          Add note
-        </Button>
+          <Pen className="w-3 h-3" /> Note
+        </button>
       )}
 
       <CommonModal

@@ -1,67 +1,26 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
+import TableSearch from "@/components/tableSearch/TableSearch";
+import { useDebounce } from "@/hooks/useDebounce";
 import { setRegisteredUserSearch } from "@/redux/features/registeredCustomer/RegisteredCustomerSlice";
 import { useAppDispatch } from "@/redux/hooks";
-import { Search, X } from "lucide-react";
-import { SetStateAction, useState } from "react";
+import { useEffect, useState } from "react";
 
 const SearchRegisteredUser = () => {
-  const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
-
-  const handleInputChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setSearchQuery(e?.target?.value as string);
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery("");
-    dispatch(setRegisteredUserSearch(undefined));
-  };
-
-  const handleKeyPress = (e: { key: string; repeat: unknown }) => {
-    if ((searchQuery?.length || 1) - 1 === 0) setSearchQuery(undefined);
-    if (e.key === "Enter" && !e.repeat) handleSearch();
-  };
-
   const dispatch = useAppDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
 
-  const handleSearch = async () => {
-    dispatch(setRegisteredUserSearch(searchQuery));
-  };
+  useEffect(() => {
+    dispatch(setRegisteredUserSearch(debouncedSearch || undefined));
+  }, [debouncedSearch, dispatch]);
 
   return (
-    <div>
-      <div className="flex items-center justify-end">
-        <div className="flex w-[400px] justify-center items-center overflow-hidden rounded-md relative">
-          <Input
-            type="search"
-            value={searchQuery}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyPress}
-            //   disabled={searchQuery && isLoading ? true : false}
-            className="p-5 w-md outline-none ring-1 ring-primary rounded-md rounded-r-none border-r-0 border-secondary h-[40px]"
-            placeholder="Search user"
-          />
-          {searchQuery && (
-            <button
-              onClick={handleClearSearch}
-              className="absolute right-11 text-primary"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          )}
-          <button
-            onClick={handleSearch}
-            //   disabled={searchQuery && isLoading ? true : false}
-            className="font-bold w-[45px] flex justify-center items-center outline-none ring-1 ring-primary rounded-md rounded-l-none border-l-0 border-secondary bg-secondary h-[40px] text-secondary-foreground"
-          >
-            <Search className="w-6 h-6" />
-          </button>
-        </div>
-      </div>
-    </div>
+    <TableSearch
+      value={searchQuery}
+      onChange={setSearchQuery}
+      placeholder="Search customers…"
+    />
   );
 };
 

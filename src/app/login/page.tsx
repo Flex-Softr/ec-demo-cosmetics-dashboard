@@ -1,6 +1,7 @@
 "use client";
 import EcButton from "@/components/EcButton/EcButton";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { setUser } from "@/redux/features/auth/authSlice";
@@ -201,15 +202,15 @@ const LoginPage = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-4">
-              <div className="space-y-1.5">
-                <label
-                  className="text-sm font-semibold text-slate-700"
+              <div className="space-y-1">
+                <Label
                   htmlFor="phoneEmailOrUid"
+                  className="text-xs font-medium text-muted-foreground"
                 >
                   Email or Phone
-                </label>
+                </Label>
                 <Input
-                  className={`h-12 px-4 bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all ${errors.phoneEmailOrUid ? "border-red-500 ring-2 ring-red-500/10" : ""}`}
+                  className={`h-9 border-border text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 ${errors.phoneEmailOrUid ? "border-destructive" : ""}`}
                   placeholder="Enter your email or phone"
                   id="phoneEmailOrUid"
                   {...register("phoneEmailOrUid")}
@@ -217,16 +218,16 @@ const LoginPage = () => {
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label
-                  className="text-sm font-semibold text-slate-700"
+              <div className="space-y-1">
+                <Label
                   htmlFor="password"
+                  className="text-xs font-medium text-muted-foreground"
                 >
                   Password
-                </label>
+                </Label>
                 <div className="relative">
                   <Input
-                    className={`h-12 px-4 bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all pr-11 ${errors.password ? "border-red-500 ring-2 ring-red-500/10" : ""}`}
+                    className={`h-9 border-border pr-10 text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 ${errors.password ? "border-destructive" : ""}`}
                     type={showPassword ? "text" : "password"}
                     id="password"
                     placeholder="••••••••"
@@ -236,12 +237,12 @@ const LoginPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
                   >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
                 <div className="flex justify-end pt-0.5">

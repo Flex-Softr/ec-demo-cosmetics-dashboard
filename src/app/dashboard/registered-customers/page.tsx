@@ -1,8 +1,10 @@
+import ContentCard from "@/components/contentCard/ContentCard";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import Show from "@/components/Show";
-import { Card } from "@/components/ui/card";
 import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
+import { UserRound } from "lucide-react";
 import { redirect } from "next/navigation";
 import RegisteredCustomerData from "./_components/RegisteredCustomerData";
 import RegisteredCustomerTable from "./_components/allRegisteredCustomer/RegisteredCustomerTable";
@@ -19,26 +21,26 @@ const page = async () => {
   if (!manageAdminOrStaff) {
     redirect("/error");
   }
+
   return (
     <>
       <RegisteredCustomerData />
-      <Card className="m-2 sm:m-4 p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
-          <h2 className="text-xl md:text-2xl font-bold">
-            Registered customers
-          </h2>
-          <div className="w-full sm:w-auto">
-            <SearchRegisteredUser />
+      <div className="space-y-5 p-4 sm:p-6">
+        <PageHeader
+          title="Registered Customers"
+          subtitle="View and manage registered customer accounts"
+          icon={UserRound}
+        />
+        <ContentCard>
+          <div className="space-y-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <SearchRegisteredUser />
+              <Show />
+            </div>
+            <RegisteredCustomerTable />
           </div>
-        </div>
-        <hr className="my-4" />
-        <div className="flex justify-end mt-5">
-          <Show />
-        </div>
-        <div className="mt-4 overflow-x-auto -mx-4 sm:mx-0">
-          <RegisteredCustomerTable />
-        </div>
-      </Card>
+        </ContentCard>
+      </div>
     </>
   );
 };

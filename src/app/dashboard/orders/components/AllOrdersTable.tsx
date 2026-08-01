@@ -1,6 +1,6 @@
 "use client";
 import { PagePagination } from "@/components/pagination/PagePagination";
-import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import OrdersTableSkeleton from "@/components/skeleton/OrdersTableSkeleton";
 import {
   Table,
   TableBody,
@@ -9,22 +9,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  softTableCellClass,
+  softTableHeadClass,
+  softTableHeaderClass,
+  softTableRowClass,
+  softTableWrapperClass,
+} from "@/lib/tableStyles";
 import { setBulkOrder } from "@/redux/features/orders/ordersSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { TOrders } from "@/types/order.interface";
 import formattedOrderData from "@/utilities/formattedOrderData";
+import { TPermission } from "@/utilities/isPermitted";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  // getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useMemo } from "react";
-import FollowUpDate from "./FollowUpDate";
 import { getColumns } from "./AllOrdersColumn";
+import FollowUpDate from "./FollowUpDate";
 
-import { TPermission } from "@/utilities/isPermitted";
 export default function AllOrdersTable({
   permissions,
 }: {
@@ -63,7 +69,6 @@ export default function AllOrdersTable({
     data: orders,
     columns: newColumns,
     getCoreRowModel: getCoreRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(),
   });
 
   const selectedRows = table?.getFilteredSelectedRowModel()?.rows;
@@ -74,37 +79,40 @@ export default function AllOrdersTable({
   }, [selectedOrders, dispatch]);
 
   return (
-    <div className="w-full">
-      <div className="rounded-lg overflow-hidden border">
+    <div className="w-full space-y-3">
+      <div className={softTableWrapperClass}>
         <Table className="min-w-[1100px]">
-          <TableHeader className="bg-primary text-primary-foreground">
+          <TableHeader className={softTableHeaderClass}>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-muted/0">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} className="text-center">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+              <TableRow
+                key={headerGroup.id}
+                className="border-b border-border hover:bg-muted"
+              >
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className={softTableHeadClass}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              <OrdersTableSkeleton columns={newColumns.length} />
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="border-b"
+                  className={softTableRowClass}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-center">
+                    <TableCell key={cell.id} className={softTableCellClass}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -113,20 +121,11 @@ export default function AllOrdersTable({
                   ))}
                 </TableRow>
               ))
-            ) : isLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  <TableSkeleton />
-                </TableCell>
-              </TableRow>
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
+                  colSpan={newColumns.length}
+                  className="h-24 text-center text-muted-foreground"
                 >
                   No orders
                 </TableCell>
@@ -136,7 +135,7 @@ export default function AllOrdersTable({
         </Table>
       </div>
       {!search && (
-        <div className="flex items-center justify-end space-x-2 py-2">
+        <div className="flex items-center justify-end py-1">
           <PagePagination />
         </div>
       )}

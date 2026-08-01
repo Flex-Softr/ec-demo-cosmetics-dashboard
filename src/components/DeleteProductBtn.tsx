@@ -13,12 +13,7 @@ type DeleteProductBtnProps = {
   className?: string;
   title?: string;
   variant?:
-    | "link"
-    | "default"
-    | "destructive"
-    | "outline"
-    | "secondary"
-    | "ghost";
+    "link" | "default" | "destructive" | "outline" | "secondary" | "ghost";
   size?: "default" | "sm" | "lg" | "icon";
 };
 
@@ -69,15 +64,16 @@ const DeleteProductBtn = ({
   };
 
   return (
-    <div className="flex justify-end mt-5">
+    <div className="w-full">
       <CommonAlertDialog
         open={open}
         onOpenChange={setOpen}
-        title="Are you absolutely sure?"
+        title="Delete Product?"
         description="This action cannot be undone. This will permanently delete the product from the server."
         onConfirm={handleDelete}
         loading={isLoading}
         confirmVariant="destructive"
+        confirmText="Delete"
       />
       <Button
         type="button"

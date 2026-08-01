@@ -25,16 +25,19 @@ const ShippingChargesTable = () => {
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <div className="rounded-lg overflow-hidden">
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
       <Table className="w-full">
-        <TableHeader className="bg-primary text-primary-foreground">
+        <TableHeader className="bg-muted">
           {table?.getHeaderGroups()?.map((headerGroup) => (
-            <TableRow key={headerGroup?.id} className="hover:bg-muted/0">
+            <TableRow
+              key={headerGroup?.id}
+              className="border-b border-border hover:bg-muted"
+            >
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead
                     key={header?.id}
-                    className="text-center whitespace-nowrap"
+                    className="whitespace-nowrap py-3 text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
                   >
                     {header?.isPlaceholder
                       ? null
@@ -54,12 +57,12 @@ const ShippingChargesTable = () => {
               <TableRow
                 key={row?.id}
                 data-state={row?.getIsSelected() && "selected"}
-                className="border-b"
+                className="border-b border-border"
               >
                 {row?.getVisibleCells()?.map((cell) => (
                   <TableCell
                     key={cell?.id}
-                    className="text-center whitespace-nowrap"
+                    className="whitespace-nowrap py-3 text-center"
                   >
                     {flexRender(
                       cell?.column?.columnDef?.cell,
@@ -71,8 +74,11 @@ const ShippingChargesTable = () => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No shipping chares found
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 text-center text-muted-foreground"
+              >
+                No shipping charges found
               </TableCell>
             </TableRow>
           )}

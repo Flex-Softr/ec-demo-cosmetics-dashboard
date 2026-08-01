@@ -1,10 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import CommonModal from "@/components/modal/CommonModal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 import { formatDate, formatTime } from "@/lib/formatDate";
 import { useLazyGetFraudCheckQuery } from "@/redux/features/fraudCheck/fraudCheckApi";
-import { Search, X } from "lucide-react";
+import { AlertTriangle, Search, ShieldAlert, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Report = {
@@ -39,6 +43,37 @@ type Data = {
   errors: Errors[];
 };
 
+function ratioTone(ratio: number) {
+  if (ratio >= 60) return "text-emerald-600";
+  if (ratio >= 40) return "text-amber-600";
+  return "text-destructive";
+}
+
+function ratioRingColor(ratio: number) {
+  if (ratio >= 60) return "#10b981";
+  if (ratio >= 40) return "#d97706";
+  return "#ef4444";
+}
+
+const FraudCheckSkeleton = () => (
+  <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+    <div className="flex w-full flex-col items-center gap-3 lg:w-1/3">
+      <Skeleton className="h-4 w-40" />
+      <Skeleton className="h-36 w-36 rounded-full" />
+      <Skeleton className="h-4 w-48" />
+    </div>
+    <div className="w-full space-y-4 lg:w-2/3">
+      <Skeleton className="mx-auto h-6 w-32" />
+      <div className="grid grid-cols-3 gap-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} className="h-20 rounded-xl" />
+        ))}
+      </div>
+      <Skeleton className="h-48 w-full rounded-xl" />
+    </div>
+  </div>
+);
+
 const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
   const { toast } = useToast();
   const [data, setData] = useState<Data | null>(null);
@@ -46,6 +81,7 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
   const [triggerFraudCheck, { isFetching: loading }] =
     useLazyGetFraudCheckQuery();
   const [open, setOpen] = useState(false);
+  const isEmbedded = Boolean(phoneNumber);
 
   const handleOpen = () => {
     setOpen(!open);
@@ -78,11 +114,11 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
     }
   };
 
-  // const handleKeyPress = (e: { key: string; repeat: unknown }) => {
-  //   if (e.key === "Enter" && !e.repeat) {
-  //     handleSearch();
-  //   }
-  // };
+  const handleKeyPress = (e: { key: string; repeat: unknown }) => {
+    if (e.key === "Enter" && !e.repeat) {
+      handleSearch();
+    }
+  };
 
   const handleClearSearch = () => {
     setMobile("");
@@ -98,171 +134,195 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
 
   return (
     <>
-      <div
-        className={`max-w-full ${!phoneNumber && "p-2 mx-2 my-2 sm:p-4 sm:mx-4 sm:my-4"}`}
-      >
-        {/* Header Search Section */}
-        {phoneNumber ? (
-          <h1 className="text-xl font-bold text-center">Fraud Check</h1>
+      <div className={cn("w-full", isEmbedded && "space-y-3")}>
+        {isEmbedded ? (
+          <div className="flex items-center justify-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <ShieldAlert className="h-4 w-4 text-primary" />
+            </div>
+            <h2 className="text-base font-semibold text-foreground">
+              Fraud Check
+            </h2>
+          </div>
         ) : (
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4 max-w-xl mx-auto">
-            <div className="relative flex items-center w-full">
-              <input
-                type="text"
+          <div className="mx-auto mb-6 flex w-full max-w-xl flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative w-full">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="search"
                 value={mobile}
                 onChange={(e) => setMobile(e.target.value)}
-                // onKeyDown={handleKeyPress}
-                placeholder="Enter a mobile number"
-                className="bg-gray-100 focus:outline-primary text-gray-800 px-4 pr-12 py-3 rounded border border-gray-300 w-full"
+                onKeyDown={handleKeyPress}
+                placeholder="Enter mobile number (01XXXXXXXXX)"
+                className="h-10 rounded-lg border-border bg-card pl-8 pr-10 text-sm focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 [&::-webkit-search-cancel-button]:appearance-none"
               />
               {mobile ? (
                 <button
+                  type="button"
                   onClick={handleClearSearch}
-                  className="absolute right-3 text-primary"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  aria-label="Clear"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="h-4 w-4" />
                 </button>
-              ) : (
-                <Search className="w-6 h-6 absolute right-3 text-primary" />
-              )}
+              ) : null}
             </div>
-            <button
+            <Button
               onClick={handleSearch}
               disabled={loading}
-              className="bg-primary text-primary-foreground px-6 py-3 rounded hover:bg-secondary shrink-0"
+              size="sm"
+              className="h-10 shrink-0 rounded-lg px-5"
             >
-              {loading ? "Loading..." : "Check"}
-            </button>
+              {loading ? "Checking…" : "Check"}
+            </Button>
           </div>
         )}
 
-        {data ? (
-          <div className="flex flex-col-reverse justify-center lg:flex-row gap-4 sm:gap-8 items-center lg:items-start w-full">
+        {loading ? (
+          <FraudCheckSkeleton />
+        ) : data ? (
+          <div className="flex w-full flex-col-reverse items-center gap-6 lg:flex-row lg:items-start lg:gap-8">
             {/* Delivery Success Ratio */}
-            <div className="text-center w-full lg:w-1/3 mb-4 lg:mb-0 shrink-0">
-              <h2 className="text-lg font-bold">Delivery Success Ratio</h2>
-              {/* <div className="relative w-32 h-32 mx-auto mt-4">
-              <div className="rounded-full border-8 border-green-500 w-full h-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-green-500">
-                  {data.successRatio} %
-                </span>
-              </div>
-            </div> */}
-              <div className="relative w-36 h-36 mx-auto mt-4">
-                {/* Circular Progress */}
+            <div className="w-full shrink-0 text-center lg:w-1/3">
+              <h3 className="text-sm font-semibold text-foreground">
+                Delivery Success Ratio
+              </h3>
+              <div className="relative mx-auto mt-4 h-36 w-36">
                 <div
                   className="absolute inset-0 rounded-full"
                   style={{
                     background: `conic-gradient(
-                #22c55e ${data.successRatio * 3.6}deg,
-                red ${data.successRatio * 3.6}deg
-                )`,
+                      ${ratioRingColor(data.successRatio)} ${data.successRatio * 3.6}deg,
+                      hsl(var(--muted)) ${data.successRatio * 3.6}deg
+                    )`,
                   }}
-                ></div>
-                {/* Inner Circle */}
-                <div className="absolute inset-3 bg-white rounded-full flex items-center justify-center">
+                />
+                <div className="absolute inset-3 flex items-center justify-center rounded-full bg-card border border-border">
                   <span
-                    className={`text-xl font-bold ${data.successRatio >= 60 ? "text-green-500" : data.successRatio >= 40 ? "text-yellow-500" : "text-red-500"}`}
+                    className={cn(
+                      "text-2xl font-bold",
+                      ratioTone(data.successRatio)
+                    )}
                   >
                     {data.successRatio}%
                   </span>
                 </div>
               </div>
               <p
-                className={`mt-2 font-medium ${data.successRatio >= 60 ? "text-green-500" : data.successRatio >= 40 ? "text-yellow-500" : "text-red-500"}`}
+                className={cn(
+                  "mt-3 text-sm font-medium",
+                  ratioTone(data.successRatio)
+                )}
               >
                 {data.message}
               </p>
             </div>
-            <div className="w-full lg:w-2/3 overflow-hidden">
-              {/* User Info */}
-              <div>
-                {data?.reports && data.reports.length > 0 && (
-                  <button
-                    onClick={handleOpen}
-                    className="text-red-600 font-semibold"
-                  >
-                    View reports ({data?.reports?.length})
-                  </button>
-                )}
 
-                <div className="text-center mb-4">
-                  <p className="text-sm text-gray-600">Your Number</p>
-                  <h3 className="text-xl font-bold text-orange-600">
+            <div className="w-full space-y-4 overflow-hidden lg:w-2/3">
+              <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-between">
+                <div className="text-center sm:text-left">
+                  <p className="text-xs text-muted-foreground">Mobile Number</p>
+                  <h3 className="text-lg font-semibold text-primary">
                     {data.phoneNumber}
                   </h3>
                 </div>
+                {data?.reports && data.reports.length > 0 ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleOpen}
+                    className="h-8 gap-1.5 rounded-lg border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                    View reports ({data.reports.length})
+                  </Button>
+                ) : null}
               </div>
 
-              {/* Stats Section */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center mb-4 whitespace-nowrap">
-                <div>
-                  <h4 className="text-xl font-bold">{data.totalOrders}</h4>
-                  <p className="text-xs sm:text-sm">মোট অর্ডার</p>
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                <div className="rounded-xl border border-border bg-muted/40 px-3 py-3 text-center">
+                  <h4 className="text-xl font-bold text-foreground">
+                    {data.totalOrders}
+                  </h4>
+                  <p className="text-xs text-muted-foreground sm:text-sm">
+                    মোট অর্ডার
+                  </p>
                 </div>
-                <div>
-                  <h4 className="text-xl font-bold text-green-500">
+                <div className="rounded-xl border border-border bg-emerald-50/80 px-3 py-3 text-center">
+                  <h4 className="text-xl font-bold text-emerald-600">
                     {data.totalDeliveries}
                   </h4>
-                  <p className="text-xs sm:text-sm">মোট ডেলিভারি</p>
+                  <p className="text-xs text-muted-foreground sm:text-sm">
+                    মোট ডেলিভারি
+                  </p>
                 </div>
-                <div>
-                  <h4 className="text-xl font-bold text-red-500">
+                <div className="rounded-xl border border-border bg-red-50/80 px-3 py-3 text-center">
+                  <h4 className="text-xl font-bold text-destructive">
                     {data.totalCancellations}
                   </h4>
-                  <p className="text-xs sm:text-sm">মোট বাতিল</p>
+                  <p className="text-xs text-muted-foreground sm:text-sm">
+                    মোট বাতিল
+                  </p>
                 </div>
               </div>
 
               {/* Courier Stats Table */}
-              <div className="overflow-x-auto w-full rounded-md">
-                <table className="w-full border border-gray-200 text-center text-sm min-w-[500px] whitespace-nowrap">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-200 px-4 py-4">
+              <div className="overflow-x-auto overflow-hidden rounded-xl border border-border">
+                <table className="w-full min-w-[500px] text-center text-sm whitespace-nowrap">
+                  <thead className="bg-muted">
+                    <tr className="border-b border-border">
+                      <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                         কুরিয়ার
                       </th>
-                      <th className="border border-gray-200 px-4 py-4">
+                      <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                         অর্ডার
                       </th>
-                      <th className="border border-gray-200 px-4 py-4">
+                      <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                         ডেলিভারি
                       </th>
-                      <th className="border border-gray-200 px-4 py-4">
+                      <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                         বাতিল
                       </th>
-                      <th className="border border-gray-200 px-4 py-4">
+                      <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                         ডেলিভারি হার
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {data?.couriers?.map((courier, index) => (
-                      <tr key={index}>
-                        <td className="border border-gray-200 px-4 py-4 flex items-center justify-center">
-                          <img
-                            src={courier.logo}
-                            alt={courier.name}
-                            className="h-5 mr-2"
-                          />
+                      <tr
+                        key={index}
+                        className="border-b border-border last:border-0 hover:bg-muted/60"
+                      >
+                        <td className="px-4 py-3">
+                          <div className="flex items-center justify-center gap-2">
+                            <img
+                              src={courier.logo}
+                              alt={courier.name}
+                              className="h-5"
+                            />
+                            <span className="sr-only">{courier.name}</span>
+                          </div>
                         </td>
-                        <td className="border border-gray-200 px-4 py-4">
+                        <td className="px-4 py-3 text-foreground">
                           {courier.orders}
                         </td>
-                        <td className="border border-gray-200 px-4 py-4">
+                        <td className="px-4 py-3 text-emerald-600">
                           {courier.deliveries}
                         </td>
-                        <td className="border border-gray-200 px-4 py-4">
+                        <td className="px-4 py-3 text-destructive">
                           {courier.cancellations}
                         </td>
-                        <td className="border border-gray-200 px-4 py-4 font-semibold min-w-[150px]">
+                        <td className="min-w-[150px] px-4 py-3 font-semibold text-foreground">
                           {courier.deliveryRate}%
-                          <div className="w-full bg-gray-300 rounded-full h-2.5 dark:bg-gray-700 mt-[2px]">
+                          <div className="mt-1 h-2 w-full rounded-full bg-muted">
                             <div
-                              className="bg-green-500 h-2.5 rounded-full"
+                              className="h-2 rounded-full bg-emerald-500"
                               style={{ width: `${courier.deliveryRate}%` }}
                               title={`Delivery success rate ${courier.deliveryRate}%`}
-                            ></div>
+                            />
                           </div>
                         </td>
                       </tr>
@@ -273,21 +333,28 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
             </div>
           </div>
         ) : (
-          !phoneNumber && (
-            <div className="text-center text-gray-500">
-              No data to display. Please enter a mobile number and click
-              &quot;Check&quot;.
+          !isEmbedded && (
+            <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <ShieldAlert className="h-6 w-6 text-primary" />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Enter a mobile number and click &quot;Check&quot; to view
+                customer fraud risk.
+              </p>
             </div>
           )
         )}
       </div>
+
       {data?.errors?.map((error, index) => (
         <div
           key={index}
-          className="px-4 py-2 mx-4 border border-gray-300 rounded mb-4 space-y-2 text-red-500"
+          className="mt-4 space-y-1 rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive"
         >
           <p>
-            {error.errorFrom} error: {error.message}
+            {error.errorFrom ? `${error.errorFrom} error: ` : null}
+            {error.message}
           </p>
         </div>
       ))}
@@ -299,16 +366,20 @@ const FraudCheck = ({ phoneNumber }: { phoneNumber?: string }) => {
           modalTitle="View reports"
           className="w-[63%]"
         >
-          {data?.reports?.map((report, index) => (
+          {data.reports.map((report, index) => (
             <div
               key={index}
-              className="px-4 py-2 border border-gray-300 rounded mb-4"
+              className="mb-3 rounded-xl border border-border bg-card px-4 py-3"
             >
-              <p className="text-gray-600 flex justify-between mb-2">
-                <span>{report.reportFrom && `${report.reportFrom}`}</span>
-                {`${formatDate(report.date)}, ${formatTime(report.date)}`}
+              <p className="mb-2 flex justify-between gap-3 text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">
+                  {report.reportFrom}
+                </span>
+                <span>
+                  {formatDate(report.date)}, {formatTime(report.date)}
+                </span>
               </p>
-              <p>{report.comment}</p>
+              <p className="text-sm text-foreground">{report.comment}</p>
             </div>
           ))}
         </CommonModal>

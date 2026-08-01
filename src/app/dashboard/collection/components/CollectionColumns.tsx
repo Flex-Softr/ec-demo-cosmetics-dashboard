@@ -20,7 +20,7 @@ export const columns: ColumnDef<ICollection>[] = [
       const img = row.original.image as any;
       const src = formatImageSrc(img?.src);
       return (
-        <div className="relative h-10 w-10 overflow-hidden rounded">
+        <div className="relative h-10 w-10 overflow-hidden rounded-lg border border-border bg-muted">
           <Image
             src={src}
             alt={row.original.name}
@@ -35,7 +35,9 @@ export const columns: ColumnDef<ICollection>[] = [
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => (
-      <span className="whitespace-nowrap">{row.original.name}</span>
+      <span className="whitespace-nowrap font-semibold text-foreground">
+        {row.original.name}
+      </span>
     ),
   },
   {
@@ -43,10 +45,10 @@ export const columns: ColumnDef<ICollection>[] = [
     header: "Status",
     cell: ({ row }) => (
       <span
-        className={`px-2 py-1 rounded-full text-xs ${
+        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
           row.original.isActive
-            ? "bg-green-100 text-green-800"
-            : "bg-red-100 text-red-800"
+            ? "bg-emerald-50 text-emerald-700"
+            : "bg-red-50 text-red-700"
         }`}
       >
         {row.original.isActive ? "Active" : "Inactive"}

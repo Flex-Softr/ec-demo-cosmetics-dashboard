@@ -1,14 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Switch } from "@/components/ui/switch";
+
 import { Label } from "@/components/ui/label";
-import { refetchData } from "@/utilities/fetchData";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/components/ui/use-toast";
 import {
   useCreateOrderSMSMutation,
   useUpdateOrderSMSMutation,
 } from "@/redux/features/sms/smsApi";
+import { refetchData } from "@/utilities/fetchData";
+import { useEffect, useState } from "react";
 import { Message, messageTemplate, statusList } from "../lib/utils";
-import { useToast } from "@/components/ui/use-toast";
 
 export function OrderStatusToggle({ data = [] }: { data: Message[] }) {
   const { toast } = useToast();
@@ -54,7 +55,6 @@ export function OrderStatusToggle({ data = [] }: { data: Message[] }) {
         }).unwrap();
       }
 
-      // ✅ Refetch from server after update
       refetchData("order-sms-notification");
 
       toast({
@@ -63,7 +63,7 @@ export function OrderStatusToggle({ data = [] }: { data: Message[] }) {
         }`,
         className: `${checked ? "bg-success" : "bg-red-500"} text-white text-2xl `,
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Failed to change. Something went wrong! Please try again.",
         variant: "destructive",
@@ -75,13 +75,15 @@ export function OrderStatusToggle({ data = [] }: { data: Message[] }) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border overflow-auto">
-      <h2 className="font-semibold mb-2">Order Status Message</h2>
-      <p className="text-sm text-gray-500 mb-4">
+    <div className="rounded-xl border border-border bg-card p-5 shadow-none">
+      <h2 className="text-base font-semibold text-foreground">
+        Order Status Message
+      </h2>
+      <p className="mb-4 mt-1 text-sm text-muted-foreground">
         Choose when you want to send your order status message
       </p>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
         {statuses.map(({ slug, status, isActive, isUpdating }, idx) => (
           <div key={slug} className="flex items-center space-x-2">
             <Switch
@@ -89,7 +91,7 @@ export function OrderStatusToggle({ data = [] }: { data: Message[] }) {
               onCheckedChange={(checked) => handleToggle(checked, idx)}
               disabled={isUpdating}
             />
-            <Label>{status}</Label>
+            <Label className="text-sm text-foreground">{status}</Label>
           </div>
         ))}
       </div>

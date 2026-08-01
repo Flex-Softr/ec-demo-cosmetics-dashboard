@@ -1,8 +1,9 @@
 "use client";
 import CommonModal from "@/components/modal/CommonModal";
+import { cn } from "@/lib/utils";
+import { softOrderStatusClass } from "@/lib/tableStyles";
 import { useAppSelector } from "@/redux/hooks";
 import { TOrders } from "@/types/order.interface";
-import backgroundColor from "@/utilities/backgroundColor";
 import { TPermission } from "@/utilities/isPermitted";
 import { useState } from "react";
 import UpdateOrderStatus from "./UpdateOrderStatus";
@@ -26,26 +27,28 @@ const OrderStatus = ({
   const editPermission = useAppSelector(
     ({ monitorDelivery }) => monitorDelivery.editPermission
   );
-  const handleOpen = () => {
-    setOpen(!open);
-  };
+  const handleOpen = () => setOpen((prev) => !prev);
 
   const status = deliveryStatus ? deliveryStatus : order.status;
   const showStatus = deliveryStatus
-    ? deliveryStatus?.length > 14
-      ? deliveryStatus?.slice(0, 14) + "..."
+    ? deliveryStatus?.length > 18
+      ? deliveryStatus?.slice(0, 18) + "…"
       : deliveryStatus
     : order.status;
+  const isDisabled = disableStatus.includes(status) && !editPermission;
 
   return (
     <>
       <button
         onClick={handleOpen}
-        disabled={disableStatus.includes(status) && !editPermission}
-        className={`capitalize whitespace-nowrap px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(
-          status
-        )}`}
-        title={deliveryStatus ? deliveryStatus : ""}
+        disabled={isDisabled}
+        className={cn(
+          "inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium capitalize transition-opacity whitespace-nowrap",
+          softOrderStatusClass(status),
+          !isDisabled && "hover:opacity-80 cursor-pointer",
+          isDisabled && "cursor-default opacity-80"
+        )}
+        title={deliveryStatus || undefined}
       >
         {showStatus}
       </button>
@@ -55,12 +58,13 @@ const OrderStatus = ({
         className="h-[180px] w-[400px]"
         modalTitle="Update order status"
       >
-        <div>
-          <span>Current status : </span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Current status:</span>
           <span
-            className={`capitalize px-2 pb-[2px] pt-[1px] text-white rounded ${backgroundColor(
-              status
-            )}`}
+            className={cn(
+              "inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium capitalize",
+              softOrderStatusClass(status)
+            )}
           >
             {status}
           </span>

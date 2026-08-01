@@ -1,9 +1,11 @@
+import ContentCard from "@/components/contentCard/ContentCard";
 import OrderSearchBar from "@/components/OrderSearchBar";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import Show from "@/components/Show";
-import { Card } from "@/components/ui/card";
 import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
+import { Users } from "lucide-react";
 import { redirect } from "next/navigation";
 import CustomerFilterClear from "./components/CustomerFilterClear";
 import CustomerListOrderDateRange from "./components/CustomerListOrderDateRange";
@@ -27,31 +29,35 @@ const Orders = async () => {
   }
 
   return (
-    <Card className="m-4">
-      {/* header section , search bar  */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-        <h1 className="text-2xl font-bold">Customer List</h1>
-        <div className="w-full sm:w-auto">
-          <OrderSearchBar endPoint="/orders/admin/processing-orders" />
+    <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="Customer List"
+        subtitle="Browse and filter customer orders"
+        icon={Users}
+        actions={
+          <div className="w-full sm:w-auto">
+            <OrderSearchBar endPoint="/orders/admin/processing-orders" />
+          </div>
+        }
+      />
+      <ContentCard>
+        <div className="space-y-4">
+          <CustomerListOrdersStatusButtons />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <CustomerListOrderDateRange />
+              <FilterByProduct />
+              <FilterBySource />
+              <FilterByTimes />
+              <FilterByDivisionDistrict />
+              <CustomerFilterClear />
+            </div>
+            <Show />
+          </div>
+          <CustomerOrdersTable permissions={permissions} />
         </div>
-      </div>
-      <hr className="my-4" />
-      <div className="space-y-3">
-        {/* All, processing, processing done, canceled etc status*/}
-        <CustomerListOrdersStatusButtons />
-        <div className="flex flex-wrap items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
-          <CustomerListOrderDateRange />
-          <FilterByProduct />
-          <FilterBySource />
-          <FilterByTimes />
-          <FilterByDivisionDistrict />
-          <CustomerFilterClear />
-          <Show />
-        </div>
-        {/* Processing orders table */}
-        <CustomerOrdersTable permissions={permissions} />
-      </div>
-    </Card>
+      </ContentCard>
+    </div>
   );
 };
 

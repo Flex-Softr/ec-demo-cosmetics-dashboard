@@ -1,7 +1,9 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
-import { Card } from "../ui/card";
+
 type TProps = {
   children: React.ReactNode;
   heading?: string;
@@ -9,6 +11,7 @@ type TProps = {
   collapse?: boolean;
   height?: string;
 };
+
 const SectionContentWrapper = ({
   children,
   heading,
@@ -18,55 +21,32 @@ const SectionContentWrapper = ({
 }: TProps) => {
   const [isCollapsed, setIsCollapsed] = useState(collapse || false);
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
   return (
-    <Card className="space-y-3 relative">
-      <div className="flex justify-between items-center">
-        <h2
-          className={`scroll-m-20 text-sm font-semibold tracking-tight first:mt-0 ${className}`}
-        >
+    <div
+      className={cn(
+        "relative space-y-4 rounded-xl border border-border bg-card p-4 shadow-none sm:p-5",
+        className
+      )}
+    >
+      <div className="flex items-center justify-between gap-3 border-b border-border pb-3">
+        <h2 className="text-sm font-semibold tracking-tight text-foreground">
           {heading}
         </h2>
-        {isCollapsed ? (
-          <svg
-            onClick={() => toggleCollapse()}
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6 cursor-pointer text-primary"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m19.5 8.25-7.5 7.5-7.5-7.5"
-            />
-          </svg>
-        ) : (
-          <svg
-            onClick={() => toggleCollapse()}
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6 cursor-pointer text-primary"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m4.5 15.75 7.5-7.5 7.5 7.5"
-            />
-          </svg>
-        )}
+        <button
+          type="button"
+          onClick={() => setIsCollapsed((prev) => !prev)}
+          className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          aria-label={isCollapsed ? "Expand section" : "Collapse section"}
+        >
+          {isCollapsed ? (
+            <ChevronDown className="h-4 w-4" />
+          ) : (
+            <ChevronUp className="h-4 w-4" />
+          )}
+        </button>
       </div>
-      {/* <hr className="my-2 border-primary"/> */}
       {!isCollapsed && <div className={height}>{children}</div>}
-    </Card>
+    </div>
   );
 };
 

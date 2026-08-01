@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Table,
   TableBody,
@@ -11,8 +12,8 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  useReactTable,
   getFilteredRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 import * as React from "react";
 import { getColumns, TContactMessage } from "./ContactMessagesColumn";
@@ -49,17 +50,28 @@ export const ContactMessagesTableBase = ({
     getRowId: (row) => row._id,
   });
 
+  if (isLoading && !data.length) {
+    return (
+      <div className="flex h-40 items-center justify-center rounded-xl border border-border bg-muted/30 text-sm text-muted-foreground">
+        Loading messages…
+      </div>
+    );
+  }
+
   return (
-    <div className="rounded-md border overflow-hidden">
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
       <div className="overflow-x-auto">
         <Table>
-          <TableHeader className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-primary/90">
+              <TableRow
+                key={headerGroup.id}
+                className="border-b border-border hover:bg-muted"
+              >
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-white font-semibold py-3"
+                    className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
                   >
                     {header.isPlaceholder
                       ? null
@@ -73,11 +85,11 @@ export const ContactMessagesTableBase = ({
             ))}
           </TableHeader>
           <TableBody>
-            {isLoading || isFetching ? (
-              Array.from({ length: limit }).map((_, i) => (
+            {isFetching && !table.getRowModel().rows?.length ? (
+              Array.from({ length: Math.min(limit, 5) }).map((_, i) => (
                 <TableRow key={i}>
                   <TableCell colSpan={columns.length} className="p-0">
-                    <div className="h-16 animate-pulse bg-muted/50" />
+                    <div className="h-14 animate-pulse bg-muted/40" />
                   </TableCell>
                 </TableRow>
               ))
@@ -85,7 +97,9 @@ export const ContactMessagesTableBase = ({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className={`hover:bg-muted/50 transition-colors ${!row.original.isRead ? "bg-primary/5 font-medium" : ""}`}
+                  className={`border-b border-border transition-colors hover:bg-muted/40 ${
+                    !row.original.isRead ? "bg-primary/5 font-medium" : ""
+                  }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-3">
@@ -101,7 +115,7 @@ export const ContactMessagesTableBase = ({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-32 text-center text-muted-foreground"
+                  className="h-24 text-center text-muted-foreground"
                 >
                   No contact messages found.
                 </TableCell>

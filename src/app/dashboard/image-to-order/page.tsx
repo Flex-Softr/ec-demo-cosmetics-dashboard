@@ -1,7 +1,9 @@
-import { Card } from "@/components/ui/card";
+import ContentCard from "@/components/contentCard/ContentCard";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
+import { ImageIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import FetchAllImageToOrderReq from "./_components/FetchAllImageToOrderReq";
 import ImgToOrderTable from "./_components/ImgToOrderTable/ImgToOrder";
@@ -19,14 +21,17 @@ const AllImageToOrderPage = async () => {
   }
 
   return (
-    <>
+    <div className="space-y-5 p-4 sm:p-6">
       <FetchAllImageToOrderReq />
-      <Card className="m-4">
-        <h2 className="text-2xl font-bold mb-2">Orders requests</h2>
-        <hr className="mb-8" />
+      <PageHeader
+        title="Order Requests"
+        subtitle="Convert image requests into orders"
+        icon={ImageIcon}
+      />
+      <ContentCard>
         <ImgToOrderTable />
-      </Card>
-    </>
+      </ContentCard>
+    </div>
   );
 };
 

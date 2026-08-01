@@ -1,24 +1,29 @@
 "use client";
 import Media from "./Media";
-// import Offer from "./Offer";
 import { TAttribute } from "@/app/dashboard/attribute/lib/attribute.interface";
 import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PRODUCT_TYPE } from "@/const/products";
 import { TSelectedAttribute } from "@/redux/features/addProduct/variation/interface";
 import { useGetAttributesQuery } from "@/redux/features/attributes/attributesApi";
 import { useEffect, useMemo, useState } from "react";
-import { useFormContext } from "react-hook-form";
-// import Advanced from "./Advanced";
+import { Controller, useFormContext } from "react-hook-form";
 import Attributes from "./Attributes";
 import Inventory from "./Inventory";
 import Price from "./Price";
 import Variations from "./Variations";
-import { PRODUCT_TYPE } from "@/const/products";
 
 const ProductDataTabs = () => {
   const {
     watch,
-    register,
+    control,
     formState: { errors, submitCount },
   } = useFormContext();
 
@@ -28,7 +33,7 @@ const ProductDataTabs = () => {
     { isActive: true },
     { skip: type === PRODUCT_TYPE.SIMPLE }
   );
-  // Memoize attributes transformation to prevent unnecessary recalculations
+
   const attributes: TSelectedAttribute[] = useMemo(() => {
     return (
       data?.data?.map((attr: TAttribute) => ({
@@ -45,7 +50,6 @@ const ProductDataTabs = () => {
 
   const [activeTab, setActiveTab] = useState<string>("media");
 
-  // Centralized Tab Configuration
   const tabs = useMemo(() => {
     const allTabs = [
       {
@@ -73,7 +77,7 @@ const ProductDataTabs = () => {
         id: "attributes",
         label: "Attributes",
         component: isLoading ? (
-          <p className="p-4 text-center text-gray-500 italic">
+          <p className="p-4 text-center italic text-muted-foreground">
             Loading attributes...
           </p>
         ) : (
@@ -89,16 +93,6 @@ const ProductDataTabs = () => {
         fields: ["variations"],
         isVisible: type === PRODUCT_TYPE.VARIABLE,
       },
-      // {
-      //   id: "advanced",
-      //   label: "Advanced",
-      //   component: <Advanced />,
-      //   fields: [
-      //     "warrantyInfo.duration.quantity",
-      //     "warrantyInfo.duration.unit",
-      //   ],
-      //   isVisible: true,
-      // },
     ];
     return allTabs.filter((tab) => tab.isVisible);
   }, [type, attributes, isLoading]);
@@ -107,12 +101,8 @@ const ProductDataTabs = () => {
     setActiveTab(tab);
   };
 
-  // Sync active tab when product type changes
   useEffect(() => {
-    // Check if current active tab is present in the visible tabs
     const isTabVisible = tabs.some((tab) => tab.id === activeTab);
-
-    // If not visible, switch to the first visible tab (usually 'media')
     if (!isTabVisible && tabs.length > 0) {
       setActiveTab(tabs[0].id);
     }
@@ -124,7 +114,6 @@ const ProductDataTabs = () => {
     const tabConfig = tabs.find((t) => t.id === tabId);
     if (!tabConfig) return false;
 
-    // Use find for early exit instead of some (optimization)
     return tabConfig.fields.some((field) => {
       const parts = field.split(".");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -137,7 +126,6 @@ const ProductDataTabs = () => {
     });
   };
 
-  // Switch to first tab with error on failed submit
   useEffect(() => {
     if (submitCount > 0) {
       const firstTabWithError = tabs.find((tab) => hasError(tab.id));
@@ -146,30 +134,44 @@ const ProductDataTabs = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [submitCount, errors, tabs]); // Added tabs to dependency for correctness
+  }, [submitCount, errors, tabs]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex h-24 items-center justify-center rounded-lg border border-border bg-muted/20 text-sm text-muted-foreground">
+        Loading product data…
+      </div>
+    );
   }
 
-  // Find the active component to render
   const ActiveComponent =
     tabs.find((tab) => tab.id === activeTab)?.component || null;
 
   return (
     <SectionContentWrapper heading={"Product Data"}>
-      <div className="flex items-center gap-4 py-3 border-b border-gray-100 mb-4">
-        <label className="font-medium text-gray-700 text-nowrap">
-          Product Type:
+      <div className="mb-4 flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-center sm:gap-4">
+        <label className="whitespace-nowrap text-sm font-medium text-foreground">
+          Product Type
         </label>
-        <select
-          value={type}
-          {...register("type")}
-          className="h-9 border border-primary focus:outline focus:outline-primary rounded-md px-2 w-full"
-        >
-          <option value={PRODUCT_TYPE.SIMPLE}>Simple Product</option>
-          <option value={PRODUCT_TYPE.VARIABLE}>Variable Product</option>
-        </select>
+        <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="h-10 w-full rounded-lg">
+                <SelectValue placeholder="Select product type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={PRODUCT_TYPE.SIMPLE}>
+                  Simple Product
+                </SelectItem>
+                <SelectItem value={PRODUCT_TYPE.VARIABLE}>
+                  Variable Product
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
       </div>
 
       <div className="flex flex-wrap gap-2 py-2">
@@ -181,13 +183,14 @@ const ProductDataTabs = () => {
               onClick={() => handleTabClick(tab.id)}
               variant={activeTab === tab.id ? "default" : "outline"}
               type="button"
-              className="h-9 px-4 relative"
+              size="sm"
+              className="relative h-9 rounded-lg px-4"
             >
               {tab.label}
               {isError && (
-                <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                <span className="absolute -right-1 -top-1 flex h-3 w-3">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75"></span>
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-destructive"></span>
                 </span>
               )}
             </Button>

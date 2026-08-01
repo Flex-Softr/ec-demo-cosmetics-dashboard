@@ -18,7 +18,7 @@ export const columns: ColumnDef<TBrand>[] = [
     cell: ({ row }) => {
       const src = formatImageSrc(row.original.logo?.src);
       return (
-        <div className="relative h-10 w-10 overflow-hidden rounded">
+        <div className="relative h-10 w-10 overflow-hidden rounded-lg border border-border bg-muted">
           <Image
             src={src}
             alt={row.original.name}
@@ -33,7 +33,7 @@ export const columns: ColumnDef<TBrand>[] = [
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => (
-      <span className="capitalize font-medium whitespace-nowrap">
+      <span className="whitespace-nowrap font-semibold capitalize text-foreground">
         {row.getValue("name")}
       </span>
     ),
@@ -45,10 +45,10 @@ export const columns: ColumnDef<TBrand>[] = [
       const description = row.original.description;
       return (
         <div
-          className="max-w-[500px] truncate"
+          className="max-w-[500px] truncate text-sm text-muted-foreground"
           title={row.original.description}
         >
-          {description || "N/A"}
+          {description || "—"}
         </div>
       );
     },
@@ -58,10 +58,10 @@ export const columns: ColumnDef<TBrand>[] = [
     header: "Status",
     cell: ({ row }) => (
       <span
-        className={`px-2 py-1 rounded-full text-xs font-medium ${
+        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
           row.original.isActive
-            ? "bg-green-100 text-green-800"
-            : "bg-red-100 text-red-800"
+            ? "bg-emerald-50 text-emerald-700"
+            : "bg-red-50 text-red-700"
         }`}
       >
         {row.original.isActive ? "Active" : "Inactive"}

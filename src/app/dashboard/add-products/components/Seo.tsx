@@ -4,7 +4,7 @@ import { SeoHook } from "@/components/Seo";
 
 const Seo = () => {
   return (
-    <SectionContentWrapper heading={"SEO Data"} className="mt-6">
+    <SectionContentWrapper heading={"SEO Data"}>
       <SeoHook />
     </SectionContentWrapper>
   );

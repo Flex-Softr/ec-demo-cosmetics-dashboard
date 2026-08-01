@@ -1,41 +1,43 @@
 "use client";
 
-import Image from "next/image";
-import logo from "../../../public/logo.png";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "@/providers/SidebarProvider";
+import { useGetUnreadContactMessagesCountQuery } from "@/redux/features/contactMessage/contactMessageApi";
 import {
-  BadgePercent,
   BarChart3,
-  Boxes,
-  CircleUser,
-  FileText,
-  FolderOpen,
-  GalleryHorizontal,
-  Headset,
-  LayoutDashboard,
+  BookOpen,
+  ClipboardList,
+  CreditCard,
+  FolderTree,
+  Home,
+  Image as ImageIcon,
+  Layers3,
+  LayoutTemplate,
   LucideIcon,
-  MapPinned,
-  MessageSquareText,
-  Newspaper,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Package,
   PackagePlus,
   PackageSearch,
-  PanelTop,
-  Receipt,
-  RefreshCcw,
   Settings2,
   ShieldAlert,
   ShieldCheck,
-  ShoppingBag,
-  Tags,
+  ShoppingCart,
+  SlidersHorizontal,
+  Tag,
+  TicketPercent,
   Truck,
-  UserCheck,
-  UserCog,
+  UserRound,
   Users,
+  UsersRound,
   Warehouse,
+  Workflow,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
+import logo from "../../../public/logo.png";
 import NavLink from "../NavLink/NavLink";
 import {
   Accordion,
@@ -43,7 +45,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import { useGetUnreadContactMessagesCountQuery } from "@/redux/features/contactMessage/contactMessageApi";
 
 type TProps = {
   permissions: {
@@ -79,6 +80,10 @@ type SidebarGroup = {
   visible: boolean;
 };
 
+const ICON_SIZE = 18;
+const ICON_SIZE_SM = 16;
+const ICON_STROKE = 2;
+
 export function SidebarClient({ permissions }: TProps) {
   const { isCollapsed, toggleSidebar } = useSidebar();
   const pathname = usePathname();
@@ -103,17 +108,17 @@ export function SidebarClient({ permissions }: TProps) {
   const productManagementLinks = [
     { href: "/products", name: "All Products", icon: PackageSearch },
     { href: "/add-products", name: "Add Product", icon: PackagePlus },
-    { href: "/category", name: "Category", icon: FolderOpen },
-    { href: "/attribute", name: "Attribute", icon: Tags },
-    { href: "/brand", name: "Brand", icon: BadgePercent },
-    { href: "/collection", name: "Collection", icon: Boxes },
+    { href: "/category", name: "Category", icon: FolderTree },
+    { href: "/attribute", name: "Attribute", icon: Tag },
+    { href: "/brand", name: "Brand", icon: Layers3 },
+    { href: "/collection", name: "Collection", icon: Package },
   ];
 
   const sidebarGroups: SidebarGroup[] = [
     {
       key: "products",
       label: "Products",
-      icon: Boxes,
+      icon: Package,
       visible: !!manageProduct,
       items: productManagementLinks.map((link) => ({
         name: link.name,
@@ -124,18 +129,18 @@ export function SidebarClient({ permissions }: TProps) {
     {
       key: "orders",
       label: "Orders",
-      icon: ShoppingBag,
+      icon: ShoppingCart,
       visible: true,
       items: [
         manageOrder && {
           name: "Orders",
           href: "/dashboard/orders",
-          icon: Receipt,
+          icon: ClipboardList,
         },
         manageProcessingOrder && {
           name: "Processing Orders",
           href: "/dashboard/processing-orders",
-          icon: RefreshCcw,
+          icon: Workflow,
         },
         manageShipmentOrder && {
           name: "Courier Shipments",
@@ -145,7 +150,7 @@ export function SidebarClient({ permissions }: TProps) {
         (manageCourier || manageProcessingOrder) && {
           name: "Monitor Delivery",
           href: "/dashboard/monitor-delivery",
-          icon: MapPinned,
+          icon: MapPin,
         },
         (manageOrder ||
           manageProcessingOrder ||
@@ -160,48 +165,48 @@ export function SidebarClient({ permissions }: TProps) {
     {
       key: "media",
       label: "Media",
-      icon: GalleryHorizontal,
+      icon: ImageIcon,
       visible: !!manageProduct,
       items: [
         {
           name: "Media",
           href: "/dashboard/media",
-          icon: GalleryHorizontal,
+          icon: ImageIcon,
         },
-        {
-          name: "Book Previews",
-          href: "/dashboard/book-previews",
-          icon: FileText,
-        },
-        { name: "Free PDFs", href: "/dashboard/free-pdfs", icon: FileText },
+        // {
+        //   name: "Book Previews",
+        //   href: "/dashboard/book-previews",
+        //   icon: BookOpen,
+        // },
+        // { name: "Free PDFs", href: "/dashboard/free-pdfs", icon: FileText },
       ],
     },
     {
       key: "blog-qna",
       label: "Blog & QnA",
-      icon: Newspaper,
+      icon: BookOpen,
       visible: !!(isSuperAdmin || manageBlog),
       items: [
         {
           name: "Blog Posts",
           href: "/dashboard/blog-posts",
-          icon: Newspaper,
+          icon: BookOpen,
         },
-        { name: "QnA", href: "/dashboard/qna", icon: MessageSquareText },
+        { name: "QnA", href: "/dashboard/qna", icon: MessageCircle },
         {
           name: "Categories",
           href: "/dashboard/blog-qna-categories",
-          icon: FolderOpen,
+          icon: FolderTree,
         },
         {
           name: "Topics",
           href: "/dashboard/blog-qna-topics",
-          icon: Tags,
+          icon: Layers3,
         },
         {
           name: "Tags",
           href: "/dashboard/blog-qna-tags",
-          icon: Tags,
+          icon: Tag,
         },
       ],
     },
@@ -214,12 +219,12 @@ export function SidebarClient({ permissions }: TProps) {
         (isSuperAdmin || manageProduct) && {
           name: "Slider Config",
           href: "/dashboard/slider-section",
-          icon: PanelTop,
+          icon: SlidersHorizontal,
         },
         (isSuperAdmin || manageProduct) && {
           name: "Homepage Sections",
           href: "/dashboard/homepage-section",
-          icon: LayoutDashboard,
+          icon: LayoutTemplate,
         },
         manageShippingCharge && {
           name: "Shipping Charges",
@@ -229,7 +234,7 @@ export function SidebarClient({ permissions }: TProps) {
         managePaymentMethod && {
           name: "Payment Config",
           href: "/dashboard/payment-configuration",
-          icon: BadgePercent,
+          icon: CreditCard,
         },
         manageCourier && {
           name: "Courier Config",
@@ -239,25 +244,25 @@ export function SidebarClient({ permissions }: TProps) {
         manageAdminOrStaff && {
           name: "Manage Employees",
           href: "/dashboard/manage-admin-staff",
-          icon: UserCog,
+          icon: UsersRound,
         },
       ].filter(Boolean) as SidebarItem[],
     },
     {
       key: "marketing",
       label: "Marketing",
-      icon: BadgePercent,
+      icon: TicketPercent,
       visible: !!(manageCoupon || sendSMS),
       items: [
         manageCoupon && {
           name: "Manage Coupons",
           href: "/dashboard/manage-coupon",
-          icon: BadgePercent,
+          icon: TicketPercent,
         },
         sendSMS && {
           name: "SMS",
           href: "/dashboard/sms",
-          icon: MessageSquareText,
+          icon: MessageCircle,
         },
       ].filter(Boolean) as SidebarItem[],
     },
@@ -275,12 +280,12 @@ export function SidebarClient({ permissions }: TProps) {
         {
           name: "Registered customers",
           href: "/dashboard/registered-customers",
-          icon: UserCheck,
+          icon: UserRound,
         },
         {
           name: "Contact Messages",
           href: "/dashboard/contact-messages",
-          icon: Headset,
+          icon: Mail,
         },
       ],
     },
@@ -297,17 +302,17 @@ export function SidebarClient({ permissions }: TProps) {
       items.push({
         name: "",
         href: "/dashboard/products",
-        icon: Boxes,
+        icon: Package,
       });
       items.push({
         name: "",
         href: "/dashboard/media",
-        icon: GalleryHorizontal,
+        icon: ImageIcon,
       });
       items.push({
         name: "",
         href: "/dashboard/book-previews",
-        icon: FileText,
+        icon: BookOpen,
       });
     }
 
@@ -315,27 +320,31 @@ export function SidebarClient({ permissions }: TProps) {
       items.push({
         name: "",
         href: "/dashboard/blog-posts",
-        icon: Newspaper,
+        icon: BookOpen,
       });
       items.push({
         name: "",
         href: "/dashboard/qna",
-        icon: MessageSquareText,
+        icon: MessageCircle,
       });
       items.push({
         name: "",
         href: "/dashboard/blog-qna-topics",
-        icon: Tags,
+        icon: Layers3,
       });
     }
 
     if (manageOrder)
-      items.push({ name: "", href: "/dashboard/orders", icon: Receipt });
+      items.push({
+        name: "",
+        href: "/dashboard/orders",
+        icon: ClipboardList,
+      });
     if (manageProcessingOrder)
       items.push({
         name: "",
         href: "/dashboard/processing-orders",
-        icon: RefreshCcw,
+        icon: Workflow,
       });
     if (manageShipmentOrder)
       items.push({
@@ -347,7 +356,7 @@ export function SidebarClient({ permissions }: TProps) {
       items.push({
         name: "",
         href: "/dashboard/monitor-delivery",
-        icon: MapPinned,
+        icon: MapPin,
       });
     if (manageWarrantyClaim)
       items.push({
@@ -371,7 +380,7 @@ export function SidebarClient({ permissions }: TProps) {
       items.push({
         name: "",
         href: "/dashboard/payment-configuration",
-        icon: BadgePercent,
+        icon: CreditCard,
       });
     if (manageCourier)
       items.push({
@@ -383,18 +392,18 @@ export function SidebarClient({ permissions }: TProps) {
       items.push({
         name: "",
         href: "/dashboard/manage-admin-staff",
-        icon: UserCog,
+        icon: UsersRound,
       });
     if (isSuperAdmin || manageProduct) {
       items.push({
         name: "",
         href: "/dashboard/slider-section",
-        icon: PanelTop,
+        icon: SlidersHorizontal,
       });
       items.push({
         name: "",
         href: "/dashboard/homepage-section",
-        icon: LayoutDashboard,
+        icon: LayoutTemplate,
       });
     }
 
@@ -402,13 +411,13 @@ export function SidebarClient({ permissions }: TProps) {
       items.push({
         name: "",
         href: "/dashboard/manage-coupon",
-        icon: BadgePercent,
+        icon: TicketPercent,
       });
     if (sendSMS)
       items.push({
         name: "",
         href: "/dashboard/sms",
-        icon: MessageSquareText,
+        icon: MessageCircle,
       });
 
     if (manageCustomer) {
@@ -420,12 +429,12 @@ export function SidebarClient({ permissions }: TProps) {
       items.push({
         name: "",
         href: "/dashboard/registered-customers",
-        icon: UserCheck,
+        icon: UserRound,
       });
       items.push({
         name: "",
         href: "/dashboard/contact-messages",
-        icon: Headset,
+        icon: Mail,
       });
     }
 
@@ -447,13 +456,13 @@ export function SidebarClient({ permissions }: TProps) {
     <>
       {!isCollapsed && (
         <div
-          className="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-40 md:hidden"
+          className="fixed inset-0 z-40 bg-foreground/30 backdrop-blur-[2px] md:hidden"
           onClick={toggleSidebar}
         />
       )}
-      <div
+      <aside
         className={cn(
-          "bg-white/95 backdrop-blur-sm text-slate-900 border-r border-slate-200/80 h-screen md:h-[calc(100vh-60px)] top-0 md:top-auto overflow-y-auto no-scrollbar transition-all duration-300 fixed md:relative z-50 flex flex-col",
+          "fixed z-50 flex h-screen flex-col border-r border-border bg-card text-foreground transition-all duration-300 md:relative md:top-auto md:h-[calc(100vh-56px)] overflow-y-auto no-scrollbar",
           isCollapsed
             ? "-translate-x-full md:translate-x-0 md:w-[68px]"
             : "translate-x-0 w-64 box-border"
@@ -466,48 +475,48 @@ export function SidebarClient({ permissions }: TProps) {
           )}
         >
           {!isCollapsed && (
-            <div className="flex items-center justify-between px-1 py-2 mb-2 border-b border-slate-100 md:hidden">
+            <div className="mb-2 flex items-center justify-between border-b border-border px-1 py-2 md:hidden">
               <Image
                 src={logo}
                 alt="Logo"
                 width={80}
                 height={40}
-                className="object-contain h-9 w-auto"
+                className="h-9 w-auto object-contain"
                 priority
               />
               <button
                 onClick={toggleSidebar}
-                className="p-2 rounded-xl hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors"
+                className="rounded-lg p-2 text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
                 aria-label="Close sidebar"
               >
-                <X size={18} />
+                <X size={18} strokeWidth={ICON_STROKE} />
               </button>
             </div>
           )}
 
           <div className={cn("space-y-0.5", !isCollapsed && "mb-1")}>
-            <NavLink
-              href="/dashboard"
-              name={isCollapsed ? "" : "Home"}
-              icon={<LayoutDashboard size={18} strokeWidth={1.75} />}
-              className={cn("m-0", isCollapsed && collapsedLinkClass)}
-            />
+            {isSuperAdmin && (
+              <NavLink
+                href="/dashboard"
+                name={isCollapsed ? "" : "Home"}
+                icon={<Home size={ICON_SIZE} strokeWidth={ICON_STROKE} />}
+                className={cn("m-0", isCollapsed && collapsedLinkClass)}
+              />
+            )}
             {isSuperAdmin && (
               <NavLink
                 href="/dashboard/reports"
                 name={isCollapsed ? "" : "Reports"}
-                icon={<BarChart3 size={18} strokeWidth={1.75} />}
+                icon={<BarChart3 size={ICON_SIZE} strokeWidth={ICON_STROKE} />}
                 className={cn("m-0", isCollapsed && collapsedLinkClass)}
               />
             )}
           </div>
 
-          {!isCollapsed && (
-            <div className="mx-1 my-2 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-          )}
+          {!isCollapsed && <div className="mx-1 my-2 h-px bg-border" />}
 
           {isCollapsed ? (
-            <div className="flex flex-col gap-1 w-full items-center py-1">
+            <div className="flex w-full flex-col items-center gap-1 py-1">
               {getCollapsedItems().map((item, idx) => (
                 <NavLink
                   key={idx}
@@ -516,11 +525,11 @@ export function SidebarClient({ permissions }: TProps) {
                   icon={
                     <div className="relative">
                       {item.icon ? (
-                        <item.icon size={18} strokeWidth={1.75} />
+                        <item.icon size={ICON_SIZE} strokeWidth={ICON_STROKE} />
                       ) : undefined}
                       {item.href === "/dashboard/contact-messages" &&
                         unreadCount > 0 && (
-                          <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] min-w-[14px] h-3.5 px-0.5 rounded-full flex items-center justify-center ring-2 ring-white">
+                          <span className="absolute -right-1.5 -top-1.5 flex h-3.5 min-w-[14px] items-center justify-center rounded-full bg-destructive px-0.5 text-[9px] text-destructive-foreground ring-2 ring-card">
                             {unreadCount > 99 ? "99+" : unreadCount}
                           </span>
                         )}
@@ -549,34 +558,34 @@ export function SidebarClient({ permissions }: TProps) {
                     >
                       <AccordionTrigger
                         className={cn(
-                          "px-2.5 py-2 text-sm transition-all duration-200 group border-b-0 hover:no-underline rounded-lg [&>svg]:h-4 [&>svg]:w-4 [&>svg]:text-slate-500",
+                          "rounded-lg border-b-0 px-2.5 py-2 text-sm transition-colors duration-200 hover:no-underline group [&>svg]:h-4 [&>svg]:w-4 [&>svg]:text-foreground/55",
                           isGroupActive
-                            ? "text-primary bg-primary/5 font-semibold"
-                            : "text-slate-800 hover:bg-slate-50 hover:text-primary font-medium"
+                            ? "bg-primary/10 font-semibold text-primary"
+                            : "font-medium text-foreground/90 hover:bg-muted hover:text-foreground"
                         )}
                       >
                         <div className="flex items-center gap-2.5">
                           <div className="relative shrink-0">
                             <group.icon
-                              size={18}
-                              strokeWidth={1.75}
+                              size={ICON_SIZE}
+                              strokeWidth={ICON_STROKE}
                               className={cn(
                                 "transition-colors",
                                 isGroupActive
                                   ? "text-primary"
-                                  : "text-slate-700 group-hover:text-primary"
+                                  : "text-foreground/80 group-hover:text-foreground"
                               )}
                             />
                             {group.key === "customers" && unreadCount > 0 && (
-                              <span className="absolute -top-0.5 -right-0.5 bg-red-500 w-2 h-2 rounded-full ring-2 ring-white" />
+                              <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-card" />
                             )}
                           </div>
-                          <span className="tracking-wide text-sm">
+                          <span className="text-sm tracking-wide">
                             {group.label}
                           </span>
                         </div>
                       </AccordionTrigger>
-                      <AccordionContent className="pb-1 pt-0.5 ml-3 pl-3 border-l border-slate-200">
+                      <AccordionContent className="ml-3 border-l border-border pb-1 pl-3 pt-0.5">
                         {group.items.map((item, idx) => (
                           <NavLink
                             key={idx}
@@ -584,14 +593,17 @@ export function SidebarClient({ permissions }: TProps) {
                             name={item.name}
                             icon={
                               item.icon ? (
-                                <item.icon size={16} strokeWidth={1.75} />
+                                <item.icon
+                                  size={ICON_SIZE_SM}
+                                  strokeWidth={ICON_STROKE}
+                                />
                               ) : undefined
                             }
-                            className="justify-start w-full text-sm m-0 !py-1.5 !px-2"
+                            className="m-0 w-full justify-start !px-2 !py-1.5 text-sm"
                             badge={
                               item.href === "/dashboard/contact-messages" &&
                               unreadCount > 0 ? (
-                                <span className="bg-red-500 text-white text-[10px] min-w-[1.25rem] h-5 flex items-center justify-center rounded-full ml-auto px-1.5 shadow-sm">
+                                <span className="ml-auto flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] text-destructive-foreground">
                                   {unreadCount > 99 ? "99+" : unreadCount}
                                 </span>
                               ) : undefined
@@ -605,18 +617,16 @@ export function SidebarClient({ permissions }: TProps) {
             </Accordion>
           )}
 
-          {!isCollapsed && (
-            <div className="mx-1 my-2 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-          )}
+          {!isCollapsed && <div className="mx-1 my-2 h-px bg-border" />}
 
           <NavLink
             href="/dashboard/accounts"
             name={isCollapsed ? "" : "Profile"}
-            icon={<CircleUser size={18} strokeWidth={1.75} />}
+            icon={<UserRound size={ICON_SIZE} strokeWidth={ICON_STROKE} />}
             className={cn("m-0 mt-0.5", isCollapsed && collapsedLinkClass)}
           />
         </div>
-      </div>
+      </aside>
     </>
   );
 }

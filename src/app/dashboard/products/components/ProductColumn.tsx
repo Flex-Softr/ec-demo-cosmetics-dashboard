@@ -192,44 +192,36 @@ export const ProductColumns: ColumnDef<IAdminProduct>[] = [
     header: () => <div className="text-center">Price</div>,
     cell: ({ row: { original } }) =>
       original.type === PRODUCT_TYPE.SIMPLE ? (
-        <div className="flex gap-2 items-baseline justify-center px-4 py-2 text-nowrap w-[1%] mx-auto">
-          <span
-            className={
-              original.salePrice
-                ? "line-through text-muted-foreground text-xs"
-                : "text-sm font-medium"
-            }
-          >
-            &#2547;{original.regularPrice}
+        <div className="flex flex-col items-center justify-center gap-0.5 px-4 py-2 text-nowrap w-[1%] mx-auto">
+          <span className="text-sm font-semibold text-primary">
+            &#2547;{original.salePrice ?? original.regularPrice}
           </span>
-
           {original.salePrice && (
-            <span className="text-sm font-medium">
-              &#2547;{original.salePrice}
+            <span className="text-xs text-muted-foreground line-through">
+              &#2547;{original.regularPrice}
             </span>
           )}
         </div>
       ) : (
         <div className="flex flex-col justify-start items-center gap-1 px-4 py-2 text-nowrap w-[1%] mx-auto whitespace-nowrap">
-          <div className="h-5 flex items-baseline gap-2 shrink-0">
+          <div className="flex flex-col items-center gap-0.5 shrink-0">
             {(() => {
               const priceData = getVariablePriceDisplay(original.variations!);
 
               if (priceData.minPrice > 0) {
                 return (
                   <>
+                    <span className="text-sm font-semibold text-primary">
+                      &#2547;{priceData.minPrice}
+                      {priceData.hasMultiplePrices &&
+                        ` - &#2547;${priceData.maxPrice}`}
+                    </span>
                     {priceData.previousPrice &&
                       !priceData.hasMultiplePrices && (
                         <span className="text-xs text-muted-foreground line-through">
                           &#2547;{priceData.previousPrice}
                         </span>
                       )}
-
-                    <span className="text-sm font-medium">
-                      &#2547;{priceData.minPrice}
-                      {priceData.hasMultiplePrices &&
-                        ` - &#2547;${priceData.maxPrice}`}
-                    </span>
                   </>
                 );
               } else {

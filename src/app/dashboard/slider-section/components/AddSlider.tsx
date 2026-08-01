@@ -31,6 +31,7 @@ import { useAddSliderMutation } from "@/redux/features/sliderBanner/sliderApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { revalidateTag } from "@/utilities/revalidate";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -119,7 +120,10 @@ const AddSlider = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add Slider</Button>
+        <Button size="sm" className="rounded-lg gap-1.5">
+          <Plus className="h-4 w-4" />
+          <span className="hidden sm:inline">New Slider</span>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[725px]">
         <DialogHeader>

@@ -5,10 +5,36 @@ import OrderIdAndDate from "@/components/OrderIdAndDate";
 import OrderStatus from "@/components/OrderStatus";
 import ProductInfo from "@/components/ProductInfo";
 import { Checkbox } from "@/components/ui/checkbox";
+import { softBadgeClass } from "@/lib/tableStyles";
 import { TOrders } from "@/types/order.interface";
-import { ColumnDef } from "@tanstack/react-table";
-
 import { TPermission } from "@/utilities/isPermitted";
+import { ColumnDef } from "@tanstack/react-table";
+import { cn } from "@/lib/utils";
+
+const originStyle = (name?: string) => {
+  const key = (name || "").toLowerCase();
+  if (key.includes("website") || key.includes("web"))
+    return "bg-sky-100 text-sky-800";
+  if (key.includes("mobile") || key.includes("app"))
+    return "bg-primary/10 text-primary";
+  if (key.includes("admin")) return "bg-muted text-muted-foreground";
+  return "bg-muted text-muted-foreground";
+};
+
+const paymentStyle = (name?: string) => {
+  const key = (name || "").toLowerCase();
+  if (key.includes("cod") || key.includes("cash"))
+    return "bg-amber-100 text-amber-800";
+  if (
+    key.includes("paid") ||
+    key.includes("online") ||
+    key.includes("bkash") ||
+    key.includes("nagad")
+  )
+    return "bg-emerald-100 text-emerald-800";
+  return "bg-muted text-muted-foreground";
+};
+
 export const getColumns = (
   permissions: TPermission[]
 ): ColumnDef<TOrders>[] => [
@@ -29,6 +55,7 @@ export const getColumns = (
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        onClick={(e) => e.stopPropagation()}
       />
     ),
     enableSorting: true,
@@ -38,52 +65,66 @@ export const getColumns = (
     accessorKey: "",
     header: "SL",
     cell: ({ table, row }) => (
-      <div className="capitalize flex flex-col justify-center items-center">
-        <span className="">
-          {table.getFilteredRowModel().rows?.length - row.index}
-        </span>
-      </div>
+      <span className="text-xs text-muted-foreground tabular-nums">
+        {table.getFilteredRowModel().rows?.length - row.index}
+      </span>
     ),
   },
   {
     accessorKey: "orderId",
-    header: "Order Id & Date",
+    header: "Order",
     cell: ({ row }) => (
       <OrderIdAndDate
         orderId={row.original.orderId}
         _id={row.original._id}
         timestamp={row.original.createdAt}
-        className="flex flex-col"
       />
     ),
   },
   {
     accessorKey: "shipping",
-    header: "Customer Info",
-    cell: ({ row }) => {
-      return <CustomerInfo order={row.original} />;
-    },
+    header: "Customer",
+    cell: ({ row }) => <CustomerInfo order={row.original} />,
   },
   {
     accessorKey: "product",
-    header: "Product Info",
-    cell: ({ row }) => {
-      return <ProductInfo products={row.original.products} />;
-    },
+    header: "Items",
+    cell: ({ row }) => <ProductInfo products={row.original.products} />,
   },
   {
     accessorKey: "total",
     header: "Total",
-    cell: ({ row }) => (
-      <span className="text-center text-nowrap">
-        &#2547; {row.getValue("total")}
-      </span>
-    ),
+    cell: ({ row }) => {
+      const total = row.getValue("total") as number;
+      const advance = row.original.advance || 0;
+      const due = Math.max(0, Number(total || 0) - Number(advance || 0));
+      return (
+        <div className="flex flex-col gap-0.5">
+          <span className="text-sm font-medium text-foreground tabular-nums whitespace-nowrap">
+            &#2547;{total}
+          </span>
+          {advance > 0 && due > 0 && (
+            <span className="text-[11px] text-rose-600 tabular-nums whitespace-nowrap">
+              Due &#2547;{due}
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "payment",
     header: "Payment",
-    cell: ({ row }) => <p>{row.original.payment?.paymentMethod?.name}</p>,
+    cell: ({ row }) => {
+      const name = row.original.payment?.paymentMethod?.name;
+      return (
+        <span
+          className={cn(softBadgeClass(), paymentStyle(name), "capitalize")}
+        >
+          {name || "—"}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "status",
@@ -105,13 +146,18 @@ export const getColumns = (
   {
     accessorKey: "orderSource",
     header: "Origin",
-    cell: ({ row }) => (
-      <div className="capitalized">{row.original.orderSource?.name}</div>
-    ),
+    cell: ({ row }) => {
+      const name = row.original.orderSource?.name;
+      return (
+        <span className={cn(softBadgeClass(), originStyle(name), "capitalize")}>
+          {name || "—"}
+        </span>
+      );
+    },
   },
   {
     id: "actions",
-    header: "Actions",
+    header: "",
     enableHiding: false,
     cell: ({ row }) => <OrderActionDropDown order={row.original} />,
   },

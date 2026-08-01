@@ -6,15 +6,15 @@ import SidebarToggle from "./SidebarToggle";
 
 const Navbar = () => {
   return (
-    <div className="w-full h-[56px] flex justify-between items-center bg-white/80 backdrop-blur-md border-b border-gray-100 py-2 px-6 top-0 sticky z-50 shadow-sm transition-all duration-300">
-      <div className="flex items-center gap-4 lg:gap-x-20">
+    <header className="sticky top-0 z-50 flex h-14 w-full items-center justify-between border-b border-border bg-card/90 px-4 py-2 backdrop-blur-md transition-all duration-300 sm:px-6">
+      <div className="flex items-center gap-3 lg:gap-x-16">
         <NavbarLogo />
         <SidebarToggle />
       </div>
       <div>
         <UserMenu />
       </div>
-    </div>
+    </header>
   );
 };
 

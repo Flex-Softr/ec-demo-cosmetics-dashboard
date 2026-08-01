@@ -74,15 +74,20 @@ const ProductBulkAction = () => {
   };
 
   return (
-    <div className={"flex gap-2 items-center"}>
+    <div className="flex items-center gap-2">
       <CommonSelect
         options={bulkOptions}
         value={action}
         onChange={(value) => setAction(value)}
         placeholder="Bulk Actions"
-        className="border-primary"
+        className="h-10 w-40 rounded-lg"
       />
-      <Button onClick={handleSubmit} disabled={isUpdateLoading}>
+      <Button
+        size="sm"
+        onClick={handleSubmit}
+        disabled={isUpdateLoading}
+        className="h-10 rounded-lg"
+      >
         Apply
       </Button>
     </div>

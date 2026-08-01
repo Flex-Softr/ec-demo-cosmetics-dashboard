@@ -24,18 +24,13 @@ const CustomerFilterClear = () => {
     <div>
       <Button
         variant="outline"
-        className="w-32 h-9 border border-primary outline-primary rounded-md text-gray-600 hover:text-gray-900"
+        size="sm"
+        className="h-10 rounded-lg gap-1.5 text-muted-foreground"
         onClick={() => {
           dispatch(setCompletedOrderFilterClear());
-          //   dispatch(
-          //     setDate({
-          //       startFrom: "",
-          //       endAt: "",
-          //     })
-          //   );
         }}
       >
-        Clear Filter <X className="w-4 h-4 ml-1" />
+        Clear Filter <X className="h-4 w-4" />
       </Button>
     </div>
   );

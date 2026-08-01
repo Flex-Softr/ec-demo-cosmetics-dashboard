@@ -65,14 +65,20 @@ export default function ProductsTable() {
 
   return (
     <div className="w-full">
-      <div className="rounded-lg overflow-hidden border">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
         <Table className="min-w-[1100px]">
-          <TableHeader className="bg-primary text-primary-foreground">
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-muted/0">
+              <TableRow
+                key={headerGroup.id}
+                className="border-b border-border hover:bg-muted"
+              >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="text-left px-4">
+                    <TableHead
+                      key={header.id}
+                      className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -109,8 +115,8 @@ export default function ProductsTable() {
                         className={`${
                           vIndex === row.original.variations!.length - 1
                             ? "border-b"
-                            : "border-b border-border/20"
-                        } hover:bg-slate-200 hover:border-b hover:border-border/20 transition-colors`}
+                            : "border-b border-border/40"
+                        } hover:bg-muted/60 transition-colors`}
                       >
                         {table.getVisibleFlatColumns().map((column) => (
                           <TableCell key={column.id} className="px-4 py-2">

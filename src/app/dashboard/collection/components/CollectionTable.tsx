@@ -1,6 +1,6 @@
 "use client";
 import { PagePagination } from "@/components/pagination/PagePagination";
-import { Input } from "@/components/ui/input";
+import TableSearch from "@/components/tableSearch/TableSearch";
 import {
   Table,
   TableBody,
@@ -30,8 +30,8 @@ const CollectionTable = () => {
   const { page, limit } = useAppSelector(({ pagination }) => pagination);
 
   const [globalFilter, setGlobalFilter] = React.useState("");
-  const debunce = useDebounce(globalFilter, 500);
-  const queryParams = debunce ? { search: debunce } : { page, limit };
+  const debounced = useDebounce(globalFilter, 500);
+  const queryParams = debounced ? { search: debounced } : { page, limit };
 
   const { data: response, isLoading } = useGetCollectionsQuery(queryParams);
 
@@ -60,27 +60,36 @@ const CollectionTable = () => {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-40 items-center justify-center rounded-xl border border-border bg-muted/30 text-sm text-muted-foreground">
+        Loading collections…
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between">
-        <Input
-          placeholder="Search collections..."
-          value={globalFilter ?? ""}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="max-w-sm"
+      <div className="flex flex-wrap items-center gap-2 justify-between">
+        <TableSearch
+          value={globalFilter}
+          onChange={setGlobalFilter}
+          placeholder="Search collections…"
         />
       </div>
 
-      <div className="rounded-md border">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
         <Table>
-          <TableHeader className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-primary/90">
+              <TableRow
+                key={headerGroup.id}
+                className="border-b border-border hover:bg-muted"
+              >
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -97,7 +106,7 @@ const CollectionTable = () => {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="py-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -110,7 +119,7 @@ const CollectionTable = () => {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-muted-foreground"
                 >
                   No collections found.
                 </TableCell>
@@ -121,7 +130,7 @@ const CollectionTable = () => {
       </div>
 
       {!globalFilter && (
-        <div className="flex items-center justify-end space-x-2 py-2">
+        <div className="flex items-center justify-end py-1">
           <PagePagination />
         </div>
       )}

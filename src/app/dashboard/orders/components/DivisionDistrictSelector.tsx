@@ -86,7 +86,7 @@ const DivisionDistrictUpazilaSelector = <T extends FieldValues>({
               setValue("shipping.district" as Path<T>, ""); // Reset dependent
               setValue("shipping.upazila" as Path<T>, "");
             }}
-            className="w-full h-9 border border-primary outline-primary rounded-md"
+            className="w-full h-9 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20"
           >
             <option value="">-- Select Division --</option>
             {divisions.map((d) => (
@@ -108,7 +108,7 @@ const DivisionDistrictUpazilaSelector = <T extends FieldValues>({
             setValue("shipping.upazila" as Path<T>, "");
           }}
           disabled={showDivision && !division}
-          className="w-full h-9 border border-primary outline-primary rounded-md"
+          className="w-full h-9 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <option value="">
             --{" "}
@@ -134,7 +134,7 @@ const DivisionDistrictUpazilaSelector = <T extends FieldValues>({
             setValue("shipping.upazila" as Path<T>, e.target.value)
           }
           disabled={!district}
-          className="w-full h-9 border border-primary outline-primary rounded-md"
+          className="w-full h-9 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <option value="" className="lg:hidden">
             -- {district ? "Select Thana/Upazila" : "Select District First"} --
@@ -162,7 +162,7 @@ const DivisionDistrictUpazilaSelector = <T extends FieldValues>({
                 shouldValidate: true,
               })
             }
-            className="w-full h-9 border border-primary outline-primary rounded-md"
+            className="w-full h-9 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20"
           >
             <option value="">-- Select Shipping Charge --</option>
             {shippingCharges?.data?.map(

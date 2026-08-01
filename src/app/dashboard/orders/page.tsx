@@ -1,15 +1,18 @@
+import ContentCard from "@/components/contentCard/ContentCard";
 import OrderSearchBar from "@/components/OrderSearchBar";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import Show from "@/components/Show";
-import { Card } from "@/components/ui/card";
 import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
+import { ShoppingCart } from "lucide-react";
 import { redirect } from "next/navigation";
-import BulkAction from "./components/OrderBulkAction";
-import CreateOrder from "./components/CreateOrder";
-import OrderDateRange from "./components/OrderDateRange";
 import AllOrdersTable from "./components/AllOrdersTable";
+import CreateOrder from "./components/CreateOrder";
+import BulkAction from "./components/OrderBulkAction";
+import OrderDateRange from "./components/OrderDateRange";
 import OrdersStatusButtons from "./components/OrdersStatusButtons";
+
 const Orders = async () => {
   const { permissions = [] } = await getPermission();
 
@@ -20,29 +23,39 @@ const Orders = async () => {
   }
 
   return (
-    <Card className="m-4">
-      {/* header section, search bar  */}
-      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-3">
-        <h1 className="text-2xl font-bold">All Orders</h1>
-        <OrderSearchBar endPoint="/orders/admin/all-orders" />
-      </div>
-      <hr className="my-4" />
-      <div className="space-y-3">
-        {/* All, Pending, confirm, canceled etc status*/}
-        <OrdersStatusButtons />
-        <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
-          {/*Bulk actions and invoice print for Orders*/}
-          <BulkAction />
-          <div>
-            <CreateOrder text="Create Order" className="rounded-2xl" />
+    <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="Orders"
+        subtitle="Manage and track customer orders"
+        icon={ShoppingCart}
+        actions={
+          <CreateOrder
+            text="New Order"
+            className="rounded-lg gap-1.5 h-9"
+            iconClassName="h-4 w-4"
+          />
+        }
+      />
+
+      <ContentCard>
+        <div className="space-y-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <OrdersStatusButtons />
+            <OrderSearchBar endPoint="/orders/admin/all-orders" />
           </div>
-          <OrderDateRange />
-          <Show />
+
+          <div className="flex flex-wrap items-center gap-3 justify-between">
+            <BulkAction />
+            <div className="flex flex-wrap items-center gap-2">
+              <OrderDateRange />
+              <Show />
+            </div>
+          </div>
+
+          <AllOrdersTable permissions={permissions} />
         </div>
-        {/*All orders table */}
-        <AllOrdersTable permissions={permissions} />
-      </div>
-    </Card>
+      </ContentCard>
+    </div>
   );
 };
 

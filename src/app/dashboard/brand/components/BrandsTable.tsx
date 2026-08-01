@@ -1,8 +1,7 @@
 "use client";
 
 import { PagePagination } from "@/components/pagination/PagePagination";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import TableSearch from "@/components/tableSearch/TableSearch";
 import {
   Table,
   TableBody,
@@ -65,30 +64,35 @@ const BrandTable = () => {
 
   if (isLoading) {
     return (
-      <Card className="flex items-center justify-center h-40">
-        <p className="text-xl font-semibold text-gray-900">Loading brands...</p>
-      </Card>
+      <div className="flex h-40 items-center justify-center rounded-xl border border-border bg-muted/30 text-sm text-muted-foreground">
+        Loading brands…
+      </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between">
-        <Input
-          placeholder="Search brands..."
-          value={globalFilter ?? ""}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="max-w-sm"
+      <div className="flex flex-wrap items-center gap-2 justify-between">
+        <TableSearch
+          value={globalFilter}
+          onChange={setGlobalFilter}
+          placeholder="Search brands…"
         />
       </div>
 
-      <div className="rounded-md border overflow-x-auto">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
         <Table>
-          <TableHeader className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-primary/90">
+              <TableRow
+                key={headerGroup.id}
+                className="border-b border-border hover:bg-muted"
+              >
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -105,7 +109,7 @@ const BrandTable = () => {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="py-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -118,7 +122,7 @@ const BrandTable = () => {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-muted-foreground"
                 >
                   No brands found.
                 </TableCell>
@@ -129,7 +133,7 @@ const BrandTable = () => {
       </div>
 
       {!globalFilter && (
-        <div className="flex items-center justify-end space-x-2 py-2">
+        <div className="flex items-center justify-end py-1">
           <PagePagination />
         </div>
       )}

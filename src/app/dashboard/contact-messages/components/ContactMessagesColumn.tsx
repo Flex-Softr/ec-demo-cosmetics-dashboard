@@ -1,7 +1,7 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { Trash2, Eye, Mail, Phone, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
+import { Eye, Mail, Phone, Trash2, User } from "lucide-react";
 
 export type TContactMessage = {
   _id: string;
@@ -28,11 +28,11 @@ export const getColumns = (
       <div className="flex items-center justify-center gap-2">
         {!row.original.isRead && (
           <span
-            className="w-2 h-2 rounded-full bg-primary animate-pulse"
+            className="h-2 w-2 animate-pulse rounded-full bg-primary"
             title="Unread"
           />
         )}
-        <span className="font-medium text-muted-foreground">
+        <span className="text-sm text-muted-foreground">
           {(page - 1) * limit + row.index + 1}
         </span>
       </div>
@@ -42,8 +42,8 @@ export const getColumns = (
     accessorKey: "createdAt",
     header: "Date",
     cell: ({ row }) => (
-      <div className="flex flex-col min-w-20">
-        <span className="font-medium">
+      <div className="flex min-w-20 flex-col">
+        <span className="font-medium text-foreground">
           {format(new Date(row.original.createdAt), "dd MMM yyyy")}
         </span>
         <span className="text-xs text-muted-foreground">
@@ -57,16 +57,16 @@ export const getColumns = (
     header: "Sender Info",
     cell: ({ row }) => (
       <div className="flex flex-col items-start gap-1">
-        <div className="flex items-center gap-1.5 font-semibold text-dark">
-          <User className="w-3.5 h-3.5 text-primary" />
+        <div className="flex items-center gap-1.5 font-semibold text-foreground">
+          <User className="h-3.5 w-3.5 text-primary" />
           <span>{row.original.name}</span>
         </div>
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Mail className="w-3 h-3" />
+          <Mail className="h-3 w-3" />
           <span>{row.original.email}</span>
         </div>
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Phone className="w-3 h-3" />
+          <Phone className="h-3 w-3" />
           <span>{row.original.phone}</span>
         </div>
       </div>
@@ -77,7 +77,7 @@ export const getColumns = (
     header: "Subject",
     cell: ({ row }) => (
       <div
-        className="max-w-[200px] font-medium truncate"
+        className="max-w-[200px] truncate font-medium text-foreground"
         title={row.original.subject}
       >
         {row.original.subject}
@@ -86,10 +86,10 @@ export const getColumns = (
   },
   {
     accessorKey: "message",
-    header: "Message Snippet",
+    header: "Message",
     cell: ({ row }) => (
       <div
-        className="max-w-[250px] text-muted-foreground truncate"
+        className="max-w-[250px] truncate text-muted-foreground"
         title={row.original.message}
       >
         {row.original.message}
@@ -98,26 +98,26 @@ export const getColumns = (
   },
   {
     id: "actions",
-    header: "Actions",
+    header: () => <div className="text-center">Actions</div>,
     cell: ({ row }) => (
-      <div className="flex items-center gap-2 justify-center">
+      <div className="flex items-center justify-center gap-0.5">
         <Button
-          variant="outline"
+          variant="ghost"
           size="icon"
-          className="h-8 w-8 border-primary/20 hover:border-primary hover:bg-primary/5 text-primary"
+          className="h-7 w-7 rounded-md text-muted-foreground hover:bg-primary/10 hover:text-primary"
           onClick={() => onView(row.original)}
           title="View Details"
         >
-          <Eye className="w-4 h-4" />
+          <Eye className="h-4 w-4" />
         </Button>
         <Button
-          variant="outline"
+          variant="ghost"
           size="icon"
-          className="h-8 w-8 border-destructive/20 hover:border-destructive hover:bg-destructive/5 text-destructive"
+          className="h-7 w-7 rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
           onClick={() => onDelete(row.original._id)}
           title="Delete"
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="h-4 w-4" />
         </Button>
       </div>
     ),

@@ -126,7 +126,7 @@ const ProductFilter = () => {
   }, [data, loading, error, dispatch]);
 
   return (
-    <div className="flex items-center gap-5 justify-between w-auto">
+    <div className="flex w-auto flex-wrap items-center gap-2">
       <CommonSelect
         options={categoryOptions}
         value={category}
@@ -135,7 +135,7 @@ const ProductFilter = () => {
           dispatch(setPage(1));
         }}
         placeholder="All Categories"
-        className="border-primary"
+        className="h-10 w-36 rounded-lg"
       />
 
       <CommonSelect
@@ -146,7 +146,7 @@ const ProductFilter = () => {
           dispatch(setPage(1));
         }}
         placeholder="All Collections"
-        className="border-primary"
+        className="h-10 w-36 rounded-lg"
       />
 
       <CommonSelect
@@ -157,7 +157,7 @@ const ProductFilter = () => {
           dispatch(setPage(1));
         }}
         placeholder="All Brands"
-        className="border-primary"
+        className="h-10 w-36 rounded-lg"
       />
 
       <CommonSelect
@@ -168,7 +168,7 @@ const ProductFilter = () => {
           dispatch(setPage(1));
         }}
         placeholder="All Product Stock"
-        className="border-primary"
+        className="h-10 w-40 rounded-lg"
       />
     </div>
   );

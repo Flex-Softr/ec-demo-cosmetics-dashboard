@@ -74,7 +74,7 @@ const CourierBulkAction = () => {
       {statusOptions(filter).length && filter !== "on courier" ? (
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Select onValueChange={(value) => setBulkAction(value)}>
-            <SelectTrigger className="border-primary focus:ring-primary focus:ring-1 capitalize">
+            <SelectTrigger className="h-10 w-44 rounded-lg border-border capitalize focus:ring-2 focus:ring-primary/20">
               <SelectValue placeholder="Bulk Actions" />
             </SelectTrigger>
             <SelectContent>
@@ -88,7 +88,12 @@ const CourierBulkAction = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button onClick={handleBulkAction} disabled={isLoading}>
+          <Button
+            size="sm"
+            onClick={handleBulkAction}
+            disabled={isLoading}
+            className="h-10 rounded-lg"
+          >
             Apply
           </Button>
         </div>

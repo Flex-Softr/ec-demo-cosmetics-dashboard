@@ -1,8 +1,11 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
+import ContentCard from "@/components/contentCard/ContentCard";
+import PageHeader from "@/components/pageHeader/PageHeader";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useGetSingleImageToOrderReqQuery } from "@/redux/features/imageToOrder/imageToOrderApi";
 import { TImageToOrderReq } from "@/redux/features/imageToOrder/imageToOrderInterface";
+import { ImageIcon } from "lucide-react";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 
@@ -22,35 +25,44 @@ const ImageViewingPage = ({ params }: { params: { reqId: string } }) => {
     crossOrigin: "anonymous",
   }));
 
-  return (
-    <Card>
-      <h2 className="text-xl font-bold mb-2">Request ID: {reqData.reqId}</h2>
-      <hr className="mb-8" />
-      <div>
-        {isLoading ? (
-          <>Loading...</>
-        ) : (
-          <>
-            {" "}
-            {isAvailable ? (
-              <>
-                <ImageGallery
-                  items={galleryImages}
-                  lazyLoad
-                  showNav={false}
-                  //   autoPlay // TODO: enable this
-                  // infinite //TODO: enable this
-                />
-              </>
-            ) : (
-              <>
-                <p>No request found</p>
-              </>
-            )}
-          </>
-        )}
+  if (isLoading) {
+    return (
+      <div className="space-y-5 p-4 sm:p-6">
+        <PageHeader
+          title="Request Images"
+          subtitle="Loading request media…"
+          icon={ImageIcon}
+        />
+        <ContentCard className="space-y-4">
+          <Skeleton className="h-5 w-48" />
+          <Skeleton className="h-64 w-full rounded-xl" />
+          <div className="flex gap-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 w-16 rounded-lg" />
+            ))}
+          </div>
+        </ContentCard>
       </div>
-    </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="Request Images"
+        subtitle={`Request ID: ${reqData.reqId || "—"}`}
+        icon={ImageIcon}
+      />
+      <ContentCard>
+        {isAvailable ? (
+          <ImageGallery items={galleryImages} lazyLoad showNav={false} />
+        ) : (
+          <p className="py-8 text-center text-muted-foreground">
+            No request found
+          </p>
+        )}
+      </ContentCard>
+    </div>
   );
 };
 

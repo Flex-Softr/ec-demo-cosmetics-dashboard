@@ -17,10 +17,19 @@ import {
   setSearchedOrders,
 } from "@/redux/features/search/searchSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import backgroundColor from "@/utilities/backgroundColor";
-import borderColor from "@/utilities/borderColor";
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-// import DateRangeSelector from "@/components/DateRangeSelector";
+
+const statusTone: Record<string, string> = {
+  all: "border-border text-foreground",
+  completed: "border-emerald-200 text-emerald-700",
+  delivered: "border-emerald-200 text-emerald-700",
+  canceled: "border-red-200 text-red-700",
+  cancelled: "border-red-200 text-red-700",
+  pending: "border-amber-200 text-amber-700",
+  processing: "border-sky-200 text-sky-700",
+  returned: "border-slate-200 text-slate-600",
+};
 
 const CustomerListOrdersStatusButtons = () => {
   const dispatch = useAppDispatch();
@@ -84,28 +93,38 @@ const CustomerListOrdersStatusButtons = () => {
   }, [data, loading, error, dispatch]);
 
   return (
-    <div className="flex flex-wrap items-center justify-start gap-5">
+    <div className="flex flex-wrap items-center gap-2">
       {orderStatusCount?.map((status: { name: string; total: string }) => {
-        const bg = `${backgroundColor(status.name)} text-white`;
+        const isActive = selectedStatus === status.name;
+        const tone =
+          statusTone[status.name?.toLowerCase?.() || status.name] ??
+          "border-border text-foreground";
+
         return (
           <Button
             key={status.name}
+            type="button"
+            variant="outline"
+            size="sm"
             onClick={() => {
               dispatch(setPage(1));
               dispatch(setLimit(limit));
               dispatch(setSelectedStatus(status.name));
             }}
             disabled={isLoading}
-            className={`capitalize bg-white flex items-center gap-1 rounded-2xl ${borderColor(status.name)} ${selectedStatus === status.name ? bg : "text-black"}`}
+            className={cn(
+              "h-8 rounded-lg border capitalize gap-1.5 px-3 text-xs font-medium shadow-none",
+              tone,
+              isActive
+                ? "bg-primary/10 border-primary/30 text-primary"
+                : "bg-card hover:bg-muted"
+            )}
           >
             <span>{status.name}</span>
-            <span>({status.total})</span>
+            <span className="text-[11px] opacity-80">({status.total})</span>
           </Button>
         );
       })}
-      {/* <div>
-        <DateRangeSelector />
-      </div> */}
     </div>
   );
 };

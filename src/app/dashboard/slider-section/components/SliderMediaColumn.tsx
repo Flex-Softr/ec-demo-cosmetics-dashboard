@@ -2,8 +2,8 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { formatImageSrc } from "@/lib/utils";
 import Image from "next/image";
+import { TSlider } from "../lib/slider.interface";
 import SliderAction from "./SliderAction";
-import { TSlider } from "./SliderMediaTable";
 import UpdateSliderActiveStatus from "./UpdateSliderActiveStatus";
 
 const columns: ColumnDef<TSlider>[] = [

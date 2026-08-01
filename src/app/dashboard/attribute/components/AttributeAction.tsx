@@ -46,19 +46,19 @@ const AttributeAction = ({ attribute }: { attribute: TAttribute }) => {
   };
 
   return (
-    <div className="flex items-center gap-2 justify-center">
+    <div className="flex items-center justify-center gap-0.5">
       {/* Configure Terms Action */}
       <Dialog>
         <DialogTrigger asChild>
           <Button
             variant="ghost"
             size="icon"
-            className="!bg-white hover:!bg-gray-100 h-8 w-8"
+            className="h-7 w-7 rounded-md text-muted-foreground hover:bg-primary/10 hover:text-primary"
           >
-            <SquarePen className="h-4 w-4 text-primary" />
+            <SquarePen className="h-4 w-4" />
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px] h-fit max-h-[90vh] overflow-y-auto">
+        <DialogContent className="h-fit max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
           <AttributeValueUpdateModal attribute={attribute} />
         </DialogContent>
       </Dialog>
@@ -69,24 +69,35 @@ const AttributeAction = ({ attribute }: { attribute: TAttribute }) => {
           <Button
             variant="ghost"
             size="icon"
-            className="!bg-white hover:!bg-gray-100 h-8 w-8"
+            className="h-7 w-7 rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
             onClick={() => setDeleteOpen(true)}
           >
-            <Trash2Icon className="h-4 w-4 text-red-600" />
+            <Trash2Icon className="h-4 w-4" />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          <h1 className="text-xl font-bold">Delete Attribute?</h1>
-          <p className="text-gray-500">
+          <h1 className="text-lg font-semibold text-foreground">
+            Delete Attribute?
+          </h1>
+          <p className="text-sm text-muted-foreground">
             Are you sure you want to delete{" "}
-            <span className="font-semibold">{attribute.name}</span>? This action
-            cannot be undone.
+            <span className="font-semibold text-foreground">
+              {attribute.name}
+            </span>
+            ? This action cannot be undone.
           </p>
-          <div className="flex justify-end gap-5 mt-4">
+          <div className="mt-4 flex justify-end gap-2">
             <DialogClose asChild>
-              <Button>Cancel</Button>
+              <Button variant="outline" size="sm" className="rounded-lg">
+                Cancel
+              </Button>
             </DialogClose>
-            <Button variant="destructive" onClick={handleDelete}>
+            <Button
+              variant="destructive"
+              size="sm"
+              className="rounded-lg"
+              onClick={handleDelete}
+            >
               Delete
             </Button>
           </div>

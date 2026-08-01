@@ -1,4 +1,5 @@
 "use client";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   SliderTable,
   TableBody,
@@ -7,27 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/sliderTable";
-
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import columns from "./SliderMediaColumn";
-
-export type TSlider = {
-  _id: string;
-  name: string;
-  image: {
-    _id: string;
-    src: string;
-  };
-  isActive: boolean;
-  bannerLink?: string;
-  sortOrder: number;
-};
-
 import { useGetSlidersQuery } from "@/redux/features/sliderBanner/sliderApi";
+import columns from "./SliderMediaColumn";
 
 const SliderMediaTable = () => {
   const { data: slider, isLoading } = useGetSlidersQuery(undefined);
@@ -39,18 +26,30 @@ const SliderMediaTable = () => {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="space-y-2">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-14 w-full rounded-lg" />
+        ))}
+      </div>
+    );
   }
 
   return (
-    <div className="rounded-lg overflow-hidden">
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
       <SliderTable className="w-full">
-        <TableHeader className="bg-primary text-primary-foreground">
+        <TableHeader className="bg-muted">
           {table?.getHeaderGroups()?.map((headerGroup) => (
-            <TableRow key={headerGroup?.id} className="hover:bg-muted/0">
+            <TableRow
+              key={headerGroup?.id}
+              className="border-b border-border hover:bg-muted"
+            >
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header?.id} className="text-center">
+                  <TableHead
+                    key={header?.id}
+                    className="py-3 text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
                     {header?.isPlaceholder
                       ? null
                       : flexRender(
@@ -69,10 +68,10 @@ const SliderMediaTable = () => {
               <TableRow
                 key={row?.id}
                 data-state={row?.getIsSelected() && "selected"}
-                className="border-b"
+                className="border-b border-border"
               >
                 {row?.getVisibleCells()?.map((cell) => (
-                  <TableCell key={cell?.id} className="text-center">
+                  <TableCell key={cell?.id} className="py-3 text-center">
                     {flexRender(
                       cell?.column?.columnDef?.cell,
                       cell?.getContext()
@@ -83,8 +82,11 @@ const SliderMediaTable = () => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No Slider found
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 text-center text-muted-foreground"
+              >
+                No slider found
               </TableCell>
             </TableRow>
           )}

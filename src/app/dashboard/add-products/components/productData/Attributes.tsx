@@ -1,8 +1,10 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import MultiSelect, { MultiSelectOption } from "@/components/ui/multi-select";
 import { TSelectedAttribute } from "@/redux/features/addProduct/variation/interface";
 import { Controller, useFormContext } from "react-hook-form";
-import Select from "react-select";
 
 const Attributes = ({
   attributes: availableAttributes,
@@ -18,7 +20,6 @@ const Attributes = ({
     formState: { errors },
   } = useFormContext();
 
-  // Watch currently selected attributes to render value selectors
   const selectedAttributes = watch("attributes") || [];
 
   const handleSelectAll = (index: number, attr: TSelectedAttribute) => {
@@ -33,6 +34,14 @@ const Attributes = ({
     });
   };
 
+  const attributeOptions: MultiSelectOption[] = availableAttributes.map(
+    (attr) => ({
+      label: attr.label,
+      value: String(attr.value),
+      child: attr.child,
+    })
+  );
+
   return (
     <div className="space-y-2">
       <div className="space-y-1">
@@ -42,26 +51,30 @@ const Attributes = ({
           name="attributes"
           defaultValue={[]}
           render={({ field }) => (
-            <Select
-              isMulti
-              isSearchable
-              options={availableAttributes}
-              value={field.value}
+            <MultiSelect
+              options={attributeOptions}
+              value={(field.value as TSelectedAttribute[])?.map((attr) => ({
+                label: attr.label,
+                value: String(attr.value),
+                child: attr.child,
+              }))}
               onChange={(val) => {
-                const newAttributes = (val as TSelectedAttribute[]) || [];
+                const newAttributes: TSelectedAttribute[] = val.map((item) => ({
+                  label: item.label,
+                  value: item.value,
+                  child: (item.child as TSelectedAttribute["child"]) || [],
+                }));
                 const oldAttributes =
                   (field.value as TSelectedAttribute[]) || [];
                 const currentValues = getValues("attributeValues") || [];
 
-                // Sync attributeValues to match the new attributes list order/presence
                 const newValues = newAttributes.map((newAttr) => {
                   const oldIndex = oldAttributes.findIndex(
-                    (oldAttr) => oldAttr.label === newAttr.label // Assuming label is unique ID
+                    (oldAttr) => oldAttr.label === newAttr.label
                   );
                   return oldIndex >= 0 ? currentValues[oldIndex] : [];
                 });
 
-                // Clear errors first to ensure clean state
                 clearErrors("attributeValues");
                 setValue("attributeValues", newValues, {
                   shouldValidate: true,
@@ -73,7 +86,7 @@ const Attributes = ({
           )}
         />
         {errors.attributes && (
-          <p className="text-red-500 text-sm mt-1">
+          <p className="mt-1 text-sm text-destructive">
             {errors.attributes.message as string}
           </p>
         )}
@@ -98,24 +111,26 @@ const Attributes = ({
               name={`attributeValues.${index}`}
               render={({ field, fieldState: { error } }) => (
                 <>
-                  <Select
-                    isMulti
-                    isSearchable
-                    options={attr.child?.map((item) => ({
-                      label: item.label,
-                      value: String(item.value),
-                    }))}
-                    value={field.value}
-                    onChange={(val) => {
-                      // Store in specific structure expected by generateVariations?
-                      // The previous code stored { index, child: val } in Redux.
-                      // Here we just store the array of values at index 'index'.
-                      field.onChange(val);
-                    }}
+                  <MultiSelect
+                    options={
+                      attr.child?.map((item) => ({
+                        label: item.label,
+                        value: String(item.value),
+                      })) || []
+                    }
+                    value={(field.value || []).map(
+                      (item: { label: string; value: string }) => ({
+                        label: item.label,
+                        value: String(item.value),
+                      })
+                    )}
+                    onChange={(val) => field.onChange(val)}
                     placeholder={`Select ${attr.label}...`}
                   />
                   {error && (
-                    <p className="text-red-500 text-sm mt-1">{error.message}</p>
+                    <p className="mt-1 text-sm text-destructive">
+                      {error.message}
+                    </p>
                   )}
                 </>
               )}

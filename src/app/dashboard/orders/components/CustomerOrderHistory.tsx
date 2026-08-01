@@ -1,4 +1,5 @@
 "use client";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -16,10 +17,20 @@ const CustomerOrderHistory = ({ phoneNumber }: { phoneNumber: string }) => {
 
   if (isLoading) {
     return (
-      <div
-        role="status"
-        className="w-full h-16 bg-gray-300 animate-pulse dark:bg-gray-700 rounded"
-      ></div>
+      <div className="space-y-2 pt-2">
+        <div className="grid grid-cols-8 gap-2">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-8 w-full rounded-md" />
+          ))}
+        </div>
+        {Array.from({ length: 3 }).map((_, row) => (
+          <div key={row} className="grid grid-cols-8 gap-2">
+            {Array.from({ length: 8 }).map((_, col) => (
+              <Skeleton key={col} className="h-7 w-full rounded-md" />
+            ))}
+          </div>
+        ))}
+      </div>
     );
   }
 

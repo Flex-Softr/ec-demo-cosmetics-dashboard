@@ -9,21 +9,19 @@ import UpdateUserStatus from "./UpdateUserStatus";
 
 const columns: ColumnDef<TRegisteredCustomer>[] = [
   {
-    accessorKey: "",
+    id: "sl",
     header: "SL",
     cell: ({ row }) => (
-      <div className="capitalize flex flex-col justify-center items-center">
-        <span className="">{row?.index + 1}</span>
-      </div>
+      <span className="text-sm text-muted-foreground">{row.index + 1}</span>
     ),
   },
   {
     accessorKey: "name",
-    header: () => <h2 className="text-start">ID</h2>,
+    header: "ID",
     cell: ({ row }) => (
       <Link
         href={`/dashboard/registered-customers/${row.original?._id}`}
-        className="text-start font-semibold text-primary hover:underline"
+        className="font-semibold text-foreground hover:text-primary hover:underline"
       >
         {row.original?.uid}
       </Link>
@@ -41,11 +39,11 @@ const columns: ColumnDef<TRegisteredCustomer>[] = [
     accessorKey: "createdAt",
     header: "Registered At",
     cell: ({ row }) => (
-      <div className="flex flex-col min-w-28">
-        <span className="font-medium">
+      <div className="flex min-w-28 flex-col text-left">
+        <span className="font-medium text-foreground">
           {row.original.createdAt
             ? format(new Date(row.original.createdAt), "dd MMM yyyy")
-            : "N/A"}
+            : "—"}
         </span>
         <span className="text-xs text-muted-foreground">
           {row.original.createdAt ? (
@@ -68,11 +66,13 @@ const columns: ColumnDef<TRegisteredCustomer>[] = [
     header: "Total Orders",
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-md bg-blue-50 text-blue-600">
+        <div className="flex items-center justify-center gap-2">
+          <div className="rounded-md bg-primary/10 p-1.5 text-primary">
             <ShoppingBag size={14} />
           </div>
-          <span className="font-semibold">{row?.original?.totalOrders}</span>
+          <span className="font-semibold text-foreground">
+            {row?.original?.totalOrders}
+          </span>
         </div>
       );
     },
@@ -91,7 +91,7 @@ const columns: ColumnDef<TRegisteredCustomer>[] = [
   },
   {
     accessorKey: "orders",
-    header: "Orders",
+    header: () => <div className="text-center">Actions</div>,
     cell: ({ row }) => {
       return <RegisteredCustomerDetails customer={row.original} />;
     },

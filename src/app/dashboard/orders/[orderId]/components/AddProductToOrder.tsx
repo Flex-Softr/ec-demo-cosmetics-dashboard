@@ -108,7 +108,7 @@ const AddProductToOrder = (props: TProps) => {
             <td className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-normal break-words space-y-1">
               <select
                 {...register(`productDetails.${index}.newProductId`)}
-                className="h-9 border border-primary outline-primary focus:outline-none rounded max-w-[400px]"
+                className="h-9 max-w-[400px] rounded-md border border-border bg-transparent px-3 text-sm outline-none focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20"
                 required
               >
                 <option value="">Select product</option>

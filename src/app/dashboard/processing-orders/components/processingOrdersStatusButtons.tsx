@@ -17,10 +17,8 @@ import {
   setSearchQuery,
   setSearchedOrders,
 } from "@/redux/features/search/searchSlice";
-import backgroundColor from "@/utilities/backgroundColor";
-import borderColor from "@/utilities/borderColor";
+import { statusChipClass } from "@/lib/tableStyles";
 import { useEffect, useState } from "react";
-// import DateRangeSelector from "@/components/DateRangeSelector";
 
 const ProcessingOrdersStatusButtons = () => {
   const dispatch = useAppDispatch();
@@ -76,33 +74,27 @@ const ProcessingOrdersStatusButtons = () => {
   }, [data, loading, error, dispatch]);
 
   return (
-    <div className="flex flex-wrap items-center justify-start gap-5">
+    <div className="flex flex-wrap items-center gap-2">
       {orderStatusCount?.map((status: { name: string; total: string }) => {
-        const bg = `${backgroundColor(status.name)} text-white`;
         return (
           <Button
             key={status.name}
+            type="button"
+            variant="outline"
+            size="sm"
             onClick={() => {
               dispatch(setPage(1));
               dispatch(setLimit(limit));
               dispatch(setSelectedStatus(status.name));
             }}
             disabled={isLoading}
-            className={`capitalize bg-white flex items-center gap-1 rounded-2xl ${borderColor(
-              status.name
-            )
-              .split(" ")
-              .filter((c) => !c.startsWith("text-"))
-              .join(" ")} ${filter === status.name ? bg : "text-black"}`}
+            className={statusChipClass(filter === status.name)}
           >
             <span>{status.name}</span>
-            <span>({status.total})</span>
+            <span className="text-[11px] opacity-80">({status.total})</span>
           </Button>
         );
       })}
-      {/* <div>
-        <DateRangeSelector />
-      </div> */}
     </div>
   );
 };

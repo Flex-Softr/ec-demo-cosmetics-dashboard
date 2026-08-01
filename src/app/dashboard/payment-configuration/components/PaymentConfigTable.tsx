@@ -12,6 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -68,73 +69,99 @@ export default function PaymentConfigTable({
   };
 
   if (isFetching) {
-    return <div className="p-8 text-center">Loading payment methods...</div>;
+    return (
+      <div className="space-y-2">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-14 w-full rounded-lg" />
+        ))}
+      </div>
+    );
   }
 
   return (
-    <div className="rounded-md border overflow-x-auto">
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
       <Table className="whitespace-nowrap">
-        <TableHeader className="bg-primary text-primary-foreground hover:!bg-primary">
-          <TableRow className="hover:!bg-primary">
-            <TableHead className="text-white">SL</TableHead>
-            <TableHead className="text-white">Name</TableHead>
-            <TableHead className="text-white">Logo</TableHead>
-            <TableHead className="text-white">Input Fields</TableHead>
-            <TableHead className="text-white">Status</TableHead>
-            <TableHead className="text-right text-white">Actions</TableHead>
+        <TableHeader className="bg-muted">
+          <TableRow className="border-b border-border hover:bg-muted">
+            <TableHead className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              SL
+            </TableHead>
+            <TableHead className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Name
+            </TableHead>
+            <TableHead className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Logo
+            </TableHead>
+            <TableHead className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Input Fields
+            </TableHead>
+            <TableHead className="py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Status
+            </TableHead>
+            <TableHead className="py-3 text-right text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {paymentMethods.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="h-24 text-center">
+              <TableCell
+                colSpan={6}
+                className="h-24 text-center text-muted-foreground"
+              >
                 No payment methods configured.
               </TableCell>
             </TableRow>
           ) : (
             paymentMethods.map((method) => (
-              <TableRow key={method._id}>
-                <TableCell>{method.sortOrder ?? "N/A"}</TableCell>
-                <TableCell className="font-medium">{method.name}</TableCell>
-                <TableCell>
+              <TableRow key={method._id} className="border-b border-border">
+                <TableCell className="py-3">
+                  {method.sortOrder ?? "—"}
+                </TableCell>
+                <TableCell className="py-3 font-semibold text-foreground">
+                  {method.name}
+                </TableCell>
+                <TableCell className="py-3">
                   {method.logo?.src ? (
-                    <Image
-                      src={formatImageSrc(method.logo.src)}
-                      alt={method.logo?.alt || "logo"}
-                      width={64}
-                      height={64}
-                      className="w-16 h-16 object-cover"
-                    />
+                    <div className="relative h-12 w-12 overflow-hidden rounded-lg border border-border bg-muted">
+                      <Image
+                        src={formatImageSrc(method.logo.src)}
+                        alt={method.logo?.alt || "logo"}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                   ) : (
-                    "N/A"
+                    <span className="text-muted-foreground">—</span>
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell className="py-3 text-muted-foreground">
                   {method.required_inputs?.length
                     ? method.required_inputs
                         .map((input) => input.name)
                         .join(", ")
-                    : "N/A"}
+                    : "—"}
                 </TableCell>
-                <TableCell>
+                <TableCell className="py-3">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs ${
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                       method.isActive
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                        ? "bg-emerald-50 text-emerald-700"
+                        : "bg-red-50 text-red-700"
                     }`}
                   >
                     {method.isActive ? "Active" : "Inactive"}
                   </span>
                 </TableCell>
-                <TableCell className="text-right space-x-2">
+                <TableCell className="space-x-0.5 py-3 text-right">
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => handleEdit(method)}
-                    className="!bg-white hover:!bg-gray-100"
+                    className="h-7 w-7 rounded-md text-muted-foreground hover:bg-primary/10 hover:text-primary"
                   >
-                    <Edit className="h-4 w-4 text-primary" />
+                    <Edit className="h-4 w-4" />
                   </Button>
 
                   <AlertDialog>
@@ -142,24 +169,29 @@ export default function PaymentConfigTable({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="!bg-white hover:!bg-gray-100"
+                        className="h-7 w-7 rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                       >
-                        <Trash2 className="h-4 w-4 text-red-500" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogTitle>
+                          Delete payment method?
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
-                          You won&apos;t be able to revert this!
+                          This action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel className="rounded-lg">
+                          Cancel
+                        </AlertDialogCancel>
                         <AlertDialogAction
+                          className="rounded-lg"
                           onClick={() => confirmDelete(method._id)}
                         >
-                          Yes, delete it!
+                          Delete
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>

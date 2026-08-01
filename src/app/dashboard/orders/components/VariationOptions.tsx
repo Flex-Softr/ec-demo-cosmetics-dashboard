@@ -130,9 +130,7 @@ const VariationOptions = <T extends FieldValues>(
                 );
               }
             }}
-            className={`w-full h-9 border border-gray-300 bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 rounded-md font-semibold ${
-              variationId ? "text-primary" : ""
-            }`}
+            className="w-full h-9 rounded-md border border-border bg-transparent px-3 py-2 text-sm font-semibold outline-none focus:border-muted-foreground/40 focus:ring-1 focus:ring-muted-foreground/20 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">-- Select Attribute --</option>
             {allVariations?.map(

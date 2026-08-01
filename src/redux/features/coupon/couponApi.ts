@@ -17,6 +17,10 @@ const couponApi = baseApi.injectEndpoints({
       }),
       providesTags: ["coupons"],
     }),
+    getCouponById: builder.query({
+      query: (id: string) => `/coupons/${id}`,
+      providesTags: ["coupons"],
+    }),
     createCoupon: builder.mutation({
       query: (body) => ({
         url: `/coupons`,
@@ -40,5 +44,6 @@ export const {
   useCreateCouponMutation,
   useGetAllCouponTagsQuery,
   useGetAllCouponsQuery,
+  useGetCouponByIdQuery,
   useUpdateCouponsMutation,
 } = couponApi;

@@ -1,9 +1,11 @@
+import ContentCard from "@/components/contentCard/ContentCard";
 import OrderSearchBar from "@/components/OrderSearchBar";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import Show from "@/components/Show";
-import { Card } from "@/components/ui/card";
 import { PERMISSIONS } from "@/const/permissions";
 import { getPermission } from "@/lib/getAccessToken";
 import isPermitted from "@/utilities/isPermitted";
+import { Truck } from "lucide-react";
 import { redirect } from "next/navigation";
 import CourierBulkAction from "./components/CourierBulkAction";
 import ProcessingOrderDateRange from "./components/CourierDateRange";
@@ -23,25 +25,32 @@ const CourierShipmentOrder = async () => {
   }
 
   return (
-    <Card className="m-4 ">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 justify-between items-center">
-        <h1 className="text-2xl font-bold">Courier Shipment Order</h1>
-        <OrderSearchBar endPoint="/orders/admin/monitor-delivery-orders" />
-      </div>
+    <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="Courier Shipment"
+        subtitle="Schedule and manage courier shipments"
+        icon={Truck}
+      />
 
-      <hr className="my-4" />
-      <div className="space-y-3">
-        <StatusButtons />
-        <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
-          <div className="flex items-center gap-2">
-            <CourierBulkAction />
+      <ContentCard>
+        <div className="space-y-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <StatusButtons />
+            <OrderSearchBar endPoint="/orders/admin/monitor-delivery-orders" />
           </div>
-          <Show />
-          <ProcessingOrderDateRange />
+
+          <div className="flex flex-wrap items-center gap-3 justify-between">
+            <CourierBulkAction />
+            <div className="flex flex-wrap items-center gap-2">
+              <ProcessingOrderDateRange />
+              <Show />
+            </div>
+          </div>
+
+          <CourierOrdersTable permissions={permissions} />
         </div>
-        <CourierOrdersTable permissions={permissions} />
-      </div>
-    </Card>
+      </ContentCard>
+    </div>
   );
 };
 

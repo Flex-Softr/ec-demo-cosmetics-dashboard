@@ -8,7 +8,7 @@ import { TErrorResponse } from "@/types/response";
 import { revalidateTag } from "@/utilities/revalidate";
 import { Trash2Icon } from "lucide-react";
 import { useState } from "react";
-import { TSlider } from "./SliderMediaTable";
+import { TSlider } from "../lib/slider.interface";
 import UpdateSlider from "./UpdateSlider";
 
 const SliderAction = ({ slider }: { slider: TSlider }) => {

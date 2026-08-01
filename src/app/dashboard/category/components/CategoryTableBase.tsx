@@ -50,19 +50,22 @@ export const CategoryTableBase = ({
         accessorKey: "image",
         header: "Image",
         cell: ({ row }) => (
-          <Image
-            width={50}
-            height={50}
-            src={formatImageSrc(row.original.image?.src)}
-            alt={row?.original?.name}
-          />
+          <div className="relative h-10 w-10 overflow-hidden rounded-lg border border-border bg-muted">
+            <Image
+              width={40}
+              height={40}
+              src={formatImageSrc(row.original.image?.src)}
+              alt={row?.original?.name}
+              className="h-full w-full object-cover"
+            />
+          </div>
         ),
       },
       {
         accessorKey: "name",
         header: "Name",
         cell: ({ row }) => (
-          <div className="capitalize font-medium whitespace-nowrap">
+          <div className="whitespace-nowrap font-semibold capitalize text-foreground">
             {row.getValue("name")}
           </div>
         ),
@@ -124,27 +127,28 @@ export const CategoryTableBase = ({
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-40 items-center justify-center rounded-xl border border-border bg-muted/30 text-sm text-muted-foreground">
+        Loading categories…
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border overflow-y-auto">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
         <Table>
-          <TableHeader
-            className={
-              !isSubCategory
-                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                : ""
-            }
-          >
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className={!isSubCategory ? "hover:bg-primary/90" : ""}
+                className="border-b border-border hover:bg-muted"
               >
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="whitespace-nowrap">
+                  <TableHead
+                    key={header.id}
+                    className="whitespace-nowrap py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -161,7 +165,7 @@ export const CategoryTableBase = ({
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="py-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -174,7 +178,7 @@ export const CategoryTableBase = ({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-muted-foreground"
                 >
                   {isSubCategory ? "No results." : "No categories found."}
                 </TableCell>

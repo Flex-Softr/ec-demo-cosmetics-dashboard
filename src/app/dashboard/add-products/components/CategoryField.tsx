@@ -11,7 +11,7 @@ type TCategories = {
   subcategories?: TCategories[];
 };
 
-export function CategoryField() {
+export function CategoryField({ embedded = false }: { embedded?: boolean }) {
   const { data, isLoading } = useGetCategoriesQuery({ isActive: true });
   const categories = data?.data?.data || [];
 
@@ -23,7 +23,7 @@ export function CategoryField() {
   } = useFormContext();
 
   const selected: string[] = watch("category") || [];
-  /** Toggle single category id */
+
   const toggle = (id: string, checked: boolean) => {
     let updated = [...selected];
     if (checked) updated.push(id);
@@ -32,7 +32,6 @@ export function CategoryField() {
     clearErrors("category");
   };
 
-  /** Helper to collect all nested child IDs recursively */
   const getAllChildIds = (category: TCategories): string[] => {
     const ids: string[] = [];
     if (category.subcategories?.length) {
@@ -43,9 +42,6 @@ export function CategoryField() {
     return ids;
   };
 
-  /**
-   * Recursive render of category tree
-   */
   const renderCategories = (items: TCategories[], level = 0) => {
     return (
       <div className={cn("flex flex-col gap-2", level > 0 && "ml-6")}>
@@ -60,7 +56,6 @@ export function CategoryField() {
                   onCheckedChange={(checked) => {
                     toggle(cat._id, Boolean(checked));
 
-                    // If selecting a parent, auto-select its children
                     if (checked && cat.subcategories?.length) {
                       const childIds = getAllChildIds(cat);
                       const updated = Array.from(
@@ -69,7 +64,6 @@ export function CategoryField() {
                       setValue("category", updated, { shouldValidate: true });
                     }
 
-                    // If unchecking a parent, also uncheck all children
                     if (!checked && cat.subcategories?.length) {
                       const childIds = getAllChildIds(cat);
                       const updated = selected.filter(
@@ -94,29 +88,39 @@ export function CategoryField() {
     );
   };
 
+  const content = (
+    <>
+      <div className="max-h-[280px] overflow-y-auto pr-1">
+        {isLoading ? (
+          <div className="space-y-3">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-5 w-full animate-pulse rounded bg-muted"
+              />
+            ))}
+          </div>
+        ) : (
+          renderCategories(categories)
+        )}
+      </div>
+
+      {errors.category && (
+        <p className="mt-2 text-sm text-destructive">
+          {String(errors.category.message)}
+        </p>
+      )}
+    </>
+  );
+
+  if (embedded) return content;
+
   return (
     <SectionContentWrapper
       heading="Select Category"
       height="max-h-[450px] overflow-y-auto"
     >
-      {isLoading ? (
-        <div className="space-y-3">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-5 w-full animate-pulse rounded bg-gray-300"
-            />
-          ))}
-        </div>
-      ) : (
-        renderCategories(categories)
-      )}
-
-      {errors.category && (
-        <p className="mt-2 text-red-500 text-sm">
-          {String(errors.category.message)}
-        </p>
-      )}
+      {content}
     </SectionContentWrapper>
   );
 }

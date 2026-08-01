@@ -14,11 +14,12 @@ const CreateOrder = (props: TProps) => {
   const { text, className, iconClassName } = props;
 
   return (
-    <Link href="/dashboard/orders/create">
-      <Button className={className}>
-        <Plus className={iconClassName} /> <span>{text}</span>
-      </Button>
-    </Link>
+    <Button asChild size="sm" className={className}>
+      <Link href="/dashboard/orders/create">
+        <Plus className={iconClassName} />{" "}
+        <span className="hidden sm:inline">{text}</span>
+      </Link>
+    </Button>
   );
 };
 

@@ -1,4 +1,5 @@
 "use client";
+
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,14 +29,14 @@ const ActiveLink = ({
   const acClass = isActive
     ? activeClassName
       ? activeClassName
-      : "bg-primary text-primary-foreground font-semibold shadow-sm shadow-primary/20"
-    : "text-foreground hover:bg-accent hover:text-primary font-medium";
+      : "bg-primary/10 text-primary font-semibold"
+    : "text-foreground/85 hover:bg-muted hover:text-foreground font-medium";
 
   return (
     <Link href={href} onClick={onClick}>
       <span
         className={cn(
-          "group relative flex gap-2.5 items-center px-2.5 py-2 my-0.5 rounded-lg transition-all duration-200 ease-out cursor-pointer select-none",
+          "group relative flex cursor-pointer select-none items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors duration-200 ease-out",
           acClass,
           className
         )}
@@ -45,15 +46,15 @@ const ActiveLink = ({
             className={cn(
               "shrink-0 transition-colors duration-200",
               isActive
-                ? "text-primary-foreground"
-                : "text-foreground group-hover:text-primary"
+                ? "text-primary"
+                : "text-foreground/75 group-hover:text-foreground"
             )}
           >
             {icon}
           </span>
         )}
         {name ? (
-          <span className="truncate tracking-wide text-sm flex-1">{name}</span>
+          <span className="flex-1 truncate text-sm tracking-wide">{name}</span>
         ) : null}
         {badge}
       </span>

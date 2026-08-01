@@ -1,3 +1,5 @@
+"use client";
+
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useUpdateCouponsMutation } from "@/redux/features/coupon/couponApi";

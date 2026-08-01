@@ -35,7 +35,7 @@ import { SquarePen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { TSlider } from "./SliderMediaTable";
+import { TSlider } from "../lib/slider.interface";
 import SliderSectionMedia from "./SliderSectionMedia";
 
 type TUpdateBannerForm = {

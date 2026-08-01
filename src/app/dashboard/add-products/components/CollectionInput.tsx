@@ -8,9 +8,11 @@ import { useFormContext } from "react-hook-form";
 const CollectionInput = ({
   collectionsData,
   isLoading,
+  embedded = false,
 }: {
   collectionsData: ICollection[] | undefined;
   isLoading: boolean;
+  embedded?: boolean;
 }) => {
   const collections = Array.isArray(collectionsData) ? collectionsData : [];
 
@@ -47,49 +49,61 @@ const CollectionInput = ({
     return (current as any)?.message as string | undefined;
   };
 
+  const content = (
+    <>
+      <div className="max-h-[220px] overflow-y-auto pr-1">
+        {isLoading ? (
+          <div className="space-y-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-5 w-full animate-pulse rounded bg-muted"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {collections?.map((collection: ICollection) => {
+              const isChecked = selectedCollections.includes(collection._id);
+
+              return (
+                <div key={collection._id} className="flex items-center gap-2">
+                  <Checkbox
+                    checked={isChecked}
+                    onCheckedChange={(checked) => {
+                      toggleCollection(collection._id, Boolean(checked));
+                    }}
+                  />
+                  <span className={cn("text-sm", isChecked && "font-medium")}>
+                    {collection.name}
+                  </span>
+                </div>
+              );
+            })}
+            {collections.length === 0 && (
+              <p className="p-2 text-sm text-muted-foreground">
+                No active collections found.
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+      {getError("productCollection") && (
+        <p className="mt-2 text-sm text-destructive">
+          {getError("productCollection")}
+        </p>
+      )}
+    </>
+  );
+
+  if (embedded) return content;
+
   return (
     <SectionContentWrapper
       heading="Select Collection"
       height="max-h-[450px] overflow-y-auto"
     >
-      {isLoading ? (
-        <div className="space-y-3">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-5 w-full animate-pulse rounded bg-gray-300"
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-col gap-2">
-          {collections?.map((collection: ICollection) => {
-            const isChecked = selectedCollections.includes(collection._id);
-
-            return (
-              <div key={collection._id} className="flex items-center gap-2">
-                <Checkbox
-                  checked={isChecked}
-                  onCheckedChange={(checked) => {
-                    toggleCollection(collection._id, Boolean(checked));
-                  }}
-                />
-                <span className={cn("text-sm", isChecked && "font-medium")}>
-                  {collection.name}
-                </span>
-              </div>
-            );
-          })}
-          {collections.length === 0 && (
-            <p className="p-2 text-gray-500">No active collections found.</p>
-          )}
-        </div>
-      )}
-      {getError("productCollection") && (
-        <p className="text-red-500 text-sm mt-2">
-          {getError("productCollection")}
-        </p>
-      )}
+      {content}
     </SectionContentWrapper>
   );
 };

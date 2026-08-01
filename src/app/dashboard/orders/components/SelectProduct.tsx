@@ -117,14 +117,28 @@ const SelectProduct = ({
           classNamePrefix="select"
           isClearable
           styles={{
-            control: (base) => ({
+            control: (base, state) => ({
               ...base,
-              minHeight: "44px",
-              borderColor: "#e2e8f0",
-              boxShadow: "none",
+              minHeight: "40px",
+              borderColor: state.isFocused
+                ? "hsl(var(--border))"
+                : "hsl(var(--border))",
+              boxShadow: state.isFocused
+                ? "0 0 0 1px hsl(var(--muted-foreground) / 0.2)"
+                : "none",
               "&:hover": {
-                borderColor: "#cbd5e1",
+                borderColor: "hsl(var(--muted-foreground) / 0.35)",
               },
+            }),
+            option: (base, state) => ({
+              ...base,
+              backgroundColor: state.isSelected
+                ? "hsl(var(--muted))"
+                : state.isFocused
+                  ? "hsl(var(--muted) / 0.7)"
+                  : "transparent",
+              color: "hsl(var(--foreground))",
+              cursor: "pointer",
             }),
           }}
         />

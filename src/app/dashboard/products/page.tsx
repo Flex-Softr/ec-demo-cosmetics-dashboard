@@ -1,17 +1,18 @@
 import Show from "@/components/Show";
+import ContentCard from "@/components/contentCard/ContentCard";
+import PageHeader from "@/components/pageHeader/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { PlusIcon } from "lucide-react";
+import { PERMISSIONS } from "@/const/permissions";
+import { getPermission } from "@/lib/getAccessToken";
+import isPermitted from "@/utilities/isPermitted";
+import { Package, Plus } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import CountByStatusButtons from "./components/CountByStatusButtons";
-import ProductFilter from "./components/ProductFilter";
 import ProductBulkAction from "./components/ProductBulkAction";
+import ProductFilter from "./components/ProductFilter";
 import ProductSearchBar from "./components/ProductSearchBar";
 import ProductsTable from "./components/ProductsTable";
-import { getPermission } from "@/lib/getAccessToken";
-import { PERMISSIONS } from "@/const/permissions";
-import isPermitted from "@/utilities/isPermitted";
-import { redirect } from "next/navigation";
 
 const AllProducts = async () => {
   const { permissions = [] } = await getPermission();
@@ -23,41 +24,40 @@ const AllProducts = async () => {
   }
 
   return (
-    <Card className="m-2 sm:m-4 p-4 sm:p-6">
-      {/* header section, search bar  */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-xl md:text-2xl font-bold">All Products</h1>
-        <div className="w-full sm:w-auto">
-          <ProductSearchBar endPoint="/products/admin" />
-        </div>
-      </div>
-      <hr className="my-4" />
-      <div className="space-y-3">
-        {/* product status list*/}
-        <div className="flex flex-wrap md:justify-between items-center gap-5">
-          <CountByStatusButtons />{" "}
-          <Link href={"/dashboard/add-products"} passHref>
-            <Button className="rounded-2xl">
-              <PlusIcon /> <span>Add New Product</span>
-            </Button>
-          </Link>
-        </div>
-        <div className="flex items-center justify-between gap-5 overflow-x-auto pt-4 px-1 pb-1">
-          {/*Bulk actions and invoice print for Orders*/}
-          {/* <div className="flex items-center gap-5"> */}
-          <ProductBulkAction />
+    <div className="space-y-5 p-4 sm:p-6">
+      <PageHeader
+        title="Products"
+        subtitle="Manage your store products"
+        icon={Package}
+        actions={
+          <Button asChild size="sm" className="rounded-lg gap-1.5">
+            <Link href="/dashboard/add-products">
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">New Product</span>
+            </Link>
+          </Button>
+        }
+      />
 
-          {/* Filter options by category and stock status*/}
-          <ProductFilter />
-          {/* </div> */}
-          <Show />
-        </div>
-        {/* All products Table  */}
-        <div className="overflow-x-auto -mx-4 sm:mx-0">
+      <ContentCard>
+        <div className="space-y-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <CountByStatusButtons />
+            <ProductSearchBar endPoint="/products/admin" />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 justify-between">
+            <ProductBulkAction />
+            <div className="flex flex-wrap items-center gap-2">
+              <ProductFilter />
+              <Show />
+            </div>
+          </div>
+
           <ProductsTable />
         </div>
-      </div>
-    </Card>
+      </ContentCard>
+    </div>
   );
 };
 

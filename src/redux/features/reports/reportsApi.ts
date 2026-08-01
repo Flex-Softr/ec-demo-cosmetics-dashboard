@@ -1,44 +1,69 @@
 import baseApi from "@/redux/baseApi/baseApi";
+import { TSuccessResponse } from "@/types/response";
 import searchParams from "@/utilities/searchParams";
+import {
+  TCategoryReport,
+  TPaymentReport,
+  TProductReport,
+  TSalesReportFilters,
+  TSalesReportOrder,
+  TSalesSummary,
+} from "./reportsInterface";
 
 const reportsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getStats: builder.query({
+    getSalesSummary: builder.query<
+      TSuccessResponse<TSalesSummary>,
+      TSalesReportFilters
+    >({
       query: (args) => ({
-        url: "/reports/stats",
+        url: "/reports/sales/summary",
         params: searchParams(args),
       }),
     }),
-    getOrdersCount: builder.query({
+    getSalesOrders: builder.query<
+      TSuccessResponse<TSalesReportOrder[]>,
+      TSalesReportFilters
+    >({
       query: (args) => ({
-        url: "/reports/orders-count",
+        url: "/reports/sales/orders",
         params: searchParams(args),
       }),
     }),
-    getOrdersByPlatformCount: builder.query({
+    getSalesByProduct: builder.query<
+      TSuccessResponse<TProductReport[]>,
+      TSalesReportFilters
+    >({
       query: (args) => ({
-        url: "/reports/orders-source-count",
+        url: "/reports/sales/by-product",
         params: searchParams(args),
       }),
     }),
-    getOrderStatusChangeCount: builder.query({
-      query: (date) => ({
-        url: "/reports/orders-status-change-count",
-        params: searchParams({ date: date || undefined }),
+    getSalesByCategory: builder.query<
+      TSuccessResponse<TCategoryReport[]>,
+      TSalesReportFilters
+    >({
+      query: (args) => ({
+        url: "/reports/sales/by-category",
+        params: searchParams(args),
       }),
     }),
-    getBestSellingProducts: builder.query({
-      query: () => ({
-        url: "/reports/best-selling-product",
+    getSalesByPayments: builder.query<
+      TSuccessResponse<TPaymentReport[]>,
+      TSalesReportFilters
+    >({
+      query: (args) => ({
+        url: "/reports/sales/payments",
+        params: searchParams(args),
       }),
     }),
   }),
 });
 
 export const {
-  useGetStatsQuery,
-  useGetOrdersCountQuery,
-  useGetOrdersByPlatformCountQuery,
-  useGetOrderStatusChangeCountQuery,
-  useGetBestSellingProductsQuery,
+  useGetSalesSummaryQuery,
+  useGetSalesOrdersQuery,
+  useGetSalesByProductQuery,
+  useGetSalesByCategoryQuery,
+  useGetSalesByPaymentsQuery,
 } = reportsApi;

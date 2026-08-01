@@ -1,12 +1,19 @@
 "use client";
-import { useState } from "react";
-import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
-import { Input } from "@/components/ui/input";
-import { useFormContext } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { FileTextIcon } from "@radix-ui/react-icons";
-import CommonModal from "@/components/modal/CommonModal";
+
 import BookPreviewManager from "@/components/book-preview/BookPreviewManager";
+import SectionContentWrapper from "@/components/section-content-wrapper/SectionContentWrapper";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { FileTextIcon } from "@radix-ui/react-icons";
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 const PreviewLinkInput = () => {
   const [open, setOpen] = useState(false);
@@ -16,42 +23,48 @@ const PreviewLinkInput = () => {
   } = useFormContext();
 
   return (
-    <SectionContentWrapper heading={"Product Preview Link (Optional)"}>
-      <div>
-        <div className="flex gap-2">
-          <Input
-            placeholder="https://example.com/preview"
-            {...register("previewLink")}
-            className="flex-1"
-          />
-          <Button
-            type="button"
-            variant="outline"
-            className="flex gap-2"
-            onClick={() => setOpen(true)}
-          >
-            <FileTextIcon className="h-4 w-4" />
-            Library
-          </Button>
+    <div className="hidden">
+      <SectionContentWrapper heading={"Product Preview Link (Optional)"}>
+        <div>
+          <div className="flex gap-2">
+            <Input
+              placeholder="https://example.com/preview"
+              {...register("previewLink")}
+              className="flex-1 rounded-lg"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="rounded-lg gap-1.5"
+              onClick={() => setOpen(true)}
+            >
+              <FileTextIcon className="h-4 w-4" />
+              Library
+            </Button>
+          </div>
+          {errors.previewLink && (
+            <p className="mt-1 text-sm text-destructive">
+              {errors.previewLink.message as string}
+            </p>
+          )}
         </div>
-        {errors.previewLink && (
-          <p className="text-red-500 text-sm mt-1">
-            {errors.previewLink.message as string}
-          </p>
-        )}
-      </div>
 
-      <CommonModal
-        open={open}
-        handleOpen={setOpen}
-        modalTitle="Book Preview Manager"
-        className="w-[95%] h-[90%]"
-      >
-        <div className="p-1 max-h-[75vh] overflow-y-auto">
-          <BookPreviewManager />
-        </div>
-      </CommonModal>
-    </SectionContentWrapper>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-5xl">
+            <DialogHeader>
+              <DialogTitle>Book Preview Manager</DialogTitle>
+              <DialogDescription>
+                Choose or manage book preview files for this product.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="max-h-[70vh] overflow-y-auto p-1">
+              <BookPreviewManager />
+            </div>
+          </DialogContent>
+        </Dialog>
+      </SectionContentWrapper>
+    </div>
   );
 };
 

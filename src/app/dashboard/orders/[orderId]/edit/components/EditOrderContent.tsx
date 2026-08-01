@@ -1,6 +1,6 @@
 "use client";
 import OrderForm from "@/app/dashboard/orders/components/OrderForm";
-import Loading from "@/app/loading";
+import OrderFormSkeleton from "@/components/skeleton/OrderFormSkeleton";
 import { useGetSingleOrderQuery } from "@/redux/features/orders/ordersApi";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -9,11 +9,15 @@ const EditOrderContent = ({ orderId }: { orderId: string }) => {
   const order = data?.data;
 
   if (isLoading) {
-    return <Loading />;
+    return <OrderFormSkeleton />;
   }
 
   if (!order) {
-    return <h2 className="text-center font-bold py-2">No order found</h2>;
+    return (
+      <h2 className="py-8 text-center font-semibold text-muted-foreground">
+        No order found
+      </h2>
+    );
   }
 
   const initialValues = {

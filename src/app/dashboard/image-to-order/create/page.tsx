@@ -1,4 +1,5 @@
 "use client";
+import OrderFormSkeleton from "@/components/skeleton/OrderFormSkeleton";
 import { useGetSingleImageToOrderReqQuery } from "@/redux/features/imageToOrder/imageToOrderApi";
 import { useSearchParams } from "next/navigation";
 import OrderForm from "../../orders/components/OrderForm";
@@ -12,11 +13,10 @@ export default function CreateImageToOrderPage() {
     { skip: !id }
   );
 
-  if (isLoading)
-    return <div className="p-8 text-center text-2xl">Loading...</div>;
+  if (isLoading) return <OrderFormSkeleton />;
   if (!reqData?.data)
     return (
-      <div className="p-8 text-center text-2xl text-red-600">
+      <div className="p-8 text-center text-lg text-destructive">
         Request not found or invalid ID
       </div>
     );

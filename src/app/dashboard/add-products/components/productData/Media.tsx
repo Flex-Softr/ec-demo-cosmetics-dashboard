@@ -101,7 +101,7 @@ const Media = ({ isVariation }: TProps) => {
               setClick(isVariation ? "variation" : "thumbnail");
             }}
             className={cn(
-              "relative flex flex-col items-center justify-center mx-auto mt-5 w-48 h-48 aspect-[3.2/1] rounded-lg border-2 border-dashed cursor-pointer transition-all duration-300 group overflow-hidden bg-background",
+              "relative mx-auto mt-4 flex h-32 w-32 flex-col items-center justify-center overflow-hidden rounded-lg border-2 border-dashed bg-background transition-all duration-300 cursor-pointer group",
               // default / hover state
               !getError("image.thumbnail") &&
                 "border-muted-foreground/25 hover:border-primary/30 hover:bg-muted/10",
@@ -117,20 +117,20 @@ const Media = ({ isVariation }: TProps) => {
                 src={formatImageSrc(thumbnailImage.data.src)}
                 alt={thumbnailImage.data.alt || "Thumbnail"}
                 fill={true}
-                className="object-cover rounded-sm"
-                sizes="(max-width: 208px) 100vw,"
+                className="rounded-sm object-cover"
+                sizes="128px"
               />
             ) : (
-              <div className="flex flex-col items-center justify-center p-4 text-center space-y-3">
-                <div className="p-3 rounded-full bg-accent group-hover:bg-primary/10 transition-colors">
-                  <UploadCloud className="w-6 h-6 text-primary group-hover:text-primary/80 transition-colors" />
+              <div className="flex flex-col items-center justify-center space-y-1.5 p-2 text-center">
+                <div className="rounded-full bg-accent p-1.5 transition-colors group-hover:bg-primary/10">
+                  <UploadCloud className="h-3.5 w-3.5 text-primary transition-colors group-hover:text-primary/80" />
                 </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold text-foreground">
-                    Click to upload image
+                <div className="space-y-0.5">
+                  <p className="text-[11px] font-semibold leading-tight text-foreground">
+                    Click to upload
                   </p>
-                  <TypographyH4 className="!text-[10px] text-muted-foreground font-normal">
-                    Recommended: 800 × 800 px
+                  <TypographyH4 className="!text-[9px] font-normal text-muted-foreground">
+                    800 × 800 px
                   </TypographyH4>
                 </div>
               </div>
@@ -155,7 +155,7 @@ const Media = ({ isVariation }: TProps) => {
               setClick("gallery");
             }}
             className={cn(
-              "relative flex flex-col items-center justify-center mx-auto mt-5 w-48 h-48 aspect-[3.2/1] rounded-lg border-2 border-dashed cursor-pointer transition-all duration-300 group overflow-hidden bg-background",
+              "relative mx-auto mt-4 flex h-32 w-32 flex-col items-center justify-center overflow-hidden rounded-lg border-2 border-dashed bg-background transition-all duration-300 cursor-pointer group",
 
               // default / hover state
               !getError("image.gallery") &&
@@ -175,8 +175,8 @@ const Media = ({ isVariation }: TProps) => {
                   src={formatImageSrc(galleryImage.data.src)}
                   alt={galleryImage.data.alt || "Gallery"}
                   fill={true}
-                  className="object-cover rounded-sm"
-                  sizes="(max-width: 208px) 100vw,"
+                  className="rounded-sm object-cover"
+                  sizes="128px"
                 />
                 <button
                   type="button"
@@ -186,25 +186,25 @@ const Media = ({ isVariation }: TProps) => {
                     e.stopPropagation();
                     handleClearGallery();
                   }}
-                  className="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-gray-700 shadow-sm transition hover:bg-white hover:text-red-600"
+                  className="absolute right-1.5 top-1.5 z-10 inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-gray-700 shadow-sm transition hover:bg-white hover:text-red-600"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-3.5 w-3.5" />
                 </button>
-                <span className="text-white text-4xl absolute mx-auto my-auto group-hover:bg-white group-hover:text-gray-600 group-hover:opacity-70 h-10 w-10 text-center items-center rounded-full">
+                <span className="absolute mx-auto my-auto flex h-8 w-8 items-center justify-center rounded-full text-center text-2xl text-white group-hover:bg-white group-hover:text-gray-600 group-hover:opacity-70">
                   {gallery.length}
                 </span>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center p-4 text-center space-y-3">
-                <div className="p-3 rounded-full bg-accent group-hover:bg-primary/10 transition-colors">
-                  <UploadCloud className="w-6 h-6 text-primary group-hover:text-primary/80 transition-colors" />
+              <div className="flex flex-col items-center justify-center space-y-1.5 p-2 text-center">
+                <div className="rounded-full bg-accent p-1.5 transition-colors group-hover:bg-primary/10">
+                  <UploadCloud className="h-3.5 w-3.5 text-primary transition-colors group-hover:text-primary/80" />
                 </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold text-foreground">
-                    Click to upload image
+                <div className="space-y-0.5">
+                  <p className="text-[11px] font-semibold leading-tight text-foreground">
+                    Click to upload
                   </p>
-                  <TypographyH4 className="!text-[10px] text-muted-foreground font-normal">
-                    Recommended: 800 × 800 px
+                  <TypographyH4 className="!text-[9px] font-normal text-muted-foreground">
+                    800 × 800 px
                   </TypographyH4>
                 </div>
               </div>

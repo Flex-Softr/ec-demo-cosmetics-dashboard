@@ -1,11 +1,12 @@
-import EcButton from "@/components/EcButton/EcButton";
+"use client";
+
+import { Button } from "@/components/ui/button";
 import { useGetAllCouponTagsQuery } from "@/redux/features/coupon/couponApi";
 import { setCouponSelectedTags } from "@/redux/features/coupon/couponSlice";
-import { useState } from "react";
-
 import { useAppDispatch } from "@/redux/hooks";
+import { useState } from "react";
 import Select from "react-select";
-import { TSelectOption } from "../createCoupons/CouponCategoryProductCondition";
+import { TSelectOption } from "../CouponCategoryProductCondition";
 
 const FilterByTag = () => {
   const [selectedValue, setSelectedValue] = useState<TSelectOption>([]);
@@ -17,17 +18,22 @@ const FilterByTag = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="w-[550px] flex gap-3">
+    <div className="flex w-full max-w-md items-center gap-2 sm:w-[420px]">
       <Select
         options={options}
         isMulti={true}
         placeholder="Filter by tags"
-        className="w-full"
+        className="w-full text-sm"
         onChange={(v) => setSelectedValue(v)}
         value={selectedValue}
         isClearable={false}
+        classNames={{
+          control: () => "!min-h-10 !rounded-lg !border-border",
+        }}
       />
-      <EcButton
+      <Button
+        size="sm"
+        className="rounded-lg shrink-0"
         onClick={() =>
           dispatch(
             setCouponSelectedTags(selectedValue.map((item) => item.value))
@@ -35,17 +41,19 @@ const FilterByTag = () => {
         }
       >
         Filter
-      </EcButton>
+      </Button>
       {selectedValue.length ? (
-        <EcButton
-          variant={"destructive"}
+        <Button
+          size="sm"
+          variant="destructive"
+          className="rounded-lg shrink-0"
           onClick={() => {
             dispatch(setCouponSelectedTags([]));
             setSelectedValue([]);
           }}
         >
           Clear
-        </EcButton>
+        </Button>
       ) : null}
     </div>
   );

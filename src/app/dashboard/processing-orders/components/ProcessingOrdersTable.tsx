@@ -1,6 +1,6 @@
 "use client";
 import { PagePagination } from "@/components/pagination/PagePagination";
-import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import OrdersTableSkeleton from "@/components/skeleton/OrdersTableSkeleton";
 import {
   Table,
   TableBody,
@@ -15,12 +15,10 @@ import formattedOrderData from "@/utilities/formattedOrderData";
 import {
   flexRender,
   getCoreRowModel,
-  // getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useMemo } from "react";
 import { getColumns } from "./ProcessingOrdersColumn";
-
 import { TPermission } from "@/utilities/isPermitted";
 
 export default function ProcessingOrdersTable({
@@ -47,7 +45,6 @@ export default function ProcessingOrdersTable({
     data: orders,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(),
   });
 
   const selectedRows = table?.getFilteredSelectedRowModel()?.rows;
@@ -59,14 +56,20 @@ export default function ProcessingOrdersTable({
 
   return (
     <div className="w-full">
-      <div className="rounded-lg border overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
         <Table className="min-w-[1100px]">
-          <TableHeader className="bg-primary text-primary-foreground">
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-muted/0">
+              <TableRow
+                key={headerGroup.id}
+                className="border-b border-border hover:bg-muted"
+              >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="text-center">
+                    <TableHead
+                      key={header.id}
+                      className="py-3 text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -80,15 +83,17 @@ export default function ProcessingOrdersTable({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              <OrdersTableSkeleton columns={columns.length} />
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="border-b"
+                  className="border-b border-border"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-center">
+                    <TableCell key={cell.id} className="py-3 text-center">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -97,20 +102,11 @@ export default function ProcessingOrdersTable({
                   ))}
                 </TableRow>
               ))
-            ) : isLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  <TableSkeleton />
-                </TableCell>
-              </TableRow>
             ) : (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-muted-foreground"
                 >
                   No orders
                 </TableCell>
@@ -120,7 +116,7 @@ export default function ProcessingOrdersTable({
         </Table>
       </div>
       {!search && (
-        <div className="flex items-center justify-end space-x-2 py-2">
+        <div className="flex items-center justify-end py-1">
           <PagePagination />
         </div>
       )}

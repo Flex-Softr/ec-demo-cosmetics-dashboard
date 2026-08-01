@@ -12,8 +12,9 @@ const CreateUser = () => {
 
   return (
     <div>
-      <Button onClick={handleModal} className="rounded-2xl">
-        <Plus /> Create user
+      <Button onClick={handleModal} size="sm" className="rounded-lg gap-1.5">
+        <Plus className="h-4 w-4" />
+        <span className="hidden sm:inline">New Employee</span>
       </Button>
       <CommonModal
         open={modalOpen}
