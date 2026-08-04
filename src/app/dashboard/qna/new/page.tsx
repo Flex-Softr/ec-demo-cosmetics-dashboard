@@ -1,7 +1,7 @@
 import ContentCard from "@/components/contentCard/ContentCard";
 import PageHeader from "@/components/pageHeader/PageHeader";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CircleHelp } from "lucide-react";
+import { ArrowLeft, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { requireBlogAccess } from "@/app/dashboard/_components/blog-qna/BlogAccessGate";
 import QnaForm from "@/app/dashboard/_components/blog-qna/QnaForm";
@@ -14,7 +14,7 @@ export default async function NewQnaPage() {
       <PageHeader
         title="Create QnA"
         subtitle="Add a new question and answer"
-        icon={CircleHelp}
+        icon={HelpCircle}
         actions={
           <Button
             asChild

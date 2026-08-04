@@ -1,7 +1,7 @@
 import ContentCard from "@/components/contentCard/ContentCard";
 import PageHeader from "@/components/pageHeader/PageHeader";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CircleHelp } from "lucide-react";
+import { ArrowLeft, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import QnaForm from "@/app/dashboard/_components/blog-qna/QnaForm";
 import { requireBlogAccess } from "@/app/dashboard/_components/blog-qna/BlogAccessGate";
@@ -14,7 +14,7 @@ const EditQnaPage = async ({ params }: { params: { id: string } }) => {
       <PageHeader
         title="Edit QnA"
         subtitle="Update question and answer details"
-        icon={CircleHelp}
+        icon={HelpCircle}
         actions={
           <Button
             asChild
