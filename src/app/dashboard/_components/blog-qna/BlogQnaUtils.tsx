@@ -1,21 +1,18 @@
 "use client";
 
+import TableSearch from "@/components/tableSearch/TableSearch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { softBadgeClass, statusChipClass } from "@/lib/tableStyles";
+import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
 
 export const RichTextEditor = dynamic(() => import("jodit-react"), {
   ssr: false,
   loading: () => (
-    <div className="rounded-md border p-4 text-sm">Loading editor...</div>
+    <div className="rounded-lg border border-border p-4 text-sm text-muted-foreground">
+      Loading editor...
+    </div>
   ),
 });
 
@@ -90,14 +87,18 @@ export const getMeta = (response: unknown) => {
 };
 
 export function StatusBadge({ status }: { status: string }) {
-  const className =
+  const tone =
     status === "published" || status === "active"
-      ? "bg-green-100 text-green-700 hover:bg-green-100"
+      ? "bg-emerald-100 text-emerald-800"
       : status === "archived" || status === "inactive"
-        ? "bg-gray-100 text-gray-700 hover:bg-gray-100"
-        : "bg-amber-100 text-amber-700 hover:bg-amber-100";
+        ? "bg-muted text-muted-foreground"
+        : "bg-amber-100 text-amber-800";
 
-  return <Badge className={className}>{status}</Badge>;
+  return (
+    <Badge className={cn(softBadgeClass(tone), "capitalize shadow-none")}>
+      {status}
+    </Badge>
+  );
 }
 
 export function SearchAndStatus({
@@ -115,27 +116,30 @@ export function SearchAndStatus({
   placeholder: string;
   statusOptions: string[];
 }) {
+  const chips = ["all", ...statusOptions];
+
   return (
-    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-      <Input
+    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-wrap items-center gap-2">
+        {chips.map((item) => (
+          <Button
+            key={item}
+            type="button"
+            variant="outline"
+            size="sm"
+            className={statusChipClass(status === item)}
+            onClick={() => setStatus(item)}
+          >
+            <span className="capitalize">{item === "all" ? "All" : item}</span>
+          </Button>
+        ))}
+      </div>
+      <TableSearch
         value={search}
-        onChange={(event) => setSearch(event.target.value)}
+        onChange={setSearch}
         placeholder={placeholder}
-        className="md:max-w-sm"
+        className="sm:w-64"
       />
-      <Select value={status} onValueChange={setStatus}>
-        <SelectTrigger className="md:w-[180px]">
-          <SelectValue placeholder="Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All status</SelectItem>
-          {statusOptions.map((item) => (
-            <SelectItem key={item} value={item} className="capitalize">
-              {item}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
     </div>
   );
 }
@@ -154,23 +158,25 @@ export function LocalPagination({
   if (totalPage <= 1) return null;
 
   return (
-    <div className="flex items-center justify-end gap-2">
+    <div className="flex items-center justify-end gap-2 pt-1">
       <Button
         type="button"
         variant="outline"
         size="sm"
+        className="h-8 rounded-lg"
         disabled={isLoading || page <= 1}
         onClick={() => setPage(page - 1)}
       >
         Previous
       </Button>
-      <span className="text-sm text-muted-foreground">
+      <span className="text-xs text-muted-foreground">
         Page {page} of {totalPage}
       </span>
       <Button
         type="button"
         variant="outline"
         size="sm"
+        className="h-8 rounded-lg"
         disabled={isLoading || page >= totalPage}
         onClick={() => setPage(page + 1)}
       >

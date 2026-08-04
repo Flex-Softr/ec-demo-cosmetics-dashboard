@@ -1,6 +1,6 @@
 "use client";
 
-import { revalidateTag } from "@/utilities/revalidate";
+import CommonAlertDialog from "@/components/common/CommonAlertDialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,18 +29,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useDebounce } from "@/hooks/useDebounce";
 import {
+  softTableCellClass,
+  softTableHeadClass,
+  softTableHeaderClass,
+  softTableRowClass,
+  softTableWrapperClass,
+} from "@/lib/tableStyles";
+import { cn } from "@/lib/utils";
+import {
   useCreateBlogQaCategoryMutation,
   useCreateBlogQaTagMutation,
+  useCreateBlogQaTopicMutation,
   useDeleteBlogQaCategoryMutation,
   useDeleteBlogQaTagMutation,
+  useDeleteBlogQaTopicMutation,
   useGetBlogQaCategoriesQuery,
   useGetBlogQaTagsQuery,
+  useGetBlogQaTopicsQuery,
   useUpdateBlogQaCategoryMutation,
   useUpdateBlogQaTagMutation,
-  useGetBlogQaTopicsQuery,
-  useCreateBlogQaTopicMutation,
   useUpdateBlogQaTopicMutation,
-  useDeleteBlogQaTopicMutation,
 } from "@/redux/features/blogQna/blogQnaApi";
 import {
   TBlogQACategory,
@@ -48,7 +56,8 @@ import {
   TBlogQATopic,
   TBlogTaxonomyStatus,
 } from "@/types/blog-qna";
-import { Edit, PlusCircle, Trash2 } from "lucide-react";
+import { revalidateTag } from "@/utilities/revalidate";
+import { Edit, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   getListData,
@@ -75,10 +84,15 @@ const emptyForm = {
   schemaMarkup: "",
 };
 
+const kindLabel = (kind: TKind) =>
+  kind === "category" ? "Category" : kind === "tag" ? "Tag" : "Topic";
+
 export default function BlogTaxonomyManager({ kind }: { kind: TKind }) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const debouncedSearch = useDebounce(search, 500);
   const query = {
     page,
@@ -111,57 +125,38 @@ export default function BlogTaxonomyManager({ kind }: { kind: TKind }) {
   const [deleteTag] = useDeleteBlogQaTagMutation();
   const [deleteTopic] = useDeleteBlogQaTopicMutation();
 
-  const title =
-    kind === "category"
-      ? "Blog & QnA Categories"
-      : kind === "tag"
-        ? "Blog & QnA Tags"
-        : "Blog & QnA Topics";
+  const columnCount = kind === "topic" ? 6 : kind === "category" ? 5 : 4;
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(`Delete this ${kind}?`)) return;
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    setIsDeleting(true);
     try {
       const res =
         kind === "category"
-          ? await deleteCategory(id).unwrap()
+          ? await deleteCategory(deleteId).unwrap()
           : kind === "tag"
-            ? await deleteTag(id).unwrap()
-            : await deleteTopic(id).unwrap();
+            ? await deleteTag(deleteId).unwrap()
+            : await deleteTopic(deleteId).unwrap();
       toast({
-        className: "bg-success text-white",
+        className: "toast-success",
         title: res?.message || "Deleted successfully",
       });
       if (kind === "category") await revalidateTag("blogQaCategories");
       if (kind === "tag") await revalidateTag("blogQaTags");
+      setDeleteId(null);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
-        variant: "destructive",
+        className: "toast-error",
         title: error?.data?.message || "Delete failed",
       });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   return (
-    <div className="space-y-4 p-4 md:p-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <h1 className="text-2xl font-bold">{title}</h1>
-        <TaxonomyForm
-          kind={kind}
-          trigger={
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add{" "}
-              {kind === "category"
-                ? "Category"
-                : kind === "tag"
-                  ? "Tag"
-                  : "Topic"}
-            </Button>
-          }
-        />
-      </div>
-
+    <div className="space-y-4">
       <SearchAndStatus
         search={search}
         setSearch={(value) => {
@@ -173,85 +168,125 @@ export default function BlogTaxonomyManager({ kind }: { kind: TKind }) {
           setPage(1);
           setStatus(value);
         }}
-        placeholder={`Search ${title.toLowerCase()}...`}
+        placeholder={`Search ${kindLabel(kind).toLowerCase()}s…`}
         statusOptions={["active", "inactive"]}
       />
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <TableRow className="hover:bg-primary/90">
-              <TableHead>Name</TableHead>
-              <TableHead>Slug</TableHead>
-              {kind === "topic" && <TableHead>Category</TableHead>}
-              {kind !== "tag" && <TableHead>Description</TableHead>}
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  Loading...
-                </TableCell>
+      <div className={softTableWrapperClass}>
+        <div className="overflow-x-auto">
+          <Table className="min-w-[700px]">
+            <TableHeader className={softTableHeaderClass}>
+              <TableRow className="hover:bg-muted">
+                <TableHead className={softTableHeadClass}>Name</TableHead>
+                <TableHead className={softTableHeadClass}>Slug</TableHead>
+                {kind === "topic" && (
+                  <TableHead className={softTableHeadClass}>Category</TableHead>
+                )}
+                {kind !== "tag" && (
+                  <TableHead className={softTableHeadClass}>
+                    Description
+                  </TableHead>
+                )}
+                <TableHead className={softTableHeadClass}>Status</TableHead>
+                <TableHead className={cn(softTableHeadClass, "text-right")}>
+                  Actions
+                </TableHead>
               </TableRow>
-            ) : items.length ? (
-              items.map((item) => (
-                <TableRow key={item._id}>
-                  <TableCell className="font-medium">{item.name}</TableCell>
-                  <TableCell>{item.slug}</TableCell>
-                  {kind === "topic" &&
-                    (() => {
-                      const topicItem = item as TBlogQATopic;
-                      const cat = topicItem.category;
-                      return (
-                        <TableCell>
-                          {typeof cat === "object" && cat !== null
-                            ? (cat as { name: string }).name
-                            : cat || "-"}
-                        </TableCell>
-                      );
-                    })()}
-                  {kind !== "tag" && (
-                    <TableCell className="max-w-md truncate">
-                      {item.description || "-"}
-                    </TableCell>
-                  )}
-                  <TableCell>
-                    <StatusBadge status={item.status} />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex justify-end gap-2">
-                      <TaxonomyForm
-                        kind={kind}
-                        initialData={item}
-                        trigger={
-                          <Button size="icon" variant="outline">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        }
-                      />
-                      <Button
-                        size="icon"
-                        variant="destructive"
-                        onClick={() => handleDelete(item._id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={columnCount}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    Loading...
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  No data found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ) : items.length ? (
+                items.map((item) => (
+                  <TableRow key={item._id} className={softTableRowClass}>
+                    <TableCell
+                      className={cn(
+                        softTableCellClass,
+                        "font-medium text-foreground"
+                      )}
+                    >
+                      {item.name}
+                    </TableCell>
+                    <TableCell
+                      className={cn(
+                        softTableCellClass,
+                        "text-muted-foreground"
+                      )}
+                    >
+                      {item.slug}
+                    </TableCell>
+                    {kind === "topic" &&
+                      (() => {
+                        const topicItem = item as TBlogQATopic;
+                        const cat = topicItem.category;
+                        return (
+                          <TableCell className={softTableCellClass}>
+                            {typeof cat === "object" && cat !== null
+                              ? (cat as { name: string }).name
+                              : cat || "-"}
+                          </TableCell>
+                        );
+                      })()}
+                    {kind !== "tag" && (
+                      <TableCell
+                        className={cn(
+                          softTableCellClass,
+                          "max-w-md truncate text-muted-foreground"
+                        )}
+                      >
+                        {item.description || "-"}
+                      </TableCell>
+                    )}
+                    <TableCell className={softTableCellClass}>
+                      <StatusBadge status={item.status} />
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      <div className="flex justify-end gap-2">
+                        <TaxonomyForm
+                          kind={kind}
+                          initialData={item}
+                          trigger={
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="h-8 w-8 rounded-lg"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          }
+                        />
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          onClick={() => setDeleteId(item._id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columnCount}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    No data found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       <LocalPagination
@@ -260,11 +295,24 @@ export default function BlogTaxonomyManager({ kind }: { kind: TKind }) {
         setPage={setPage}
         isLoading={isLoading}
       />
+
+      <CommonAlertDialog
+        open={!!deleteId}
+        onOpenChange={(open) => {
+          if (!open) setDeleteId(null);
+        }}
+        title={`Delete ${kindLabel(kind)}`}
+        description={`Are you sure you want to delete this ${kind}? This action cannot be undone.`}
+        onConfirm={handleDelete}
+        loading={isDeleting}
+        confirmText="Delete"
+        confirmVariant="destructive"
+      />
     </div>
   );
 }
 
-function TaxonomyForm({
+export function TaxonomyForm({
   kind,
   initialData,
   trigger,
@@ -297,7 +345,6 @@ function TaxonomyForm({
 
   const isLoading =
     isCreatingCategory || isUpdatingCategory || isCreatingTag || isUpdatingTag;
-  // include topic loading
   const isTopicLoading = isCreatingTopic || isUpdatingTopic;
   const overallLoading = isLoading || isTopicLoading;
 
@@ -308,7 +355,6 @@ function TaxonomyForm({
         ? {
             name: initialData.name,
             slug: initialData.slug,
-            // category only exists on TBlogQATopic — narrow with 'in' before accessing
             category:
               "category" in initialData && initialData.category
                 ? typeof initialData.category === "object"
@@ -345,10 +391,9 @@ function TaxonomyForm({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Validate: category is required for topics
     if (kind === "topic" && !form.category) {
       toast({
-        variant: "destructive",
+        className: "toast-error",
         title: "Please select a category for this topic.",
       });
       return;
@@ -391,7 +436,7 @@ function TaxonomyForm({
             ? await createTag(payload).unwrap()
             : await createTopic(payload).unwrap();
       toast({
-        className: "bg-success text-white",
+        className: "toast-success",
         title: res?.message || "Saved successfully",
       });
       if (kind === "category") await revalidateTag("blogQaCategories");
@@ -400,7 +445,7 @@ function TaxonomyForm({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
-        variant: "destructive",
+        className: "toast-error",
         title: error?.data?.message || "Save failed",
       });
     }
@@ -412,12 +457,7 @@ function TaxonomyForm({
       <DialogContent className="sm:max-w-[640px]">
         <DialogHeader>
           <DialogTitle>
-            {initialData ? "Edit" : "Add"}{" "}
-            {kind === "category"
-              ? "Category"
-              : kind === "tag"
-                ? "Tag"
-                : "Topic"}
+            {initialData ? "Edit" : "Add"} {kindLabel(kind)}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -515,11 +555,16 @@ function TaxonomyForm({
             <Button
               type="button"
               variant="outline"
+              className="rounded-lg"
               onClick={() => setOpen(false)}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={overallLoading}>
+            <Button
+              type="submit"
+              className="rounded-lg"
+              disabled={overallLoading}
+            >
               {initialData ? "Update" : "Create"}
             </Button>
           </div>

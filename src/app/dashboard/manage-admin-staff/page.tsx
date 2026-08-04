@@ -27,7 +27,7 @@ const ManageUser = async () => {
       <GetAllUser />
       <PageHeader
         title="Manage Employees"
-        subtitle="Create and manage admin and staff accounts"
+        subtitle="Create and manage admin accounts"
         icon={Users}
         actions={<CreateUser />}
       />

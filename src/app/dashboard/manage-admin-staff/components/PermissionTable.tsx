@@ -1,25 +1,68 @@
 "use client";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { PERMISSIONS } from "@/const/permissions";
+import { formatPermissionLabel } from "@/lib/formatPermissionLabel";
+import { cn } from "@/lib/utils";
 import { TPermission } from "@/redux/features/permissions/permissionInterface";
 import { useAddOrRemovePermissionFromUserMutation } from "@/redux/features/permissions/permissionsAPi";
 import { TUser } from "@/redux/features/user/userInterface";
 import { TSuccessResponse } from "@/types/response";
 import { TGenericErrorResponse } from "@/utilities/response";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Shield } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
+const ASSIGNABLE_PERMISSIONS = [
+  {
+    fieldName: PERMISSIONS.MANAGE_ADMIN_OR_STAFF,
+    description: "Manage admin and staff",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_SHIPPING_CHARGE,
+    description: "Can manage shipping charges",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_COUPON,
+    description: "Can add or delete coupons",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_PERMISSION,
+    description: "Can add new permission",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_ORDER,
+    description: "Can manage orders",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_PROCESSING_ORDER,
+    description: "Can manage processing orders and can add warranty codes",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_SHIPMENT_ORDER,
+    description: "Can book courier",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_WARRANTY_CLAIM,
+    description: "Can manage warranty claims",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_PRODUCT,
+    description: "Can manage products",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_BLOG,
+    description: "Can manage blog posts, QnA, categories and tags",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_SMS,
+    description: "Can send sms",
+  },
+  {
+    fieldName: PERMISSIONS.MANAGE_CUSTOMER,
+    description: "Can manage customers",
+  },
+] as const;
 
 const PermissionTable = ({
   permissionData,
@@ -34,168 +77,78 @@ const PermissionTable = ({
   onPermissionChange?: (permissionIds: string[]) => void;
   selectedPermissions?: string[];
 }) => {
-  const [addRemovePermission] = useAddOrRemovePermissionFromUserMutation();
+  const [addRemovePermission, { isLoading }] =
+    useAddOrRemovePermissionFromUserMutation();
   const { toast } = useToast();
-  const FormSchema = z.object({
-    [PERMISSIONS.SUPER_ADMIN]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_ADMIN_OR_STAFF]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_SHIPPING_CHARGE]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_COUPON]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_PERMISSION]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_ORDER]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_PROCESSING_ORDER]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_SHIPMENT_ORDER]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_WARRANTY_CLAIM]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_PRODUCT]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_BLOG]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_SMS]: z.boolean().optional(),
-    [PERMISSIONS.MANAGE_CUSTOMER]: z.boolean().optional(),
-  });
 
-  const defaultValues = Object.values(PERMISSIONS).reduce(
-    (acc, permissionValue) => {
-      if (externalSelectedPermissions) {
-        // If external state is provided, check against it
-        const permissionId = permissionData.find(
-          (p) => p.name === permissionValue
-        )?._id;
-        acc[permissionValue as keyof typeof FormSchema.shape] =
-          !!permissionId && externalSelectedPermissions.includes(permissionId);
-      } else {
-        // Otherwise fallback to user permissions
-        acc[permissionValue as keyof typeof FormSchema.shape] = (
-          user?.permissions || []
-        ).some((p) => p.name === permissionValue);
-      }
-      return acc;
-    },
-    {} as Record<string, boolean>
+  const formFieldData = useMemo(
+    () =>
+      ASSIGNABLE_PERMISSIONS.map((item) => {
+        const permission = permissionData.find(
+          (p) => p.name === item.fieldName
+        );
+        return {
+          ...item,
+          _id: permission?._id,
+          name: permission?.name || item.fieldName,
+        };
+      }).filter((item) => item._id),
+    [permissionData]
   );
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues,
-  });
-
-  const formFieldData = [
-    {
-      ...permissionData.find((item) => item.name === PERMISSIONS.SUPER_ADMIN),
-      description: "Can do anything. Do not give this to anyone.",
-      fieldName: PERMISSIONS.SUPER_ADMIN,
-      warn: "Be careful",
-    },
-    {
-      ...permissionData.find(
-        (item) => item.name === PERMISSIONS.MANAGE_ADMIN_OR_STAFF
-      ),
-      description: "Manage admin and staff",
-      fieldName: PERMISSIONS.MANAGE_ADMIN_OR_STAFF,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find(
-        (item) => item.name === PERMISSIONS.MANAGE_SHIPPING_CHARGE
-      ),
-      description: "Can manage shipping charges",
-      fieldName: PERMISSIONS.MANAGE_SHIPPING_CHARGE,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find((item) => item.name === PERMISSIONS.MANAGE_COUPON),
-      description: "Can add or delete coupons",
-      fieldName: PERMISSIONS.MANAGE_COUPON,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find(
-        (item) => item.name === PERMISSIONS.MANAGE_PERMISSION
-      ),
-      description: "Can add new permission",
-      fieldName: PERMISSIONS.MANAGE_PERMISSION,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find((item) => item.name === PERMISSIONS.MANAGE_ORDER),
-      description: "Can manage orders",
-      fieldName: PERMISSIONS.MANAGE_ORDER,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find(
-        (item) => item.name === PERMISSIONS.MANAGE_PROCESSING_ORDER
-      ),
-      description: "Can manage processing orders and can add warranty codes",
-      fieldName: PERMISSIONS.MANAGE_PROCESSING_ORDER,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find(
-        (item) => item.name === PERMISSIONS.MANAGE_SHIPMENT_ORDER
-      ),
-      description: "Can book courier",
-      fieldName: PERMISSIONS.MANAGE_SHIPMENT_ORDER,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find(
-        (item) => item.name === PERMISSIONS.MANAGE_WARRANTY_CLAIM
-      ),
-      description: "Can manage warranty claims",
-      fieldName: PERMISSIONS.MANAGE_WARRANTY_CLAIM,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find(
-        (item) => item.name === PERMISSIONS.MANAGE_PRODUCT
-      ),
-      description: "Can manage products",
-      fieldName: PERMISSIONS.MANAGE_PRODUCT,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find((item) => item.name === PERMISSIONS.MANAGE_BLOG),
-      description: "Can manage blog posts, QnA, categories and tags",
-      fieldName: PERMISSIONS.MANAGE_BLOG,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find((item) => item.name === PERMISSIONS.MANAGE_SMS),
-      description: "Can send sms",
-      fieldName: PERMISSIONS.MANAGE_SMS,
-      warn: undefined,
-    },
-    {
-      ...permissionData.find(
-        (item) => item.name === PERMISSIONS.MANAGE_CUSTOMER
-      ),
-      description: "Can manage customers",
-      fieldName: PERMISSIONS.MANAGE_CUSTOMER,
-      warn: undefined,
-    },
-  ];
-
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (onPermissionChange || isCreate) return; // Parent handles submission if callback provided
-
-    const trueFields = Object.keys(data).filter(
-      (field) =>
-        (
-          data as {
-            [key: string]: boolean;
-          }
-        )[field]
+  const getInitialSelected = () => {
+    if (externalSelectedPermissions) {
+      return new Set(externalSelectedPermissions);
+    }
+    return new Set(
+      (user?.permissions || [])
+        .filter((p) => p.name !== PERMISSIONS.SUPER_ADMIN)
+        .map((p) => p._id)
     );
-    const ids = formFieldData
-      .filter(
-        (item) => "fieldName" in item && trueFields.includes(item.fieldName)
-      )
-      .map((item) => item._id)
-      .filter(Boolean);
+  };
+
+  const [selectedIds, setSelectedIds] =
+    useState<Set<string>>(getInitialSelected);
+
+  useEffect(() => {
+    if (externalSelectedPermissions) {
+      setSelectedIds(new Set(externalSelectedPermissions));
+    }
+  }, [externalSelectedPermissions]);
+
+  const syncSelection = (next: Set<string>) => {
+    setSelectedIds(next);
+    onPermissionChange?.(Array.from(next));
+  };
+
+  const togglePermission = (id: string, checked: boolean) => {
+    const next = new Set(selectedIds);
+    if (checked) next.add(id);
+    else next.delete(id);
+    syncSelection(next);
+  };
+
+  const allSelected =
+    formFieldData.length > 0 &&
+    formFieldData.every((item) => item._id && selectedIds.has(item._id));
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      syncSelection(new Set());
+      return;
+    }
+    syncSelection(
+      new Set(formFieldData.map((item) => item._id).filter(Boolean) as string[])
+    );
+  };
+
+  async function handleStandaloneUpdate() {
+    if (onPermissionChange || isCreate) return;
 
     try {
       const res = (await addRemovePermission({
         useId: user?._id as string,
-        permissions: ids as string[],
+        permissions: Array.from(selectedIds),
       }).unwrap()) as TSuccessResponse;
       toast({
         className: "toast-success",
@@ -210,73 +163,88 @@ const PermissionTable = ({
     }
   }
 
-  // Handle changes for create mode
-  const handleSwitchChange = (fieldName: string, checked: boolean) => {
-    if (!onPermissionChange) return;
-
-    const currentValues = form.getValues();
-    const newValues = { ...currentValues, [fieldName]: checked };
-
-    const trueFields = Object.keys(newValues).filter(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (field) => (newValues as any)[field]
-    );
-    const ids = formFieldData
-      .filter(
-        (item) => "fieldName" in item && trueFields.includes(item.fieldName)
-      )
-      .map((item) => item._id)
-      .filter(Boolean);
-
-    onPermissionChange(ids as string[]);
-  };
-
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full space-y-6 mt-10"
-      >
-        <div>
-          <h3 className="mb-4 text-lg font-medium">Permissions</h3>
-          <div className="space-y-4">
-            {formFieldData.map((item) => (
-              <FormField
-                key={item.fieldName}
-                control={form.control}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                name={item.fieldName as any}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base capitalize">
-                        {item.name}{" "}
-                        {item?.warn ? <Badge>{item?.warn}</Badge> : ""}
-                      </FormLabel>
-                      <FormDescription>{item.description}</FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={(checked) => {
-                          field.onChange(checked);
-                          handleSwitchChange(item.fieldName!, checked);
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            ))}
+    <div className="mt-8 space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <Shield className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">
+              Permissions
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Select what this admin can access
+            </p>
           </div>
         </div>
-        {!isCreate && !onPermissionChange && (
-          <div className="flex justify-end mb-6">
-            <Button type="submit">Update permission</Button>
-          </div>
-        )}
-      </form>
-    </Form>
+        <div className="flex items-center gap-2">
+          <span className="rounded-md border border-border bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+            {selectedIds.size} selected
+          </span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-8 text-xs"
+            onClick={toggleSelectAll}
+          >
+            {allSelected ? "Clear all" : "Select all"}
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {formFieldData.map((item) => {
+          const id = item._id as string;
+          const checked = selectedIds.has(id);
+          const labelId = `permission-${id}`;
+
+          return (
+            <label
+              key={id}
+              htmlFor={labelId}
+              className={cn(
+                "flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors",
+                checked
+                  ? "border-primary/40 bg-primary/5"
+                  : "border-border bg-card hover:bg-muted/40"
+              )}
+            >
+              <Checkbox
+                id={labelId}
+                checked={checked}
+                onCheckedChange={(value) =>
+                  togglePermission(id, value === true)
+                }
+                className="mt-0.5"
+              />
+              <div className="min-w-0 space-y-0.5">
+                <p className="text-sm font-medium leading-snug text-foreground">
+                  {formatPermissionLabel(item.name)}
+                </p>
+                <p className="text-xs leading-snug text-muted-foreground">
+                  {item.description}
+                </p>
+              </div>
+            </label>
+          );
+        })}
+      </div>
+
+      {!isCreate && !onPermissionChange && (
+        <div className="flex justify-end">
+          <Button
+            type="button"
+            disabled={isLoading}
+            onClick={handleStandaloneUpdate}
+          >
+            Update permission
+          </Button>
+        </div>
+      )}
+    </div>
   );
 };
 

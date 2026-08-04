@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import CommonAlertDialog from "@/components/common/CommonAlertDialog";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -13,11 +13,20 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { useDebounce } from "@/hooks/useDebounce";
 import {
+  softTableCellClass,
+  softTableHeadClass,
+  softTableHeaderClass,
+  softTableRowClass,
+  softTableWrapperClass,
+} from "@/lib/tableStyles";
+import { cn } from "@/lib/utils";
+import {
   useDeleteQnAMutation,
   useGetQnAListQuery,
 } from "@/redux/features/blogQna/blogQnaApi";
 import { TQnA } from "@/types/blog-qna";
-import { Edit, PlusCircle, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import {
   getListData,
@@ -32,6 +41,8 @@ export default function QnaManager() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const debouncedSearch = useDebounce(search, 500);
   const { data: response, isLoading } = useGetQnAListQuery({
     page,
@@ -43,36 +54,30 @@ export default function QnaManager() {
   const meta = getMeta(response);
   const [deleteQnA] = useDeleteQnAMutation();
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this QnA?")) return;
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    setIsDeleting(true);
     try {
-      const res = await deleteQnA(id).unwrap();
+      const res = await deleteQnA(deleteId).unwrap();
       toast({
-        className: "bg-success text-white",
+        className: "toast-success",
         title: res?.message || "Deleted successfully",
       });
+      setDeleteId(null);
     } catch (error: unknown) {
       const message =
         typeof error === "object" && error !== null && "data" in error
           ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (error as any)?.data?.message
           : "Delete failed";
-      toast({ variant: "destructive", title: String(message) });
+      toast({ className: "toast-error", title: String(message) });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   return (
-    <div className="space-y-4 p-4 md:p-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <h1 className="text-2xl font-bold">QnA</h1>
-        <Link href="/dashboard/qna/new">
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add QnA
-          </Button>
-        </Link>
-      </div>
-
+    <div className="space-y-4">
       <SearchAndStatus
         search={search}
         setSearch={(value) => {
@@ -84,81 +89,110 @@ export default function QnaManager() {
           setPage(1);
           setStatus(value);
         }}
-        placeholder="Search QnA..."
+        placeholder="Search QnA…"
         statusOptions={["draft", "published", "archived"]}
       />
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <TableRow className="hover:bg-primary/90">
-              <TableHead>Question</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Topics</TableHead>
-              <TableHead>Views</TableHead>
-              <TableHead>Published At</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
-                  Loading...
-                </TableCell>
+      <div className={softTableWrapperClass}>
+        <div className="overflow-x-auto">
+          <Table className="min-w-[900px]">
+            <TableHeader className={softTableHeaderClass}>
+              <TableRow className="hover:bg-muted">
+                <TableHead className={softTableHeadClass}>Question</TableHead>
+                <TableHead className={softTableHeadClass}>Category</TableHead>
+                <TableHead className={softTableHeadClass}>Topics</TableHead>
+                <TableHead className={softTableHeadClass}>Views</TableHead>
+                <TableHead className={softTableHeadClass}>
+                  Published At
+                </TableHead>
+                <TableHead className={softTableHeadClass}>Status</TableHead>
+                <TableHead className={cn(softTableHeadClass, "text-right")}>
+                  Actions
+                </TableHead>
               </TableRow>
-            ) : qnaList.length ? (
-              qnaList.map((item) => (
-                <TableRow key={item._id}>
-                  <TableCell>
-                    <div className="font-medium">{item.question}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {item.slug}
-                    </div>
-                  </TableCell>
-                  <TableCell>{getRefLabel(item.category)}</TableCell>
-                  <TableCell>{getRefLabel(item.topic)}</TableCell>
-                  <TableCell>{item.views || 0}</TableCell>
-                  <TableCell>
-                    {item.publishedAt
-                      ? new Date(item.publishedAt).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })
-                      : "N/A"}
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge status={item.status} />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex justify-end gap-2">
-                      <Link href={`/dashboard/qna/${item._id}/edit`}>
-                        <Button size="icon" variant="outline">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </Link>
-                      <Button
-                        size="icon"
-                        variant="destructive"
-                        onClick={() => handleDelete(item._id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    Loading...
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
-                  No QnA found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ) : qnaList.length ? (
+                qnaList.map((item) => (
+                  <TableRow key={item._id} className={softTableRowClass}>
+                    <TableCell className={softTableCellClass}>
+                      <div className="font-medium text-foreground">
+                        {item.question}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {item.slug}
+                      </div>
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      {getRefLabel(item.category)}
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      {getRefLabel(item.topic)}
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      {item.views || 0}
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      {item.publishedAt
+                        ? new Date(item.publishedAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      <StatusBadge status={item.status} />
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          asChild
+                          size="icon"
+                          variant="outline"
+                          className="h-8 w-8 rounded-lg"
+                        >
+                          <Link href={`/dashboard/qna/${item._id}/edit`}>
+                            <Edit className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          onClick={() => setDeleteId(item._id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    No QnA found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       <LocalPagination
@@ -166,6 +200,19 @@ export default function QnaManager() {
         totalPage={meta.totalPage}
         setPage={setPage}
         isLoading={isLoading}
+      />
+
+      <CommonAlertDialog
+        open={!!deleteId}
+        onOpenChange={(open) => {
+          if (!open) setDeleteId(null);
+        }}
+        title="Delete QnA"
+        description="Are you sure you want to delete this QnA? This action cannot be undone."
+        onConfirm={handleDelete}
+        loading={isDeleting}
+        confirmText="Delete"
+        confirmVariant="destructive"
       />
     </div>
   );

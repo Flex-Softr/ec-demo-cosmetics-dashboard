@@ -266,17 +266,7 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
   }
 
   return (
-    <div className="space-y-4 pb-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">
-            {isNew ? "Add Blog Post" : "Edit Blog Post"}
-          </h1>
-        </div>
-        <Link href="/dashboard/blog-posts">
-          <Button variant="outline">Back to posts</Button>
-        </Link>
-      </div>
+    <div className="space-y-4">
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <label className="space-y-2 text-sm font-medium">
@@ -493,11 +483,11 @@ const BlogPostForm = ({ postId, initialData }: BlogPostFormProps) => {
 
         <div className="flex justify-end gap-2">
           <Link href="/dashboard/blog-posts">
-            <Button type="button" variant="outline">
+            <Button type="button" variant="outline" className="rounded-lg">
               Cancel
             </Button>
           </Link>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" className="rounded-lg" disabled={isLoading}>
             {blogPost ? "Update" : "Create"}
           </Button>
         </div>

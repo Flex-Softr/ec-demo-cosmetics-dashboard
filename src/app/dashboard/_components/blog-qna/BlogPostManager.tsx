@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import CommonAlertDialog from "@/components/common/CommonAlertDialog";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -13,11 +13,20 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { useDebounce } from "@/hooks/useDebounce";
 import {
+  softTableCellClass,
+  softTableHeadClass,
+  softTableHeaderClass,
+  softTableRowClass,
+  softTableWrapperClass,
+} from "@/lib/tableStyles";
+import { cn } from "@/lib/utils";
+import {
   useDeleteBlogPostMutation,
   useGetBlogPostsQuery,
 } from "@/redux/features/blogQna/blogQnaApi";
 import { TBlogPost } from "@/types/blog-qna";
-import { Edit, PlusCircle, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import {
   getListData,
@@ -32,6 +41,8 @@ export default function BlogPostManager() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const debouncedSearch = useDebounce(search, 500);
   const { data: response, isLoading } = useGetBlogPostsQuery({
     page,
@@ -43,36 +54,30 @@ export default function BlogPostManager() {
   const meta = getMeta(response);
   const [deletePost] = useDeleteBlogPostMutation();
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this blog post?")) return;
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    setIsDeleting(true);
     try {
-      const res = await deletePost(id).unwrap();
+      const res = await deletePost(deleteId).unwrap();
       toast({
-        className: "bg-success text-white",
+        className: "toast-success",
         title: res?.message || "Deleted successfully",
       });
+      setDeleteId(null);
     } catch (error: unknown) {
       const message =
         typeof error === "object" && error !== null && "data" in error
           ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (error as any)?.data?.message
           : "Delete failed";
-      toast({ variant: "destructive", title: String(message) });
+      toast({ className: "toast-error", title: String(message) });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   return (
-    <div className="space-y-4 p-4 md:p-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <h1 className="text-2xl font-bold">Blog Posts</h1>
-        <Link href="/dashboard/blog-posts/new">
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Blog Post
-          </Button>
-        </Link>
-      </div>
-
+    <div className="space-y-4">
       <SearchAndStatus
         search={search}
         setSearch={(value) => {
@@ -84,81 +89,110 @@ export default function BlogPostManager() {
           setPage(1);
           setStatus(value);
         }}
-        placeholder="Search blog posts..."
+        placeholder="Search blog posts…"
         statusOptions={["draft", "published", "archived"]}
       />
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <TableRow className="hover:bg-primary/90">
-              <TableHead>Title</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Topic</TableHead>
-              <TableHead>Views</TableHead>
-              <TableHead>Published At</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
-                  Loading...
-                </TableCell>
+      <div className={softTableWrapperClass}>
+        <div className="overflow-x-auto">
+          <Table className="min-w-[900px]">
+            <TableHeader className={softTableHeaderClass}>
+              <TableRow className="hover:bg-muted">
+                <TableHead className={softTableHeadClass}>Title</TableHead>
+                <TableHead className={softTableHeadClass}>Category</TableHead>
+                <TableHead className={softTableHeadClass}>Topic</TableHead>
+                <TableHead className={softTableHeadClass}>Views</TableHead>
+                <TableHead className={softTableHeadClass}>
+                  Published At
+                </TableHead>
+                <TableHead className={softTableHeadClass}>Status</TableHead>
+                <TableHead className={cn(softTableHeadClass, "text-right")}>
+                  Actions
+                </TableHead>
               </TableRow>
-            ) : posts.length ? (
-              posts.map((post) => (
-                <TableRow key={post._id}>
-                  <TableCell>
-                    <div className="font-medium">{post.title}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {post.slug}
-                    </div>
-                  </TableCell>
-                  <TableCell>{getRefLabel(post.category)}</TableCell>
-                  <TableCell>{getRefLabel(post.topic)}</TableCell>
-                  <TableCell>{post.views || 0}</TableCell>
-                  <TableCell>
-                    {post.publishedAt
-                      ? new Date(post.publishedAt).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })
-                      : "N/A"}
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge status={post.status} />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex justify-end gap-2">
-                      <Link href={`/dashboard/blog-posts/${post._id}/edit`}>
-                        <Button size="icon" variant="outline">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </Link>
-                      <Button
-                        size="icon"
-                        variant="destructive"
-                        onClick={() => handleDelete(post._id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    Loading...
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
-                  No blog posts found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ) : posts.length ? (
+                posts.map((post) => (
+                  <TableRow key={post._id} className={softTableRowClass}>
+                    <TableCell className={softTableCellClass}>
+                      <div className="font-medium text-foreground">
+                        {post.title}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {post.slug}
+                      </div>
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      {getRefLabel(post.category)}
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      {getRefLabel(post.topic)}
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      {post.views || 0}
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      {post.publishedAt
+                        ? new Date(post.publishedAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      <StatusBadge status={post.status} />
+                    </TableCell>
+                    <TableCell className={softTableCellClass}>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          asChild
+                          size="icon"
+                          variant="outline"
+                          className="h-8 w-8 rounded-lg"
+                        >
+                          <Link href={`/dashboard/blog-posts/${post._id}/edit`}>
+                            <Edit className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          onClick={() => setDeleteId(post._id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    No blog posts found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       <LocalPagination
@@ -166,6 +200,19 @@ export default function BlogPostManager() {
         totalPage={meta.totalPage}
         setPage={setPage}
         isLoading={isLoading}
+      />
+
+      <CommonAlertDialog
+        open={!!deleteId}
+        onOpenChange={(open) => {
+          if (!open) setDeleteId(null);
+        }}
+        title="Delete Blog Post"
+        description="Are you sure you want to delete this blog post? This action cannot be undone."
+        onConfirm={handleDelete}
+        loading={isDeleting}
+        confirmText="Delete"
+        confirmVariant="destructive"
       />
     </div>
   );

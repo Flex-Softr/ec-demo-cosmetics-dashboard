@@ -1,5 +1,6 @@
 "use client";
 
+import { formatPermissionLabel } from "@/lib/formatPermissionLabel";
 import { ShieldCheck } from "lucide-react";
 
 type Permission = {
@@ -10,13 +11,6 @@ type Permission = {
 type PermissionsPanelProps = {
   permissions: Permission[];
 };
-
-function formatPermissionLabel(name: string) {
-  return name
-    .replace(/([A-Z])/g, " $1")
-    .replace(/^./, (char) => char.toUpperCase())
-    .trim();
-}
 
 const PermissionsPanel = ({ permissions }: PermissionsPanelProps) => {
   return (

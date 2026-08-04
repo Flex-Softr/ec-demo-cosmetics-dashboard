@@ -36,6 +36,7 @@ import isPermitted from "@/utilities/isPermitted";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CalendarIcon, Upload, X } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -93,11 +94,12 @@ const StaffForm = ({
   setModalOpen,
   user,
 }: {
-  setModalOpen: Dispatch<SetStateAction<boolean>>;
+  setModalOpen?: Dispatch<SetStateAction<boolean>>;
   user?: TUser;
 }) => {
   const isUpdate = !!user;
   const targetUser = user!; // Safe because isUpdate is true only if user is defined
+  const router = useRouter();
 
   const { data: permissionResponse, isLoading: permissionDataLoading } =
     useGetAllPermissionsQuery({});
@@ -108,12 +110,14 @@ const StaffForm = ({
 
   useEffect(() => {
     if (isUpdate && user?.permissions) {
-      setSelectedPermissions(user.permissions.map((p) => p._id));
+      setSelectedPermissions(
+        user.permissions
+          .filter((p) => p.name !== PERMISSIONS.SUPER_ADMIN)
+          .map((p) => p._id)
+      );
     }
   }, [isUpdate, user]);
 
-  const [role, setRole] = useState<null | string>(user?.role || null);
-  const [roleError, setRoleError] = useState<null | string>(null);
   const [status, setStatus] = useState(user?.status || "active");
   const [joiningDate, setJoiningDate] = useState<Date | undefined>(
     user?.joiningDate ? new Date(user.joiningDate) : undefined
@@ -177,12 +181,6 @@ const StaffForm = ({
   });
 
   const onSubmit: SubmitHandler<TFormInput> = async (data) => {
-    setRoleError(null);
-    if (!isUpdate && !role) {
-      setRoleError("Role is required");
-      return;
-    }
-
     const formData = new FormData();
 
     if (isUpdate && targetUser) {
@@ -238,7 +236,7 @@ const StaffForm = ({
       formData.append("phoneNumber", data.phoneNumber || "");
       formData.append("email", data.email || "");
       formData.append("password", data.password || "");
-      formData.append("role", role || "");
+      formData.append("role", ROLES.ADMIN);
       formData.append("address[fullAddress]", data.fullAddress || "");
       formData.append("personalInfo[fullName]", data.fullName || "");
       if (data?.emergencyContact)
@@ -262,7 +260,6 @@ const StaffForm = ({
       }
       if (selectedImage) formData.append("image", selectedImage[0]);
 
-      // Add permissions to creation payload
       selectedPermissions.forEach((id) => {
         formData.append("permissions", id);
       });
@@ -271,14 +268,9 @@ const StaffForm = ({
     try {
       let result: TSuccessResponse;
       if (isUpdate && targetUser) {
-        // Add permissions to update payload
         selectedPermissions.forEach((id) => {
           formData.append("permissions", id);
         });
-
-        if (role && role !== targetUser.role) {
-          formData.append("role", role);
-        }
 
         result = (await updateUser({
           body: formData,
@@ -293,7 +285,11 @@ const StaffForm = ({
         title: result.message,
       });
       if (!isUpdate) reset();
-      setModalOpen(false);
+      if (setModalOpen) {
+        setModalOpen(false);
+      } else if (!isUpdate) {
+        router.push("/dashboard/manage-admin-staff");
+      }
     } catch (err) {
       const error = err as { data: TErrorResponse };
       toast({
@@ -407,39 +403,6 @@ const StaffForm = ({
                 <p className="text-red-600 font-bold text-sm">
                   {errors.fullAddress?.message}
                 </p>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="role">
-              {isUpdate ? "Role" : "Select role"}{" "}
-              {!isUpdate && <span className="text-red-600">*</span>}
-            </Label>
-            <div className="space-y-2 w-full">
-              <Select
-                onValueChange={(changedValue) => {
-                  setRole(changedValue);
-                  setRoleError(null);
-                }}
-                defaultValue={role || undefined}
-              >
-                <SelectTrigger className="w-full border-primary border-[1px]">
-                  <SelectValue placeholder="Role" className="capitalize" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Role</SelectLabel>
-                    <SelectItem value={ROLES.ADMIN} className="capitalize">
-                      Admin
-                    </SelectItem>
-                    <SelectItem value={ROLES.STAFF} className="capitalize">
-                      Staff
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {roleError && (
-                <p className="text-red-600 font-bold text-sm">{roleError}</p>
               )}
             </div>
           </div>
@@ -650,7 +613,7 @@ const StaffForm = ({
           loading={isLoading}
           type="submit"
         >
-          {isUpdate ? "Update user" : "Create user"}
+          {isUpdate ? "Update user" : "Create admin"}
         </EcButton>
       </div>
     </div>
