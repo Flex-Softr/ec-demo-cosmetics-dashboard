@@ -82,10 +82,20 @@ const UserMenu = () => {
           </Avatar>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-52" align="end">
-        <DropdownMenuLabel className="text-center">
-          <p className="font-semibold text-foreground">{fullName || "User"}</p>
-          <p className="text-sm font-normal text-muted-foreground">{email}</p>
+      <DropdownMenuContent
+        className="w-64 max-w-[calc(100vw-1.5rem)]"
+        align="end"
+        side="bottom"
+        sideOffset={8}
+        collisionPadding={16}
+      >
+        <DropdownMenuLabel className="space-y-0.5 text-left font-normal">
+          <p className="truncate font-semibold text-foreground">
+            {fullName || "User"}
+          </p>
+          <p className="truncate text-sm text-muted-foreground" title={email}>
+            {email}
+          </p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>

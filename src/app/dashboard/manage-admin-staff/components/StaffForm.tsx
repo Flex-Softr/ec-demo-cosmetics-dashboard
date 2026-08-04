@@ -37,7 +37,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { CalendarIcon, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -90,13 +90,7 @@ const schema = yup.object().shape({
 
 export type TFormInput = yup.InferType<typeof schema>;
 
-const StaffForm = ({
-  setModalOpen,
-  user,
-}: {
-  setModalOpen?: Dispatch<SetStateAction<boolean>>;
-  user?: TUser;
-}) => {
+const StaffForm = ({ user }: { user?: TUser }) => {
   const isUpdate = !!user;
   const targetUser = user!; // Safe because isUpdate is true only if user is defined
   const router = useRouter();
@@ -285,11 +279,7 @@ const StaffForm = ({
         title: result.message,
       });
       if (!isUpdate) reset();
-      if (setModalOpen) {
-        setModalOpen(false);
-      } else if (!isUpdate) {
-        router.push("/dashboard/manage-admin-staff");
-      }
+      router.push("/dashboard/manage-admin-staff");
     } catch (err) {
       const error = err as { data: TErrorResponse };
       toast({

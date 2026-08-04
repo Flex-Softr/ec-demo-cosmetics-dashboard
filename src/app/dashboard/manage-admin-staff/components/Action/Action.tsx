@@ -1,32 +1,43 @@
 "use client";
+import CommonAlertDialog from "@/components/common/CommonAlertDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TUser } from "@/redux/features/user/userInterface";
+import { useToast } from "@/components/ui/use-toast";
+import { ROLES } from "@/const/role";
 import { useDeleteStaffOrAdminMutation } from "@/redux/features/user/userApi";
+import { TUser } from "@/redux/features/user/userInterface";
 import { TSuccessResponse } from "@/types/response";
 import { TGenericErrorResponse } from "@/utilities/response";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { Pencil, Trash2 } from "lucide-react";
+import { Info, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import UpdateUser from "../UpdateUser/UpdateUser";
-import CommonAlertDialog from "@/components/common/CommonAlertDialog";
+
+const isProtectedSystemUser = (user: TUser) =>
+  Boolean(user.is_system) || user.role === ROLES.SUPER_ADMIN;
+
 const Action = ({ user }: { user: TUser }) => {
-  const [editUserModal, setEditUserModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteUser, { isLoading: isDeleting }] =
     useDeleteStaffOrAdminMutation();
   const { toast } = useToast();
-
-  const handleEditUserModal = () => {
-    setEditUserModal((prev) => !prev);
-  };
+  const isSystemUser = isProtectedSystemUser(user);
 
   const handleDelete = async () => {
+    if (isSystemUser) {
+      toast({
+        className: "toast-error",
+        title: "System user cannot be deleted",
+      });
+      return;
+    }
+
     try {
       const res = (await deleteUser(user._id).unwrap()) as TSuccessResponse;
       toast({
@@ -42,6 +53,7 @@ const Action = ({ user }: { user: TUser }) => {
       });
     }
   };
+
   return (
     <>
       <div className="flex justify-center">
@@ -49,18 +61,49 @@ const Action = ({ user }: { user: TUser }) => {
           <DropdownMenuTrigger asChild className="cursor-pointer">
             <DotsVerticalIcon />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 ">
+          <DropdownMenuContent
+            className="w-64"
+            align="end"
+            collisionPadding={16}
+          >
+            {isSystemUser && (
+              <>
+                <DropdownMenuLabel className="flex items-start gap-2 font-normal text-muted-foreground whitespace-normal leading-snug">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                  <span>
+                    This is a system/super admin account. Edit and delete are
+                    not allowed.
+                  </span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+              </>
+            )}
+            {isSystemUser ? (
+              <DropdownMenuItem
+                disabled
+                className="cursor-not-allowed opacity-50"
+              >
+                <Pencil className="mr-2 h-4 w-4" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href={`/dashboard/manage-admin-staff/${user._id}/edit`}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  <span>Edit</span>
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
-              onClick={() => setEditUserModal(true)}
-              className="cursor-pointer"
-            >
-              <Pencil className="mr-2 h-4 w-4" />
-              <span>Edit</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setDeleteModal(true)}
-              disabled={isDeleting}
-              className="text-red-600 focus:text-red-600 cursor-pointer"
+              onClick={() => {
+                if (!isSystemUser) setDeleteModal(true);
+              }}
+              disabled={isSystemUser || isDeleting}
+              className={
+                isSystemUser
+                  ? "cursor-not-allowed opacity-50 text-red-600 focus:text-red-600"
+                  : "text-red-600 focus:text-red-600 cursor-pointer"
+              }
             >
               <Trash2 className="mr-2 h-4 w-4" />
               <span>Delete</span>
@@ -68,12 +111,6 @@ const Action = ({ user }: { user: TUser }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <UpdateUser
-        editUserModal={editUserModal}
-        handleEditUserModal={handleEditUserModal}
-        user={user}
-        setEditUserModal={setEditUserModal}
-      />
       <CommonAlertDialog
         open={deleteModal}
         onOpenChange={setDeleteModal}
