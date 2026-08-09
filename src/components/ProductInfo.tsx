@@ -13,19 +13,19 @@ const ProductInfo = ({ products = [] }: { products: TOrderedProducts[] }) => {
   const titleLabel = [title, variationProps].filter(Boolean).join(" · ");
 
   return (
-    <div className="flex flex-col gap-1 min-w-0 text-left max-w-[200px]">
+    <div className="flex min-w-[140px] max-w-[180px] flex-col gap-1 text-left">
       <span
-        className="text-sm text-foreground line-clamp-2 leading-snug"
+        className="block truncate text-sm leading-snug text-foreground"
         title={titleLabel}
       >
         {title}
       </span>
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
-          &#2547;{unitPrice || 0} × {quantity || 0}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="whitespace-nowrap text-xs tabular-nums text-muted-foreground">
+          ৳{unitPrice || 0} × {quantity || 0}
         </span>
         {extra > 0 && (
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-primary whitespace-nowrap">
+          <span className="inline-flex items-center whitespace-nowrap rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/10 text-primary">
             +{extra} more
           </span>
         )}

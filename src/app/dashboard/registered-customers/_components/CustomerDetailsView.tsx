@@ -159,7 +159,7 @@ const CustomerDetailsView = ({
             <h5 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               All Orders List
             </h5>
-            <AllOrdersTable permissions={permissions} />
+            <AllOrdersTable permissions={permissions} showPagination />
           </div>
         </div>
       </div>

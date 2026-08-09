@@ -14,7 +14,7 @@ const SubCategoryContent = ({ categoryId }: { categoryId: string }) => {
   if (isLoading) {
     return (
       <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
-        Loading subcategories…
+        Loading children…
       </div>
     );
   }
@@ -37,7 +37,7 @@ const SubCategoryContent = ({ categoryId }: { categoryId: string }) => {
             </div>
             <div>
               <h1 className="text-lg font-semibold leading-tight text-foreground">
-                Subcategories of{" "}
+                Children of{" "}
                 <span className="text-primary">{category?.name}</span>
               </h1>
               <p className="line-clamp-1 text-xs text-muted-foreground">
@@ -52,12 +52,12 @@ const SubCategoryContent = ({ categoryId }: { categoryId: string }) => {
           trigger={
             <Button size="sm" className="rounded-lg gap-1.5">
               <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">New Subcategory</span>
+              <span className="hidden sm:inline">New Child</span>
             </Button>
           }
         />
       </div>
-      <SubCategoryTable subcategories={category?.subcategories || []} />
+      <SubCategoryTable subcategories={category?.children || []} />
     </div>
   );
 };

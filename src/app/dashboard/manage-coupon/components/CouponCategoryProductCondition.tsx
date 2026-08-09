@@ -45,10 +45,23 @@ const CouponCategoryProductCondition = ({
     (responseData?.data as TCategories[]) ||
     (categoryRes?.data?.data as TCategories[]) ||
     [];
-  const categoryOptions = categories.map((item) => ({
-    value: item?._id || "",
-    label: item?.name || "",
-  }));
+
+  const flattenCategories = (
+    cats: TCategories[],
+    prefix = ""
+  ): { value: string; label: string }[] => {
+    let result: { value: string; label: string }[] = [];
+    for (const cat of cats) {
+      const label = prefix ? `${prefix} > ${cat.name}` : cat.name;
+      result.push({ value: cat._id, label });
+      if (cat.children && cat.children.length > 0) {
+        result = result.concat(flattenCategories(cat.children, label));
+      }
+    }
+    return result;
+  };
+
+  const categoryOptions = flattenCategories(categories);
 
   return (
     <div className="space-y-3">

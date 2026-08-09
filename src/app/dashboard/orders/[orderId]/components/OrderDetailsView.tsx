@@ -489,7 +489,7 @@ const OrderDetailsView = ({ orderId, permissions }: OrderDetailsViewProps) => {
         <ContentCard>
           <SetOrderHistoryData searchQuery={shipping?.phoneNumber} />
           <div className="mt-4">
-            <AllOrdersTable permissions={permissions} />
+            <AllOrdersTable permissions={permissions} showPagination />
           </div>
         </ContentCard>
       </div>

@@ -8,7 +8,7 @@ import { useFormContext } from "react-hook-form";
 type TCategories = {
   _id: string;
   name: string;
-  subcategories?: TCategories[];
+  children?: TCategories[];
 };
 
 export function CategoryField({ embedded = false }: { embedded?: boolean }) {
@@ -34,8 +34,8 @@ export function CategoryField({ embedded = false }: { embedded?: boolean }) {
 
   const getAllChildIds = (category: TCategories): string[] => {
     const ids: string[] = [];
-    if (category.subcategories?.length) {
-      for (const child of category.subcategories) {
+    if (category.children?.length) {
+      for (const child of category.children) {
         ids.push(child._id, ...getAllChildIds(child));
       }
     }
@@ -56,7 +56,7 @@ export function CategoryField({ embedded = false }: { embedded?: boolean }) {
                   onCheckedChange={(checked) => {
                     toggle(cat._id, Boolean(checked));
 
-                    if (checked && cat.subcategories?.length) {
+                    if (checked && cat.children?.length) {
                       const childIds = getAllChildIds(cat);
                       const updated = Array.from(
                         new Set([...selected, cat._id, ...childIds])
@@ -64,7 +64,7 @@ export function CategoryField({ embedded = false }: { embedded?: boolean }) {
                       setValue("category", updated, { shouldValidate: true });
                     }
 
-                    if (!checked && cat.subcategories?.length) {
+                    if (!checked && cat.children?.length) {
                       const childIds = getAllChildIds(cat);
                       const updated = selected.filter(
                         (id) => ![cat._id, ...childIds].includes(id)
@@ -78,9 +78,9 @@ export function CategoryField({ embedded = false }: { embedded?: boolean }) {
                 </span>
               </div>
 
-              {cat.subcategories &&
-                cat.subcategories.length > 0 &&
-                renderCategories(cat.subcategories, level + 1)}
+              {cat.children &&
+                cat.children.length > 0 &&
+                renderCategories(cat.children, level + 1)}
             </div>
           );
         })}

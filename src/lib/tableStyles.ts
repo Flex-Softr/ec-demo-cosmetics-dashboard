@@ -7,7 +7,7 @@ export const softTableHeadClass =
 export const softTableHeaderClass = "bg-muted";
 
 export const softTableWrapperClass =
-  "overflow-hidden rounded-xl border border-border bg-card";
+  "overflow-x-auto overflow-y-hidden rounded-xl border border-border bg-card";
 
 export const softTableRowClass =
   "group border-b border-border hover:bg-muted/70 transition-colors duration-100";
@@ -50,7 +50,7 @@ export function softOrderStatusClass(status: string) {
 
 export function softBadgeClass(extra?: string) {
   return cn(
-    "inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium",
+    "inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium whitespace-nowrap",
     extra
   );
 }

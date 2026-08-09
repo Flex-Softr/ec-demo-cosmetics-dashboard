@@ -9,9 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import config from "@/config/config";
-import BdAddress from "@/lib/bdAddress";
 import { TOrders } from "@/types/order.interface";
-import { Eye, MapPin, MoreVertical, Phone, UserRound } from "lucide-react";
+import { Eye, MoreVertical, Phone, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import CommonModal from "./modal/CommonModal";
@@ -22,43 +21,22 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen((prev) => !prev);
 
-  const fullAddress = [
-    shipping?.fullAddress,
-    shipping?.upazila && BdAddress.upazilaNameById(shipping?.upazila).name,
-    shipping?.district && BdAddress.districtNameById(shipping?.district).name,
-    shipping?.division && BdAddress.divisionNameById(shipping?.division).name,
-  ]
-    .filter(Boolean)
-    .join(", ");
-
-  const locationLabel =
-    BdAddress.districtNameById(shipping?.district).name ||
-    shipping?.district ||
-    shipping?.fullAddress ||
-    "—";
-
   return (
     <>
-      <div className="relative flex flex-col gap-1 min-w-0 text-left max-w-[220px] pr-7">
+      <div className="relative flex min-w-0 max-w-[200px] flex-col gap-1 pr-7 text-left">
         <div
-          className="flex items-center gap-1.5 min-w-0"
+          className="flex min-w-0 items-center gap-1.5"
           title={shipping?.fullName}
         >
-          <UserRound className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
-          <span className="text-sm font-medium text-foreground capitalize line-clamp-1">
+          <UserRound className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <span className="line-clamp-1 text-sm font-medium capitalize text-foreground">
             {shipping?.fullName || "—"}
           </span>
         </div>
-        <div className="flex items-center gap-1.5 min-w-0">
-          <Phone className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground tabular-nums truncate">
+        <div className="flex min-w-0 items-center gap-1.5">
+          <Phone className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <span className="truncate text-xs tabular-nums text-muted-foreground">
             {shipping?.phoneNumber || "—"}
-          </span>
-        </div>
-        <div className="flex items-start gap-1.5 min-w-0" title={fullAddress}>
-          <MapPin className="w-3.5 h-3.5 shrink-0 text-muted-foreground mt-0.5" />
-          <span className="text-xs text-muted-foreground line-clamp-2">
-            {locationLabel}
           </span>
         </div>
 
@@ -67,7 +45,7 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-0 top-0 h-7 w-7 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+              className="absolute right-0 top-0 h-7 w-7 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground"
               title="Customer Overview"
             >
               <MoreVertical className="h-3.5 w-3.5" />
@@ -77,9 +55,9 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={handleOpen}
-                className="gap-2 cursor-pointer"
+                className="cursor-pointer gap-2"
               >
-                <Eye className="w-4 h-4" />
+                <Eye className="h-4 w-4" />
                 Customer History
               </DropdownMenuItem>
               {deliveryStatus && (
@@ -88,9 +66,9 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
                     href={`${config.courier_status_check_url}/${order?.courierDetails?.trackingId}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="gap-2 cursor-pointer"
+                    className="cursor-pointer gap-2"
                   >
-                    <Eye className="w-4 h-4" />
+                    <Eye className="h-4 w-4" />
                     Courier Status
                   </a>
                 </DropdownMenuItem>
@@ -100,9 +78,9 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
                   href={`https://wa.me/88${shipping?.phoneNumber}`}
                   target="_blank"
                   title="Whatsapp"
-                  className="gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2"
                 >
-                  <Phone className="w-4 h-4" />
+                  <Phone className="h-4 w-4" />
                   Whatsapp
                 </Link>
               </DropdownMenuItem>
@@ -115,7 +93,7 @@ const CustomerInfo = ({ order }: { order: TOrders }) => {
         open={open}
         handleOpen={handleOpen}
         modalTitle="Customer Order History"
-        className="h-[95%] sm:h-[90%] w-[100%] xl:!w-[1100px] overflow-y-auto"
+        className="h-[95%] w-[100%] overflow-y-auto sm:h-[90%] xl:!w-[1100px]"
       >
         <FraudCheck phoneNumber={shipping?.phoneNumber} />
         <CustomerOrderHistory phoneNumber={shipping?.phoneNumber} />

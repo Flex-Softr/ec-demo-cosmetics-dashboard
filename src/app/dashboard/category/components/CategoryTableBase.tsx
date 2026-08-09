@@ -81,11 +81,19 @@ export const CategoryTableBase = ({
       },
     ];
 
-    if (!isSubCategory) {
+    const shouldShowSubCategories =
+      !data.length || (data[0].level ?? (isSubCategory ? 1 : 0)) < 2;
+
+    if (shouldShowSubCategories) {
       baseColumns.push({
         accessorKey: "items",
-        header: "Sub Categories",
-        cell: ({ row }) => <NavigateSubCategory category={row.original} />,
+        header: "Children",
+        cell: ({ row }) => {
+          if ((row.original.level ?? (isSubCategory ? 1 : 0)) < 2) {
+            return <NavigateSubCategory category={row.original} />;
+          }
+          return null;
+        },
       });
     }
 
@@ -110,7 +118,7 @@ export const CategoryTableBase = ({
     );
 
     return baseColumns;
-  }, [isSubCategory]);
+  }, [isSubCategory, data]);
 
   const table = useReactTable({
     data,
@@ -180,7 +188,7 @@ export const CategoryTableBase = ({
                   colSpan={columns.length}
                   className="h-24 text-center text-muted-foreground"
                 >
-                  {isSubCategory ? "No results." : "No categories found."}
+                  {isSubCategory ? "No children." : "No categories found."}
                 </TableCell>
               </TableRow>
             )}

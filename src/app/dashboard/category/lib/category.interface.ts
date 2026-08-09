@@ -11,7 +11,8 @@ export type TCategories = {
   description?: string;
   isActive: boolean;
   productCount?: number;
-  subcategories?: TCategories[];
+  children?: TCategories[];
   parent?: string;
+  level?: number;
   sortOrder?: number;
 };

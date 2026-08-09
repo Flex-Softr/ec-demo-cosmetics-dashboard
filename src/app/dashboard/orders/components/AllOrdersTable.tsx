@@ -33,8 +33,10 @@ import FollowUpDate from "./FollowUpDate";
 
 export default function AllOrdersTable({
   permissions,
+  showPagination,
 }: {
   permissions: TPermission[];
+  showPagination?: boolean;
 }) {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector(({ pagination }) => pagination);
@@ -64,6 +66,8 @@ export default function AllOrdersTable({
     search.search ? search.searchedOrders : orders.orders
   );
   const search = useAppSelector(({ search }) => search.search);
+  const shouldShowPagination =
+    typeof showPagination === "boolean" ? showPagination : !search;
 
   const table = useReactTable({
     data: orders,
@@ -81,7 +85,7 @@ export default function AllOrdersTable({
   return (
     <div className="w-full space-y-3">
       <div className={softTableWrapperClass}>
-        <Table className="min-w-[1100px]">
+        <Table className="min-w-[1200px]">
           <TableHeader className={softTableHeaderClass}>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
@@ -134,7 +138,7 @@ export default function AllOrdersTable({
           </TableBody>
         </Table>
       </div>
-      {!search && (
+      {shouldShowPagination && (
         <div className="flex items-center justify-end py-1">
           <PagePagination />
         </div>

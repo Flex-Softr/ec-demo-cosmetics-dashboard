@@ -99,13 +99,13 @@ export const getColumns = (
       const advance = row.original.advance || 0;
       const due = Math.max(0, Number(total || 0) - Number(advance || 0));
       return (
-        <div className="flex flex-col gap-0.5">
-          <span className="text-sm font-medium text-foreground tabular-nums whitespace-nowrap">
-            &#2547;{total}
+        <div className="flex min-w-[88px] flex-col gap-0.5">
+          <span className="whitespace-nowrap text-sm font-medium tabular-nums text-foreground">
+            ৳{total}
           </span>
           {advance > 0 && due > 0 && (
-            <span className="text-[11px] text-rose-600 tabular-nums whitespace-nowrap">
-              Due &#2547;{due}
+            <span className="whitespace-nowrap text-[11px] tabular-nums text-rose-600">
+              Due ৳{due}
             </span>
           )}
         </div>
@@ -119,7 +119,12 @@ export const getColumns = (
       const name = row.original.payment?.paymentMethod?.name;
       return (
         <span
-          className={cn(softBadgeClass(), paymentStyle(name), "capitalize")}
+          title={name || undefined}
+          className={cn(
+            softBadgeClass(),
+            paymentStyle(name),
+            "max-w-[140px] whitespace-nowrap capitalize"
+          )}
         >
           {name || "—"}
         </span>
