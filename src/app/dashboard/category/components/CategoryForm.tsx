@@ -9,6 +9,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,7 +28,7 @@ import { setThumbnail } from "@/redux/features/imageSelector/imageSelectorSlice"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { revalidateTag } from "@/utilities/revalidate";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { TCategories } from "../lib/category.interface";
@@ -44,6 +51,10 @@ type CategoryFormProps = {
   parent?: string;
   onSuccess?: () => void;
   onCancel?: () => void;
+  isSubCategory?: boolean;
+  trigger?: React.ReactNode;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
 };
 
 const CategoryForm = ({
@@ -51,9 +62,17 @@ const CategoryForm = ({
   parent,
   onSuccess,
   onCancel,
+  isSubCategory,
+  trigger,
+  open,
+  setOpen,
 }: CategoryFormProps) => {
   const { thumbnail } = useAppSelector(({ imageSelector }) => imageSelector);
   const dispatch = useAppDispatch();
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = open !== undefined;
+  const dialogOpen = isControlled ? open : internalOpen;
+  const onDialogChange = isControlled ? setOpen : setInternalOpen;
 
   const [addCategory, { isLoading: isCreating }] = useAddCategoryMutation();
   const [updateCategory, { isLoading: isUpdating }] =
@@ -133,6 +152,7 @@ const CategoryForm = ({
         dispatch(setThumbnail(""));
         await revalidateTag(["categories"]);
         if (onSuccess) onSuccess();
+        if (onDialogChange) onDialogChange(false);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -144,7 +164,7 @@ const CategoryForm = ({
     }
   };
 
-  return (
+  const formContent = (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex gap-4 items-center">
@@ -218,7 +238,7 @@ const CategoryForm = ({
         </div>
 
         <div className="flex justify-end gap-5 pt-4">
-          {onCancel && (
+          {onCancel && !trigger && (
             <Button type="button" variant="destructive" onClick={onCancel}>
               Cancel
             </Button>
@@ -230,6 +250,25 @@ const CategoryForm = ({
       </form>
     </Form>
   );
+
+  if (trigger) {
+    return (
+      <Dialog open={dialogOpen} onOpenChange={onDialogChange}>
+        <DialogTrigger asChild>{trigger}</DialogTrigger>
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {initialData ? "Edit" : "Create"}{" "}
+              {isSubCategory ? "Sub Category" : "Category"}
+            </DialogTitle>
+          </DialogHeader>
+          {formContent}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return formContent;
 };
 
 export default CategoryForm;
