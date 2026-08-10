@@ -14,11 +14,11 @@ const NavigateSubCategory = ({ category }: { category: TCategories }) => {
       <div className="lowercase ml-6">
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>{category?.subcategories?.length}</TooltipTrigger>
+            <TooltipTrigger>{category?.children?.length}</TooltipTrigger>
             <TooltipContent>
               <p className="text-white">
                 {" "}
-                <span className="">{category?.subcategories?.length}</span> Sub
+                <span className="">{category?.children?.length}</span> Sub
                 Categories
               </p>
             </TooltipContent>
