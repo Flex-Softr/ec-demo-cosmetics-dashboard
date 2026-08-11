@@ -53,7 +53,7 @@ const ProductFilter = () => {
       label: cat.name,
       value: cat._id,
       count: cat.productCount,
-      children: cat.subcategories?.map((sub) => ({
+      children: cat.children?.map((sub) => ({
         label: sub.name,
         value: sub._id,
         count: sub.productCount,
